@@ -7,6 +7,7 @@ export const ROUTES = {
         //Login routes
         LOGIN: "/(auth)/(login)/login" as Route,
         LOGIN_BIOMETRIC: "/(auth)/(login)/login-biometric" as Route,
+        LOGIN_TWOFAC: "/(auth)/(login)/login-twofactor-auth" as Route,
         ENABLE_BIOMETRIC: "/enable-biometric" as Route,
         //Register routes
         REGISTER_EMAIL: "/(auth)/(register)/register-email" as Route,

@@ -39,7 +39,7 @@ export const useAuthProtection = () => {
                 return;
             }
 
-            router.replace(ROUTES.TABS.ROOT);
+            router.replace(ROUTES.TABS.BALANCE);
         }
     }, [isAuthenticated, isAuthInitialized, segments]);
 };

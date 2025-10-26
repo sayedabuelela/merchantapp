@@ -9,6 +9,7 @@ export interface LoginRequest {
     email: string;
     password: string;
     fcmData: FCMData;
+    biometricEnabled?: boolean;
 }
 
 export type LoginError = {

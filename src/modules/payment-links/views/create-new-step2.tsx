@@ -10,7 +10,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import {  View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalendarIcon, DocumentTextIcon, HashtagIcon } from "react-native-heroicons/outline";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -18,6 +18,8 @@ import CreateOptionBox from "../components/create-payment/CreateOptionBox";
 import { CreatePaymentLinkTypes, createPaymentLinkSchema } from "../payment-links.scheme";
 import { usePaymentLinkStore } from "../paymentLink.store";
 import usePaymentLinkVM from "../viewmodels/usePaymentLinkVM";
+import FontText from "@/src/shared/components/FontText";
+import { CheckBoxEmptyIcon, CheckBoxSquareEmptyIcon, CheckBoxSquareFilledIcon } from "@/src/shared/assets/svgs";
 
 const CreateNewPaymentLinkStep2Screen = () => {
     const { t } = useTranslation();
@@ -47,11 +49,10 @@ const CreateNewPaymentLinkStep2Screen = () => {
 
     // 🔑 keep store in sync with form values
     const values = useWatch({ control });
-    console.log('Step2 values', values);
     useEffect(() => {
         setFormData(values);
     }, [values, setFormData]);
-
+    console.log('Step2 values : ', values);
     const handleDateSelectPickerClose = () => {
         dateSelectPickerRef.current?.close();
     };
@@ -86,10 +87,20 @@ const CreateNewPaymentLinkStep2Screen = () => {
                                 onPress={handleDateSelectPickerExpand}
                                 t={t}
                             />
-
-
                         )}
                     />
+                    {values.dueDate && (
+                        <Controller
+                            control={control}
+                            name="isSuspendedPayment"
+                            render={({ field: { onChange, value } }) => (
+                                <TouchableOpacity className="flex-row items-center mt-4" onPress={() => onChange(!value)}>
+                                    {value ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
+                                    <FontText type="body" weight="regular" className="text-content-primary text-base ml-2">{t('Set as Expiry Date')}</FontText>
+                                </TouchableOpacity>
+                            )}
+                        />
+                    )}
                     <AnimatedErrorMsg errorMsg={t(errors.dueDate?.message || '')} />
                 </CreateOptionBox>
 
@@ -162,7 +173,7 @@ const CreateNewPaymentLinkStep2Screen = () => {
                 savedDate={formData.dueDate}
                 onDateSelected={(date) => {
                     setValue("dueDate", date, { shouldValidate: true });
-                    handleDateSelectPickerClose();
+                    // handleDateSelectPickerClose();
                 }}
                 onClose={handleDateSelectPickerClose}
             />

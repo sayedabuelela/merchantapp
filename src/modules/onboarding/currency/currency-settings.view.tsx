@@ -47,7 +47,7 @@ const CurrencySettingsScreen = () => {
                         disabled={!selectedCurrencies.length}
                         onPress={submitHandler}
                     />
-                    <Link href={ROUTES.TABS.ROOT}>
+                    <Link href={ROUTES.TABS.BALANCE}>
                         <FontText
                             type="body"
                             weight='bold'

@@ -251,7 +251,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
     const [rejectReason, setRejectReason] = useState<string>("");
 
     // Refs and hooks
-    const countyCodeBottomSheetRef = useRef<CountyCodeBottomSheetRef>(null);
+    
 
     const router = useRouter();
 
@@ -445,11 +445,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
                     )}
                 </AnimatePresence>
 
-                <CountyCodeBottomSheet
-                    onClose={() => { countyCodeBottomSheetRef.current?.close() }}
-                    ref={countyCodeBottomSheetRef}
-                    countries={countries}
-                />
+                
             </KeyboardAvoidingView>
         </Modal>
     );

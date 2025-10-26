@@ -92,7 +92,7 @@ export interface SecretKeyDetails {
 }
 
 export interface BelongsToMerchant {
-    [merchantId: string]: BelongsToMerchantStore;
+    // Record<string, BelongsToMerchantStore>;
 }
 
 export interface BelongsToMerchantStore {
@@ -123,7 +123,7 @@ export interface User {
     allowedPaymentMethods: AllowedPaymentMethods;
     hasAccounts: boolean;
     enabledFeatures: string[];
-    belongsToMerchants: BelongsToMerchant[];
+    belongsToMerchants: Record<string, BelongsToMerchantStore>;
     [key: string]: any;
 }
 
@@ -139,7 +139,9 @@ type AuthResponseBody = User & {
     success: boolean;
 };
 export interface AuthResponse {
-    body: AuthResponseBody
+    body: AuthResponseBody;
+    twoFactorAuth?: boolean;
+    message?: string;
 }
 
 

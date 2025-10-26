@@ -10,10 +10,12 @@ import {
 } from "../payment-links.services";
 import { usePaymentLinkStore } from "../paymentLink.store";
 import { ROUTES } from "@/src/core/navigation/routes";
+import { useToast } from "@/src/core/providers/ToastProvider";
 
 const usePaymentLinkVM = (paymentLinkId?: string) => {
     const { api } = useApi();
     const queryClient = useQueryClient();
+    const { showToast } = useToast?.() ?? { showToast: () => { } };
     const isEditMode = !!paymentLinkId;
     // console.log("usePaymentLinkVM isEditMode", isEditMode);
     // Fetch payment link for edit mode
@@ -36,8 +38,9 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
     } = useMutation<PaymentLinkResponse, Error, CreatePaymentLinkTypes>({
         mutationFn: (data) => createPaymentLink(api, data),
         onSuccess: async (response) => {
-            await queryClient.invalidateQueries({ queryKey: ["payment-links"] });
+            await queryClient.invalidateQueries({ queryKey: ["payment-links"], exact: false });
             usePaymentLinkStore.getState().clearFormData();
+            showToast({ message: 'Payment link created successfully',type: 'success' });
             router.replace({
                 pathname: "/payment-links/create-success",
                 params: { paymentLinkId: response.data.paymentLinkId }
@@ -53,11 +56,13 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
     } = useMutation<PaymentLinkResponse, Error, CreatePaymentLinkTypes>({
         mutationFn: (data) => updatePaymentLink(api, paymentLinkId!, data),
         onSuccess: async (response) => {
-            await queryClient.invalidateQueries({ queryKey: ["payment-links"] });
+            await queryClient.invalidateQueries({ queryKey: ["payment-links"], exact: false });
             usePaymentLinkStore.getState().clearFormData();
             if (response.data.paymentLinkId) {
+                showToast({ message: 'Payment link updated successfully',type: 'success' });
                 router.dismissTo(`/payment-links/${response.data.paymentLinkId}`);
             } else {
+                showToast({ message: 'Payment link updated successfully',type: 'success' });
                 router.replace(ROUTES.PAYMENT_LINKS.LIST);
             }
         },

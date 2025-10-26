@@ -1,7 +1,6 @@
-import { ModeToggle } from "@/src/modules/settings/components/ModeToggle";
 import { CheckBoxSquareEmptyIcon, CheckBoxSquareFilledIcon } from "@/src/shared/assets/svgs";
-import Button from "@/src/shared/components/Buttons/Button";
 import AnimatedErrorMsg from "@/src/shared/components/animated-messages/AnimatedErrorMsg";
+import Button from "@/src/shared/components/Buttons/Button";
 import FontText from "@/src/shared/components/FontText";
 import Input from "@/src/shared/components/inputs/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,19 +40,10 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
     const [hasExtraFees, setHasExtraFees] = useState(false);
     const { formData, setFormData } = usePaymentLinkStore();
 
-    // const methods = useForm<CreatePaymentLinkTypes>({
-    //     resolver: zodResolver(createPaymentLinkSchema),
-    //     defaultValues: {
-    //         ...formData,
-    //         paymentType: paymentType as "simple" | "professional",
-    //     },
-    //     mode: "onChange",
-    // });
-
     const methods = useForm<CreatePaymentLinkTypes>({
         resolver: zodResolver(createPaymentLinkSchema),
         defaultValues: {
-            paymentType: paymentType, // "simple" or "professional"
+            paymentType,
             customer: { name: "" },
             currency: "EGP",
             ...(paymentType === "simple" ? { totalAmount: "" } : { items: [] }),
@@ -62,10 +52,6 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
     });
 
     const { control, handleSubmit, formState: { errors, isValid }, setValue, trigger, reset, getValues } = methods;
-    // console.log("errors", errors);
-    // console.log("isValid", isValid);
-    // console.log("isEditMode", isEditMode);
-    // Field arrays managed here
     const { fields: items, append: appendItem, update: updateItem, remove: removeItem } = useFieldArray({
         control,
         name: "items",
@@ -76,20 +62,10 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
         name: "extraFees",
     });
 
-    // Save form data to store
-    // const watchedValues = useWatch({ control }); // all form values
-    // useEffect(() => {
-    //     setFormData(watchedValues);
-    // }, [watchedValues, setFormData]);
-
     useEffect(() => {
         if (isEditMode && paymentLink) {
             const mapped = mapApiToFormValues(paymentLink);
-            // reset the whole form to the mapped values
             reset(mapped);
-            // optionally persist to Zustand store if you want step 2 to read it
-            // setFormData(mapped);
-            // set hasExtraFees to show the extra fees section if needed
             setHasExtraFees(Boolean(mapped.extraFees && mapped.extraFees.length));
         }
     }, [isEditMode, paymentLink, reset]);
@@ -143,30 +119,24 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
     }, [hasExtraFees, setValue]);
 
     const onSubmitDirect = async (data: CreatePaymentLinkTypes) => {
-        // Zod already enforces correct payload
         const payload = { ...data };
-        // You may still want to drop optional empty arrays
         if (!payload.extraFees?.length) {
             delete payload.extraFees;
         }
-        console.log("Submitting:", payload);
         onSubmit(payload);
-        // Clearing and navigation are handled in the mutation onSuccess
-        // await onSubmit(data);
     };
 
     const handleGoToOptional = useCallback(async () => {
-        const fieldsToValidate = paymentType === "simple" 
+        const fieldsToValidate = paymentType === "simple"
             ? ["customer.name", "totalAmount"] as const
             : ["customer.name", "items"] as const;
-            
+
         const isFormValid = await trigger(fieldsToValidate);
-        
+
         if (isFormValid) {
             const currentValues = getValues();
             setFormData(currentValues);
-            
-            // Use replace instead of push to prevent double navigation
+
             router.push({
                 pathname: "/payment-links/create-step2",
                 ...(isEditMode ? { params: { paymentLinkId: paymentLink?.paymentLinkId } } : {}),
@@ -177,8 +147,6 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
     return (
         <FormProvider {...methods}>
             <KeyboardAwareScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-                <ModeToggle />
-
                 {/* Customer */}
                 <CreateOptionBox title={t("Customer")} icon={<UserIcon size={24} color="#556767" />}>
                     <Controller

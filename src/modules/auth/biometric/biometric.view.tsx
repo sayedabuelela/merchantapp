@@ -18,7 +18,7 @@ const BiometricScreen = () => {
 
     const onSubmit = async () => {
         await login();
-        router.replace('/(tabs)');
+        router.replace(ROUTES.TABS.BALANCE);
     }
 
 

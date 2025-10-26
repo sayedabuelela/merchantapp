@@ -2,7 +2,7 @@ import { KashierLogo } from "@/src/shared/assets/svgs";
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RegisterDataForm from "./components/RegisterDataForm";
 import { RegisterDataFormData } from "./register-data.model";
@@ -11,6 +11,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { ROUTES } from '@/src/core/navigation/routes';
 import { Mode } from "@/src/core/environment/environments";
 import { useEnvironmentStore } from "@/src/core/environment/environments.store";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 const RegisterDataScreen = () => {
     const { t } = useTranslation();
@@ -31,31 +32,26 @@ const RegisterDataScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={{ flex: 1 }}
-            // keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0} 
+            <KeyboardAwareScrollView
+                className="flex-1 px-6 pt-28"
+                contentContainerStyle={{ flexGrow: 1, }}
+                bottomOffset={100}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                contentContainerClassName="pb-12"
             >
-                <ScrollView
-                    className="flex-1 px-6 pb-16 pt-28"
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ flexGrow: 1 }}
-                >
-                    <KashierLogo
-                        style={{
-                            // marginBottom: 30,
-                            alignSelf: 'center'
-                        }}
-                    />
+                <KashierLogo
+                    style={{
+                        alignSelf: 'center'
+                    }}
+                />
 
-                    <RegisterDataForm
-                        onSubmit={onSubmit}
-                        loading={isLoading}
-                        error={error?.error || error?.message}
-                    />
-                </ScrollView>
-            </KeyboardAvoidingView>
+                <RegisterDataForm
+                    onSubmit={onSubmit}
+                    loading={isLoading}
+                    error={error?.error || error?.message}
+                />
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 }

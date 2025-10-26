@@ -1,4 +1,3 @@
-// AddFeeModal.tsx
 import { cn } from '@/src/core/utils/cn';
 import Button from '@/src/shared/components/Buttons/Button';
 import FontText from '@/src/shared/components/FontText';
@@ -22,11 +21,11 @@ interface Props {
 }
 
 const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [showModal, setShowModal] = useState(isVisible);
     const [isAnimating, setIsAnimating] = useState(false);
 
-    const { control, handleSubmit, reset, formState: { errors , isValid } } = useForm<FeeType>({
+    const { control, handleSubmit, reset, formState: { errors, isValid } } = useForm<FeeType>({
         resolver: zodResolver(feeSchema),
         defaultValues: {
             name: '',
@@ -55,7 +54,13 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
     };
 
     const onSubmit = (fee: FeeType) => {
-        onAddFee(fee);
+        // Transform undefined to 0 for API
+        const feeForApi = {
+            ...fee,
+            flatFee: fee.flatFee ?? 0,
+            rate: fee.rate ?? 0,
+        };
+        onAddFee(feeForApi);
         handleClose();
     };
 
@@ -142,8 +147,16 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                     render={({ field: { onChange, value } }) => (
                                                         <Input
                                                             placeholder={t('Flat fee')}
-                                                            value={value?.toString() ?? ''}
-                                                            onChangeText={(text) => onChange(text ? parseFloat(text.replace(/[^0-9.]/g, '')) : undefined)}
+                                                            value={value === 0 ? '' : (value?.toString() ?? '')}
+                                                            onChangeText={(text) => {
+                                                                const cleaned = text.replace(/[^0-9.]/g, '');
+                                                                if (cleaned === '' || cleaned === '.') {
+                                                                    onChange(0); // Set to 0 instead of undefined
+                                                                } else {
+                                                                    const parsed = parseFloat(cleaned);
+                                                                    onChange(isNaN(parsed) ? 0 : parsed);
+                                                                }
+                                                            }}
                                                             keyboardType="decimal-pad"
                                                             isHasCurrency
                                                             error={!!errors.flatFee}
@@ -151,7 +164,7 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                     )}
                                                 />
                                             </View>
-
+ 
                                             {/* Rate */}
                                             <View className="w-[47%]">
                                                 <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label, 'mb-2')}>
@@ -163,8 +176,16 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                     render={({ field: { onChange, value } }) => (
                                                         <Input
                                                             placeholder={t('Rate %')}
-                                                            value={value?.toString() ?? ''}
-                                                            onChangeText={(text) => onChange(text ? parseFloat(text.replace(/[^0-9.]/g, '')) : undefined)}
+                                                            value={value === 0 ? '' : (value?.toString() ?? '')}
+                                                            onChangeText={(text) => {
+                                                                const cleaned = text.replace(/[^0-9.]/g, '');
+                                                                if (cleaned === '' || cleaned === '.') {
+                                                                    onChange(0); // Set to 0 instead of undefined
+                                                                } else {
+                                                                    const parsed = parseFloat(cleaned);
+                                                                    onChange(isNaN(parsed) ? 0 : parsed);
+                                                                }
+                                                            }}
                                                             keyboardType="decimal-pad"
                                                             error={!!errors.rate}
                                                         />

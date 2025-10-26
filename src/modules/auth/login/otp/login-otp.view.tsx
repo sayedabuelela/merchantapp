@@ -5,18 +5,21 @@ import FontText from '@/src/shared/components/FontText';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import OtpInput from '../../components/OtpInput';
 import ResendTimer from '../../components/ResendTimer';
 import useOtp from './otp.viewmodel';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { ROUTES } from '@/src/core/navigation/routes';
+import { useBiometricViewModel } from '../../biometric/biometric.viewmodel';
 
-export default function VerifyOTPScreen() {
+export default function LoginVerifyOTPScreen() {
     const { t } = useTranslation();
+
     const { verifyOtp, generateOtp, isGenerating, isVerifying, verifyError, verifyReset } = useOtp();
     const router = useRouter();
-    const { email } = useLocalSearchParams<{ email: string }>();
+    const { email, password } = useLocalSearchParams<{ email: string, password: string }>();
 
     const [otpValue, setOtpValue] = useState('');
     const [isComplete, setIsComplete] = useState(false);
@@ -28,11 +31,12 @@ export default function VerifyOTPScreen() {
 
     const onSubmit = async () => {
         console.log('OTP Submitted:', otpValue);
-        await verifyOtp({ key: email, code: otpValue });
-        router.push({
-            pathname: `/(auth)/(register)/register-password`,
-            params: { email, code: otpValue },
-        })
+        await verifyOtp({ signupKey: email, code: otpValue }, {
+            // onSuccess: (data) => {
+            //     console.log('OTP Verified:', data);
+
+            // }
+        });
     };
 
     const handleOtpChange = useCallback((code: string) => {
@@ -43,7 +47,7 @@ export default function VerifyOTPScreen() {
         console.log('Resend OTP');
         setOtpValue('');
         verifyReset();
-        await generateOtp(email);
+        await generateOtp({ email, password });
     };
 
     return (
@@ -55,12 +59,10 @@ export default function VerifyOTPScreen() {
                     paddingHorizontal: 24,
                     paddingBottom: 24
                 }}
-                // keyboardShouldPersistTaps="handled"
+                keyboardShouldPersistTaps="handled"
                 bottomOffset={100}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
-                // keyboardShouldPersistTaps="always"
-                // disableScrollOnKeyboardShow
             >
                 <View className='items-center mb-6'>
                     <OtpIcon />

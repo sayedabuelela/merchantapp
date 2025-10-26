@@ -17,7 +17,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
     const { t } = useTranslation();
     const [displayedError, setDisplayedError] = useState<string | undefined>(undefined);
 
-    const { control, handleSubmit, formState: { errors, isValid }, setFocus } = useForm<RegisterDataFormData>({
+    const { control, handleSubmit, formState: { errors, isValid, }, setFocus } = useForm<RegisterDataFormData>({
         resolver: zodResolver(RegisterDataSchema),
         defaultValues: {
             mobileNumber: '',
@@ -25,7 +25,9 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
             firstName: '',
             lastName: '',
         },
+         mode: 'onChange',
     });
+    // console.log('isValid : ', validatingFields);
 
     useEffect(() => {
         if (error) {
@@ -163,6 +165,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                             label={t('Mobile Number')}
                             returnKeyType='done'
                             autoCorrect={false}
+                            keyboardType='number-pad'
                             error={!!errors.mobileNumber}
                             placeholder={t('Enter your mobile number')}
                             onSubmitEditing={() => {

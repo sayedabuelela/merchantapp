@@ -19,6 +19,7 @@ import ActionsModal from '../components/modals/ActionsModal';
 import StatusBox from '../components/StatusBox';
 import usePaymentLinkVM from '../viewmodels/usePaymentLinkVM';
 import { cn } from '@/src/core/utils/cn';
+import DeliveryStatusBox from '../components/DeliveryStatusBox';
 
 export default function PaymentLinkDetailsScreen() {
     const { paymentLinkId } = useLocalSearchParams<{ paymentLinkId?: string }>();
@@ -182,13 +183,13 @@ export default function PaymentLinkDetailsScreen() {
                                             icon={<EnvelopeIcon size={24} color="#556767" />}
                                             title={t("Email")}
                                             value={deliveryStatus?.email}
-                                            valueClassName={cn(deliveryStatus?.email === "delivered" ? "text-success" : "text-danger", 'capitalize')}
+                                            valueClassName={cn(deliveryStatus?.email === "delivered" ? "text-success" :deliveryStatus?.email === "failed" ? "text-danger" : "text-[#B77801]", 'capitalize')}
                                         />
                                         <SectionItem
                                             icon={<ChatBubbleOvalLeftIcon size={24} color="#556767" />}
                                             title={t("SMS")}
                                             value={deliveryStatus?.sms}
-                                            valueClassName={cn(deliveryStatus?.sms === "delivered" ? "text-success" : "text-danger", 'capitalize')}
+                                            valueClassName={cn(deliveryStatus?.sms === "delivered" ? "text-success" :deliveryStatus?.sms === "failed" ? "text-danger" : "text-[#B77801]", 'capitalize')}
                                         />
                                     </View>
                                 </DetailsSection>

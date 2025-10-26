@@ -34,16 +34,16 @@ const ResendTimer = ({ initialSeconds = 30, onResend }: ResendTimerProps) => {
             <FontText
                 className='text-center mr-1 text-content-secondary'>
                 {/* {t('OTP not received?')} */}
-                {isEnabled
+                {t(isEnabled
                     ? 'You can now resend the OTP'
-                    : `Resend OTP in ${secondsLeft}s`}
+                    : `Resend OTP in`)} {secondsLeft}
             </FontText>
             <TouchableOpacity onPress={handlePress} disabled={!isEnabled}>
                 <FontText
                     weight='bold'
                     className={`text-sm ${!isEnabled ? 'text-content-disabled' : 'text-secondary'}`}
                 >
-                    {t('Resend Code')}
+                    {t('Resend OTP')}
                 </FontText>
             </TouchableOpacity>
         </View>

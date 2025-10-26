@@ -110,8 +110,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                     entering={FadeIn}
                     exiting={FadeOut}>
                     <AlertIcon />
-                    <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap`}>
-                        {t(errors?.email?.message || 'This is required.')}
+                    <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap self-start`}>
+                        {t(errors?.email?.message || 'This field is required.')}
                     </FontText>
                 </Animated.View>
             }
@@ -144,8 +144,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                         entering={FadeIn}
                         exiting={FadeOut}>
                         <AlertIcon />
-                        <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap`}>
-                            {t(errors?.password?.message || 'This is required.')}
+                        <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5  flex-wrap self-start`}>
+                            {t(errors?.password?.message || 'This field is required.')}
                         </FontText>
                     </Animated.View>
                 }

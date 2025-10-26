@@ -27,6 +27,7 @@ const usePaymentLinksVM = (params?: FetchPaymentLinksParams) => {
             return page < totalPages ? page + 1 : undefined;
         },
         initialPageParam: 1,
+        // refetchOnFocus: true,
     });
 
     const allItems = paymentLinksQuery.data?.pages.flatMap((p) => p.data) ?? [];

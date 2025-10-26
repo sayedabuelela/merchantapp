@@ -33,3 +33,4 @@ export { default as LanguageSettingsIcon } from './files/language-settings.svg';
 export { default as BusinessProfileSettingsIcon } from './files/business-profile-settings.svg';
 export { default as WarningSettingsIcon } from './files/warning-settings.svg';
 export { default as UserPersonalInfo } from './files/user-personalinfo.svg';
+export { default as DisabledFingerprintSettingsIcon } from './files/DisabledFingerprintSettingsIcon.svg';

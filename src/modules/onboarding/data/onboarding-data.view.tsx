@@ -22,7 +22,7 @@ const OnboardingDataScreen = () => {
     const { t } = useTranslation();
     const accountType = useOnboardingStore(accountTypeSelector);
     const { onboardingData, submitRequestHandler, isSubmittingOnboadingRequest, submitOnboadingRequestError } = useOnboardingDataViewModel()
-    console.log('OnboardingDataScreen accountType : ', accountType);
+    // console.log('OnboardingDataScreen accountType : ', accountType);
     // console.log('OnboardingDataScreen onboardingData : ', onboardingData?.merchant.merchantInfo);
     const businessContactData = onboardingData?.merchant?.merchantInfo?.businessContactInfo;
     const businessDetailsData = onboardingData?.merchant?.merchantInfo?.publicData;
@@ -38,7 +38,7 @@ const OnboardingDataScreen = () => {
             submitRequestHandler(onboardingData?.merchant.merchantInfo);
         }
     }
-    console.log('accountType : ', accountType);
+    // console.log('accountType : ', accountType);
     return (
         <SafeAreaView className="flex-1 bg-white px-6">
             <Header title={t(`${accountType} ${accountType === 'individual' ? 'Seller' : 'Business'}`)} />

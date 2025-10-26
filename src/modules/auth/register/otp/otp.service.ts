@@ -15,7 +15,7 @@ export const getOtp = async (
 
 export const verifyCode = async (
     api: AxiosInstance,
-    payload: VerifyCodeRequest
+    payload: VerifyCodeRequest,
 ): Promise<VerifyCodeResponse> => {
     const request = await api.post(`/v2/identity/otp/verify?operation=signup`, payload);
     return request.data;

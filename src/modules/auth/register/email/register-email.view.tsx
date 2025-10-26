@@ -9,13 +9,13 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import {  View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useRegisterOtp from '../otp/otp.viewmodel';
 import { RegisterEmailFormData } from './register-email.model';
 import { RegisterEmailSchema } from './register-email.scheme';
-
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 const RegisterEmailScreen = () => {
     const { t } = useTranslation();
     const router = useRouter();
@@ -26,7 +26,7 @@ const RegisterEmailScreen = () => {
     const { control, handleSubmit, formState: { errors, isValid }, setFocus } = useForm<RegisterEmailFormData>({
         resolver: zodResolver(RegisterEmailSchema),
         defaultValues: {
-            email: '',
+            email: 'jafom33480@filipx.com',
         },
     });
 
@@ -53,13 +53,13 @@ const RegisterEmailScreen = () => {
 
 
     return (
-        <SafeAreaView className="flex-1 bg-white pt-36">
+        <SafeAreaView className="flex-1 bg-white pt-36 px-6">
 
-            <ScrollView
-                className="flex-1 px-6 pb-16"
+            <KeyboardAwareScrollView
+                className="pb-16"
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1 }}
+                contentContainerStyle={{ flexGrow: 1,flex:1 }}
             >
                 <KashierLogo
                     style={{
@@ -73,7 +73,7 @@ const RegisterEmailScreen = () => {
                 )}
 
                 <View className={`flex-1 justify-between ${!displayedError ? 'mt-20' : ''}`}>
-                    <View>
+                    <View className="">
                         <Controller
                             control={control}
                             name="email"
@@ -120,7 +120,7 @@ const RegisterEmailScreen = () => {
                     // onPress={() => { router.push(ROUTES.AUTH.REGISTER_OTP) }}
                     />
                 </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 }

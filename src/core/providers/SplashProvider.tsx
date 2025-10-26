@@ -46,7 +46,7 @@ const SplashProvider = ({ children }: { children: React.ReactNode }) => {
     if (!appIsReady) {
         return (
             <>
-                <StatusBar style="auto" />
+                <StatusBar style="light" backgroundColor='#001F5F'/>
                 <Image
                     source={staticImages.splashGif}
                     className="w-full h-full"

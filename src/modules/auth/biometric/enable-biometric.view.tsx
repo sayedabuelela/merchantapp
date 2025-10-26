@@ -19,12 +19,12 @@ const EnableBiometricScreen = () => {
     const onEnable = async () => {
         // isLoading = true;
         const success = await enableBiometric();
-        if (success) router.replace(ROUTES.TABS.ROOT);
+        if (success) router.replace(ROUTES.TABS.BALANCE);
     }
 
     const onSkip = () => {
         setInitialized(true);
-        router.replace(ROUTES.TABS.ROOT);
+        router.replace(ROUTES.TABS.BALANCE);
     }
     return (
         <SafeAreaView className="flex-1 bg-white">

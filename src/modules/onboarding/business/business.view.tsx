@@ -50,7 +50,7 @@ const BusinessDetailsScreen = () => {
         businessLogo: businessLogoDataUri
     };
     const handleSkip = () => {
-        router.replace(ROUTES.TABS.ROOT);
+        router.replace(ROUTES.TABS.BALANCE);
     }
     return (
         <SafeAreaView className="flex-1 bg-white px-6">

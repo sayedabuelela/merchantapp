@@ -72,7 +72,7 @@ export const useBiometricViewModel = (): BiometricViewModel => {
 
     const disableBiometric = async () => {
         try {
-            await clearCredentials();
+            // await clearCredentials();
             setEnabled(false);
             return true;
         } catch (error) {
@@ -90,13 +90,15 @@ export const useBiometricViewModel = (): BiometricViewModel => {
             }
 
             const credentials = await getCredentials();
+            console.log('credentials : ', credentials);
             if (!credentials) {
                 throw new Error('No stored credentials found');
             }
 
-            return authenticate(api, credentials);
+            return authenticate(api, { ...credentials, biometricEnabled: true });
         },
         onSuccess: (data) => {
+            console.log('biometricAuthenticate data : ', data);
             const { success, refreshToken, accessToken, ...user } = data.body;
             setAuth(user, accessToken.token);
             const { accessToken: { token } } = data.body;

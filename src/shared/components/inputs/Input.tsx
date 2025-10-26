@@ -16,7 +16,6 @@ interface InputProps extends Omit<TextInputProps, "ref"> {
     onChangeText: (text: string) => void;
     className?: string;
     inputClassName?: string;
-    onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
     error?: boolean;
     isPassword?: boolean;
     isHasCurrency?: boolean;
@@ -42,7 +41,7 @@ const Input = forwardRef<TextInput, InputProps>(
                     <TextInput
                         ref={ref}
                         value={value}
-                        className={cn(`flex-1 h-full overflow-hidden text-base leading-[1.35]  text-content-primary text-${isRTL ? 'right' : 'left'} self-start ${getFontClass('body', 'regular')} ${inputClassName || ''}`)}
+                        className={cn('flex-1 h-full overflow-hidden text-base text-content-primary', `text-${isRTL ? 'right' : 'left'}`, 'self-start', getFontClass('body', 'regular'),isRTL?'leading-[1.8] ':'leading-[1.35]', inputClassName || '')}
                         onChangeText={onChangeText}
                         placeholderTextColor="#B3BBBB"
                         autoCapitalize="none"

@@ -7,7 +7,7 @@ const statusStyles: Record<string, { backgroundColor: string; color: string }> =
     OVERDUE: { backgroundColor: '#FFEAED', color: '#A50017' },
     CANCELLED: { backgroundColor: '#F5F6F6', color: '#919C9C' },
     EXPIRED: { backgroundColor: '#F5F6F6', color: '#919C9C' },
-    UNPAID: { backgroundColor: '#FFF7E8', color: '#956200' },
+    UNPAID: { backgroundColor: '#FFF7E8', color: '#B77801' },
     INITIATED: { backgroundColor: '#FFF7E8', color: '#956200' },
     "AWAITING_APPROVAL": { backgroundColor: '#FFF7E8', color: '#956200' },
     REJECTED: { backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017' },
@@ -18,11 +18,11 @@ export default function StatusBox({ status }: { status?: PaymentStatus }) {
     const upperCaseStatus = status.toUpperCase();
     return (
         <View
-            className='px-1 py-0.5 rounded-sm self-start mt-0.5'
+            className='px-1 py-0.5 rounded-sm self-start'
             style={{ backgroundColor: statusStyles[upperCaseStatus].backgroundColor }}
         >
             <FontText type="body" weight="regular"
-                className={'text-xs text-center'}
+                className={'text-[10px] text-center'}
                 style={{ color: statusStyles[upperCaseStatus].color, }}
             >
                 {upperCaseStatus?.replace(/_/g, ' ')}

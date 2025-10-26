@@ -187,25 +187,7 @@ const ShareOptions = ({ countries, paymentLinkId }: Props) => {
                                 />
                             </View>
                         </View>
-                        <View className="flex-row items-end gap-x-2">
-                            <View className="w-[70%]">
-                                <Input
-                                    label={t("Send Email")}
-                                    placeholder={t("Please enter email")}
-                                    value={email}
-                                    onChangeText={setEmail}
-                                    error={!isEmailValid}
-                                />
-                            </View>
-                            <Button
-                                className="h-[42px] flex-1"
-                                title={t("Send")}
-                                onPress={handleSendEmail}
-                                isLoading={isShareLoading}
-                                variant="outline"
-                            />
-                        </View>
-                        <View className="flex-row items-end gap-x-2">
+                         <View className="flex-row items-end gap-x-2">
                             <View className="w-[70%]">
                                 <CountryPhoneInput
                                     label={t("Send SMS")}
@@ -224,6 +206,25 @@ const ShareOptions = ({ countries, paymentLinkId }: Props) => {
                                 variant="outline"
                             />
                         </View>
+                        <View className="flex-row items-end gap-x-2">
+                            <View className="w-[70%]">
+                                <Input
+                                    label={t("Send Email")}
+                                    placeholder={t("Please enter email")}
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    error={!isEmailValid}
+                                />
+                            </View>
+                            <Button
+                                className="h-[42px] flex-1"
+                                title={t("Send")}
+                                onPress={handleSendEmail}
+                                isLoading={isShareLoading}
+                                variant="outline"
+                            />
+                        </View>
+                       
                     </View>
                 </>
             )}

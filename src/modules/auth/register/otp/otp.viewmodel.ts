@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { getOtp, verifyCode } from "./otp.service";
 import { GenerateOtpError, GenerateOtpResponse, VerifyCodeError, VerifyCodeRequest, VerifyCodeResponse } from "./otp.model";
 
-const useRegisterOtp = () => {
+const useOtp = () => {
     const { api } = useApi();
 
     const { mutateAsync: generateOtp, isPending: isGenerating, error } = useMutation<GenerateOtpResponse, GenerateOtpError, string>({
@@ -11,7 +11,7 @@ const useRegisterOtp = () => {
     });
 
     const { mutateAsync: verifyOtp, isPending: isVerifying, error: verifyError, reset: verifyReset } = useMutation<VerifyCodeResponse, VerifyCodeError, VerifyCodeRequest>({
-        mutationFn: ({ key, code }: { key: string, code: string }) => verifyCode(api, { key, code }),
+        mutationFn: ({ key, code }) => verifyCode(api, { key, code }),
     });
 
     return {
@@ -25,4 +25,4 @@ const useRegisterOtp = () => {
     }
 }
 
-export default useRegisterOtp;
+export default useOtp;

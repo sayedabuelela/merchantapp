@@ -31,7 +31,7 @@ const ContactDetailsScreen = () => {
     }
 
     const handleSkip = () => {
-        router.replace(ROUTES.TABS.ROOT);
+        router.replace(ROUTES.TABS.BALANCE);
     }
 
     return (

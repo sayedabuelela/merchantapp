@@ -11,7 +11,7 @@ export const storeCredentials = async (credentials: LoginFormData): Promise<void
     );
 }
 
-export const getCredentials = async (): Promise<LoginFormData | null> => {
+export const getCredentials = async (): Promise<LoginFormData & { biometricEnabled?: boolean } | null> => {
     const storedCredentials = await SecureStore.getItemAsync(CREDENTIALS_KEY);
     return storedCredentials ? JSON.parse(storedCredentials) : null;
 }

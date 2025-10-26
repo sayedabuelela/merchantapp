@@ -20,7 +20,7 @@
       "package": "com.kashier.merchantapp",
       "googleServicesFile": "./google-services.json",
       "edgeToEdgeEnabled": true,
-      "softwareKeyboardLayoutMode": "pan",
+       "softwareKeyboardLayoutMode": "resize",
       "permissions": [
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.VIBRATE",

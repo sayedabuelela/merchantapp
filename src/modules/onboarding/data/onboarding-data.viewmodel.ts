@@ -109,7 +109,7 @@ const useOnboardingDataViewModel = () => {
     useEffect(() => {
         if (onboardingData) {
             const newAccountType: AccountType | undefined = onboardingData?.merchant?.merchantInfo?.publicData?.merchantAccoutType || onboardingData?.merchant?.merchantInfo?.merchantAccountType;
-            console.log('newAccountType : ', newAccountType);
+            // console.log('newAccountType : ', newAccountType);
             // console.log('accountType : ', onboardingData?.merchant?.merchantInfo?.publicData);
             if (newAccountType && newAccountType !== accountType) {
                 setAccountType(newAccountType);

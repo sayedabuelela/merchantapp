@@ -15,7 +15,7 @@ interface DateSelectorProps {
 
 const DateSelector = memo(
     ({ label, date, onPress, t }: DateSelectorProps) => (
-        <View className="mb-6">
+        <View>
             <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label)}>
                 {label}
             </FontText>

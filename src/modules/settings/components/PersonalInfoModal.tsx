@@ -57,7 +57,7 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
         // Trigger mutation
         switchMerchant(merchantId);
     };
-
+    // console.log("user : ", user?.belongsToMerchants);
     return (
         <Modal
             transparent
@@ -83,63 +83,62 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                             <Pressable style={{ flex: 1 }} onPress={handleClose} />
                         </MotiView>
 
-                        <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>
-                            <MotiView
-                                from={{ translateY: 550 }}
-                                animate={{ translateY: 0 }}
-                                exit={{ translateY: 550 }}
-                                transition={{
-                                    type: 'timing',
-                                    duration: 500,
-                                }}
-                                className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md shadow-md h-[88%]"
-                            >
-                                <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-6" />
+                        <MotiView
+                            from={{ translateY: 550 }}
+                            animate={{ translateY: 0 }}
+                            exit={{ translateY: 550 }}
+                            transition={{
+                                type: 'timing',
+                                duration: 500,
+                            }}
+                            className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md shadow-md h-[88%]"
+                        >
+                            <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-6" />
 
-                                <View className="flex-row justify-end items-center mb-6">
-                                    {/* <FontText type="head" weight="bold" className="text-content-primary text-xl">
+                            <View className="flex-row justify-end items-center mb-6">
+                                {/* <FontText type="head" weight="bold" className="text-content-primary text-xl">
                                         {t('Are you sure you want to log out?')}
                                     </FontText> */}
-                                    <TouchableOpacity
-                                        onPress={handleClose}
-                                        className="items-center justify-center bg-feedback-error-bg w-7 h-7 rounded-full"
+                                <TouchableOpacity
+                                    onPress={handleClose}
+                                    className="items-center justify-center bg-feedback-error-bg w-7 h-7 rounded-full"
+                                >
+                                    <XMarkIcon size={18} color="#A50017" />
+                                </TouchableOpacity>
+                            </View>
+                            <View>
+                                {user?.belongsTo !== undefined && (
+                                    <Pressable onPress={handleExpandBottomSheet} className="items-center gap-y-4 mb-8"
+                                        disabled={user?.belongsTo.length === 1}
                                     >
-                                        <XMarkIcon size={18} color="#A50017" />
-                                    </TouchableOpacity>
-                                </View>
+                                        <UserPersonalInfo />
+                                        <View className="flex-row items-center">
+                                            <BuildingStorefrontIcon size={24} color="#556767" />
+                                            <FontText type="head" weight="bold" className="text-content-secondary text-xl mx-1">
+                                                {user?.belongsToMerchants && user?.merchantId && user?.belongsToMerchants[user?.merchantId]?.storeName}
+                                            </FontText>
+                                            {user?.belongsTo.length > 1 && (
+                                                <ChevronDownIcon size={19} color="#556767" />
+                                            )}
+                                        </View>
+                                    </Pressable>
+                                )}
+
                                 <View>
-                                    {user?.belongsTo !== undefined && (
-                                        <Pressable onPress={handleExpandBottomSheet} className="items-center gap-y-4 mb-8"
-                                            disabled={user?.belongsTo.length === 1}
-                                        >
-                                            <UserPersonalInfo />
-                                            <View className="flex-row items-center">
-                                                <BuildingStorefrontIcon size={24} color="#556767" />
-                                                <FontText type="head" weight="bold" className="text-content-secondary text-xl mx-1">
-                                                    {user?.belongsToMerchants[user?.merchantId].storeName}
-                                                </FontText>
-                                                {user?.belongsTo.length > 1 && (
-                                                    <ChevronDownIcon size={19} color="#556767" />
-                                                )}
-                                            </View>
-                                        </Pressable>
+                                    {user?.fullName && user?.fullName.length > 0 && (
+                                        <PersonalInfoItem label={t('Full name')} value={user?.fullName} />
                                     )}
-
-                                    <View>
-                                        {user?.fullName && (
-                                            <PersonalInfoItem label={t('Full name')} value={user?.fullName} />
-                                        )}
-                                        {user?.email && (
-                                            <PersonalInfoItem label={t('Email address')} value={user?.email} />
-                                        )}
-                                        {user?.mobileNumber && (
-                                            <PersonalInfoItem label={t('Phone number')} value={`${user?.countryCode}${user?.mobileNumber}`} className='border-0' />
-                                        )}
-                                    </View>
-
+                                    {user?.email && (
+                                        <PersonalInfoItem label={t('Email address')} value={user?.email} />
+                                    )}
+                                    {user?.mobileNumber && (
+                                        <PersonalInfoItem label={t('Phone number')} value={`${user?.countryCode}${user?.mobileNumber}`} className='border-0' />
+                                    )}
                                 </View>
-                                {/* Action Buttons */}
-                                {/* <View className="mt-8">
+
+                            </View>
+                            {/* Action Buttons */}
+                            {/* <View className="mt-8">
                                     <Button
                                         className='bg-danger'
                                         // disabled={isDisabled}
@@ -154,8 +153,7 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                                         titleClasses="text-primary"
                                     />
                                 </View> */}
-                            </MotiView>
-                        </TouchableWithoutFeedback>
+                        </MotiView>
 
                     </View>
                 )}
@@ -170,15 +168,4 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
         </Modal>
     );
 };
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'grey',
-    },
-    contentContainer: {
-        flex: 1,
-        padding: 36,
-        alignItems: 'center',
-    },
-});
 export default PersonalInfoModal;

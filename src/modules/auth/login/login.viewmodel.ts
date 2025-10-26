@@ -11,15 +11,19 @@ import { Mode } from "@/src/core/environment/environments";
 import { useQueryClient } from "@tanstack/react-query";
 import { getMerchant } from "../login/login.service";
 import { fetchAndSyncMerchant } from "../hooks/useMerchant";
+import { useRouter } from "expo-router";
+import { ROUTES } from "@/src/core/navigation/routes";
+import { useToast } from "@/src/core/providers/ToastProvider";
+import { useTranslation } from "react-i18next";
 
 export const useLoginViewModel = () => {
     const { api } = useApi();
     const setAuth = useAuthStore((state) => state.setAuth);
-    const isEnabled = useBiometricStore((state) => state.isEnabled);
     const setMode = useEnvironmentStore(selectSetMode);
     const queryClient = useQueryClient();
-
-
+    const router = useRouter();
+    const { showToast } = useToast?.() ?? { showToast: () => { } };
+    const { t } = useTranslation();
     const {
         mutateAsync,
         isPending: isLoading,
@@ -29,12 +33,21 @@ export const useLoginViewModel = () => {
         mutationFn: (credentials) => authenticate(api, credentials),
         onSuccess: async (data, credentials) => {
             // console.log("credentials : ", credentials);
-            // console.log("authenticate data : ", data.body);
+            // data maybe has body or twoFactorAuth
+            console.log("authenticate data : ", data.twoFactorAuth);
+            if (data.twoFactorAuth) {
+                await storeCredentials(credentials);
+                showToast?.({ message: t('Two factor authentication required'), type: 'info' });
+                router.push({
+                    pathname: `/(auth)/(login)/login-twofactor-auth`,
+                    params: credentials,
+                })
+                return;
+            }
             const { accessToken: { token } } = data.body;
             const { success, refreshToken, accessToken, ...user } = data.body;
             setMode(data.body.isLive ? Mode.LIVE : Mode.TEST)
             setAuth({ ...user, email: user.signupKey }, token);
-            await storeCredentials(credentials);
             await queryClient.fetchQuery({
                 queryKey: ['merchantData', user.merchantId],
                 queryFn: () => fetchAndSyncMerchant(api, useAuthStore.getState().updateUser),

@@ -410,12 +410,14 @@ const styles = StyleSheet.create({
     },
     hiddenInput: {
         position: 'absolute',
-        top: -1000,
-        left: 0,
         width: 1,
         height: 1,
         opacity: 0,
-
+        // Remove: top: -1000
+        // Add these instead:
+        top: 0,
+        left: 0,
+        zIndex: -1,
     },
     separatorContainer: {
         height: DIGIT_BOX_SIZE,

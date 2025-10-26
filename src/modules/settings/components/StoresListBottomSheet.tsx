@@ -1,13 +1,11 @@
-import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef } from 'react'
-import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
-import { FlatList, ScrollView, View } from 'react-native';
-import FontText from '@/src/shared/components/FontText';
-import Button from '@/src/shared/components/Buttons/Button';
-import { useTranslation } from 'react-i18next';
 import BottomSheetHeader from '@/src/shared/components/bottom-sheets/BottomSheetHeader';
-import { MotiView } from 'moti';
-import StoresList, { StoreItemProps } from './StoresList';
+import Button from '@/src/shared/components/Buttons/Button';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BelongsTo } from '../../auth/auth.model';
+import { selectUser, useAuthStore } from '../../auth/auth.store';
+import StoresList from './StoresList';
 
 interface Props {
     onClose: () => void;
@@ -21,9 +19,10 @@ export interface StoresListBottomSheetRef {
 }
 
 const StoresListBottomSheet = forwardRef<StoresListBottomSheetRef, Props>(
-    ({ onClose, stores,onSelectStore }, ref) => {
+    ({ onClose, stores, onSelectStore }, ref) => {
         const { t } = useTranslation();
-
+        const currentMerchantId = useAuthStore((state) => state.user?.merchantId);
+        const [activeStore, setActiveStore] = useState<string | undefined>(currentMerchantId);
         const snapPoints = ['45%'];
 
         const storesBottomSheetRef = useRef<BottomSheet | null>(null);
@@ -39,6 +38,7 @@ const StoresListBottomSheet = forwardRef<StoresListBottomSheetRef, Props>(
 
         const handleCloseBottomSheet = useCallback(() => {
             storesBottomSheetRef.current?.close();
+            setActiveStore(currentMerchantId);
         }, []);
 
         // const countryData = useMemo(() => countries ?? [], [countries]);
@@ -47,8 +47,10 @@ const StoresListBottomSheet = forwardRef<StoresListBottomSheetRef, Props>(
                 {...props}
                 disappearsOnIndex={-1}
                 appearsOnIndex={0}
+                pressBehavior="none"
             />
         );
+
         return (
             <BottomSheet
                 ref={storesBottomSheetRef}
@@ -67,11 +69,19 @@ const StoresListBottomSheet = forwardRef<StoresListBottomSheetRef, Props>(
                         title={t('Select store')}
                         onClose={handleCloseBottomSheet}
                     />
-                    <StoresList stores={stores} onSelectStore={onSelectStore} />
+                    <StoresList
+                        stores={stores}
+                        // onSelectStore={onSelectStore}
+                        activeStore={activeStore}
+                        setActiveStore={setActiveStore}
+                    />
                     <Button
-                        title={t('Close')}
-                        onPress={handleCloseBottomSheet}
+                        title={t('Select')}
+                        onPress={() => {
+                            onSelectStore(activeStore!);
+                        }}
                         className="mt-6"
+                        disabled={activeStore === currentMerchantId}
                     />
                 </BottomSheetView>
             </BottomSheet>

@@ -3,16 +3,17 @@ import { getDeviceInfo, getPushToken } from "@/src/modules/notifications/notific
 import { AxiosInstance } from "axios";
 import { AuthResponse, User } from "../auth.model";
 
-export const authenticate = async (api: AxiosInstance, credentials: LoginFormData): Promise<AuthResponse> => {
+export const authenticate = async (api: AxiosInstance, credentials: LoginFormData & { biometricEnabled?: boolean }): Promise<AuthResponse> => {
     // console.log("authenticate");
     const fcmToken = await getPushToken() as string;
     const { deviceId, huawei } = await getDeviceInfo();
+    console.log('authenticate credentials : ', credentials);
     const loginRequest: LoginRequest = {
         ...credentials,
         fcmData: {
             deviceId,
             fcmToken,
-            huawei
+            huawei,
         }
     };
 
