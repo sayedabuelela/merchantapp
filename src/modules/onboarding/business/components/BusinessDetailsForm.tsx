@@ -120,7 +120,7 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                         </TouchableOpacity>
                     )}
                 />
-                <FontText type="body" weight="semi" className="text-content-primary text-base mt-4">
+                <FontText type="body" weight="semi" className="text-content-primary text-base mt-4 self-start">
                     {t('Business Logo')}
                 </FontText>
             </View>
@@ -540,7 +540,7 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             onChangeText={handleInputChange(onChange)}
                             onBlur={onBlur}
                             label={t('اللغة العربية')}
-                            labelClassName="text-right self-end font-body-semi-rtl"
+                            labelClassName="text-right self-end font-body-semi-rtl self-start"
                             returnKeyType='done'
                             autoCorrect={false}
                             multiline

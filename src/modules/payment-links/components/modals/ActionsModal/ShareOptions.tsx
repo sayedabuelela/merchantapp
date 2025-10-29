@@ -196,6 +196,7 @@ const ShareOptions = ({ countries, paymentLinkId }: Props) => {
                                     onCodePress={handleShowCountryCode}
                                     selectedCountryCode={selectedCountry}
                                     error={!isPhoneValid}
+                                    disabled={true}
                                 />
                             </View>
                             <Button

@@ -30,7 +30,8 @@ interface BusinessContactFormProps {
 const BusinessContactForm = ({ onSubmit, loading, error, existingData, cities, selectedCity, handleCityChange }: BusinessContactFormProps) => {
     const { t } = useTranslation();
     const [displayedError, setDisplayedError] = useState<string | undefined>(undefined);
-
+    // console.log('cities',cities);
+    
     const { control, handleSubmit, formState: { errors, isValid, isDirty, dirtyFields }, setFocus, reset, setValue, trigger, watch } = useForm<BusinessContactFormData>({
         resolver: zodResolver(businessContactScheme),
         defaultValues: {

@@ -6,9 +6,15 @@ import useDocuments from "../../../documents/hooks/useDocuments";
 import AccordionItem from "../AccordionItem";
 import DataDocumentRow from "../DataDocumentRow";
 
+interface DocumentsSectionProps {
+    documents: Document[];
+    showEditButton?: boolean;
+}
+
 const DocumentsSection = ({
     documents,
-}: { documents: Document[] }) => {
+    showEditButton = true,
+}: DocumentsSectionProps) => {
     const { t } = useTranslation();
     const { isLoadingDocuments, allDocumentsData } = useDocuments({ documents });
     // console.log('allDocumentsData : ', allDocumentsData?.result[1].documentType);
@@ -23,6 +29,7 @@ const DocumentsSection = ({
         <AccordionItem
             title={t('Documents')}
             editRoute={ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE}
+            showEditButton={showEditButton}
         >
             {isLoadingDocuments ? (
                 <ActivityIndicator />

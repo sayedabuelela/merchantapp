@@ -5,14 +5,21 @@ import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import AccordionItem from "../AccordionItem";
 
+interface CurrencySettingsSectionProps {
+  currencies: Currency[];
+  showEditButton?: boolean;
+}
+
 const CurrencySettingsSection = ({
-  currencies
-}: { currencies: Currency[] }) => {
+  currencies,
+  showEditButton = true,
+}: CurrencySettingsSectionProps) => {
   const { t } = useTranslation();
   return (
     <AccordionItem
       title={t('Currency Settings')}
       editRoute={ROUTES.ONBOARDING.CURRENCY_SETTINGS}
+      showEditButton={showEditButton}
     >
       <View className="flex-row items-center justify-between mb-4 ">
         <FontText type="body" weight="regular" className={` text-[#6F7E7E] text-sm mr-3 self-start`}>{t('Account Currency')}</FontText>

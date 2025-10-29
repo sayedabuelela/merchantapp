@@ -8,7 +8,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, View } from 'react-native';
-import { AdjustmentsHorizontalIcon, BanknotesIcon, CalendarIcon, ChatBubbleOvalLeftEllipsisIcon, ChatBubbleOvalLeftIcon, ClockIcon, DocumentTextIcon, EnvelopeIcon, HashtagIcon, PhoneIcon, PowerIcon, RectangleGroupIcon, ShareIcon, TagIcon, UserIcon } from 'react-native-heroicons/outline';
+import { AdjustmentsHorizontalIcon, BanknotesIcon, CalendarIcon, ChatBubbleOvalLeftEllipsisIcon, ChatBubbleOvalLeftIcon, ClockIcon, DocumentTextIcon, EnvelopeIcon, HashtagIcon, PhoneIcon, PowerIcon, QrCodeIcon, RectangleGroupIcon, ShareIcon, TagIcon, UserIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DetailsSection from '../components/details-screen/DetailsSection';
 import ExtraFeesList from '../components/details-screen/ExtraFeesList';
@@ -68,7 +68,7 @@ export default function PaymentLinkDetailsScreen() {
                                     value={paymentLink?.customerName}
                                 />
                                 <SectionItem
-                                    icon={<Text className="font-semibold  text-content-primary text-lg">iD</Text>}
+                                    icon={<HashtagIcon size={24} color="#556767" />}
                                     title={t("Payment Link ID")}
                                     value={paymentLinkId}
                                 />
@@ -100,7 +100,7 @@ export default function PaymentLinkDetailsScreen() {
                                     title={t("Custom options")}
                                 >
                                     <SectionItem
-                                        icon={<HashtagIcon size={24} color="#556767" />}
+                                        icon={<QrCodeIcon size={24} color="#556767" />}
                                         title={t("Serial number")}
                                         value={paymentLink?.referenceId}
                                     />
@@ -173,7 +173,7 @@ export default function PaymentLinkDetailsScreen() {
                                     />
                                 </View>
                             </DetailsSection>
-                            {paymentLink?.lastShareStatus && (
+                            {(paymentLink?.lastShareStatus.email.status || paymentLink?.lastShareStatus.sms.status) && (
                                 <DetailsSection
                                     icon={<ShareIcon size={24} color="#556767" />}
                                     title={t("Delivery status")}

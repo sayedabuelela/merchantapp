@@ -116,6 +116,15 @@ const useOnboardingDataViewModel = () => {
             }
         }
     }, [onboardingData, accountType, setAccountType]);
+
+    // Edit permission logic based on approval status and isLive
+    const canEdit = onboardingData?.isApprovedBusinessInfo === 'pending' ||
+                    onboardingData?.isApprovedBusinessInfo === 'rejected';
+    const canSubmit = canEdit;
+    const isUnderReview = onboardingData?.isApprovedBusinessInfo === 'submitted';
+    const isApproved = onboardingData?.isApprovedBusinessInfo === 'approved' && onboardingData?.isLive;
+    const showActivationNote = !isApproved; // Hide when approved
+
     return {
         // Data access
         onboardingData,
@@ -133,7 +142,14 @@ const useOnboardingDataViewModel = () => {
         submitRequestHandler,
 
         // Expose the query key for components that need to interact with the cache
-        onboardingDataQueryKey
+        onboardingDataQueryKey,
+
+        // Edit permissions and status helpers
+        canEdit,
+        canSubmit,
+        isUnderReview,
+        isApproved,
+        showActivationNote,
     };
 };
 

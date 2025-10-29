@@ -28,15 +28,13 @@ const ListEmptySearchComponent = ({ inputSearch, onClear }: { inputSearch: strin
     />
 )
 
-const ListEmptyFiltersComponent = ({ onClear }: { onClear: () => void }) => (
+const ListEmptyFiltersComponent = ({ onClear, hasPaymentStatus }: { onClear: () => void, hasPaymentStatus?: boolean }) => (
     <EmptyDataList
         icon={<PaymentLinkFiltersListEmpty />}
         title={t("No payment links match this filter.")}
-        description={t(
-            "You might want to adjust your filter to find the customers you're looking for."
-        )}
+        description={t("You might want to adjust your filter to find the Payment Links you're looking for.")}
         buttonLabel={t("Clear filters")}
-        onButtonPress={onClear}
+        onButtonPress={!hasPaymentStatus ? onClear : undefined}
         buttonVariant="outline"
         buttonIconType="xicon"
     />
@@ -44,16 +42,19 @@ const ListEmptyFiltersComponent = ({ onClear }: { onClear: () => void }) => (
 interface Props {
     search: string;
     hasFilters: boolean;
+    hasPaymentStatus: boolean;
     handleClearSearch: () => void;
     handleClearFilters: () => void;
     handleToggleCreateNew: () => void;
 }
 
-const PaymentLinksListEmpty = ({ search, hasFilters, handleClearSearch, handleClearFilters, handleToggleCreateNew }: Props) => {
+const PaymentLinksListEmpty = ({ search, hasFilters, hasPaymentStatus, handleClearSearch, handleClearFilters, handleToggleCreateNew }: Props) => {
     if (search) {
         return <ListEmptySearchComponent inputSearch={search} onClear={handleClearSearch} />
     } else if (hasFilters) {
         return <ListEmptyFiltersComponent onClear={handleClearFilters} />
+    } else if (hasPaymentStatus) {
+        return <ListEmptyFiltersComponent onClear={handleClearFilters} hasPaymentStatus={hasPaymentStatus} />
     } else {
         return <ListDataEmptyComponent handleShowCreatePLModal={handleToggleCreateNew} />
     }

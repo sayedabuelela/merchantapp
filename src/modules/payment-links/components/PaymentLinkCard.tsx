@@ -22,7 +22,7 @@ const PaymentLinkCard = ({
     const { t } = useTranslation();
     const { customerName, paymentLinkId, dueDate, paymentType, state, paymentStatus, needApproval, isChecker, createdByUserId, totalAmount, currency, invoiceReferenceId, invoiceItems, lastShareStatus } = paymentLink;
     const onOpen = useCallback(() => onOpenActions(paymentLink), [onOpenActions, paymentLink]);
-    console.log("lastShareStatus : ", lastShareStatus);
+    // console.log("lastShareStatus : ", lastShareStatus);
     return (
         <Link href={`/payment-links/${paymentLinkId}`} asChild>
             <Pressable className='border-[1.5px] rounded border-tertiary p-4 mb-2  gap-y-2' 
@@ -56,7 +56,7 @@ const PaymentLinkCard = ({
                                 {t("Due")} {t(formatRelativeDate(dueDate))}
                             </FontText>
                         )}
-                        {/* {(lastShareStatus?.email.status || lastShareStatus?.sms.status) && (
+                        {(lastShareStatus?.email.status || lastShareStatus?.sms.status) && (
                             <View className='flex-row items-center gap-x-2 mt-2'>
                                 {lastShareStatus?.email.status && (
                                     <DeliveryStatusBox delivery_status={lastShareStatus.email.status} />
@@ -65,8 +65,8 @@ const PaymentLinkCard = ({
                                     <DeliveryStatusBox delivery_status={lastShareStatus.sms.status} />
                                 )}
                             </View>
-                        )} */}
-                        {/* <View className='flex-row items-center gap-x-2 mt-2'>
+                        )}
+                        <View className='flex-row items-center gap-x-2 mt-2'>
                             {(invoiceReferenceId !== undefined || paymentType === "professional") && (
                                 <View className='flex-row items-center gap-x-3 mt-1'>
                                     {paymentType === "professional" && invoiceItems.length > 0 && (
@@ -88,7 +88,7 @@ const PaymentLinkCard = ({
                                     )}
                                 </View>
                             )}
-                        </View> */}
+                        </View>
                     </View>
                 </View>
 

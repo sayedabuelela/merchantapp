@@ -34,6 +34,11 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
         },
     });
 
+    const [flatFeeText, setFlatFeeText] = useState<string>('');
+    const [rateText, setRateText] = useState<string>('');
+    const [flatFeeTouched, setFlatFeeTouched] = useState<boolean>(false);
+    const [rateTouched, setRateTouched] = useState<boolean>(false);
+
     useEffect(() => {
         if (isVisible) {
             setShowModal(true);
@@ -41,14 +46,32 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
 
             if (editingFee) {
                 reset(editingFee);
+                setFlatFeeText(
+                    editingFee.flatFee !== undefined && editingFee.flatFee !== null
+                        ? (Number(editingFee.flatFee) === 0 ? '' : String(editingFee.flatFee))
+                        : ''
+                );
+                setRateText(
+                    editingFee.rate !== undefined && editingFee.rate !== null
+                        ? (Number(editingFee.rate) === 0 ? '' : String(editingFee.rate))
+                        : ''
+                );
             } else {
                 reset({ name: '', flatFee: undefined, rate: undefined });
+                setFlatFeeText('');
+                setRateText('');
             }
+            setFlatFeeTouched(false);
+            setRateTouched(false);
         }
     }, [isVisible, editingFee, reset]);
 
     const handleClose = () => {
         reset({ name: '', flatFee: undefined, rate: undefined });
+        setFlatFeeText('');
+        setRateText('');
+        setFlatFeeTouched(false);
+        setRateTouched(false);
         onClose();
         setIsAnimating(false);
     };
@@ -147,14 +170,41 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                     render={({ field: { onChange, value } }) => (
                                                         <Input
                                                             placeholder={t('Flat fee')}
-                                                            value={value === 0 ? '' : (value?.toString() ?? '')}
+                                                            value={flatFeeTouched ? flatFeeText : (flatFeeText !== '' ? flatFeeText : (value !== undefined && value !== 0 ? value.toString() : ''))}
+                                                            onFocus={() => {
+                                                                setFlatFeeTouched(true);
+                                                                if (typeof value === 'number' && value === 0) {
+                                                                    setFlatFeeText('');
+                                                                } else if (flatFeeText === '' && value !== undefined && value !== 0) {
+                                                                    setFlatFeeText(String(value));
+                                                                }
+                                                            }}
                                                             onChangeText={(text) => {
-                                                                const cleaned = text.replace(/[^0-9.]/g, '');
+                                                                // normalize locale-specific separators
+                                                                let normalized = text
+                                                                    .replace(/[\u066C]/g, '') // Arabic thousands separator
+                                                                    .replace(/[\u066B,\u060C]/g, '.'); // Arabic decimal, comma
+                                                                let cleaned = normalized.replace(/[^0-9.]/g, '');
+                                                                cleaned = cleaned.replace(/(\..*)\./g, '$1'); // single dot
+
+                                                                // allow intermediate '.' states by keeping text only
+                                                                setFlatFeeText(cleaned);
+
                                                                 if (cleaned === '' || cleaned === '.') {
-                                                                    onChange(0); // Set to 0 instead of undefined
-                                                                } else {
+                                                                    onChange(undefined);
+                                                                    return;
+                                                                }
+                                                                // only commit to form when it's a valid number like 1 or 1.2 (not ending with dot)
+                                                                if (/^\d+(?:\.\d+)?$/.test(cleaned)) {
                                                                     const parsed = parseFloat(cleaned);
-                                                                    onChange(isNaN(parsed) ? 0 : parsed);
+                                                                    if (!isNaN(parsed)) onChange(parsed);
+                                                                }
+                                                            }}
+                                                            onBlur={() => {
+                                                                // finalize trailing dot like '1.' -> '1'
+                                                                if (flatFeeText && /\.$/.test(flatFeeText)) {
+                                                                    const trimmed = flatFeeText.replace(/\.$/, '');
+                                                                    setFlatFeeText(trimmed);
                                                                 }
                                                             }}
                                                             keyboardType="decimal-pad"
@@ -164,7 +214,7 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                     )}
                                                 />
                                             </View>
- 
+
                                             {/* Rate */}
                                             <View className="w-[47%]">
                                                 <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label, 'mb-2')}>
@@ -176,14 +226,37 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                     render={({ field: { onChange, value } }) => (
                                                         <Input
                                                             placeholder={t('Rate %')}
-                                                            value={value === 0 ? '' : (value?.toString() ?? '')}
+                                                            value={rateTouched ? rateText : (rateText !== '' ? rateText : (value !== undefined && value !== 0 ? value.toString() : ''))}
+                                                            onFocus={() => {
+                                                                setRateTouched(true);
+                                                                if (typeof value === 'number' && value === 0) {
+                                                                    setRateText('');
+                                                                } else if (rateText === '' && value !== undefined && value !== 0) {
+                                                                    setRateText(String(value));
+                                                                }
+                                                            }}
                                                             onChangeText={(text) => {
-                                                                const cleaned = text.replace(/[^0-9.]/g, '');
+                                                                let normalized = text
+                                                                    .replace(/[\u066C]/g, '')
+                                                                    .replace(/[\u066B,\u060C]/g, '.');
+                                                                let cleaned = normalized.replace(/[^0-9.]/g, '');
+                                                                cleaned = cleaned.replace(/(\..*)\./g, '$1');
+
+                                                                setRateText(cleaned);
+
                                                                 if (cleaned === '' || cleaned === '.') {
-                                                                    onChange(0); // Set to 0 instead of undefined
-                                                                } else {
+                                                                    onChange(undefined);
+                                                                    return;
+                                                                }
+                                                                if (/^\d+(?:\.\d+)?$/.test(cleaned)) {
                                                                     const parsed = parseFloat(cleaned);
-                                                                    onChange(isNaN(parsed) ? 0 : parsed);
+                                                                    if (!isNaN(parsed)) onChange(parsed);
+                                                                }
+                                                            }}
+                                                            onBlur={() => {
+                                                                if (rateText && /\.$/.test(rateText)) {
+                                                                    const trimmed = rateText.replace(/\.$/, '');
+                                                                    setRateText(trimmed);
                                                                 }
                                                             }}
                                                             keyboardType="decimal-pad"

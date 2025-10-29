@@ -7,6 +7,7 @@ import { MotiView } from 'moti';
 import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
 
 const AnimatedView = Animated.View;
 
@@ -21,6 +22,7 @@ interface AccordionItemProps {
     contentWrapperClassName?: string;
     contentInternalContainerClassName?: string;
     editRoute?: Route;
+    showEditButton?: boolean;
 }
 
 const AccordionItem: React.FC<AccordionItemProps> = React.memo(({
@@ -34,7 +36,9 @@ const AccordionItem: React.FC<AccordionItemProps> = React.memo(({
     contentWrapperClassName = "",
     contentInternalContainerClassName = "pt-2 pb-4 px-4",
     editRoute,
+    showEditButton = true,
 }) => {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(initiallyOpen);
 
     const toggleOpen = useCallback(() => {
@@ -75,7 +79,9 @@ const AccordionItem: React.FC<AccordionItemProps> = React.memo(({
                 >
                     <View className={contentInternalContainerClassName}>
                         {children}
-                        <Button variant="outline" title="Edit" onPress={handleEdit} />
+                        {showEditButton && editRoute && (
+                            <Button variant="outline" title={t('Edit')} onPress={handleEdit} />
+                        )}
                     </View>
                 </AnimatedView>
             )}

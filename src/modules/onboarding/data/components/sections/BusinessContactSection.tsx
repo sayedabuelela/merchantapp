@@ -4,6 +4,10 @@ import { useTranslation } from "react-i18next";
 import AccordionItem from "../AccordionItem";
 import DataRow from "../DataRow";
 
+interface BusinessContactSectionProps extends BusinessContactFormData {
+    showEditButton?: boolean;
+}
+
 const BusinessContactSection = ({
     country,
     governorate,
@@ -11,13 +15,15 @@ const BusinessContactSection = ({
     addressLine2,
     businessPhone,
     businessEmail,
-    hotlineNumber
-}: BusinessContactFormData) => {
+    hotlineNumber,
+    showEditButton = true,
+}: BusinessContactSectionProps) => {
     const { t } = useTranslation();
     return (
         <AccordionItem
             title={t('Business Contact Info')}
             editRoute={ROUTES.ONBOARDING.CONTACT}
+            showEditButton={showEditButton}
         >
             <DataRow label={t('Country')} value={country} />
             <DataRow label={t('Governorate')} value={governorate} />

@@ -14,9 +14,7 @@ import { MinusIcon, PlusIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { KeyboardController } from 'react-native-keyboard-controller';
 import { itemSchema, ItemType } from '../../payment-links.scheme';
 
-// Only validate user-entered fields in the modal (exclude subTotal)
 const addItemSchema = itemSchema.omit({ subTotal: true });
-// Narrowed form type for the modal
 type AddItemForm = Omit<ItemType, 'subTotal'>;
 
 interface Props {
@@ -40,6 +38,8 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
         mode: 'onChange',
     });
 
+    const [unitPriceText, setUnitPriceText] = useState<string>('');
+
     const quantity = watch('quantity');
 
     useEffect(() => {
@@ -54,14 +54,19 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                     unitPrice: editingItem.unitPrice,
                     quantity: editingItem.quantity,
                 });
+                setUnitPriceText(
+                    Number.isFinite(editingItem.unitPrice) ? String(editingItem.unitPrice) : ''
+                );
             } else {
                 reset({ description: '', unitPrice: 0, quantity: 1 });
+                setUnitPriceText('');
             }
         }
     }, [isVisible, editingItem, reset]);
 
     const handleClose = () => {
         reset({ description: '', unitPrice: 0, quantity: 1 });
+        setUnitPriceText('');
         onClose();
         setIsAnimating(false);
     };
@@ -164,10 +169,40 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                                     render={({ field: { onChange, value } }) => (
                                                         <Input
                                                             placeholder={t('0.00')}
-                                                            value={Number.isFinite(value) ? value?.toString() : ''}
+                                                            value={unitPriceText !== '' ? unitPriceText : (Number.isFinite(value) && value !== 0 ? value.toString() : '')}
+                                                            onFocus={() => {
+                                                                // If current value is 0, clear the visible text so user doesn't get '020'
+                                                                if (Number.isFinite(value) && value === 0) {
+                                                                    setUnitPriceText('');
+                                                                }
+                                                            }}
                                                             onChangeText={(text) => {
-                                                                const num = Number(text.replace(/[^0-9.]/g, ''));
-                                                                onChange(Number.isNaN(num) ? 0 : num);
+                                                                // Normalize locale-specific separators
+                                                                let normalized = text
+                                                                    .replace(/[\u066C]/g, '') // Arabic thousands separator
+                                                                    .replace(/[\u066B,\u060C,]/g, '.'); // Arabic decimal, Arabic comma, comma -> dot
+                                                                let cleaned = normalized.replace(/[^0-9.]/g, '');
+                                                                cleaned = cleaned.replace(/(\..*)\./g, '$1'); // allow only one dot
+
+                                                                setUnitPriceText(cleaned);
+
+                                                                // Only update form when it's a valid number like 1 or 1.23
+                                                                if (/^\d+(?:\.\d+)?$/.test(cleaned)) {
+                                                                    const parsed = parseFloat(cleaned);
+                                                                    if (!isNaN(parsed)) onChange(parsed);
+                                                                }
+                                                            }}
+                                                            onBlur={() => {
+                                                                // finalize trailing dot like '1.' -> '1'
+                                                                if (unitPriceText && /\.$/.test(unitPriceText)) {
+                                                                    const trimmed = unitPriceText.replace(/\.$/, '');
+                                                                    setUnitPriceText(trimmed);
+                                                                }
+                                                                // After blur, if valid number, ensure form value is in sync
+                                                                if (unitPriceText && /^\d+(?:\.\d+)?$/.test(unitPriceText)) {
+                                                                    const parsed = parseFloat(unitPriceText);
+                                                                    if (!isNaN(parsed)) setValue('unitPrice', parsed, { shouldValidate: true });
+                                                                }
                                                             }}
                                                             keyboardType="decimal-pad"
                                                             isHasCurrency
@@ -210,6 +245,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                     {/* Submit */}
                                     <View className="mt-8">
                                         <Button
+                                            disabled={!isValid}
                                             title={editingItem ? t('Update item') : t('Add new item')}
                                             onPress={handleSubmit(
                                                 onSubmit,

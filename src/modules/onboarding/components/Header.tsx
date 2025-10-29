@@ -1,8 +1,9 @@
 import { BackIcon } from "@/src/shared/assets/svgs";
 import FontText from "@/src/shared/components/FontText";
 import { useRouter } from "expo-router";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View, I18nManager } from "react-native";
 
+const isRTL = I18nManager.isRTL;
 const Header = ({ title, progress }: { title: string, progress?: number }) => {
     const router = useRouter();
 
@@ -14,7 +15,7 @@ const Header = ({ title, progress }: { title: string, progress?: number }) => {
         <View className="mb-8">
             <View className="flex-row items-center">
                 <TouchableOpacity onPress={handleBack}>
-                    <BackIcon />
+                    <BackIcon style={isRTL ? { transform: [{ rotate: '180deg' }] } : {}} />
                 </TouchableOpacity>
                 <FontText type="head" weight="bold" className="text-content-primary text-2xl ml-2 capitalize">{title}</FontText>
             </View>

@@ -19,6 +19,7 @@ const CreateNewPaymentLinkStep1Screen = () => {
         paymentLink,
         isLoadingPaymentLink,
         isEditMode,
+        isSubmitting,
         error,
         submitPaymentLink
     } = usePaymentLinkVM(paymentLinkId);
@@ -45,7 +46,7 @@ const CreateNewPaymentLinkStep1Screen = () => {
                 <PaymentLinkForm
                     key={paymentLinkId ?? "create"}
                     onSubmit={submitPaymentLink}
-                    isLoading={isLoadingPaymentLink}
+                    isLoading={isSubmitting}
                     paymentType={paymentType}
                     isEditMode={isEditMode}
                     paymentLink={paymentLink}

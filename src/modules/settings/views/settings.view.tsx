@@ -45,10 +45,11 @@ const SettingsScreen = () => {
         // handleBiometricModal();
         // if (success) router.replace(ROUTES.TABS.ROOT);
     }
+    // console.log('onboardingData : ', onboardingData?.isApprovedBusinessInfo);
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <View className="px-6 flex flex-row items-center justify-between mb-10">
+            <View className="px-6 flex flex-row items-center justify-between mb-6">
                 <FontText
                     type="head"
                     weight="bold"

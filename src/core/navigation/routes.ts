@@ -49,7 +49,7 @@ export const ROUTES = {
     },
     // Tabs routes
     TABS: {
-        ROOT: "/(tabs)" as Route,
+        // ROOT: "/(tabs)" as Route,
         BALANCE: "/(tabs)/balance" as Route,
         DASHBOARD: "/(tabs)/dashboard" as Route,
         TRANSACTIONS: "/(tabs)/transactions" as Route,

@@ -15,13 +15,25 @@ import CurrencySettingsSection from "./components/sections/CurrencySettingsSecti
 import DocumentsSection from "./components/sections/DocumentsSection";
 import useOnboardingDataViewModel from "./onboarding-data.viewmodel";
 import AnimatedError from "@/src/shared/components/animated-messages/AnimatedError";
+import ActivationNote from "@/src/modules/settings/components/ActivationNote";
+import { ApprovalStatus } from "./onboarding-data.model";
 
 
 const OnboardingDataScreen = () => {
     const router = useRouter();
     const { t } = useTranslation();
     const accountType = useOnboardingStore(accountTypeSelector);
-    const { onboardingData, submitRequestHandler, isSubmittingOnboadingRequest, submitOnboadingRequestError } = useOnboardingDataViewModel()
+    const {
+        onboardingData,
+        submitRequestHandler,
+        isSubmittingOnboadingRequest,
+        submitOnboadingRequestError,
+        canEdit,
+        canSubmit,
+        isUnderReview,
+        isApproved,
+        showActivationNote,
+    } = useOnboardingDataViewModel()
     // console.log('OnboardingDataScreen accountType : ', accountType);
     // console.log('OnboardingDataScreen onboardingData : ', onboardingData?.merchant.merchantInfo);
     const businessContactData = onboardingData?.merchant?.merchantInfo?.businessContactInfo;
@@ -38,6 +50,14 @@ const OnboardingDataScreen = () => {
             submitRequestHandler(onboardingData?.merchant.merchantInfo);
         }
     }
+
+    const getActivationStatus = (): 'pending' | 'submitted' | 'rejected' => {
+        const status = onboardingData?.isApprovedBusinessInfo;
+        if (status === 'submitted') return 'submitted';
+        if (status === 'rejected') return 'rejected';
+        return 'pending';
+    };
+
     // console.log('accountType : ', accountType);
     return (
         <SafeAreaView className="flex-1 bg-white px-6">
@@ -55,6 +75,11 @@ const OnboardingDataScreen = () => {
                         {submitOnboadingRequestError && (
                             <AnimatedError errorMsg={submitOnboadingRequestError.message} />
                         )}
+                        {showActivationNote && (
+                            <ActivationNote
+                                status={getActivationStatus()}
+                            />
+                        )}
                         {!isLoadingLogo && companyName && (
                             <BrandHeader
                                 companyName={companyName}
@@ -64,21 +89,25 @@ const OnboardingDataScreen = () => {
                         {businessDetailsData && (
                             <BusinessDetailsSection
                                 {...businessDetailsData}
+                                showEditButton={canEdit}
                             />
                         )}
                         {businessContactData && (
                             <BusinessContactSection
                                 {...businessContactData}
+                                showEditButton={canEdit}
                             />
                         )}
                         {documents && (
                             <DocumentsSection
                                 documents={documents}
+                                showEditButton={canEdit}
                             />
                         )}
                         {currencies && (
                             <CurrencySettingsSection
                                 currencies={currencies}
+                                showEditButton={canEdit}
                             />
                         )}
                     </View>
@@ -86,10 +115,11 @@ const OnboardingDataScreen = () => {
                         <View className="mt-6 ">
                             <Button
                                 isLoading={isSubmittingOnboadingRequest}
-                                disabled={isSubmittingOnboadingRequest}
+                                disabled={!canSubmit || isSubmittingOnboadingRequest}
                                 title={t("Request Activation")}
                                 onPress={submitHandler}
                             />
+                            {/* TODO: Add "Request Information Change" button for approved + isLive case when API is ready */}
                         </View>
                     )}
                 </View>

@@ -124,7 +124,7 @@ export interface User {
     hasAccounts: boolean;
     enabledFeatures: string[];
     belongsToMerchants: Record<string, BelongsToMerchantStore>;
-    [key: string]: any;
+    // [key: string]: any;
 }
 
 export interface FCMData {

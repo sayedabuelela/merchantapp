@@ -19,8 +19,9 @@ interface Props {
     onCodePress?: () => void;
     selectedCountryCode?: ICountry
     error?: boolean;
+    disabled?: boolean;
 }
-const CountryPhoneInput = ({ value, onChangeText, label, onCodePress, selectedCountryCode, error, }: Props) => {
+const CountryPhoneInput = ({ value, onChangeText, label, onCodePress, selectedCountryCode, error, disabled }: Props) => {
     const borderColorClass = error
     ? "border-2 border-stroke-danger" : "border-stroke-input"
 
@@ -37,6 +38,7 @@ const CountryPhoneInput = ({ value, onChangeText, label, onCodePress, selectedCo
             >
                 <TouchableOpacity className="flex-row items-center px-2 h-11 border border-l-0 border-stroke-input bg-[#F8F9F9] mr-2"
                     onPress={onCodePress}
+                    disabled={disabled}
                 >
                     <Image
                         placeholder={{ blurhash }}

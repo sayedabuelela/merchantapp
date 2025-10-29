@@ -1,20 +1,16 @@
-import { useAuthStore } from "@/src/modules/auth/auth.store";
-import { useMutation } from '@tanstack/react-query';
-import { LoginError, LoginFormData } from './login.model';
 import { useApi } from "@/src/core/api/clients.hooks";
-import { useBiometricStore } from "../biometric/biometric.store";
-import { authenticate } from "./login.service";
-import { storeCredentials } from "../biometric/biometric.utils";
-import { AuthResponse } from "../auth.model";
-import { useEnvironmentStore, selectSetMode } from "@/src/core/environment/environments.store";
 import { Mode } from "@/src/core/environment/environments";
-import { useQueryClient } from "@tanstack/react-query";
-import { getMerchant } from "../login/login.service";
-import { fetchAndSyncMerchant } from "../hooks/useMerchant";
-import { useRouter } from "expo-router";
-import { ROUTES } from "@/src/core/navigation/routes";
+import { selectSetMode, useEnvironmentStore } from "@/src/core/environment/environments.store";
 import { useToast } from "@/src/core/providers/ToastProvider";
+import { useAuthStore } from "@/src/modules/auth/auth.store";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { AuthResponse } from "../auth.model";
+import { storeCredentials } from "../biometric/biometric.utils";
+import { fetchAndSyncMerchant } from "../hooks/useMerchant";
+import { LoginError, LoginFormData } from './login.model';
+import { authenticate } from "./login.service";
 
 export const useLoginViewModel = () => {
     const { api } = useApi();
@@ -32,11 +28,11 @@ export const useLoginViewModel = () => {
     } = useMutation<AuthResponse, LoginError, LoginFormData>({
         mutationFn: (credentials) => authenticate(api, credentials),
         onSuccess: async (data, credentials) => {
-            // console.log("credentials : ", credentials);
             // data maybe has body or twoFactorAuth
-            console.log("authenticate data : ", data.twoFactorAuth);
+            console.log("authenticate data : ", data);
+            await storeCredentials(credentials);
             if (data.twoFactorAuth) {
-                await storeCredentials(credentials);
+                console.log("credentials : ", credentials);
                 showToast?.({ message: t('Two factor authentication required'), type: 'info' });
                 router.push({
                     pathname: `/(auth)/(login)/login-twofactor-auth`,

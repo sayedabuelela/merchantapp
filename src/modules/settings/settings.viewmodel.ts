@@ -15,12 +15,13 @@ const useSettings = () => {
 
     const user = useAuthStore(selectUser);
     const { canViewBusinessProfile } = usePermissions(user?.actions!, user?.merchantId);
+    
     const logout = async () => {
         await clearCredentials();
         clearAuth();
         setInitialized(false);
         setEnabled(false);
-        // router.replace(ROUTES.AUTH.LOGIN);
+        router.replace(ROUTES.AUTH.LOGIN);
     }
 
     const goToChangePassword = () => {

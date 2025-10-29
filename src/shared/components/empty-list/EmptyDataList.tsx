@@ -1,3 +1,4 @@
+import { cn } from "@/src/core/utils/cn"
 import FontText from "@/src/shared/components/FontText"
 import React from "react"
 import { TouchableOpacity, View } from "react-native"
@@ -45,18 +46,17 @@ const EmptyDataList: React.FC<EmptyDataListProps> = ({
                 {buttonLabel && onButtonPress && (
                     <TouchableOpacity
                         onPress={onButtonPress}
-                        className={`flex-row items-center justify-center px-4 py-3 mt-6 rounded max-w-[200px] 
-              ${buttonVariant === "primary"
+                        className={cn(`flex-row items-center justify-center px-4 py-3 mt-6 rounded max-w-[200px]`, 
+                                    buttonVariant === "primary"
                                 ? "bg-primary"
-                                : "border border-primary bg-white"}`}
+                                : "border border-primary bg-white")}
                     >
                         {buttonIconType === "plus" && <PlusIcon size={24} color="#fff" />}
-                        {buttonIconType === "xicon" && <XMarkIcon size={24} color="001F5F" />}
+                        {buttonIconType === "xicon" && <XMarkIcon size={24} color="#001F5F" />}
                         <FontText
                             type="body"
                             weight="semi"
-                            className={`text-base ml-2 ${buttonVariant === "primary" ? "text-white" : "text-primary"
-                                }`}
+                            className={cn(`text-base ml-2`, buttonVariant === "primary" ? "text-white" : "text-primary")}
                         >
                             {buttonLabel}
                         </FontText>

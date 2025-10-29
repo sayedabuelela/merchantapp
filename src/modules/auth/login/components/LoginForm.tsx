@@ -31,8 +31,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
         defaultValues: {
             // email: 'pisej21977@hazhab.com',
             // email: 'logare2532@frisbook.com',
-            email: 'saboelela@kashier.io',
-            password: 'P@ssw0rdd',
+            // email: 'saboelela@kashier.io',
+            // password: 'P@ssw0rdd',
             // email: 'awageeh@kashier.io',
             // password: 'P@ssw0rd012',
             // email: 'duaa.bst@gmail.com',
@@ -41,8 +41,17 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // email: 'sexepic929@fixwap.com',
             // email: 'xihoxi2002@elygifts.com',
             // password: 'P@ssw0rd',
+            // email: 'zb5eo39fvq@zudpck.com',
+            // password: 'Password500$$',
+            // email: 'kamati2654@filipx.com',
+            // password: 'P@ssw0rd',
         },
     });
+
+    //  isApprovedBusinessInfo : pending , isLive => false  => edit mode 
+    //  isApprovedBusinessInfo : submitted , isLive => false  => cannot edit this means still under review 
+    //  isApprovedBusinessInfo : approved , isLive => true => change info request (will be a new api endroint )
+    //  isApprovedBusinessInfo : submitted , isLive => true => cannot edit this means still under review 
 
     useEffect(() => {
         if (error) {

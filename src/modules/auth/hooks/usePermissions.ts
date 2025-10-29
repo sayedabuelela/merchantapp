@@ -68,6 +68,16 @@ export const checkRules = (
 
     if (!moduleActions) return false;
 
+    if (inners.length >= 2 && moduleActions[inners[0]]) {
+        const groupKey = inners[0];
+        const groupActions = new Set(Object.keys(moduleActions[groupKey] || {}));
+        for (let i = 1; i < inners.length; i++) {
+            if (groupActions.has(inners[i])) {
+                return true;
+            }
+        }
+    }
+
     const generalActions = new Set(Object.keys(moduleActions[""] || {}));
     const ownActions = new Set(Object.keys(moduleActions["payment_requests_own"] || {}));
     const anyActions = new Set(Object.keys(moduleActions["payment_requests_any"] || {}));
@@ -118,6 +128,9 @@ const usePermissions = (roles: IActions, merchantId = '', creatorId = '') => {
             canViewBusinessProfile: checkRules('', roles, EMainActions.SETTINGS, ["businessProfile", "view_bp_st"], ''),
             canEditBusinessProfile: checkRules('', roles, EMainActions.SETTINGS, ["businessProfile", "edit_bp_st"], ''),
             canRequestBusinessProfile: checkRules('', roles, EMainActions.SETTINGS, ["businessProfile", "request_bp_st"], ''),
+            canViewBalance: checkRules('', roles, EMainActions.BALANCE, ['all', "view_balance"]),
+            canCreateBalance: checkRules('', roles, EMainActions.BALANCE, ["", "create_balance"]),
+            canEditBalance: checkRules('', roles, EMainActions.BALANCE, ["", "edit_balance"]),
 
             // Onboarding Permissions
 

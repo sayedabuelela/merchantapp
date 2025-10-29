@@ -2,12 +2,14 @@ import CreatePaymentModal from "@/src/modules/payment-links/components/modals/Cr
 import { AddIcon } from "@/src/shared/assets/svgs";
 import { Tabs } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Cog6ToothIcon } from 'react-native-heroicons/outline';
 import { ArrowsUpDownIcon, HomeIcon, LinkIcon } from 'react-native-heroicons/solid';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 const _TabsLayout = () => {
+    const insets = useSafeAreaInsets();
     const [isModalVisible, setModalVisible] = useState(false);
 
     const handleAddPress = () => {
@@ -33,7 +35,12 @@ const _TabsLayout = () => {
         <>
             <Tabs
                 screenOptions={{
-                    tabBarStyle: styles.tabBar,
+                    tabBarStyle: {
+                        ...styles.tabBar, paddingBottom: Platform.OS === 'android' && insets.bottom > 0
+                            ? insets.bottom + 50
+                            : 0,
+                    },
+
                     tabBarHideOnKeyboard: true,
                     headerShown: false,
                     tabBarShowLabel: false,

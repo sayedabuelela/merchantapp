@@ -15,7 +15,8 @@ import PersonalInfoItem from './PersonalInfoItem';
 import { StoreItemProps } from './StoresList';
 import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store';
 import { useSwitchMerchantId } from '@/src/modules/auth/hooks/useMerchant';
-
+import { useRouter } from 'expo-router';
+import { ROUTES } from '@/src/core/navigation/routes';
 interface Props {
     isVisible: boolean;
     onClose: () => void;
@@ -27,6 +28,7 @@ interface Props {
 const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
     const user = useAuthStore(selectUser);
     const { switchMerchant } = useSwitchMerchantId();
+    const router = useRouter();
     const [showModal, setShowModal] = useState(isVisible);
     const [isAnimating, setIsAnimating] = useState(false);
     // console.log("user : ", user);
@@ -51,13 +53,13 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
         storesListBottomSheetRef.current?.expand();
     };
     const handleSelectStore = (merchantId: string) => {
-        // Close the bottom sheet
         storesListBottomSheetRef.current?.close();
 
-        // Trigger mutation
         switchMerchant(merchantId);
+        router.replace(ROUTES.TABS.BALANCE);
+        handleClose();
     };
-    // console.log("user : ", user?.belongsToMerchants);
+    
     return (
         <Modal
             transparent
@@ -108,11 +110,11 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                             </View>
                             <View>
                                 {user?.belongsTo !== undefined && (
-                                    <Pressable onPress={handleExpandBottomSheet} className="items-center gap-y-4 mb-8"
+                                    <Pressable onPress={handleExpandBottomSheet} className="items-center mb-8"
                                         disabled={user?.belongsTo.length === 1}
                                     >
                                         <UserPersonalInfo />
-                                        <View className="flex-row items-center">
+                                        <View className="flex-row items-center mt-4">
                                             <BuildingStorefrontIcon size={24} color="#556767" />
                                             <FontText type="head" weight="bold" className="text-content-secondary text-xl mx-1">
                                                 {user?.belongsToMerchants && user?.merchantId && user?.belongsToMerchants[user?.merchantId]?.storeName}
@@ -121,6 +123,9 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                                                 <ChevronDownIcon size={19} color="#556767" />
                                             )}
                                         </View>
+                                        <FontText type="head" weight="bold" className="text-content-secondary mt-2">
+                                            {user?.merchantId}
+                                        </FontText>
                                     </Pressable>
                                 )}
 

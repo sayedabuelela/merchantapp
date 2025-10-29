@@ -55,7 +55,10 @@ const PaymentLinksScreen = () => {
             return value !== undefined && value !== '';
         });
     }, [filters]);
-
+    const hasPaymentStatus = useMemo(() => {
+        return paymentStatus !== undefined && paymentStatus !== '';
+    }, [paymentStatus]);
+    console.log("hasPaymentStatus : ", hasPaymentStatus);
     // Data fetching
     const {
         isLoading,
@@ -135,6 +138,7 @@ const PaymentLinksScreen = () => {
                             <PaymentLinksListEmpty
                                 search={search}
                                 hasFilters={hasActiveFilters}
+                                hasPaymentStatus={hasPaymentStatus}
                                 handleClearSearch={handleClearSearch}
                                 handleClearFilters={handleClearFilters}
                                 handleToggleCreateNew={handleToggleCreateNew}

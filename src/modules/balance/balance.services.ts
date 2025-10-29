@@ -15,7 +15,7 @@ export const getTransfersStatistics = async (api: AxiosInstance): Promise<Transf
 export const getAccountStatistics = async (api: AxiosInstance): Promise<AccountStatistics> => {
     console.log('getAccountStatistics api', api.defaults.baseURL);
     try {
-        const response = await api.get(`v2/account/overview/all`);
+        const response = await api.get(`v2/account/overview/all`);  
         return response.data;
     } catch (error) {
         console.error("Error fetching account statistics:", error);

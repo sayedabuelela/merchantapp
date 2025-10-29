@@ -4,6 +4,10 @@ import { PublicData } from "../../onboarding-data.model";
 import AccordionItem from "../AccordionItem";
 import DataRow from "../DataRow";
 
+interface BusinessDetailsSectionProps extends PublicData {
+  showEditButton?: boolean;
+}
+
 const BusinessDetailsSection = ({
   legalCompanyName,
   storeName,
@@ -14,12 +18,14 @@ const BusinessDetailsSection = ({
   socialFacebook,
   socialInstagram,
   socialTwitter,
-}: PublicData) => {
+  showEditButton = true,
+}: BusinessDetailsSectionProps) => {
   const { t } = useTranslation();
   return (
     <AccordionItem
       title={t('Business Details')}
       editRoute={ROUTES.ONBOARDING.BUSINESS}
+      showEditButton={showEditButton}
     >
       <DataRow label={t('Company Name')} value={legalCompanyName} />
       <DataRow label={t('Business/Commercial Name')} value={storeName} />

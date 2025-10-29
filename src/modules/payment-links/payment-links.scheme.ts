@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const itemSchema = z.object({
     description: z.string().min(1),
-    unitPrice: z.number().min(0),
+    unitPrice: z.number().gt(0, "Unit price must be greater than 0"),
     quantity: z.number().min(1),
     subTotal: z.number().min(0),
 });

@@ -7,7 +7,7 @@ interface BrandHeaderProps {
 }
 const BrandHeader = ({ companyName, logoUrl }: BrandHeaderProps) => {
     return (
-        <View className="items-center mb-6">
+        <View className="items-center mb-6 mt-2">
             {logoUrl && (
                 <Image
                     source={logoUrl}
