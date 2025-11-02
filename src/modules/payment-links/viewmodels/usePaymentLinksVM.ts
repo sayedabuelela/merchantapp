@@ -31,7 +31,7 @@ const usePaymentLinksVM = (params?: FetchPaymentLinksParams) => {
     });
 
     const allItems = paymentLinksQuery.data?.pages.flatMap((p) => p.data) ?? [];
-    const grouped = groupByDate(allItems);
+    const grouped = groupByDate(allItems, 'creationDate');
     const { listData, stickyHeaderIndices } = useGroupedData(allItems.length ? grouped : []);
 
     const {

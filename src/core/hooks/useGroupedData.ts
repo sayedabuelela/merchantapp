@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { GroupedRow } from "../utils/groupData";
 
-export function useGroupedData<T extends { creationDate: string }>(
+export function useGroupedData<T extends { creationDate?: string; createdAt?: string }>(
     groupedData: { date: string; items: T[] }[]
 ) {
     return useMemo(() => {

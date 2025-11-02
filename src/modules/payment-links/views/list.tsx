@@ -18,6 +18,7 @@ import HeaderRow from '../components/StickyHeaderList/HeaderRow';
 import PaymentLinkCard from '../components/PaymentLinkCard';
 import useCountries from '@/src/shared/hooks/useCountries';
 import CountyCodeBottomSheet, { CountyCodeBottomSheetRef } from '@/src/shared/components/bottom-sheets/phone-code-selector/CountyCodeBottomSheet';
+import { GroupedRow } from '@/src/core/utils/groupData';
 
 // Constants
 const INITIAL_FILTERS: FetchPaymentLinksParams = {
@@ -98,10 +99,12 @@ const PaymentLinksScreen = () => {
     const handleToggleFilters = useCallback(() => {
         setIsFiltersOpen(prev => !prev);
     }, []);
-    const renderItem = useCallback(({ item }: { item: any }) => {
-        if (item?.type === 'header') return <HeaderRow title={item.date} />;
+    
+    const renderItem = useCallback(({ item }: { item: GroupedRow<PaymentLink> }) => {
+        if (item.type === 'header') return <HeaderRow title={item.date} />;
         return <PaymentLinkCard paymentLink={item} onOpenActions={handleOpenActions} />;
     }, [handleOpenActions]);
+
     return (
         <SafeAreaView className="flex-1 bg-white">
             <PaymentLinksHeader

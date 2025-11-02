@@ -40,7 +40,6 @@ const _TabsLayout = () => {
                             ? insets.bottom + 50
                             : 0,
                     },
-
                     tabBarHideOnKeyboard: true,
                     headerShown: false,
                     tabBarShowLabel: false,
@@ -56,9 +55,7 @@ const _TabsLayout = () => {
                         tabBarButton: () => (
                             <TouchableOpacity
                                 style={styles.addIcon}
-                                onPress={() => {
-                                    handleAddPress();
-                                }}
+                                onPress={handleAddPress}
                             >
                                 <View style={styles.addIconTopHalf} />
                                 <View style={styles.addIconBottomHalf} />

@@ -14,6 +14,7 @@ import { KeyboardAvoidingView, KeyboardController } from "react-native-keyboard-
 import DateRangePickerBottomSheet, { DateRangePickerRef } from "../../../../../shared/components/bottom-sheets/date-range/DateRangePickerBottomSheet";
 import { DateRangeSelector } from "../../../../../shared/components/bottom-sheets/date-range/DateRangeSelector";
 import { FetchPaymentLinksParams } from "../../../payment-links.model";
+import GeneralModalHeader from "@/src/shared/components/GeneralModal/GeneralModalHeader";
 
 interface FiltersModalProps {
   isVisible: boolean;
@@ -166,17 +167,10 @@ const FiltersModal = ({ isVisible, onClose, filters, setFilters }: FiltersModalP
                 >
                   <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-8" />
 
-                  <View className="flex-row justify-between items-center mb-6">
-                    <FontText type="head" weight="bold" className="text-content-primary text-xl">
-                      {t('Filters')}
-                    </FontText>
-                    <TouchableOpacity
-                      onPress={handleClose}
-                      className="items-center justify-center bg-feedback-error-bg w-7 h-7 rounded-full"
-                    >
-                      <XMarkIcon size={18} color="#A50017" />
-                    </TouchableOpacity>
-                  </View>
+                  <GeneralModalHeader
+                    title={t('Filters')}
+                    onClose={handleClose}
+                  />
 
                   {/* Amount Range */}
                   <View className="mb-6">

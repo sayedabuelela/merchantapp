@@ -15,7 +15,7 @@ module.exports = {
                 danger: "#A50017",
                 success: "#4AAB4E",
                 warning: "#FEA71C",
-                tertiary: "#F8F9F9",
+                tertiary: "#F5F6F6",
                 'light-gray': "#839090",
                 //content
                 "placeholder-color": "#B3BBBB",
@@ -29,7 +29,7 @@ module.exports = {
                 // Surface (Background) Colors
                 "surface-primary": "#FFFFFF",      // Main background color
                 "surface-secondary": "#FDFDFD",    // Secondary background, like cards
-                "surface-tertiary": "#F8F9F9",    // Third-level backgrounds
+                "surface-tertiary": "#F5F6F6",    // Third-level backgrounds
                 "surface-input": "#FBFBFB",        // Input field backgrounds
                 "surface-disabled": "#E6E8E8",     // Disabled component backgrounds
 

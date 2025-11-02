@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { BelongsTo } from '../../auth/auth.model';
 import { selectUser, useAuthStore } from '../../auth/auth.store';
 import StoresList from './StoresList';
+import GeneralModalHeader from '@/src/shared/components/GeneralModal/GeneralModalHeader';
 
 interface Props {
     onClose: () => void;
@@ -65,7 +66,7 @@ const StoresListBottomSheet = forwardRef<StoresListBottomSheetRef, Props>(
                 enableContentPanningGesture={false}
             >
                 <BottomSheetView className="flex-1 px-6 pt-2 h-full pb-8">
-                    <BottomSheetHeader
+                    <GeneralModalHeader
                         title={t('Select store')}
                         onClose={handleCloseBottomSheet}
                     />

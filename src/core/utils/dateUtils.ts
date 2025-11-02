@@ -1,5 +1,6 @@
 import * as Localization from "expo-localization";
 import { I18nManager } from "react-native";
+import { translateTextHandler } from "./helpers";
 
 export const formatDateString = (date: Date): string => {
     const year = date.getFullYear();
@@ -69,6 +70,20 @@ export const formatTime = (dateInput: Date | string | number): string => {
     }).format(date);
 };
 
+export const formatAMPM = (dateInput: string) => {
+    const date = new Date(dateInput);
+    let hours = date.getHours();
+    let minutes: any = date.getMinutes();
+    const ampm =
+        hours >= 12
+            ? translateTextHandler("PM", "م")
+            : translateTextHandler("AM", "ص");
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    const strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+};
 
 const getOrdinalSuffix = (day: number) => {
     if (day > 3 && day < 21) return "th"; // 4–20 → always "th"

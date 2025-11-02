@@ -7,63 +7,63 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0071897D8781473E8B42B9D8 /* NotoNaskhArabic-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52AD174A919B4C5B9270B600 /* NotoNaskhArabic-Bold.ttf */; };
-		0CD4C9830BA74CCA8BA6CEB1 /* Cairo-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 46C21D19814D41FFADE622CB /* Cairo-Bold.ttf */; };
+		07D4ED59C573437FAC406A21 /* Cairo-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CAAD21AECA044C409602751D /* Cairo-Regular.ttf */; };
+		07EECC6A19CD43E2971D587B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F950D92B0D034887A5DB6FA0 /* GoogleService-Info.plist */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		166256C96C4F45EAA1DD304F /* NotoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 74C28BAD85EB421890DF9E26 /* NotoSans-Bold.ttf */; };
-		1F3ED39C50194C4595DC64A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 171EF4CB5A72496A9E379A88 /* GoogleService-Info.plist */; };
-		2C118279E36F457DB5B4550E /* Cairo-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52F04D046DC54E7680EA05DF /* Cairo-SemiBold.ttf */; };
-		2C9EFE8B70674B36BE3A01D0 /* Outfit-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9B7C4A2DB57424C8A5F38E4 /* Outfit-Bold.ttf */; };
-		36E15EA7E4634D56B9C6ACE7 /* NotoSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 033F6C1E964E42DD9B54D4C6 /* NotoSans-Medium.ttf */; };
-		3B9B38D2781C4C5BB5C10E60 /* Outfit-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9ECD986A6A1B4B2EA1EF26E4 /* Outfit-SemiBold.ttf */; };
+		28847692ACF64E8093342F07 /* Cairo-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A049F14DDE52494099E39791 /* Cairo-SemiBold.ttf */; };
+		2CF757E507FF4A2B87582023 /* NotoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06EF99F013E7462CBFF4BF20 /* NotoSans-Regular.ttf */; };
+		3B9B9E6E7BA44997A64304C2 /* Outfit-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FC8A7E1EFEEF4379A7910219 /* Outfit-Regular.ttf */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		4870D440870DB5999055497A /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371F061E93768C0FCC98BE72 /* ExpoModulesProvider.swift */; };
-		676B569ED51B4657B44391D4 /* NotoNaskhArabic-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B5F56E04A37A4A0288571D8B /* NotoNaskhArabic-Regular.ttf */; };
-		73922426A8A54FA79C8D2951 /* Cairo-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7CFD6FB98664180B44903EB /* Cairo-Regular.ttf */; };
-		756BA616EF6BFD73CE369530 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E1F4FDC3CA53B1455B93FA70 /* PrivacyInfo.xcprivacy */; };
-		76B6E15873B64BD5AE19DABC /* NotoNaskhArabic-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45968007BA5B4FE0ACE5591D /* NotoNaskhArabic-SemiBold.ttf */; };
-		90FB825043E7469EAB675EFD /* NotoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 02D92853E964414FA0A0D01F /* NotoSans-SemiBold.ttf */; };
-		92CC7F3560AE4CC0AF26CA6E /* Cairo-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EF6102F32124AA7830E58B9 /* Cairo-Medium.ttf */; };
-		A228766980CC4F0885B3B94E /* Outfit-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B1CF20D074144933834D00A8 /* Outfit-Regular.ttf */; };
+		3FE5AFE712FF4C25B226BB75 /* Outfit-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BB27BFEB85A4806A3DDF51B /* Outfit-Bold.ttf */; };
+		45FDD07AD72B89F3B8059AEF /* libPods-Kashier.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD5C9F7E17BE2864A201BF5D /* libPods-Kashier.a */; };
+		4B1AFA9A8982860AD57B2F02 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 689AF4C5C98A2AA011D20E6B /* PrivacyInfo.xcprivacy */; };
+		52C49C49DF5A4C8193C0365B /* NotoSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1E6CD311B9D344AC93CB0276 /* NotoSans-Medium.ttf */; };
+		5B04A518E1644DD79EA6B0E1 /* NotoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BEA0D49AC1314771A05B3B6B /* NotoSans-SemiBold.ttf */; };
+		7B0B7DF9F2E64071B442D00D /* Outfit-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5C7FEE64978F481CA230E0B0 /* Outfit-SemiBold.ttf */; };
+		8256BD4143BE4FF781A85DA1 /* NotoNaskhArabic-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D9180FBE9D8B47D593082BBF /* NotoNaskhArabic-Bold.ttf */; };
+		8A7A2D6DA84C4A569F32CFA1 /* NotoNaskhArabic-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3ABBBAC32E1D4911B274E61F /* NotoNaskhArabic-Medium.ttf */; };
+		90BC9B3A2EDD44A2B103C5F6 /* Cairo-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 556983CD32394229A1A99CE5 /* Cairo-Bold.ttf */; };
+		91F5F0F3F3D3487CAAA204FB /* NotoNaskhArabic-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19C2CD4AEB5544789209453F /* NotoNaskhArabic-Regular.ttf */; };
+		A3C0E6CE180B4781AC31E6DA /* Outfit-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E8CA30768787433781650932 /* Outfit-Medium.ttf */; };
+		B62032D8E553877701C62D56 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FBFE0D8BC8335FE374C4FB /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		D0CCBB5D1A6F4DDD92EA90C3 /* NotoNaskhArabic-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7BD58CFE47C24457AF4B4423 /* NotoNaskhArabic-Medium.ttf */; };
-		EEC3899B9ACF4E99959E0059 /* Outfit-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5E595503DF8F4A848A3E0528 /* Outfit-Medium.ttf */; };
+		BB632A41E902460AAB491FA9 /* NotoNaskhArabic-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 92D32EC594DD499AAC1683C6 /* NotoNaskhArabic-SemiBold.ttf */; };
+		D6B2F1BAC63C4018B8A26C16 /* Cairo-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 63548035429443E196345B21 /* Cairo-Medium.ttf */; };
+		EB1179178F1B41819F655CEB /* NotoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5FA85889238A4736A144583C /* NotoSans-Bold.ttf */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		F6DAC9970CC24F3292E4E4B0 /* NotoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7B9C64C2992A4924969AE8D7 /* NotoSans-Regular.ttf */; };
-		FF5F728259EF479BF7CD6A56 /* libPods-Kashier.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FA8465EDD92A2DFD0E89774 /* libPods-Kashier.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		02D92853E964414FA0A0D01F /* NotoSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-SemiBold.ttf"; path = "../src/shared/assets/fonts/NotoSans-SemiBold.ttf"; sourceTree = "<group>"; };
-		033F6C1E964E42DD9B54D4C6 /* NotoSans-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Medium.ttf"; path = "../src/shared/assets/fonts/NotoSans-Medium.ttf"; sourceTree = "<group>"; };
-		07588490335AC3BF75F65428 /* Pods-Kashier.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kashier.debug.xcconfig"; path = "Target Support Files/Pods-Kashier/Pods-Kashier.debug.xcconfig"; sourceTree = "<group>"; };
+		06EF99F013E7462CBFF4BF20 /* NotoSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Regular.ttf"; path = "../src/shared/assets/fonts/NotoSans-Regular.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Kashier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kashier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Kashier/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Kashier/Info.plist; sourceTree = "<group>"; };
-		171EF4CB5A72496A9E379A88 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Kashier/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		371F061E93768C0FCC98BE72 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Kashier/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		44FFA2102F522C7754D0C11D /* Pods-Kashier.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kashier.release.xcconfig"; path = "Target Support Files/Pods-Kashier/Pods-Kashier.release.xcconfig"; sourceTree = "<group>"; };
-		45968007BA5B4FE0ACE5591D /* NotoNaskhArabic-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoNaskhArabic-SemiBold.ttf"; path = "../src/shared/assets/fonts/NotoNaskhArabic-SemiBold.ttf"; sourceTree = "<group>"; };
-		46C21D19814D41FFADE622CB /* Cairo-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Cairo-Bold.ttf"; path = "../src/shared/assets/fonts/Cairo-Bold.ttf"; sourceTree = "<group>"; };
-		52AD174A919B4C5B9270B600 /* NotoNaskhArabic-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoNaskhArabic-Bold.ttf"; path = "../src/shared/assets/fonts/NotoNaskhArabic-Bold.ttf"; sourceTree = "<group>"; };
-		52F04D046DC54E7680EA05DF /* Cairo-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Cairo-SemiBold.ttf"; path = "../src/shared/assets/fonts/Cairo-SemiBold.ttf"; sourceTree = "<group>"; };
-		5E595503DF8F4A848A3E0528 /* Outfit-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Medium.ttf"; path = "../src/shared/assets/fonts/Outfit-Medium.ttf"; sourceTree = "<group>"; };
-		6EF6102F32124AA7830E58B9 /* Cairo-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Cairo-Medium.ttf"; path = "../src/shared/assets/fonts/Cairo-Medium.ttf"; sourceTree = "<group>"; };
-		74C28BAD85EB421890DF9E26 /* NotoSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Bold.ttf"; path = "../src/shared/assets/fonts/NotoSans-Bold.ttf"; sourceTree = "<group>"; };
-		7B9C64C2992A4924969AE8D7 /* NotoSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Regular.ttf"; path = "../src/shared/assets/fonts/NotoSans-Regular.ttf"; sourceTree = "<group>"; };
-		7BD58CFE47C24457AF4B4423 /* NotoNaskhArabic-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoNaskhArabic-Medium.ttf"; path = "../src/shared/assets/fonts/NotoNaskhArabic-Medium.ttf"; sourceTree = "<group>"; };
-		8FA8465EDD92A2DFD0E89774 /* libPods-Kashier.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kashier.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9ECD986A6A1B4B2EA1EF26E4 /* Outfit-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-SemiBold.ttf"; path = "../src/shared/assets/fonts/Outfit-SemiBold.ttf"; sourceTree = "<group>"; };
+		19C2CD4AEB5544789209453F /* NotoNaskhArabic-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoNaskhArabic-Regular.ttf"; path = "../src/shared/assets/fonts/NotoNaskhArabic-Regular.ttf"; sourceTree = "<group>"; };
+		1E6CD311B9D344AC93CB0276 /* NotoSans-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Medium.ttf"; path = "../src/shared/assets/fonts/NotoSans-Medium.ttf"; sourceTree = "<group>"; };
+		2E9704E85013012C70440867 /* Pods-Kashier.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kashier.release.xcconfig"; path = "Target Support Files/Pods-Kashier/Pods-Kashier.release.xcconfig"; sourceTree = "<group>"; };
+		3ABBBAC32E1D4911B274E61F /* NotoNaskhArabic-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoNaskhArabic-Medium.ttf"; path = "../src/shared/assets/fonts/NotoNaskhArabic-Medium.ttf"; sourceTree = "<group>"; };
+		556983CD32394229A1A99CE5 /* Cairo-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Cairo-Bold.ttf"; path = "../src/shared/assets/fonts/Cairo-Bold.ttf"; sourceTree = "<group>"; };
+		5BB27BFEB85A4806A3DDF51B /* Outfit-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Bold.ttf"; path = "../src/shared/assets/fonts/Outfit-Bold.ttf"; sourceTree = "<group>"; };
+		5C7FEE64978F481CA230E0B0 /* Outfit-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-SemiBold.ttf"; path = "../src/shared/assets/fonts/Outfit-SemiBold.ttf"; sourceTree = "<group>"; };
+		5FA85889238A4736A144583C /* NotoSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Bold.ttf"; path = "../src/shared/assets/fonts/NotoSans-Bold.ttf"; sourceTree = "<group>"; };
+		63548035429443E196345B21 /* Cairo-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Cairo-Medium.ttf"; path = "../src/shared/assets/fonts/Cairo-Medium.ttf"; sourceTree = "<group>"; };
+		689AF4C5C98A2AA011D20E6B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Kashier/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		702836C13B2E39C2FEB028A0 /* Pods-Kashier.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kashier.debug.xcconfig"; path = "Target Support Files/Pods-Kashier/Pods-Kashier.debug.xcconfig"; sourceTree = "<group>"; };
+		92D32EC594DD499AAC1683C6 /* NotoNaskhArabic-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoNaskhArabic-SemiBold.ttf"; path = "../src/shared/assets/fonts/NotoNaskhArabic-SemiBold.ttf"; sourceTree = "<group>"; };
+		A049F14DDE52494099E39791 /* Cairo-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Cairo-SemiBold.ttf"; path = "../src/shared/assets/fonts/Cairo-SemiBold.ttf"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Kashier/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B1CF20D074144933834D00A8 /* Outfit-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Regular.ttf"; path = "../src/shared/assets/fonts/Outfit-Regular.ttf"; sourceTree = "<group>"; };
-		B5F56E04A37A4A0288571D8B /* NotoNaskhArabic-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoNaskhArabic-Regular.ttf"; path = "../src/shared/assets/fonts/NotoNaskhArabic-Regular.ttf"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C9B7C4A2DB57424C8A5F38E4 /* Outfit-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Bold.ttf"; path = "../src/shared/assets/fonts/Outfit-Bold.ttf"; sourceTree = "<group>"; };
-		E1F4FDC3CA53B1455B93FA70 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Kashier/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		BEA0D49AC1314771A05B3B6B /* NotoSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-SemiBold.ttf"; path = "../src/shared/assets/fonts/NotoSans-SemiBold.ttf"; sourceTree = "<group>"; };
+		C0FBFE0D8BC8335FE374C4FB /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Kashier/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		CAAD21AECA044C409602751D /* Cairo-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Cairo-Regular.ttf"; path = "../src/shared/assets/fonts/Cairo-Regular.ttf"; sourceTree = "<group>"; };
+		CD5C9F7E17BE2864A201BF5D /* libPods-Kashier.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kashier.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9180FBE9D8B47D593082BBF /* NotoNaskhArabic-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoNaskhArabic-Bold.ttf"; path = "../src/shared/assets/fonts/NotoNaskhArabic-Bold.ttf"; sourceTree = "<group>"; };
+		E8CA30768787433781650932 /* Outfit-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Medium.ttf"; path = "../src/shared/assets/fonts/Outfit-Medium.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Kashier/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Kashier-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Kashier-Bridging-Header.h"; path = "Kashier/Kashier-Bridging-Header.h"; sourceTree = "<group>"; };
-		F7CFD6FB98664180B44903EB /* Cairo-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Cairo-Regular.ttf"; path = "../src/shared/assets/fonts/Cairo-Regular.ttf"; sourceTree = "<group>"; };
+		F950D92B0D034887A5DB6FA0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Kashier/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FC8A7E1EFEEF4379A7910219 /* Outfit-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Regular.ttf"; path = "../src/shared/assets/fonts/Outfit-Regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,13 +71,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF5F728259EF479BF7CD6A56 /* libPods-Kashier.a in Frameworks */,
+				45FDD07AD72B89F3B8059AEF /* libPods-Kashier.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		004981198DA6FC112C84296F /* Kashier */ = {
+			isa = PBXGroup;
+			children = (
+				C0FBFE0D8BC8335FE374C4FB /* ExpoModulesProvider.swift */,
+			);
+			name = Kashier;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* Kashier */ = {
 			isa = PBXGroup;
 			children = (
@@ -87,69 +95,43 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				171EF4CB5A72496A9E379A88 /* GoogleService-Info.plist */,
-				E1F4FDC3CA53B1455B93FA70 /* PrivacyInfo.xcprivacy */,
+				F950D92B0D034887A5DB6FA0 /* GoogleService-Info.plist */,
+				689AF4C5C98A2AA011D20E6B /* PrivacyInfo.xcprivacy */,
 			);
 			name = Kashier;
+			sourceTree = "<group>";
+		};
+		2792FA4B9BF94B72AF39B202 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CAAD21AECA044C409602751D /* Cairo-Regular.ttf */,
+				63548035429443E196345B21 /* Cairo-Medium.ttf */,
+				A049F14DDE52494099E39791 /* Cairo-SemiBold.ttf */,
+				556983CD32394229A1A99CE5 /* Cairo-Bold.ttf */,
+				E8CA30768787433781650932 /* Outfit-Medium.ttf */,
+				FC8A7E1EFEEF4379A7910219 /* Outfit-Regular.ttf */,
+				5BB27BFEB85A4806A3DDF51B /* Outfit-Bold.ttf */,
+				5C7FEE64978F481CA230E0B0 /* Outfit-SemiBold.ttf */,
+				3ABBBAC32E1D4911B274E61F /* NotoNaskhArabic-Medium.ttf */,
+				19C2CD4AEB5544789209453F /* NotoNaskhArabic-Regular.ttf */,
+				D9180FBE9D8B47D593082BBF /* NotoNaskhArabic-Bold.ttf */,
+				92D32EC594DD499AAC1683C6 /* NotoNaskhArabic-SemiBold.ttf */,
+				1E6CD311B9D344AC93CB0276 /* NotoSans-Medium.ttf */,
+				06EF99F013E7462CBFF4BF20 /* NotoSans-Regular.ttf */,
+				5FA85889238A4736A144583C /* NotoSans-Bold.ttf */,
+				BEA0D49AC1314771A05B3B6B /* NotoSans-SemiBold.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				8FA8465EDD92A2DFD0E89774 /* libPods-Kashier.a */,
+				CD5C9F7E17BE2864A201BF5D /* libPods-Kashier.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		64690B17C90AA47F82EE234E /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				07588490335AC3BF75F65428 /* Pods-Kashier.debug.xcconfig */,
-				44FFA2102F522C7754D0C11D /* Pods-Kashier.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		66F3A2E7E2F641908235B1C1 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				F7CFD6FB98664180B44903EB /* Cairo-Regular.ttf */,
-				6EF6102F32124AA7830E58B9 /* Cairo-Medium.ttf */,
-				52F04D046DC54E7680EA05DF /* Cairo-SemiBold.ttf */,
-				46C21D19814D41FFADE622CB /* Cairo-Bold.ttf */,
-				5E595503DF8F4A848A3E0528 /* Outfit-Medium.ttf */,
-				B1CF20D074144933834D00A8 /* Outfit-Regular.ttf */,
-				C9B7C4A2DB57424C8A5F38E4 /* Outfit-Bold.ttf */,
-				9ECD986A6A1B4B2EA1EF26E4 /* Outfit-SemiBold.ttf */,
-				7BD58CFE47C24457AF4B4423 /* NotoNaskhArabic-Medium.ttf */,
-				B5F56E04A37A4A0288571D8B /* NotoNaskhArabic-Regular.ttf */,
-				52AD174A919B4C5B9270B600 /* NotoNaskhArabic-Bold.ttf */,
-				45968007BA5B4FE0ACE5591D /* NotoNaskhArabic-SemiBold.ttf */,
-				033F6C1E964E42DD9B54D4C6 /* NotoSans-Medium.ttf */,
-				7B9C64C2992A4924969AE8D7 /* NotoSans-Regular.ttf */,
-				74C28BAD85EB421890DF9E26 /* NotoSans-Bold.ttf */,
-				02D92853E964414FA0A0D01F /* NotoSans-SemiBold.ttf */,
-			);
-			name = Resources;
-			path = "";
-			sourceTree = "<group>";
-		};
-		6C8109AE6824BA1F2EEF6564 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				80FBFDE18F61964E1CCCB00B /* Kashier */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		80FBFDE18F61964E1CCCB00B /* Kashier */ = {
-			isa = PBXGroup;
-			children = (
-				371F061E93768C0FCC98BE72 /* ExpoModulesProvider.swift */,
-			);
-			name = Kashier;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -166,9 +148,9 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				66F3A2E7E2F641908235B1C1 /* Resources */,
-				64690B17C90AA47F82EE234E /* Pods */,
-				6C8109AE6824BA1F2EEF6564 /* ExpoModulesProviders */,
+				2792FA4B9BF94B72AF39B202 /* Resources */,
+				C3FBABC2F8460E434E739EC7 /* Pods */,
+				DE256EE25D9CC3AC69B34506 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -192,6 +174,24 @@
 			path = Kashier/Supporting;
 			sourceTree = "<group>";
 		};
+		C3FBABC2F8460E434E739EC7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				702836C13B2E39C2FEB028A0 /* Pods-Kashier.debug.xcconfig */,
+				2E9704E85013012C70440867 /* Pods-Kashier.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		DE256EE25D9CC3AC69B34506 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				004981198DA6FC112C84296F /* Kashier */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -200,13 +200,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Kashier" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				76EC8D17B21C3A1D7EF53F30 /* [Expo] Configure project */,
+				4E1BCB3DAC71E841403F5E04 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				2790496A539A7750920AE01F /* [CP] Embed Pods Frameworks */,
+				383B4CA4528211319D597136 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -256,24 +256,24 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				1F3ED39C50194C4595DC64A1 /* GoogleService-Info.plist in Resources */,
-				73922426A8A54FA79C8D2951 /* Cairo-Regular.ttf in Resources */,
-				92CC7F3560AE4CC0AF26CA6E /* Cairo-Medium.ttf in Resources */,
-				2C118279E36F457DB5B4550E /* Cairo-SemiBold.ttf in Resources */,
-				0CD4C9830BA74CCA8BA6CEB1 /* Cairo-Bold.ttf in Resources */,
-				EEC3899B9ACF4E99959E0059 /* Outfit-Medium.ttf in Resources */,
-				A228766980CC4F0885B3B94E /* Outfit-Regular.ttf in Resources */,
-				2C9EFE8B70674B36BE3A01D0 /* Outfit-Bold.ttf in Resources */,
-				3B9B38D2781C4C5BB5C10E60 /* Outfit-SemiBold.ttf in Resources */,
-				D0CCBB5D1A6F4DDD92EA90C3 /* NotoNaskhArabic-Medium.ttf in Resources */,
-				676B569ED51B4657B44391D4 /* NotoNaskhArabic-Regular.ttf in Resources */,
-				0071897D8781473E8B42B9D8 /* NotoNaskhArabic-Bold.ttf in Resources */,
-				76B6E15873B64BD5AE19DABC /* NotoNaskhArabic-SemiBold.ttf in Resources */,
-				36E15EA7E4634D56B9C6ACE7 /* NotoSans-Medium.ttf in Resources */,
-				F6DAC9970CC24F3292E4E4B0 /* NotoSans-Regular.ttf in Resources */,
-				166256C96C4F45EAA1DD304F /* NotoSans-Bold.ttf in Resources */,
-				90FB825043E7469EAB675EFD /* NotoSans-SemiBold.ttf in Resources */,
-				756BA616EF6BFD73CE369530 /* PrivacyInfo.xcprivacy in Resources */,
+				07EECC6A19CD43E2971D587B /* GoogleService-Info.plist in Resources */,
+				07D4ED59C573437FAC406A21 /* Cairo-Regular.ttf in Resources */,
+				D6B2F1BAC63C4018B8A26C16 /* Cairo-Medium.ttf in Resources */,
+				28847692ACF64E8093342F07 /* Cairo-SemiBold.ttf in Resources */,
+				90BC9B3A2EDD44A2B103C5F6 /* Cairo-Bold.ttf in Resources */,
+				A3C0E6CE180B4781AC31E6DA /* Outfit-Medium.ttf in Resources */,
+				3B9B9E6E7BA44997A64304C2 /* Outfit-Regular.ttf in Resources */,
+				3FE5AFE712FF4C25B226BB75 /* Outfit-Bold.ttf in Resources */,
+				7B0B7DF9F2E64071B442D00D /* Outfit-SemiBold.ttf in Resources */,
+				8A7A2D6DA84C4A569F32CFA1 /* NotoNaskhArabic-Medium.ttf in Resources */,
+				91F5F0F3F3D3487CAAA204FB /* NotoNaskhArabic-Regular.ttf in Resources */,
+				8256BD4143BE4FF781A85DA1 /* NotoNaskhArabic-Bold.ttf in Resources */,
+				BB632A41E902460AAB491FA9 /* NotoNaskhArabic-SemiBold.ttf in Resources */,
+				52C49C49DF5A4C8193C0365B /* NotoSans-Medium.ttf in Resources */,
+				2CF757E507FF4A2B87582023 /* NotoSans-Regular.ttf in Resources */,
+				EB1179178F1B41819F655CEB /* NotoSans-Bold.ttf in Resources */,
+				5B04A518E1644DD79EA6B0E1 /* NotoSans-SemiBold.ttf in Resources */,
+				4B1AFA9A8982860AD57B2F02 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,7 +319,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2790496A539A7750920AE01F /* [CP] Embed Pods Frameworks */ = {
+		383B4CA4528211319D597136 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -341,7 +341,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Kashier/Pods-Kashier-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		76EC8D17B21C3A1D7EF53F30 /* [Expo] Configure project */ = {
+		4E1BCB3DAC71E841403F5E04 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -427,7 +427,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				4870D440870DB5999055497A /* ExpoModulesProvider.swift in Sources */,
+				B62032D8E553877701C62D56 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,7 +436,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 07588490335AC3BF75F65428 /* Pods-Kashier.debug.xcconfig */;
+			baseConfigurationReference = 702836C13B2E39C2FEB028A0 /* Pods-Kashier.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -472,7 +472,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 44FFA2102F522C7754D0C11D /* Pods-Kashier.release.xcconfig */;
+			baseConfigurationReference = 2E9704E85013012C70440867 /* Pods-Kashier.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

@@ -1,7 +1,9 @@
 import FontText from "@/src/shared/components/FontText";
-import { Pressable } from "react-native";
+import { Pressable, TouchableOpacity, View } from "react-native";
 import { ChevronDownIcon } from "react-native-heroicons/outline";
 import * as DropdownMenu from 'zeego/dropdown-menu';
+import { DownArrow } from "@/src/shared/assets/svgs";
+import { cn } from "@/src/core/utils/cn";
 
 export interface DropDownOption<T> {
     label: string;
@@ -13,16 +15,68 @@ interface DropDownUIProps<T> {
     selected?: T;
     placeholder?: string;
     onChange: (value: T) => void;
+    dropdownKey?: string; // Optional for backward compatibility
+    variant?: 'default' | 'filter';
+    label?: string;
 }
 
-const DropDownUI = <T extends string | number>({
+const DropDownUI = <T extends string | number | boolean | null | undefined>({
     options,
     selected,
     placeholder = "Select option",
     onChange,
+    dropdownKey = 'dropdown',
+    variant = 'default',
+    label
 }: DropDownUIProps<T>) => {
-    const selectedLabel =
-        options.find((opt) => opt.value === selected)?.label ?? placeholder;
+    const selectedOption = options.find((opt) => opt.value === selected);
+    const selectedLabel = selectedOption?.label ?? placeholder;
+    const isSelected = selectedOption !== undefined;
+    
+    if (variant === 'filter') {
+        return (
+            <View>
+                {label && (
+                    <FontText
+                        type="body"
+                        weight="semi"
+                        className="text-sm text-content-secondary mb-2 self-start"
+                    >
+                        {label}
+                    </FontText>
+                )}
+                <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                        <TouchableOpacity className="w-full flex-row items-center justify-between px-4 h-11 bg-white border rounded border-stroke-input mb-3">
+                            <FontText
+                                type="body"
+                                weight="regular"
+                                className={cn(
+                                    "text-base",
+                                    isSelected ? "text-content-primary" : "text-placeholder-color"
+                                )}
+                            >
+                                {selectedLabel}
+                            </FontText>
+                            <DownArrow />
+                        </TouchableOpacity>
+                    </DropdownMenu.Trigger>
+
+                    <DropdownMenu.Content>
+                        <DropdownMenu.Label />
+                        {options.map((opt, index) => (
+                            <DropdownMenu.Item
+                                key={`${dropdownKey}-${index}`}
+                                onSelect={() => onChange(opt.value)}
+                            >
+                                <DropdownMenu.ItemTitle>{opt.label}</DropdownMenu.ItemTitle>
+                            </DropdownMenu.Item>
+                        ))}
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
+            </View>
+        );
+    }
 
     return (
         <DropdownMenu.Root>
@@ -40,9 +94,9 @@ const DropDownUI = <T extends string | number>({
             </DropdownMenu.Trigger>
 
             <DropdownMenu.Content>
-                {options.map((opt) => (
+                {options.map((opt, index) => (
                     <DropdownMenu.Item
-                        key={String(opt.value)}
+                        key={`${dropdownKey}-${index}`}
                         onSelect={() => onChange(opt.value)}
                     >
                         <DropdownMenu.ItemTitle>{opt.label}</DropdownMenu.ItemTitle>

@@ -14,6 +14,8 @@ import { authenticate } from "./login.service";
 
 export const useLoginViewModel = () => {
     const { api } = useApi();
+    // console.log('api : ',);
+    
     const setAuth = useAuthStore((state) => state.setAuth);
     const setMode = useEnvironmentStore(selectSetMode);
     const queryClient = useQueryClient();

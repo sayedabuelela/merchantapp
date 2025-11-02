@@ -117,6 +117,7 @@ export interface User {
     language: string;
     isLive: boolean;
     fullName: string;
+    userName?: string;
     settings: Settings;
     currencies: string[];
     currenciesTest: string[];

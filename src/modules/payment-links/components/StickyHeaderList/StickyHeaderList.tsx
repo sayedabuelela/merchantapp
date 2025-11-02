@@ -1,18 +1,17 @@
 import { GroupedRow } from '@/src/core/utils/groupData';
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
-import { PaymentLink } from '../../payment-links.model';
 
-interface Props {
-    listData: GroupedRow<PaymentLink>[];
+interface Props<T> {
+    listData: GroupedRow<T>[];
     stickyHeaderIndices: number[];
     fetchNextPage: () => void;
-    hasNextPage: boolean;
+    hasNextPage?: boolean;
     isFetchingNextPage: boolean;
-    handleShowCreatePLModal: () => void;
+    handleShowCreatePLModal?: () => void;
     ListEmptyComponent?: React.ReactElement;
-    renderItem: (info: ListRenderItemInfo<GroupedRow<PaymentLink>>) => React.ReactElement;
+    renderItem: (info: ListRenderItemInfo<GroupedRow<T>>) => React.ReactElement;
 }
-export default function StickyHeaderList({ listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, renderItem }: Props) {
+export default function StickyHeaderList<T extends Record<string, any>>({ listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, renderItem }: Props<T>) {
     return (
         <FlashList
             // contentContainerClassName='gap-y-4'

@@ -17,14 +17,14 @@ const BalanceHeaderItem = ({
     mainBalance = false,
 }: Props) => {
     return (
-        <View className={cn(mainBalance ? "items-center justify-center" : "")}>
+        <View className="items-center justify-center">
             <FontText
-                type="body" weight="regular" className="text-xs text-content-primary uppercase mb-1">
+                type="body" weight="regular" className="text-xs text-content-secondary uppercase mb-0.5">
                 {title}
             </FontText>
             <FontText
                 type="head" weight="bold"
-                className={cn("text-content-primary uppercase", mainBalance ? "text-3xl" : "text-base")}
+                className={cn("text-content-primary uppercase", mainBalance ? "text-xl" : "text-base")}
             >
                 {currencyNumber(value) + ' ' + currency}
             </FontText>

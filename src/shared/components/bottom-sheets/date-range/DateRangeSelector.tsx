@@ -16,7 +16,7 @@ interface DateRangeSelectorProps {
 
 export const DateRangeSelector = memo(({ label, from, to, onPress, t }: DateRangeSelectorProps) => (
     <View className="mb-6">
-        <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label)}>
+        <FontText type="body" weight="semi" className={'text-content-secondary text-sm mb-2 self-start'}>
             {label}
         </FontText>
         <Pressable

@@ -74,4 +74,9 @@ export const ROUTES = {
         },
         LIST: "/payment-links" as Route,
     },
+    // Balance
+    BALANCE: {
+        // ROOT: "/balance" as Route,
+        ACTIVITIES: "/balance/activities" as Route,
+    },
 };

@@ -22,7 +22,7 @@ interface DateRangeData {
 
 interface Props {
   title: string;
-  type: 'creationDate' | 'dueDate';
+  type: 'creationDate' | 'dueDate' | 'valueDate' | 'entryDate';
   onDateRangeSelected: (range: DateRangeData) => void;
   onClose?: () => void;
   savedRange?: DateRangeData;

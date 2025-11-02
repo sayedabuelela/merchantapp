@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBiometricViewModel } from "../biometric/biometric.viewmodel";
 import { LoginForm } from './components/LoginForm';
 import { useLoginViewModel } from './login.viewmodel';
+import { DeveloperSettings } from '../../settings/components/DeveloperSettings';
 
 const LoginScreen = () => {
     const { t } = useTranslation();
@@ -29,8 +30,8 @@ const LoginScreen = () => {
             if (isBiometricAvailable && !isInitialized) {
                 router.replace(ROUTES.AUTH.ENABLE_BIOMETRIC);
             } else {
-                // router.replace(ROUTES.TABS.ROOT);
-                router.replace(ROUTES.TABS.SETTINGS);
+                router.replace(ROUTES.TABS.BALANCE);
+                // router.replace(ROUTES.TABS.SETTINGS);
                 // router.replace(ROUTES.ONBOARDING.ACCOUNT_TYPE);
             }
         } catch (error) {
@@ -48,6 +49,7 @@ const LoginScreen = () => {
                 showsHorizontalScrollIndicator={false}
             >
                 <View className="items-center px-6">
+                    <DeveloperSettings/>
                     <KashierLogo
                     // style={{ marginBottom: 28 }}
                     />

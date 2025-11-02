@@ -35,6 +35,7 @@ export default function CurrencyDropDown({ name }: Props) {
                     options={currencyOptions}
                     selected={value}
                     onChange={onChange}
+                    dropdownKey="currency"
                 />
             )}
         />
