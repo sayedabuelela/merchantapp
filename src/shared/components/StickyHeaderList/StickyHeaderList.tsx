@@ -9,9 +9,10 @@ interface Props<T> {
     isFetchingNextPage: boolean;
     handleShowCreatePLModal?: () => void;
     ListEmptyComponent?: React.ReactElement;
+    ListHeaderComponent?: React.ReactElement;
     renderItem: (info: ListRenderItemInfo<GroupedRow<T>>) => React.ReactElement;
 }
-export default function StickyHeaderList<T extends Record<string, any>>({ listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, renderItem }: Props<T>) {
+export default function StickyHeaderList<T extends Record<string, any>>({ listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, ListHeaderComponent, renderItem }: Props<T>) {
     return (
         <FlashList
             // contentContainerClassName='gap-y-4'
@@ -27,6 +28,7 @@ export default function StickyHeaderList<T extends Record<string, any>>({ listDa
                 if (hasNextPage && !isFetchingNextPage) fetchNextPage();
             }}
             ListEmptyComponent={ListEmptyComponent}
+            ListHeaderComponent={ListHeaderComponent}
         />
     )
 }

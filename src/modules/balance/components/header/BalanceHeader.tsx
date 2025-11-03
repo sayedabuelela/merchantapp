@@ -22,7 +22,7 @@ const BalanceHeader = ({ notificationsCount, userName, balanceOverview, ongoingT
     return (
         <View className="mb-8 px-6">
             {/* Header row */}
-            <View className="flex-row justify-between items-center mb-2">
+            <View className="flex-row justify-between items-center">
                 <AccountsBtn onPress={onPressAccounts}
                 //  activeAccount={activeAccount} 
                 />
@@ -43,7 +43,7 @@ const BalanceHeader = ({ notificationsCount, userName, balanceOverview, ongoingT
 
             </View>
             {/* Greeting */}
-            <View>
+            {/* <View>
                 <FontText type="head" weight="regular" className="text-xl text-content-primary">
                     {getGreeting()},
                 </FontText>
@@ -53,7 +53,7 @@ const BalanceHeader = ({ notificationsCount, userName, balanceOverview, ongoingT
                 <FontText type="body" weight="regular" className="text-xs text-content-secondary mt-0.5">
                     {formatDateByLocale(new Date())}
                 </FontText>
-            </View>
+            </View> */}
             {/* Balance card */}
             <View className="px-6 pt-6 pb-4 bg-[##F1F6FF] rounded mt-6">
                 {/* Available Balance */}

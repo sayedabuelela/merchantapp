@@ -63,11 +63,10 @@ export const useRecentBalanceActivities = () => {
     const hasBalanceFeature = useHasFeature("multi accounts");
     const { activeAccount } = useBalanceContext();
 
-    return useQuery({
+    return useQuery<ActivitiesResponse, Error, ActivitiesResponse>({
         queryKey: ["balanceActivities", activeAccount?.accountId, { limit: 3, page: 1 }],
         queryFn: () => getActivities(api, { limit: 3, page: 1, accountId: activeAccount?.accountId }),
         enabled: !!(canViewBalance && hasBalanceFeature),
         staleTime: 5 * 60 * 1000,
     });
 };
-// export default useActivitiesVM;

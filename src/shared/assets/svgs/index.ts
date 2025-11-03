@@ -35,3 +35,5 @@ export { default as WarningSettingsIcon } from './files/warning-settings.svg';
 export { default as UserPersonalInfo } from './files/user-personalinfo.svg';
 export { default as DisabledFingerprintSettingsIcon } from './files/DisabledFingerprintSettingsIcon.svg';
 export { default as AccountsIcon } from './files/accounts-icon.svg';
+export { default as NoActivitiesIcon } from './files/balance/no-activities.svg';
+export { default as NoActivitiesSmallIcon } from './files/balance/no-activities-small.svg';

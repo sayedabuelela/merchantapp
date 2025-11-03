@@ -10,6 +10,7 @@ import { Modal, Pressable, TouchableWithoutFeedback, View } from "react-native";
 import { KeyboardController } from "react-native-keyboard-controller";
 import { ActivityType, FetchActivitiesParams } from "../balance.model";
 import DropDownUI from "@/src/shared/components/dropdown/DropDownUI";
+import { ArrowsUpDownIcon, CheckCircleIcon, CubeTransparentIcon } from "react-native-heroicons/outline";
 
 interface FiltersModalProps {
     isVisible: boolean;
@@ -229,6 +230,7 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
                                         selected={operation}
                                         onChange={setOperation}
                                         label={t('Activity type')}
+                                        icon={<ArrowsUpDownIcon size={24} color="#556767" />}
                                         placeholder={t('Activity type')}
                                         dropdownKey="activity"
                                         variant="filter"
@@ -239,6 +241,8 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
                                     options={statusFilters}
                                     selected={isReflected}
                                     onChange={setIsReflected}
+                                    label={t('Activity status')}
+                                    icon={<CheckCircleIcon size={24} color="#556767" />}
                                     placeholder={t('Activity status')}
                                     dropdownKey="status"
                                     variant="filter"
@@ -248,6 +252,8 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
                                     options={originFilters}
                                     selected={origin}
                                     onChange={setOrigin}
+                                    label={t('All origins')}
+                                    icon={<CubeTransparentIcon size={24} color="#556767" />}
                                     placeholder={t('All origins')}
                                     dropdownKey="origin"
                                     variant="filter"

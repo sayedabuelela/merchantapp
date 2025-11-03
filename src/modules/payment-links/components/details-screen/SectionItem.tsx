@@ -7,15 +7,16 @@ interface Props {
     title: string;
     value?: string | React.ReactNode;
     valueClassName?: string;
+    labelClassName?: string;
 }
 
-const SectionItem = ({ icon, title, value, valueClassName }: Props) => {
+const SectionItem = ({ icon, title, value, valueClassName, labelClassName }: Props) => {
     if (!value) return null;
     return (
         <View className='flex-row items-start'>
             {icon}
             <View className='ml-2'>
-                <FontText type="body" weight="regular" className="text-content-secondary text-sm mb-1 self-start">{title}</FontText>
+                <FontText type="body" weight="regular" className={cn("text-content-secondary text-sm mb-1 self-start", labelClassName)}>{title}</FontText>
                 <FontText type="body" weight="semi" className={cn("text-content-primary text-base self-start", valueClassName)}>{value}</FontText>
             </View>
         </View>

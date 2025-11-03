@@ -4,16 +4,14 @@ import { Pressable } from "react-native"
 import { ArrowRightIcon } from "react-native-heroicons/outline"
 import { Link, Route } from "expo-router"
 
-const SectionHeader = ({ title, nextRouteTitle, nextRoute, onPressPayouts }: { title: string, nextRouteTitle: string, nextRoute: Route, onPressPayouts?: () => void }) => {
+const SectionHeader = ({ title, nextRouteTitle, nextRoute }: { title: string, nextRouteTitle: string, nextRoute: Route }) => {
     return (
         <View className="flex-row items-center justify-between mb-4">
             <FontText type="head" weight="bold" className="text-xl text-content-primary">
                 {title}
             </FontText>
             <Link href={nextRoute} asChild>
-                <Pressable className="flex-row items-center "
-                // onPress={onPressPayouts}
-                >
+                <Pressable className="flex-row items-center">
                     <FontText type="body" weight="regular" className="text-xs text-primary mr-2">
                         {nextRouteTitle}
                     </FontText>

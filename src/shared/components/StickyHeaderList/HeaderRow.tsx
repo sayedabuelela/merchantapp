@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default function HeaderRow({ title }: { title: string }) {
     return (
-        <View className="bg-white pb-2 pt-6">
+        <View className="bg-white pb-2 pt-4">
             <FontText type="head" weight="bold" className="text-content-primary text-xl self-start">
                 {formatRelativeDate(title)}
             </FontText>

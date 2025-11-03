@@ -4,6 +4,8 @@ import { PaymentStatus } from '../payment-links.model';
 
 const statusStyles: Record<string, { backgroundColor: string; color: string }> = {
     PAID: { backgroundColor: '#D1FFD3', color: '#1A541D' },
+    TRANSFERRED: { backgroundColor: '#D1FFD3', color: '#1A541D' },
+    APPROVED: { backgroundColor: '#D1FFD3', color: '#1A541D' },
     OVERDUE: { backgroundColor: '#FFEAED', color: '#A50017' },
     CANCELLED: { backgroundColor: '#F5F6F6', color: '#919C9C' },
     EXPIRED: { backgroundColor: '#F5F6F6', color: '#919C9C' },
@@ -11,6 +13,7 @@ const statusStyles: Record<string, { backgroundColor: string; color: string }> =
     INITIATED: { backgroundColor: '#FFF7E8', color: '#956200' },
     "AWAITING_APPROVAL": { backgroundColor: '#FFF7E8', color: '#956200' },
     REJECTED: { backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017' },
+    FAILED: { backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017' },
 };
 
 export default function StatusBox({ status }: { status?: PaymentStatus }) {

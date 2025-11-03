@@ -22,7 +22,7 @@ const MainHeader = ({ title, withBack = true, actionBtn = false, onActionBtnPres
                 <FontText
                     type="head"
                     weight="bold"
-                    className="text-content-primary text-2xl ml-4"
+                    className="text-content-primary text-xl ml-4 capitalize"
                     numberOfLines={1}
                 >
                     {title}

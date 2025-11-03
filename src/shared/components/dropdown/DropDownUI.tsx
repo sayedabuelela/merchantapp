@@ -18,6 +18,7 @@ interface DropDownUIProps<T> {
     dropdownKey?: string; // Optional for backward compatibility
     variant?: 'default' | 'filter';
     label?: string;
+    icon?: React.ReactNode;
 }
 
 const DropDownUI = <T extends string | number | boolean | null | undefined>({
@@ -27,12 +28,13 @@ const DropDownUI = <T extends string | number | boolean | null | undefined>({
     onChange,
     dropdownKey = 'dropdown',
     variant = 'default',
+    icon,
     label
 }: DropDownUIProps<T>) => {
     const selectedOption = options.find((opt) => opt.value === selected);
     const selectedLabel = selectedOption?.label ?? placeholder;
     const isSelected = selectedOption !== undefined;
-    
+
     if (variant === 'filter') {
         return (
             <View>
@@ -47,18 +49,22 @@ const DropDownUI = <T extends string | number | boolean | null | undefined>({
                 )}
                 <DropdownMenu.Root>
                     <DropdownMenu.Trigger>
-                        <TouchableOpacity className="w-full flex-row items-center justify-between px-4 h-11 bg-white border rounded border-stroke-input mb-3">
-                            <FontText
-                                type="body"
-                                weight="regular"
-                                className={cn(
-                                    "text-base",
-                                    isSelected ? "text-content-primary" : "text-placeholder-color"
-                                )}
-                            >
-                                {selectedLabel}
-                            </FontText>
-                            <DownArrow />
+                        <TouchableOpacity className="w-full flex-row items-center justify-between px-3 h-11 bg-white border rounded border-stroke-input mb-3">
+                            <View className="flex-row items-center">
+                                {icon}
+                                <FontText
+                                    type="body"
+                                    weight="regular"
+                                    className={cn(
+                                        "text-sm",
+                                        isSelected ? "text-content-primary" : "text-placeholder-color",
+                                        icon && "ml-2"
+                                    )}
+                                >
+                                    {selectedLabel}
+                                </FontText>
+                            </View>
+                            <ChevronDownIcon size={24} color="#556767" />
                         </TouchableOpacity>
                     </DropdownMenu.Trigger>
 

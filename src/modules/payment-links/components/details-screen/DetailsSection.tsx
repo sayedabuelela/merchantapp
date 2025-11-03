@@ -14,7 +14,7 @@ const DetailsSection = ({ icon, title, children, className }: Props) => {
         <View className={cn(`p-4 border border-tertiary rounded gap-y-6`, className)}>
             <View className='flex-row items-center border-b border-tertiary pb-2'>
                 {icon}
-                <FontText type="body" weight="bold" className="text-content-secondary ml-2 text-base self-start">{title}</FontText>
+                <FontText type="head" weight="bold" className="text-content-secondary ml-2 text-xl self-start">{title}</FontText>
             </View>
             {children}
         </View>

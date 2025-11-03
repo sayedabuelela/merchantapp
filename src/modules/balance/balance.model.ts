@@ -63,10 +63,11 @@ export interface Activity {
     amount: number;
     currency: string;
     accountName: string;
+    accountId: string;
     destination?: string; // For payouts (bank account)
     source?: string; // For transfers
     date: string;
-    status: 'completed' | 'pending' | 'failed';
+    status: string;
     merchantId: string;
     operation: string;
     originReference: string;
@@ -79,8 +80,59 @@ export interface Activity {
     _id: string;
     createdAt: string;
     method: string;
+    isReflected: boolean;
+    comment: string;
+    fees: string;
 }
 
+export interface Transfer {
+    isReconcileFailed: boolean,
+    transferId: string,
+    amount: number,
+    method: string,
+    recipientName: string,
+    recipientNumber: string,
+    recipientBank: string,
+    merchantId: string,
+    status: string,
+    merchantDetails: {
+        email: string,
+        businessEmail: string,
+        storeName: string
+    },
+    createdBy: {
+        id: string,
+        name: string,
+        email: string
+    },
+    batch: {
+        _id: string,
+        name: string,
+        id: string,
+        method: string,
+        transfersCount: number,
+        webhookReconcile: string
+    },
+    history?: Array<{
+        watchDogCron: boolean,
+        _id: string,
+        status: string,
+        date: string,
+        source: string,
+        webhookReconcile: string
+    }>,
+    apmTraceId: string,
+    createdAt: string,
+    updatedAt: string,
+    __v: number,
+    fees: {
+        PCC_selling_rate: number,
+        PCC_selling_flat: number,
+        total_selling_rate: string,
+        total_selling_fees: string
+    },
+    accountId: string
+}
 export interface ActivitiesPagination {
     page: number;
     limit: number;
@@ -93,7 +145,22 @@ export interface ActivitiesResponse {
     data: Activity[];
     pagination: ActivitiesPagination;
 }
-// {"pageParams": [1], "pages": [{"data": [Array], "message": "Payment links retrieved successfully", "pagination": [Object]}]}
+
+export interface ActivityDetailsResponse {
+    message: string;
+    data: Activity;
+}
+
+export interface TransferDetailsResponse {
+    data: Transfer;
+}
+
+export interface PaymentDetailsResponse {
+    data: {
+        body: Transfer
+    };
+}
+
 export interface ActivitiesInfinityResponse {
     pageParams: number;
     pages: {
@@ -114,4 +181,14 @@ export interface FetchActivitiesParams {
     creationDateTo?: string;
     page?: number;
     limit?: number;
+    search?: string;
+}
+
+export interface SettlementWindowParams {
+    accountId: string;
+    limit?: number;
+    sortType?: number;
+    page?: number;
+    dateFrom?: string;
+    dateTo?: string;
 }

@@ -1,5 +1,5 @@
 import { Link } from "expo-router"
-import { View } from "react-native"
+import { Pressable, View } from "react-native"
 import { Activity } from "../balance.model"
 import FontText from "@/src/shared/components/FontText"
 import { currencyNumber } from "@/src/core/utils/number-fields"
@@ -18,6 +18,7 @@ const IconBox = ({ children }: { children: React.ReactNode }) => {
 
 const ActivityCard = ({
     _id,
+    operation,
     origin,
     amount,
     createdAt,
@@ -25,6 +26,7 @@ const ActivityCard = ({
     fromBalance
 }: {
     _id: string;
+    operation: string;
     origin: string;
     amount: number;
     createdAt: string;
@@ -33,36 +35,38 @@ const ActivityCard = ({
 }) => {
     const { t } = useTranslation();
     // console.log('origin !== "transfers" && fromBalance : ',origin !== "transfers" && fromBalance);
-    
+    // operation : "payout"
     return (
         <Link
             href={`/balance/${_id}`} asChild>
-            <View className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1">
+            <Pressable className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1">
                 <View className="flex-row items-center justify-between mb-1">
                     <View className="flex-row items-center gap-x-2">
                         <IconBox>
-                            {origin === "transfers" ? <ArrowSmallUpIcon size={10} color={'#A50017'} /> : <ArrowSmallDownIcon size={10} color={'#4AAB4E'} />}
+                            {origin === "payments" ? <ArrowSmallDownIcon size={10} color={'#4AAB4E'} /> : <ArrowSmallUpIcon size={10} color={'#A50017'} />}
                         </IconBox>
-                        <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                            {t(origin === "transfers" ? "Transfer" : "Payment")}
+                        <FontText type="body" weight="regular" className="text-content-secondary text-xs capitalize">
+                            {/* {t(origin === "transfers" ? "Transfer" : "Payment")} */}
+                            {t(operation)}
+                             {/* {origin} */}
                         </FontText>
                     </View>
                     <FontText type="body" weight="bold"
                         className={cn("text-content-primary text-base leading-5 ml-1",
-                            (origin !== "transfers" && fromBalance) && "text-success")}>
-                        {(origin !== "transfers" && fromBalance) && "+"}{currencyNumber(amount)} EGP
+                            (origin === "payments" && fromBalance) && "text-success")}>
+                        {(origin === "payments" && fromBalance) && "+"}{currencyNumber(amount)} {t('EGP')}
                     </FontText>
                 </View>
                 <FontText type="body" weight="regular" className="text-content-primary text-xs">
                     {accountName}
                 </FontText>
-                <FontText type="body" weight="regular" className="text-content-primary text-xs">
+                {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                     {t('To')} {'Account Name'}
+                </FontText> */}
+                <FontText type="body" weight="regular" className="text-content-secondary text-xs">
+                    {operation === "payout" && `${formatRelativeDate(createdAt)} - `}{formatAMPM(createdAt)}
                 </FontText>
-                <FontText type="body" weight="regular" className="text-content-primary text-xs">
-                    {origin !== "transfers" && `${formatRelativeDate(createdAt)} - `}{formatAMPM(createdAt)}
-                </FontText>
-            </View>
+            </Pressable>
         </Link>
     )
 }

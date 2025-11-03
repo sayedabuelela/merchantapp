@@ -174,7 +174,7 @@ const FiltersModal = ({ isVisible, onClose, filters, setFilters }: FiltersModalP
 
                   {/* Amount Range */}
                   <View className="mb-6">
-                    <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label)}>
+                    <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label,'text-content-secondary')}>
                       {t('Amount')}
                     </FontText>
                     <View className="flex-row items-center justify-between">

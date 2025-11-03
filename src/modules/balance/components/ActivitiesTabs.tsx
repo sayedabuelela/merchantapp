@@ -14,7 +14,7 @@ const TABS = [
 interface Props {
     value: ActivityType;
     onSelectType: (val: ActivityType) => void;
-    isListEmpty: boolean;
+    isListEmpty?: boolean;
 }
 
 export default function ActivitiesTabs({ value, onSelectType, isListEmpty }: Props) {

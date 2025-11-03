@@ -12,6 +12,7 @@ export const COMMON_STYLES = {
     input: `w-full flex-1 text-${isRTL ? 'right' : 'left'} self-start ${getFontClass('body', 'regular')}`,
     errorMsg: `self-start text-danger text-sm`,
     successMsg: `self-start text-success text-sm`,
+    infoMsg: `self-start text-primary text-xs`,
     textWrap: `flex-1 flex-wrap`,
     mainCardClass: `border-[1.5px] rounded border-tertiary p-4`,
 } as const;

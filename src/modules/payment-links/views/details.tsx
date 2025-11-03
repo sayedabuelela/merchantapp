@@ -1,3 +1,4 @@
+import { cn } from '@/src/core/utils/cn';
 import { formatRelativeDate, formatTime } from '@/src/core/utils/dateUtils';
 import { currencyNumber } from '@/src/core/utils/number-fields';
 import FontText from '@/src/shared/components/FontText';
@@ -7,8 +8,8 @@ import useCountries from '@/src/shared/hooks/useCountries';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
-import { AdjustmentsHorizontalIcon, BanknotesIcon, CalendarIcon, ChatBubbleOvalLeftEllipsisIcon, ChatBubbleOvalLeftIcon, ClockIcon, DocumentTextIcon, EnvelopeIcon, HashtagIcon, PhoneIcon, PowerIcon, QrCodeIcon, RectangleGroupIcon, ShareIcon, TagIcon, UserIcon } from 'react-native-heroicons/outline';
+import { ScrollView, View } from 'react-native';
+import { AdjustmentsHorizontalIcon, BanknotesIcon, CalendarIcon, ChatBubbleOvalLeftIcon, ClockIcon, DocumentTextIcon, EnvelopeIcon, HashtagIcon, PowerIcon, QrCodeIcon, RectangleGroupIcon, ShareIcon, TagIcon, UserIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DetailsSection from '../components/details-screen/DetailsSection';
 import ExtraFeesList from '../components/details-screen/ExtraFeesList';
@@ -18,8 +19,6 @@ import SummaryItem from '../components/details-screen/SummaryItem';
 import ActionsModal from '../components/modals/ActionsModal';
 import StatusBox from '../components/StatusBox';
 import usePaymentLinkVM from '../viewmodels/usePaymentLinkVM';
-import { cn } from '@/src/core/utils/cn';
-import DeliveryStatusBox from '../components/DeliveryStatusBox';
 
 export default function PaymentLinkDetailsScreen() {
     const { paymentLinkId } = useLocalSearchParams<{ paymentLinkId?: string }>();
@@ -44,8 +43,6 @@ export default function PaymentLinkDetailsScreen() {
             sms: paymentLink?.lastShareStatus?.sms?.status
         }
     }, [paymentLink?.lastShareStatus]);
-    console.log('paymentLink', paymentLink);
-    console.log('paymentLink extraFees', (paymentLink?.totalAmountWithoutFees !== undefined) || (paymentLink?.extraFees && paymentLink?.extraFees.length > 0));
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -183,13 +180,13 @@ export default function PaymentLinkDetailsScreen() {
                                             icon={<EnvelopeIcon size={24} color="#556767" />}
                                             title={t("Email")}
                                             value={deliveryStatus?.email}
-                                            valueClassName={cn(deliveryStatus?.email === "delivered" ? "text-success" :deliveryStatus?.email === "failed" ? "text-danger" : "text-[#B77801]", 'capitalize')}
+                                            valueClassName={cn(deliveryStatus?.email === "delivered" ? "text-success" : deliveryStatus?.email === "failed" ? "text-danger" : "text-[#B77801]", 'capitalize')}
                                         />
                                         <SectionItem
                                             icon={<ChatBubbleOvalLeftIcon size={24} color="#556767" />}
                                             title={t("SMS")}
                                             value={deliveryStatus?.sms}
-                                            valueClassName={cn(deliveryStatus?.sms === "delivered" ? "text-success" :deliveryStatus?.sms === "failed" ? "text-danger" : "text-[#B77801]", 'capitalize')}
+                                            valueClassName={cn(deliveryStatus?.sms === "delivered" ? "text-success" : deliveryStatus?.sms === "failed" ? "text-danger" : "text-[#B77801]", 'capitalize')}
                                         />
                                     </View>
                                 </DetailsSection>

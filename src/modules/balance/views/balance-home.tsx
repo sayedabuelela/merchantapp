@@ -13,6 +13,7 @@ import useAccounts from '../viewmodels/useAccounts';
 import { useRecentBalanceActivities } from '../viewmodels/useActivitiesVM';
 import useStatistics from '../viewmodels/useStatistics';
 import { ROUTES } from '@/src/core/navigation/routes';
+import { NoActivitiesIcon, NoActivitiesSmallIcon } from '@/src/shared/assets/svgs';
 
 const BalancesScreen = () => {
     const { t } = useTranslation();
@@ -21,6 +22,20 @@ const BalancesScreen = () => {
     const { accountStatistics: { data: accountStats }, transfersStatistics: { data: transfersStats } } = useStatistics();
     const [showAccountsModal, setShowAccountsModal] = useState(false);
     const { accounts } = useAccounts();
+
+    const RecentActivitiesEmpty = () => {
+        return (
+            <View className="items-center justify-center py-8">
+                <NoActivitiesSmallIcon />
+                <FontText type="body" weight="bold" className="text-content-primary text-base text-center mt-4">
+                    {t('No balance activities yet!')}
+                </FontText>
+                <FontText type="body" weight="regular" className="text-content-secondary text-base text-center mt-2">
+                    {t('When funds move in or out of your account, the details will be listed here.')}
+                </FontText>
+            </View>
+        );
+    };
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -36,7 +51,7 @@ const BalancesScreen = () => {
                         <SettlementForecast
                             upcomingValueDates={accountStats?.upcomingValueDates}
                             currency={t("EGP")}
-                            onPressPayouts={() => { }}
+                            nextRoute={ROUTES.BALANCE.ACTIVITIES}
                         />
                     )}
                     <View>
@@ -44,7 +59,6 @@ const BalancesScreen = () => {
                             title={t("Recent activities")}
                             nextRouteTitle={t("All activities")}
                             nextRoute={ROUTES.BALANCE.ACTIVITIES}
-                            onPressPayouts={() => { }}
                         />
                         {recentActivities?.data && recentActivities.data.length > 0 ? (
                             recentActivities.data.map((item) => (
@@ -54,13 +68,7 @@ const BalancesScreen = () => {
                                     fromBalance
                                 />
                             ))
-                        ) : (
-                            <View className="py-20">
-                                <FontText type="body" weight="regular" className="text-content-secondary text-center">
-                                    {t("No activities found")}
-                                </FontText>
-                            </View>
-                        )}
+                        ) : (<RecentActivitiesEmpty />)}
                     </View>
                 </View>
             </ScrollView>

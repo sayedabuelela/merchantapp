@@ -36,7 +36,7 @@ const AccountsModal = ({ isVisible, onClose, accounts }: Props) => {
         onClose();
         setIsAnimating(false);
     };
-
+    // accounts = [1,3,4,5]
     return (
         <Modal
             transparent
@@ -89,6 +89,7 @@ const AccountsModal = ({ isVisible, onClose, accounts }: Props) => {
 
                                     {/* Action Buttons */}
                                     <Button
+                                        disabled={(accounts?.length <= 1)}
                                         title={t('Select')}
                                         onPress={() => {
                                             setActiveAccount(account);

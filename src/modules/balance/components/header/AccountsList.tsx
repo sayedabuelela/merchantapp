@@ -48,7 +48,7 @@ const AccountsList = ({ accounts, setActiveAccount, activeAccount }: Props) => {
     const handleSelectAccount = (account: { accountId: string; accountName: string }) => {
         setActiveAccount(account);
     };
-
+    console.log('accounts : ', accounts);
     return (
         <View className="max-h-[180px]">
             <FlatList

@@ -1,48 +1,104 @@
 import { Environment } from "@/src/core/environment/environments";
 import { useEnvironment } from "@/src/core/environment/useEnvironment.hook";
-import { ModeToggle } from "@/src/modules/settings/components/ModeToggle";
 import React from 'react';
-import { Switch, Text, View } from 'react-native';
+import { Switch, View } from 'react-native';
+import FontText from '@/src/shared/components/FontText';
+import { cn } from '@/src/core/utils/cn';
 
 export const DeveloperSettings = () => {
     const {
         environment,
         mode,
         setEnvironment,
-        setMode,
-        isProduction
+        isProduction,
+        isLiveMode,
+        toggleMode
     } = useEnvironment()
-
 
     // Only show in development
     if (!__DEV__) return null
 
     return (
-        <View className="mx-4 my-6 rounded-xl overflow-hidden">
-            <View className="px-5 py-4 border-t border-gray-700 flex-row justify-between items-center">
+        <View className="mb-8 bg-white rounded-2xl border border-stroke-main w-full">
+            {/* Header */}
+            <View className="bg-surface-tertiary px-4 py-3 border-b border-stroke-main">
+                <FontText
+                    type="head"
+                    weight="bold"
+                    className="text-primary text-sm"
+                >
+                    Developer Settings
+                </FontText>
+            </View>
+
+            {/* Environment Toggle */}
+            <View className="px-4 py-4 border-b border-stroke-main flex-row justify-between items-center">
                 <View>
-                    <Text className="text-base text-white">Environment</Text>
-                    <Text className="text-xs text-gray-400 mt-1">
+                    <FontText
+                        type="body"
+                        weight="semi"
+                        className="text-content-primary text-base"
+                    >
+                        Environment
+                    </FontText>
+                    <FontText
+                        type="body"
+                        weight="regular"
+                        className="text-content-secondary text-sm mt-1"
+                    >
                         {isProduction ? 'Production' : 'Staging'}
-                    </Text>
+                    </FontText>
                 </View>
                 <Switch
                     value={isProduction}
                     onValueChange={(value) =>
                         setEnvironment(value ? Environment.PRODUCTION : Environment.STAGING)
                     }
-                    trackColor={{ false: '#4b5563', true: '#6366f1' }}
+                    trackColor={{ false: '#919C9C', true: '#001F5F' }}
                     thumbColor="#ffffff"
-                    ios_backgroundColor="#4b5563"
+                    ios_backgroundColor="#919C9C"
                 />
             </View>
 
-            <ModeToggle />
+            {/* Mode Toggle */}
+            <View className="px-4 py-4 border-b border-stroke-main flex-row justify-between items-center">
+                <View className="flex-row items-center">
+                    <View className={cn('w-5 h-5 rounded-full', isLiveMode ? 'bg-[#388E3B]' : 'bg-[#919C9C]')} />
+                    <View className="ml-3">
+                        <FontText
+                            type="body"
+                            weight="semi"
+                            className="text-content-primary text-base"
+                        >
+                            {isLiveMode ? 'Live Mode' : 'Test Mode'}
+                        </FontText>
+                        <FontText
+                            type="body"
+                            weight="regular"
+                            className="text-content-secondary text-sm mt-1"
+                        >
+                            {isLiveMode ? 'Production data' : 'Sandbox data'}
+                        </FontText>
+                    </View>
+                </View>
+                <Switch
+                    value={isLiveMode}
+                    onValueChange={toggleMode}
+                    trackColor={{ false: '#919C9C', true: '#388E3B' }}
+                    thumbColor="#ffffff"
+                    ios_backgroundColor="#919C9C"
+                />
+            </View>
 
-            <View className="p-5 border-t border-gray-700">
-                <Text className="text-xs text-gray-400">
-                    {`Current: ${environment} / ${mode}`}
-                </Text>
+            {/* Current Configuration */}
+            <View className="px-4 py-3 bg-surface-tertiary">
+                <FontText
+                    type="body"
+                    weight="medium"
+                    className="text-content-hint text-xs"
+                >
+                    Current: {environment} / {mode}
+                </FontText>
             </View>
         </View>
     )

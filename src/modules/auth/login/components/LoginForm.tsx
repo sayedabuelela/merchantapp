@@ -35,8 +35,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'P@ssw0rdd',
             // email: 'awageeh@kashier.io',
             // password: 'P@ssw0rd012',
-            email: 'duaa.bst@gmail.com',
-            password: 'AsmaaTest110@',
+            // email: 'duaa.bst@gmail.com',
+            // password: 'AsmaaTest110@',
             // email: 'kexoka8183@fixwap.com',
             // email: 'sexepic929@fixwap.com',
             // email: 'xihoxi2002@elygifts.com',
@@ -45,6 +45,10 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'Password500$$',
             // email: 'kamati2654@filipx.com',
             // password: 'P@ssw0rd',
+            email: 'bayoumi.store@gmail.com',
+            password: 'Aa@12345',
+            // email: 'pesyamao2@gmail.com',
+            // password: 'SaraTest@010',
         },
     });
 
