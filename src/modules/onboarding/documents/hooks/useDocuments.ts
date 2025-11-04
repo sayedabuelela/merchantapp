@@ -1,6 +1,6 @@
 import { useApi } from "@/src/core/api/clients.hooks";
 import { useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Document, FileDownloadApiResponse } from "../documents.model";
 import { getDocumentFileData as getFileContentService } from "../documents.service";
 import { useDocumentsStore } from "../documents.store";
@@ -11,16 +11,20 @@ const useDocuments = ({ documents }: { documents: Document[] }) => {
     const addOrUpdateDocument = useDocumentsStore(state => state.addOrUpdateDocument);
     const documentsInStore = useDocumentsStore(state => state.documents);
     const queryClient = useQueryClient();
-    const prefetchDocuments = async () => {
+
+    const prefetchDocuments = useCallback(async () => {
+        if (!documentKeys) return;
         await queryClient.prefetchQuery({
             queryKey: ['all-documents', documentKeys],
             queryFn: () => getFileContentService(api, documentKeys),
         })
-    }
+    }, [documentKeys, queryClient, api]);
+
     useEffect(() => {
         if (!documents?.length) return;
 
         let fileKeys = '';
+        let shouldUpdate = false;
 
         documents.forEach((documentItem, index) => {
             const existingDocIndex = documentsInStore.findIndex(
@@ -31,25 +35,30 @@ const useDocuments = ({ documents }: { documents: Document[] }) => {
                 documentsInStore[existingDocIndex].key !== documentItem.key;
 
             if (needsUpdate) {
+                shouldUpdate = true;
+            }
+
+            fileKeys += `fileKeys[]=${documentItem.key}${(documents.length - 1) !== index ? '&' : ''}`;
+        });
+
+        // Only update store if actually needed, and do it in a batch
+        if (shouldUpdate) {
+            documents.forEach((documentItem) => {
                 addOrUpdateDocument({
                     key: documentItem.key,
                     documentType: documentItem.documentType,
                     isDeleted: false,
                     isReviewd: false,
                 });
-            }
-
-            fileKeys += `fileKeys[]=${documentItem.key}${(documents.length - 1) !== index ? '&' : ''}`;
-        });
+            });
+        }
 
         setDocumentKeys(fileKeys);
-    }, [documents, addOrUpdateDocument]);
-    
+    }, [documents]);
+
     useEffect(() => {
-        if (documentKeys) {
-            prefetchDocuments()
-        }
-    }, [documentKeys, queryClient, api]);
+        prefetchDocuments();
+    }, [prefetchDocuments]);
 
     const {
         data: allDocumentsData,

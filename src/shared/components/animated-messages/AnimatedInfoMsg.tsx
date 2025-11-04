@@ -22,7 +22,7 @@ const AnimatedInfoMsg = ({ infoMsg, className, withBackground = true }: Animated
                     animate={{
                         opacity: 1,
                         translateY: 0
-                    }}
+                    }} 
                     exit={{
                         opacity: 0,
                         translateY: 10
@@ -32,7 +32,7 @@ const AnimatedInfoMsg = ({ infoMsg, className, withBackground = true }: Animated
                         duration: 600
                     }}
                     className={cn(
-                        "flex-row p-4 mt-4 mb-6 rounded items-start",
+                        "flex-row p-4 my-6 rounded items-start",
                         withBackground ? "bg-[#F1F6FF] border border-[#C0D5FF]" : "",
                         className
                     )}

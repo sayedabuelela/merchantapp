@@ -26,7 +26,7 @@ const RegisterEmailScreen = () => {
     const { control, handleSubmit, formState: { errors, isValid }, setFocus } = useForm<RegisterEmailFormData>({
         resolver: zodResolver(RegisterEmailSchema),
         defaultValues: {
-            email: 'jafom33480@filipx.com',
+            email: '',
         },
     });
 

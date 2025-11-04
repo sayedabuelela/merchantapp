@@ -45,6 +45,7 @@ const BalancesScreen = () => {
                     balanceOverview={accountStats?.balanceOverview}
                     ongoingTransfers={transfersStats?.onGoingTransfersAmount}
                     onPressAccounts={() => setShowAccountsModal(true)}
+                    showAccountsBtn={(accounts !== undefined && accounts?.length > 0)}
                 />
                 <View className="px-6">
                     {accountStats?.upcomingValueDates && accountStats?.upcomingValueDates.length > 0 && (
@@ -72,11 +73,11 @@ const BalancesScreen = () => {
                     </View>
                 </View>
             </ScrollView>
-            {accounts?.data !== undefined && (
+            {accounts !== undefined && (
                 <AccountsModal
                     isVisible={showAccountsModal}
                     onClose={() => setShowAccountsModal(false)}
-                    accounts={accounts?.data}
+                    accounts={accounts}
                 />
             )}
         </SafeAreaView>

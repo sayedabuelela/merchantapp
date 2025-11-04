@@ -12,8 +12,12 @@ const useStatistics = () => {
     const user = useAuthStore(selectUser)
     const { canViewBalance } = usePermissions(user?.actions!);
     const hasBalanceFeature = useHasFeature("multi accounts");
+    console.log('hasBalanceFeature actions : ', user?.actions);
+    console.log('hasBalanceFeature enabledFeatures : ', user?.enabledFeatures);
+
     const { activeAccount } = useBalanceContext();
 
+    console.log('hasBalanceFeature activeAccount : ', activeAccount.accountId);
     const accountStatistics = useQuery<AccountStatistics>({
         queryKey: ["account-statistics", activeAccount.accountId],
         queryFn: () => getAccountStatistics(api, activeAccount.accountId),

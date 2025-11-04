@@ -110,7 +110,7 @@ const BalanceActivitiesScreen = () => {
             // isListEmpty={false}
             />
 
-            <View className={cn("flex-1 px-6 ", type === 'payout' && "mt-6")}>
+            <View className={cn("flex-1 px-6 ")}>
 
                 <StickyHeaderList
                     listData={listData}
@@ -121,7 +121,12 @@ const BalanceActivitiesScreen = () => {
                     renderItem={renderItem}
                     ListHeaderComponent={
                         <View className="justify-between items-start my-2">
-                            <AccountsBtn onPress={() => setShowAccountsModal(true)} />
+                            {accounts !== undefined && accounts.length > 0 && (
+                                <AccountsBtn
+                                    className="mt-4"
+                                    onPress={() => setShowAccountsModal(true)}
+                                />
+                            )}
                             {type !== 'all' && <AnimatedInfoMsg infoMsg={infoMsg} />}
                         </View>
                     }
@@ -136,11 +141,11 @@ const BalanceActivitiesScreen = () => {
                     }
                 />
             </View>
-            {accounts?.data !== undefined && (
+            {accounts !== undefined && (
                 <AccountsModal
                     isVisible={showAccountsModal}
                     onClose={() => setShowAccountsModal(false)}
-                    accounts={accounts?.data}
+                    accounts={accounts}
                 />
             )}
             <ActivityFilterModal

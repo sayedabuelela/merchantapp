@@ -13,6 +13,9 @@ import { transformFileContentResponse } from "./documents.helper";
 import { BusinessLogoMetadata, DocumentViewModelProps, FileUploadApiResponse, Document as OnboardingDocumentMetadata, PickedFile, UploadProgressState } from "./documents.model";
 import { getDocumentFileData as getFileContentService, submitDocumentsApi, uploadDocumentFileApi } from "./documents.service";
 import { useDocumentsStore } from "./documents.store";
+import { useToast } from "@/src/core/providers/ToastProvider";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
 
@@ -26,6 +29,7 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
     const documents = useDocumentsStore(state => state.documents);
     const [uploadProgress, setUploadProgress] = useState<UploadProgressState | null>(null);
     const onboardingDataQueryKey = ['onboarding-data', merchantId];
+    const { showToast } = useToast?.() ?? { showToast: () => { } };
 
     const { data: onboardingData, isLoading: isLoadingOnboardingData } = useQuery<GlobalOnboardingData>({
         queryKey: onboardingDataQueryKey,
@@ -91,8 +95,21 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                 (progressEvent: AxiosProgressEvent) => handleUploadProgress(progressEvent, pickedFile.size || 0)
             )
         },
+        onSuccess: () => {
+            // Invalidate queries to refresh data
+            queryClient.invalidateQueries({ queryKey: onboardingDataQueryKey });
+            queryClient.invalidateQueries({ queryKey: ['displayableFile'] });
+            showToast({
+                message: 'Document uploaded successfully',
+                type: 'success',
+            });
+        },
         onError: (error, variables) => {
             console.error(`Error uploading ${documentType}:`, error.message);
+            showToast({
+                message: `Upload failed: ${error.message}`,
+                type: 'danger',
+            });
             setUploadProgress({
                 loaded: 0,
                 total: variables.pickedFile.size || 0,
@@ -116,41 +133,76 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                 },
             });
         },
-        onError: (error, variables) => {
-            console.error(`Error uploading ${documentType}:`, error.message);
+        onSuccess: () => {
+            // Invalidate queries to refresh data after submission
+            queryClient.invalidateQueries({ queryKey: onboardingDataQueryKey });
+            showToast({
+                message: 'Documents submitted successfully',
+                type: 'success',
+            });
+        },
+        onError: (error) => {
+            console.error(`Error submitting documents:`, error.message);
+            showToast({
+                message: `Submission failed: ${error.message}`,
+                type: 'danger',
+            });
         },
     });
 
     const handleUploadDocumentStep = useCallback(async (file: PickedFile | null, navigateTo: Route) => {
         try {
             if (file) {
-                await uploadDocumentMutation.mutateAsync({ pickedFile: file }, {
-                    onSuccess: async (data, variables) => {
-                        const key = data?.body?.imageTitle;
-                        if (key) {
-                            addOrUpdateDocument({
-                                key,
-                                documentType,
-                                isDeleted: false,
-                                isReviewd: false,
-                            });
+                // Validate file size before upload
+                if (file.size && file.size > MAX_FILE_SIZE) {
+                    const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                    showToast({
+                        message: `File size (${fileSizeInMB}MB) exceeds the maximum limit of 5MB`,
+                        type: 'danger',
+                    });
+                    setUploadProgress({
+                        loaded: 0,
+                        total: file.size,
+                        percentage: 0,
+                        status: 'error',
+                        error: `File size exceeds 5MB limit`,
+                    });
+                    return;
+                }
 
-                            if (documentType === 'others') {
-                                await submitOnboardingStep(navigateTo);
-                            } else {
-                                router.push(navigateTo);
-                            }
-                        } else {
-                            setUploadProgress({
-                                loaded: variables.pickedFile.size || 0,
-                                total: variables.pickedFile.size || 0,
-                                percentage: 0,
-                                status: 'error',
-                                error: 'Upload succeeded but no file key was returned.',
-                            });
-                        }
+                const uploadResult = await uploadDocumentMutation.mutateAsync({ pickedFile: file });
+                const key = uploadResult?.body?.imageTitle;
+
+                if (key) {
+                    // Update store and wait for it to propagate
+                    addOrUpdateDocument({
+                        key,
+                        documentType,
+                        isDeleted: false,
+                        isReviewd: false,
+                    });
+
+                    // For 'others' document (final step), use the updated documents array directly
+                    if (documentType === 'others') {
+                        // Get fresh documents state after update
+                        const updatedDocuments = useDocumentsStore.getState().documents;
+                        await submitOnboardingStep(navigateTo, updatedDocuments);
+                    } else {
+                        router.push(navigateTo);
                     }
-                });
+                } else {
+                    showToast({
+                        message: 'Upload succeeded but no file key was returned',
+                        type: 'danger',
+                    });
+                    setUploadProgress({
+                        loaded: file.size || 0,
+                        total: file.size || 0,
+                        percentage: 0,
+                        status: 'error',
+                        error: 'Upload succeeded but no file key was returned.',
+                    });
+                }
             } else {
                 if (documentType === 'others') {
                     await submitOnboardingStep(navigateTo);
@@ -160,18 +212,28 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
             }
         } catch (error) {
             console.error("Final document submission error:", error);
+            showToast({
+                message: 'Failed to upload document. Please try again.',
+                type: 'danger',
+            });
         }
-    }, [uploadDocumentMutation.mutateAsync, addOrUpdateDocument, router]);
+    }, [uploadDocumentMutation.mutateAsync, addOrUpdateDocument, documentType, router, showToast]);
 
 
-    const submitOnboardingStep = useCallback(async (navigateTo: Route) => {
+    const submitOnboardingStep = useCallback(async (navigateTo: Route, _documentsToSubmit?: OnboardingDocumentMetadata[]) => {
         try {
+            // If specific documents provided, ensure they're used; otherwise use current store state
+            // The mutation already reads from the documents state, but we ensure it's fresh
             await submitDocumentsMutation.mutateAsync();
             router.push(navigateTo);
         } catch (error) {
             console.error("Error submitting onboarding step:", error);
+            showToast({
+                message: 'Failed to submit documents. Please try again.',
+                type: 'danger',
+            });
         }
-    }, [submitDocumentsMutation.mutateAsync, router]);
+    }, [submitDocumentsMutation.mutateAsync, router, showToast]);
 
     return {
         existingFileMetadata,

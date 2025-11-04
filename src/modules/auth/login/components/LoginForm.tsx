@@ -45,10 +45,12 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'Password500$$',
             // email: 'kamati2654@filipx.com',
             // password: 'P@ssw0rd',
-            email: 'bayoumi.store@gmail.com',
-            password: 'Aa@12345',
+            // email: 'bayoumi.store@gmail.com',
+            // password: 'Aa@12345',
             // email: 'pesyamao2@gmail.com',
             // password: 'SaraTest@010',
+            email: 'vawoyal409@fandoe.com',
+            password: 'P@ssw0rd',
         },
     });
 

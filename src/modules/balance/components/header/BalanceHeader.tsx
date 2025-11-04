@@ -16,20 +16,24 @@ interface Props {
         availableBalance: number;
         totalBalance: number;
     },
-    onPressAccounts: () => void
+    onPressAccounts: () => void,
+    showAccountsBtn?: boolean
 }
-const BalanceHeader = ({ notificationsCount, userName, balanceOverview, ongoingTransfers, onPressAccounts }: Props) => {
+const BalanceHeader = ({ notificationsCount, userName, balanceOverview, ongoingTransfers, onPressAccounts, showAccountsBtn }: Props) => {
+
     return (
         <View className="mb-8 px-6">
             {/* Header row */}
             <View className="flex-row justify-between items-center">
-                <AccountsBtn onPress={onPressAccounts}
-                //  activeAccount={activeAccount} 
-                />
+                {showAccountsBtn && (
+                    <AccountsBtn onPress={onPressAccounts}
+                    //  activeAccount={activeAccount}
+                    />
+                )}
                 {/* Notifications */}
                 <Link href="/notifications" asChild>
                     <TouchableOpacity
-                        className="w-10 items-center justify-center relative">
+                        className="w-10 items-center justify-center relative ml-auto">
                         <BellAlertIcon size={24} color="#001F5F" />
                         {(notificationsCount && notificationsCount > 0) && (
                             <View className="absolute top-0 right-1 w-4 h-4 rounded-full bg-danger items-center justify-center">

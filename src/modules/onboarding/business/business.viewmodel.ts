@@ -147,28 +147,32 @@ const useBusinessViewModel = () => {
             }
         };
 
-        const payloadBusinessLogo: BusinessLogoMetadata = {
-            documentType: 'businessLogo',
-            isDeleted: false,
-            isReviewd: false,
-            key: ''
-        };
+        let logoKey = '';
 
         if (dirtyFields.businessLogo && businessLogo) {
             try {
                 const { body: { imageTitle } } = await uploadDocumentAsync({
                     pickedFile: businessLogo as PickedFile
                 });
-                payloadBusinessLogo.key = imageTitle;
+                logoKey = imageTitle;
             } catch (error) {
                 console.error('Logo upload failed:', error);
                 return;
             }
         } else if (logoMetadata?.key) {
-            payloadBusinessLogo.key = logoMetadata.key;
+            logoKey = logoMetadata.key;
         }
 
-        payload.merchantInfo.publicData.businessLogo = payloadBusinessLogo;
+        if (logoKey) {
+            payload.merchantInfo.publicData.businessLogo = {
+                documentType: 'businessLogo',
+                isDeleted: false,
+                isReviewd: false,
+                key: logoKey
+            };
+        }
+
+        console.log('payload : ', payload);
 
         try {
             await submitPartialData(payload);

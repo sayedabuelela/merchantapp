@@ -3,6 +3,7 @@ import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import CreatePaymentModal from '../components/modals/CreatePaymentModal';
 import FiltersModal from '../components/modals/FiltersModal';
 import PaymentLinkCardSkeleton from '../components/PaymentLinkCardSkeleton';
@@ -67,12 +68,20 @@ const PaymentLinksScreen = () => {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-        listData
+        listData,
+        refetch
     } = usePaymentLinksVM({
         search,
         paymentStatus,
         ...filters
     });
+
+    // Refetch data when screen comes into focus
+    useFocusEffect(
+        useCallback(() => {
+            refetch();
+        }, [refetch])
+    );
 
     const isListEmpty = useMemo(() =>
         listData.length === 0 && !isLoading && !search && !paymentStatus && !hasActiveFilters,

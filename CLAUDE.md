@@ -149,3 +149,4 @@ Use utility functions in `src/core/utils/dateUtils.ts` for consistent date forma
 - Some native modules require development builds, cannot use Expo Go
 - SVG imports require `react-native-svg-transformer` configuration in `metro.config.js`
 - dont over engineering only best practice and prevent unnecessary re renders without over using usecallbacks or usememo
+- try to dont break any thing that arleady works while you fix an issue or add new feature this is a production grade app
