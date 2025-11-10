@@ -15,6 +15,8 @@ import { FlatList } from "react-native-gesture-handler";
 import { isValidEmail, isValidPhone } from "@/src/core/utils/validation";
 import AnimatedError from "@/src/shared/components/animated-messages/AnimatedError";
 import AnimatedSuccessMsg from "@/src/shared/components/animated-messages/AnimatedSuccessMsg";
+import { useClipboard } from "@/src/shared/hooks/useClipboard";
+import { useShare } from "@/src/shared/hooks/useShare";
 const EgyptPhoneCode = { phone: "+20", name: "مصر", flag: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABDElEQVQ4y6WTMUvDQBiGkxRMCpKEA8GlILj1DzhLQd1EUTsIDh0EB/9Cof4IF/+RzjqX2JhChdDBC0Sat/eG9MTekrQHDwf5vufhllgArG3g2VEIxX5DROVae/FlH5tAl4GDyfkVZsNRLb6HT+VNhy4Dh9HxCaYPj4j7t/+5qVj7zl06dMvAuHeG6eAe8cV1Lbg77p3+BaSUWD9FkSOTHyXFIjPmdHQgTVNjIf+J8Pk2QPR6h2z+bszp6ECSJOYLfueQXy+Qk2cs8pkxp6MDQRBACAHXdWvBXTo64HkewjAE7zqsdnXAcRz4vt8IOqtAx7ZtbAJdBgJFV3HUkG7lWi1FW7HbkHbpbvs7LwEg89oYVCxAMQAAAABJRU5ErkJggg==" }
 interface Props {
     countries: ICountry[] | undefined;
@@ -65,9 +67,11 @@ const ShareOptions = ({ countries, paymentLinkId }: Props) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
-    const { shareMutation: { mutateAsync: sharePaymentLink, isPending: isShareLoading, error,isSuccess } } = usePaymentLinkActionsVM();
+    const { shareMutation: { mutateAsync: sharePaymentLink, isPending: isShareLoading, error, isSuccess } } = usePaymentLinkActionsVM();
     const [isEmailValid, setIsEmailValid] = useState(true);
     const [isPhoneValid, setIsPhoneValid] = useState(true);
+    const { copy, isCopied } = useClipboard();
+    const { share } = useShare();
     const handleSendEmail = async () => {
         if (!isValidEmail(email)) {
             setIsEmailValid(false);
@@ -127,6 +131,27 @@ const ShareOptions = ({ countries, paymentLinkId }: Props) => {
         setCountryListVisible(true)
     }
 
+    const handleCopy = async () => {
+        try {
+            const url = generateSherableUrl(paymentLinkId);
+            await copy(url);
+        } catch (error) {
+            console.error("Failed to copy link:", error);
+        }
+    };
+
+    const handleShare = async () => {
+        try {
+            const url = generateSherableUrl(paymentLinkId);
+            await share({
+                url,
+                message: t("Check out this payment link"),
+                title: t("Payment Link"),
+            });
+        } catch (error) {
+            console.error("Failed to share link:", error);
+        }
+    };
 
     return (
         <>
@@ -147,6 +172,12 @@ const ShareOptions = ({ countries, paymentLinkId }: Props) => {
                         {t("Copy, email or text this payment link to your customer.")}
                     </FontText>
                     <View className="mt-6 gap-y-4">
+                        {isCopied && (
+                            <AnimatedSuccessMsg
+                                className="m-0"
+                                successMsg={t("Link copied successfully")}
+                            />
+                        )}
                         {error && (
                             <AnimatedError
                                 className="m-0"
@@ -175,19 +206,19 @@ const ShareOptions = ({ countries, paymentLinkId }: Props) => {
                                     >
                                         {generateSherableUrl(paymentLinkId)}
                                     </Text>
-                                    <TouchableOpacity className="">
+                                    <TouchableOpacity onPress={handleShare}>
                                         <ArrowTopRightOnSquareIcon size={24} color="#001F5F" />
                                     </TouchableOpacity>
                                 </View>
                                 <Button
                                     className="h-[42px] flex-1"
                                     title={t("Copy")}
-                                    onPress={() => { }}
+                                    onPress={handleCopy}
                                     variant="outline"
                                 />
                             </View>
                         </View>
-                         <View className="flex-row items-end gap-x-2">
+                        <View className="flex-row items-end gap-x-2">
                             <View className="w-[70%]">
                                 <CountryPhoneInput
                                     label={t("Send SMS")}
@@ -225,7 +256,7 @@ const ShareOptions = ({ countries, paymentLinkId }: Props) => {
                                 variant="outline"
                             />
                         </View>
-                       
+
                     </View>
                 </>
             )}

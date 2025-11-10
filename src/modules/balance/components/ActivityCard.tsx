@@ -34,8 +34,17 @@ const ActivityCard = ({
     fromBalance?: boolean;
 }) => {
     const { t } = useTranslation();
-    // console.log('origin !== "transfers" && fromBalance : ',origin !== "transfers" && fromBalance);
-    // operation : "payout"
+
+    // OUT operations: money going out (down arrow, red)
+    const outOperations = ['payout', 'transfer', 'refund', 'deduct'];
+
+    // IN operations: money coming in (up arrow, green)
+    const inOperations = ['topup', 'adjustment', 'rate adjustment', 'opening balance', 'refund cancel', 'settlement', 'release','payment'];
+
+    const isOutOperation = outOperations.includes(operation.toLowerCase());
+    const isInOperation = inOperations.includes(operation.toLowerCase());
+    // out is arrow up 
+    // in is arrow down
     return (
         <Link
             href={`/balance/${_id}`} asChild>
@@ -43,18 +52,24 @@ const ActivityCard = ({
                 <View className="flex-row items-center justify-between mb-1">
                     <View className="flex-row items-center gap-x-2">
                         <IconBox>
-                            {origin === "payments" ? <ArrowSmallDownIcon size={10} color={'#4AAB4E'} /> : <ArrowSmallUpIcon size={10} color={'#A50017'} />}
+                            {isInOperation ? (
+                                <ArrowSmallDownIcon size={10} color={'#4AAB4E'} />
+                            ) : (
+                                <ArrowSmallUpIcon size={10} color={'#A50017'} />
+                            )}
                         </IconBox>
                         <FontText type="body" weight="regular" className="text-content-secondary text-xs capitalize">
-                            {/* {t(origin === "transfers" ? "Transfer" : "Payment")} */}
                             {t(operation)}
-                             {/* {origin} */}
                         </FontText>
+
                     </View>
                     <FontText type="body" weight="bold"
-                        className={cn("text-content-primary text-base leading-5 ml-1",
-                            (origin === "payments" && fromBalance) && "text-success")}>
-                        {(origin === "payments" && fromBalance) && "+"}{currencyNumber(amount)} {t('EGP')}
+                        className={cn("text-content-primary text-base leading-5 ml-1"
+                            // ,isInOperation && "text-success"
+                        )}>
+
+                        {/* {isInOperation && "+"} */}
+                        {currencyNumber(amount)} {t('EGP')}
                     </FontText>
                 </View>
                 <FontText type="body" weight="regular" className="text-content-primary text-xs">

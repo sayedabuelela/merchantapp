@@ -1,12 +1,11 @@
 import { useRouter, useSegments } from 'expo-router';
 import { t } from 'i18next';
 import { AnimatePresence, MotiView } from 'moti';
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Modal, Pressable, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { Bars3BottomLeftIcon, CheckCircleIcon, CheckIcon, PencilIcon, ShareIcon, TrashIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { KeyboardController } from 'react-native-keyboard-controller';
 
-import CountyCodeBottomSheet, { CountyCodeBottomSheetRef } from '@/src/shared/components/bottom-sheets/phone-code-selector/CountyCodeBottomSheet';
 import FontText from '@/src/shared/components/FontText';
 import ActionItem from './ActionItem';
 import DeleteConfirmation from './DeleteConfirmation';
@@ -84,7 +83,7 @@ const ModalHeader = memo(function ModalHeader({
         <View className="flex-row justify-between items-center mb-4">
             <View>
                 {customerName && (
-                    <FontText type="head" weight="bold" className="text-content-primary text-xl mb-1">
+                    <FontText type="head" weight="bold" className="text-content-hint text-xl mb-1">
                         {getTitle()}
                     </FontText>
                 )}
@@ -96,9 +95,9 @@ const ModalHeader = memo(function ModalHeader({
             </View>
             <TouchableOpacity
                 onPress={onClose}
-                className="items-center justify-center bg-feedback-error-bg w-7 h-7 rounded-full"
+                className="items-center justify-center bg-[#F1F6FF] w-7 h-7 rounded-full"
             >
-                <XMarkIcon size={18} color="#A50017" />
+                <XMarkIcon size={18} color="#0F172A" />
             </TouchableOpacity>
         </View>
     );
@@ -251,7 +250,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
     const [rejectReason, setRejectReason] = useState<string>("");
 
     // Refs and hooks
-    
+
 
     const router = useRouter();
 
@@ -263,7 +262,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
     const user = useAuthStore(selectUser);
     const permissions = usePermissions(
         user?.actions!,
-        user?.currentMerchantId,
+        user?.merchantId,
         paymentLink.createdByUserId
     );
 
@@ -336,7 +335,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
     const actionDescriptors = useActionDescriptors(
         paymentLink,
         permissions,
-        { handleNavigateDetails, handleEditPaymentLink, handleAction, setMode,isPaymentLinkDetails }
+        { handleNavigateDetails, handleEditPaymentLink, handleAction, setMode, isPaymentLinkDetails }
     );
 
     // Render content based on mode
@@ -445,7 +444,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
                     )}
                 </AnimatePresence>
 
-                
+
             </KeyboardAvoidingView>
         </Modal>
     );
