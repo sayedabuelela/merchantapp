@@ -46,6 +46,7 @@ const PaymentLinksScreen = () => {
     const handleOpenActions = useCallback((paymentLink: PaymentLink) => {
         setSelectedPaymentLink(paymentLink);
     }, []);
+
     const handleCloseActions = useCallback(() => {
         setSelectedPaymentLink(null);
     }, []);

@@ -1,18 +1,17 @@
-import FontText from '@/src/shared/components/FontText';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import StickyHeaderList from '../../../shared/components/StickyHeaderList';
 import HeaderRow from '../../../shared/components/StickyHeaderList/HeaderRow';
-import { Activity, ActivityType, FetchActivitiesParams } from '../balance.model';
+import {Activity, ActivityType, FetchActivitiesParams} from '../balance.model';
 import ActivitiesTabs from '../components/ActivitiesTabs';
 import ActivityCard from '../components/ActivityCard';
 import ActivityFilterModal from '../components/ActivityFilterModal';
 import ActivitiesHeader from '../components/header/activities/ActivitiesHeader';
-import { useActivitiesVM } from '../viewmodels/useActivitiesVM';
-import { cn } from '@/src/core/utils/cn';
-import { GroupedRow } from '@/src/core/utils/groupData';
+import {useActivitiesVM} from '../viewmodels/useActivitiesVM';
+import {cn} from '@/src/core/utils/cn';
+import {GroupedRow} from '@/src/core/utils/groupData';
 import ActivitiesListEmpty from '@/src/shared/components/StickyHeaderList/list-empty/ActivitiesListEmpty';
 import useAccounts from '../viewmodels/useAccounts';
 import AccountsBtn from '../components/header/AccountsBtn';
@@ -30,13 +29,13 @@ const INITIAL_FILTERS: FetchActivitiesParams = {
 }
 
 const BalanceActivitiesScreen = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [search, setSearchValue] = useState('');
     const [type, setType] = useState<ActivityType>("payout");
     const [filters, setFilters] = useState<FetchActivitiesParams>(INITIAL_FILTERS);
     const [showAccountsModal, setShowAccountsModal] = useState(false);
-    const { accounts } = useAccounts();
+    const {accounts} = useAccounts();
     // Update operation filter based on active tab
     useEffect(() => {
         setFilters(prev => ({
@@ -63,7 +62,7 @@ const BalanceActivitiesScreen = () => {
         isFetchingNextPage,
         hasNextPage,
         fetchNextPage,
-    } = useActivitiesVM({ ...filters, search });
+    } = useActivitiesVM({...filters, search});
 
     // console.log('listData', listData);
 
@@ -73,11 +72,11 @@ const BalanceActivitiesScreen = () => {
         }
     };
 
-    const renderItem = useCallback(({ item }: { item: GroupedRow<Activity> }) => {
+    const renderItem = useCallback(({item}: { item: GroupedRow<Activity> }) => {
         if (item.type === 'header') {
-            return <HeaderRow title={item.date} />;
+            return <HeaderRow title={item.date}/>;
         }
-        return <ActivityCard {...item} fromBalance={type === 'all'} />;
+        return <ActivityCard {...item} fromBalance={type === 'all'}/>;
     }, [type]);
 
     const handleClearSearch = useCallback(() => {
@@ -91,6 +90,7 @@ const BalanceActivitiesScreen = () => {
     const handleSearchChange = useCallback((text: string) => {
         setSearchValue(text);
     }, []);
+
     const payoutInfoMsg = type === 'payout' ? t('Scheduled automatic transfers of your earnings to your bank account.') : '';
     const transferInfoMsg = type === 'transfer' ? t('On-demand transfers to bank accounts, cards, or mobile wallets.') : '';
     const infoMsg = payoutInfoMsg || transferInfoMsg;
@@ -105,10 +105,7 @@ const BalanceActivitiesScreen = () => {
                 handleClearSearch={handleClearSearch}
                 searchValue={search}
             />
-            <ActivitiesTabs value={type} onSelectType={setType}
-            // isListEmpty={listData.length === 0} 
-            // isListEmpty={false}
-            />
+            <ActivitiesTabs value={type} onSelectType={setType}  />
 
             <View className={cn("flex-1 px-6 ")}>
 
@@ -127,7 +124,7 @@ const BalanceActivitiesScreen = () => {
                                     onPress={() => setShowAccountsModal(true)}
                                 />
                             )}
-                            {type !== 'all' && <AnimatedInfoMsg infoMsg={infoMsg} />}
+                            {type !== 'all' && <AnimatedInfoMsg infoMsg={infoMsg}/>}
                         </View>
                     }
                     ListEmptyComponent={

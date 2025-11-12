@@ -1,0 +1,52 @@
+import { cn } from "@/src/core/utils/cn";
+import FontText from "@/src/shared/components/FontText";
+import { MotiView } from "moti";
+import { useTranslation } from "react-i18next";
+import { Pressable, View } from "react-native";
+
+export interface Tab<T = string> {
+    label: string;
+    value: T;
+}
+
+interface Props<T = string> {
+    tabs: Tab<T>[];
+    value: T;
+    onSelectType: (val: T) => void;
+    isListEmpty?: boolean;
+}
+
+export default function ListTabs<T = string>({ tabs, value, onSelectType, isListEmpty }: Props<T>) {
+    const { t } = useTranslation();
+
+    return (
+        <View className="border-b border-stroke-divider mt-4 flex-row items-center justify-center gap-x-8 ">
+            {!isListEmpty && tabs.map(tab => {
+                const isActive = tab.value === value;
+                return (
+                    <Pressable
+                        key={String(tab.value)}
+                        onPress={() => onSelectType(tab.value)}
+                    >
+                        <FontText
+                            type="body"
+                            weight="semi"
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            className={cn(`text-sm ${isActive ? "text-primary" : "text-[#6F7E7E]"}`)}
+                        >
+                            {t(tab.label)}
+                        </FontText>
+
+                        <MotiView
+                            from={{ opacity: 0, scaleX: 0 }}
+                            animate={{ opacity: isActive ? 1 : 0, scaleX: isActive ? 1 : 0 }}
+                            transition={{ type: "timing", duration: 200 }}
+                            className="h-0.5 bg-primary rounded-full mt-3"
+                        />
+                    </Pressable>
+                );
+            })}
+        </View>
+    );
+}

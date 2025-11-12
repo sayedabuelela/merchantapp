@@ -1,4 +1,4 @@
-import { MerchantInfo } from "../onboarding/data/onboarding-data.model";
+import {MerchantInfo} from "../onboarding/data/onboarding-data.model";
 
 export enum PaymentStatus {
     UNPAID = "unpaid",
@@ -8,7 +8,10 @@ export enum PaymentStatus {
     EXPIRED = "expired",
     INITIATED = "initiated",
     AWAITING_APPROVAL = "awaiting_approval",
-    REJECTED = "rejected"
+    REJECTED = "rejected",
+    OPENED = "opened",
+    REFUNDED = "refunded",
+    PENDING = "pending"
 }
 
 export enum PaymentType {
@@ -57,6 +60,7 @@ export interface PaymentLinkResponse {
     message: string;
     data: PaymentLink;
 }
+
 export interface PaymentLink {
     _id: string;
     description: string;
@@ -99,6 +103,7 @@ export interface PaymentLinksResponse {
     data: PaymentLink[];
     pagination: PaymentLinksPagination;
 }
+
 // {"pageParams": [1], "pages": [{"data": [Array], "message": "Payment links retrieved successfully", "pagination": [Object]}]}
 export interface PaymentLinksInfinityResponse {
     pageParams: number;

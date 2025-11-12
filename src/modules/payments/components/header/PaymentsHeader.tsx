@@ -1,9 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { PlusIcon } from 'react-native-heroicons/outline';
 import ListHeader from '@/src/shared/components/ListHeader/ListHeader';
 
 interface Props {
-    onPlusPress: () => void;
     onFilterPress: () => void;
     onSubmitSearch: (text: string) => void;
     isFilterOpen: boolean;
@@ -13,12 +11,12 @@ interface Props {
     searchValue: string;
 }
 
-const PaymentLinksHeader = ({ onPlusPress, onFilterPress, onSubmitSearch, isFilterOpen, isListEmpty, hasFilters, handleClearSearch, searchValue }: Props) => {
+const PaymentsHeader = ({ onFilterPress, onSubmitSearch, isFilterOpen, isListEmpty, hasFilters, handleClearSearch, searchValue }: Props) => {
     const { t } = useTranslation();
 
     return (
         <ListHeader
-            title={t('Payment Links')}
+            title={t('Payments')}
             onFilterPress={onFilterPress}
             onSubmitSearch={onSubmitSearch}
             isFilterOpen={isFilterOpen}
@@ -26,12 +24,8 @@ const PaymentLinksHeader = ({ onPlusPress, onFilterPress, onSubmitSearch, isFilt
             hasFilters={hasFilters}
             handleClearSearch={handleClearSearch}
             searchValue={searchValue}
-            actionButton={{
-                icon: <PlusIcon size={24} color="#001F5F" />,
-                onPress: onPlusPress
-            }}
         />
     )
 }
 
-export default PaymentLinksHeader;
+export default PaymentsHeader;

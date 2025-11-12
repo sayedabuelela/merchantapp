@@ -1,5 +1,6 @@
 import { GroupedRow } from '@/src/core/utils/groupData';
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
+import React from "react";
 
 interface Props<T> {
     listData: GroupedRow<T>[];

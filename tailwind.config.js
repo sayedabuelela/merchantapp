@@ -47,7 +47,7 @@ module.exports = {
                 // Feedback States
                 "feedback-success-bg": "#D1FFD3",
                 "feedback-success-text": "#1A541D",
-                "feedback-success-bg": "#F3FFF4",
+                // "feedback-success-bg": "#F3FFF4",
                 "feedback-warning-bg": "#FFF7E8",
                 "feedback-warning-text": "#513500",
                 "feedback-error-bg": "#FFEAED",
@@ -81,24 +81,15 @@ module.exports = {
             boxShadow: {
                 custom: {
                     shadowColor: '#000',
-                    shadowOffset: { width: 0, height: -2 },
+                    shadowOffset: {width: 0, height: -2},
                     shadowOpacity: 0.1,
                     shadowRadius: 3,
                     elevation: 4,
                 },
             },
-            // fontSize: {
-            //     'xs': '12px',
-            //     'sm': '14px',
-            //     'base': '16px',
-            //     'lg': '18px',
-            //     'xl': '20px',
-            //     '2xl': '24px',
-            //     '3xl': '30px',
-            //     '4xl': '36px',
-            //     '5xl': '48px',
-            //     '6xl': '60px',
-            // },
+            fontSize: {
+                'xxs': '10px',
+            },
         },
     },
     safelist: [
