@@ -3,7 +3,7 @@ import { LoginFormData } from "@/src/modules/auth/login/login.model";
 import { KashierLogo } from "@/src/shared/assets/svgs";
 import FontText from "@/src/shared/components/FontText";
 import { Link, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -12,27 +12,32 @@ import { useBiometricViewModel } from "../biometric/biometric.viewmodel";
 import { LoginForm } from './components/LoginForm';
 import { useLoginViewModel } from './login.viewmodel';
 import { DeveloperSettings } from '../../settings/components/DeveloperSettings';
+import { useNetworkStatus } from '@/src/core/hooks/useNetworkStatus';
 
 const LoginScreen = () => {
     const { t } = useTranslation();
     const { login, isLoading, error } = useLoginViewModel();
     const { isBiometricAvailable, isInitialized } = useBiometricViewModel();
+    const { hasNetwork } = useNetworkStatus();
     const router = useRouter();
+    const [networkError, setNetworkError] = useState<string | null>(null);
 
 
     const handleSubmit = async ({ email, password }: LoginFormData) => {
         try {
-            // console.log("handleSubmit");
-            // console.log("isBiometricAvailable", isBiometricAvailable);
+            setNetworkError(null);
+
+            // Check network connectivity before login
+            if (!hasNetwork) {
+                setNetworkError(t('No internet connection. Please check your network and try again.'));
+                return;
+            }
+
             await login({ email, password });
-            // console.log("isInitialized", isInitialized);
-            // console.log("isBiometricAvailable && !isInitialized : ", isBiometricAvailable && !isInitialized);
             if (isBiometricAvailable && !isInitialized) {
                 router.replace(ROUTES.AUTH.ENABLE_BIOMETRIC);
             } else {
                 router.replace(ROUTES.TABS.BALANCE);
-                // router.replace(ROUTES.TABS.SETTINGS);
-                // router.replace(ROUTES.ONBOARDING.ACCOUNT_TYPE);
             }
         } catch (error) {
             console.log("error", error);
@@ -56,7 +61,7 @@ const LoginScreen = () => {
                     <LoginForm
                         onSubmit={handleSubmit}
                         loading={isLoading}
-                        error={error?.error || error?.message}
+                        error={networkError || error?.error || error?.message}
                     />
                     <View className="flex-row justify-center mt-8">
                         <FontText

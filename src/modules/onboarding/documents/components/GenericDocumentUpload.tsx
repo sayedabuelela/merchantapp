@@ -24,6 +24,7 @@ interface GenericDocumentUploadScreenProps {
     documentType: DocumentType;
     nextRoute: Route;
     onboardingStoreSelector?: (state: ReturnType<typeof useOnboardingStore>) => any;
+    isOptional?: boolean;
 }
 
 const GenericDocumentUploadScreen = ({
@@ -34,6 +35,7 @@ const GenericDocumentUploadScreen = ({
     documentType,
     nextRoute,
     onboardingStoreSelector,
+    isOptional = false,
 }: GenericDocumentUploadScreenProps) => {
     const { t } = useTranslation();
     const router = useRouter();
@@ -100,7 +102,11 @@ const GenericDocumentUploadScreen = ({
                         className='mt-6'
                         title={t('Continue')}
                         isLoading={isPicking || isUploading}
-                        disabled={(!image && !displayableFileUri) || isPicking || isUploading}
+                        disabled={
+                            isOptional
+                                ? (isPicking || isUploading)
+                                : ((!image && !displayableFileUri) || isPicking || isUploading)
+                        }
                         onPress={handleSubmit}
                     />
                     <SkipButton onPress={handleSkip} />

@@ -1,8 +1,10 @@
 import { useAuthStore } from "@/src/modules/auth/auth.store";
 import { useBiometricStore } from "@/src/modules/auth/biometric/biometric.store";
-import { AxiosError, AxiosInstance } from "axios";
+import { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { router } from "expo-router";
 import { ROUTES } from "../navigation/routes";
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const addAuthInterceptor = (instance: AxiosInstance): AxiosInstance => {
     instance.interceptors.request.use(config => {
@@ -20,8 +22,47 @@ export const addAuthInterceptor = (instance: AxiosInstance): AxiosInstance => {
 export const addErrorInterceptor = (instance: AxiosInstance): AxiosInstance => {
     instance.interceptors.response.use(
         response => response,
-        (error: AxiosError) => {
-            
+        async (error: AxiosError) => {
+            const config = error.config as InternalAxiosRequestConfig & { _retryCount?: number };
+
+            // Check if error is retryable (timeout or network error)
+            const isRetryableError = error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK' || !error.response;
+
+            // Initialize retry count
+            config._retryCount = config._retryCount || 0;
+
+            // Retry logic: max 1 retry for timeout/network errors
+            if (isRetryableError && config._retryCount < 1) {
+                config._retryCount += 1;
+                console.log(`Interceptor: Retrying request (attempt ${config._retryCount + 1}/2)...`);
+
+                // Wait 2 seconds before retry
+                await delay(2000);
+
+                // Retry the request
+                return instance.request(config);
+            }
+
+            // Handle timeout errors (after retry)
+            if (error.code === 'ECONNABORTED') {
+                console.log("Interceptor: Request timeout");
+                return Promise.reject({
+                    error: 'Request timeout. Please check your internet connection and try again.',
+                    message: 'Request timeout. Please check your internet connection and try again.',
+                    code: 'TIMEOUT'
+                });
+            }
+
+            // Handle network errors (after retry)
+            if (error.code === 'ERR_NETWORK' || !error.response) {
+                console.log("Interceptor: Network error");
+                return Promise.reject({
+                    error: 'Network error. Please check your internet connection.',
+                    message: 'Network error. Please check your internet connection.',
+                    code: 'NETWORK_ERROR'
+                });
+            }
+
             if (error.response?.status === 401 || error.response?.status === 403) {
                 const clearAuth = useAuthStore.getState().clearAuth;
                 clearAuth();
@@ -37,14 +78,6 @@ export const addErrorInterceptor = (instance: AxiosInstance): AxiosInstance => {
 
             if (error.response?.data) {
                 console.log("Interceptor: Caught other error with data:", error.response.data);
-                // const serverErrorMessage = (error.response.data as any)?.error || 'An unexpected error occurred.';
-                // const serverErrorStatus = (error.response.data as any)?.success || 'An unexpected error occurred.';
-                //
-                // const customError: LoginError = {
-                //     error: serverErrorMessage,
-                //     success: serverErrorStatus,
-                // };
-                // console.log("Interceptor: Rejecting with custom error:", customError);
                 return Promise.reject(error.response?.data);
             }
 

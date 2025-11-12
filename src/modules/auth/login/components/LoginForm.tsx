@@ -51,8 +51,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // staging
             // email: 'duaa.bst@gmail.com',
             // password: 'AsmaaTest110@',
-            email: 'rigaget540@limtu.com',
-            password: 'Password500$$',
+            // email: 'jglgm9d29g@jkotypc.com',
+            // password: 'Password500$$',
             // email: 'vawoyal409@fandoe.com',
             // password: 'P@ssw0rd',
         },

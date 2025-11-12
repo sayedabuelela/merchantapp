@@ -10,6 +10,7 @@ const createBaseClient = (baseURL: string): AxiosInstance => {
             'Accept': 'application/json',
             'client-type': 'merchantApp'
         },
+        timeout: 30000, // 30 seconds timeout
     })
 
     addAuthInterceptor(instance)

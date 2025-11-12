@@ -14,6 +14,7 @@ const OthersDocumentScreen = () => {
             documentUploadBoxTitle={t('Others')}
             documentType="others"
             nextRoute={ROUTES.ONBOARDING.CURRENCY_SETTINGS}
+            isOptional={true}
         />
     )
 }

@@ -38,11 +38,11 @@ const useOnboardingDataViewModel = () => {
 
         const result = await submitPartialOnboardingData(api, currentMerchantId, data);
 
-        // if (result) {
-        //     queryClient.invalidateQueries({
-        //         queryKey: onboardingDataQueryKey,
-        //     });
-        // }
+        if (result) {
+            queryClient.invalidateQueries({
+                queryKey: onboardingDataQueryKey,
+            });
+        }
 
         return result;
     }, [api, currentMerchantId, queryClient, onboardingDataQueryKey]);
