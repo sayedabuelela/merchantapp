@@ -15,6 +15,8 @@ const statusStyles: Record<string, { backgroundColor: string; color: string }> =
     INITIATED: {backgroundColor: '#FFF7E8', color: '#956200'},
     "AWAITING_APPROVAL": {backgroundColor: '#FFF7E8', color: '#956200'},
     REJECTED: {backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017'},
+    ABANDONED: {backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017'},
+    REVERSED: {backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017'},
     VOIDED: {backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017'},
     REFUNDED: {backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017'},
     "PARTIALLY_REFUNDED": {backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017'},
