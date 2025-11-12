@@ -143,7 +143,7 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
             });
         }
     }, [trigger, setFormData, getValues, isEditMode, paymentLink?.paymentLinkId, paymentType, router]);
-console.log("isLoading :", isLoading);
+    console.log("isLoading :", isLoading);
     return (
         <FormProvider {...methods}>
             <KeyboardAwareScrollView className="flex-1" showsVerticalScrollIndicator={false}>

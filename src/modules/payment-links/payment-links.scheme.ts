@@ -30,6 +30,7 @@ const baseSchema = z.object({
     dueDate: z.date().optional(),
     referenceId: z.string().optional(),
     description: z.string().optional(),
+    isSuspendedPayment: z.boolean().optional(),
 });
 
 export const createPaymentLinkSchema = baseSchema

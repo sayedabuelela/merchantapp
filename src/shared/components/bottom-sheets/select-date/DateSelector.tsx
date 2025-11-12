@@ -11,17 +11,18 @@ interface DateSelectorProps {
     date: Date | undefined;
     onPress: () => void;
     t: any;
+    className?: string;
 }
 
 const DateSelector = memo(
-    ({ label, date, onPress, t }: DateSelectorProps) => (
+    ({ label, date, onPress, t, className }: DateSelectorProps) => (
         <View>
             <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label)}>
                 {label}
             </FontText>
             <Pressable
                 onPress={onPress}
-                className="flex-row items-center w-full px-3 h-11 bg-white border border-stroke-input rounded"
+                className={cn("flex-row items-center w-full px-3 h-11 bg-white border border-stroke-input rounded", className)}
             >
                 <CalendarDaysIcon size={18} color="#556767" />
                 <FontText

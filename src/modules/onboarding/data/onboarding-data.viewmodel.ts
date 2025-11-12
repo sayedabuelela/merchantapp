@@ -118,13 +118,17 @@ const useOnboardingDataViewModel = () => {
     }, [onboardingData, accountType, setAccountType]);
 
     // Edit permission logic based on approval status and isLive
-    const canEdit = onboardingData?.isApprovedBusinessInfo === 'pending' ||
-                    onboardingData?.isApprovedBusinessInfo === 'rejected';
+    // Users can edit in two scenarios:
+    // 1. Status is 'approved' AND isLive (to request changes to live account)
+    // 2. Status is 'rejected' (to resubmit with corrections)
+    const canEdit = (onboardingData?.isApprovedBusinessInfo === 'approved' && onboardingData?.isLive) ||
+        onboardingData?.isApprovedBusinessInfo === 'rejected';
     const canSubmit = canEdit;
-    const isUnderReview = onboardingData?.isApprovedBusinessInfo === 'submitted';
+    const isUnderReview = onboardingData?.isApprovedBusinessInfo === 'submitted' ||
+        onboardingData?.isApprovedBusinessInfo === 'pending';
     const isApproved = onboardingData?.isApprovedBusinessInfo === 'approved' && onboardingData?.isLive;
     const showActivationNote = !isApproved; // Hide when approved
-
+    console.log('onboardingData?.isApprovedBusinessInfo : ', onboardingData?.isApprovedBusinessInfo);
     return {
         // Data access
         onboardingData,

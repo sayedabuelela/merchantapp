@@ -1,8 +1,10 @@
+import { CheckBoxSquareEmptyIcon, CheckBoxSquareFilledIcon } from "@/src/shared/assets/svgs";
+import AnimatedError from "@/src/shared/components/animated-messages/AnimatedError";
+import AnimatedErrorMsg from "@/src/shared/components/animated-messages/AnimatedErrorMsg";
 import DateSelector from "@/src/shared/components/bottom-sheets/select-date/DateSelector";
 import DateSelectPickerBottomSheet, { DateSelectPickerRef } from "@/src/shared/components/bottom-sheets/select-date/DateSelectPickerBottomSheet";
 import Button from "@/src/shared/components/Buttons/Button";
-import AnimatedError from "@/src/shared/components/animated-messages/AnimatedError";
-import AnimatedErrorMsg from "@/src/shared/components/animated-messages/AnimatedErrorMsg";
+import FontText from "@/src/shared/components/FontText";
 import MainHeader from "@/src/shared/components/headers/MainHeader";
 import Input from "@/src/shared/components/inputs/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,15 +13,13 @@ import { useEffect, useRef } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { CalendarIcon, DocumentTextIcon, HashtagIcon } from "react-native-heroicons/outline";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { SafeAreaView } from "react-native-safe-area-context";
 import CreateOptionBox from "../components/create-payment/CreateOptionBox";
 import { CreatePaymentLinkTypes, createPaymentLinkSchema } from "../payment-links.scheme";
 import { usePaymentLinkStore } from "../paymentLink.store";
 import usePaymentLinkVM from "../viewmodels/usePaymentLinkVM";
-import FontText from "@/src/shared/components/FontText";
-import { CheckBoxEmptyIcon, CheckBoxSquareEmptyIcon, CheckBoxSquareFilledIcon } from "@/src/shared/assets/svgs";
 
 const CreateNewPaymentLinkStep2Screen = () => {
     const { t } = useTranslation();
@@ -86,6 +86,7 @@ const CreateNewPaymentLinkStep2Screen = () => {
                                 date={value}
                                 onPress={handleDateSelectPickerExpand}
                                 t={t}
+                                className="w-2/3"
                             />
                         )}
                     />

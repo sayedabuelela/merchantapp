@@ -1,21 +1,39 @@
 import { formatAMPM, formatRelativeDate } from '@/src/core/utils/dateUtils';
+import { currencyNumber } from '@/src/core/utils/number-fields';
 import FontText from '@/src/shared/components/FontText';
 import MainHeader from '@/src/shared/components/headers/MainHeader';
 import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
-import { ArrowsUpDownIcon, BanknotesIcon, BookmarkIcon, BuildingLibraryIcon, CalendarDaysIcon, CalendarIcon, ChatBubbleBottomCenterIcon, CheckCircleIcon, CircleStackIcon, ClockIcon, CubeTransparentIcon, CurrencyPoundIcon, FingerPrintIcon, IdentificationIcon, PaperClipIcon, PowerIcon, RectangleGroupIcon, UserIcon } from 'react-native-heroicons/outline';
+import {
+    ArrowsUpDownIcon,
+    BanknotesIcon,
+    BookmarkIcon,
+    BuildingLibraryIcon,
+    CalendarDaysIcon,
+    CalendarIcon,
+    ChatBubbleBottomCenterIcon,
+    CheckCircleIcon,
+    CircleStackIcon,
+    CubeTransparentIcon,
+    CurrencyPoundIcon,
+    FingerPrintIcon,
+    IdentificationIcon,
+    PaperClipIcon,
+    PowerIcon,
+    RectangleGroupIcon,
+    UserIcon
+} from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DetailsSection from '../../payment-links/components/details-screen/DetailsSection';
 import SectionItem from '../../payment-links/components/details-screen/SectionItem';
 import SummaryItem from '../../payment-links/components/details-screen/SummaryItem';
 import StatusBox from '../../payment-links/components/StatusBox';
 import { PaymentStatus } from '../../payment-links/payment-links.model';
-import { useActivityDetails, useActivityPaymentDetails, useActivityTransferDetails } from '../viewmodels/useActivity';
-import { currencyNumber } from '@/src/core/utils/number-fields';
-import { useSettlementWindow } from '../viewmodels/useSettlementWindow';
 import ActivityCard from '../components/ActivityCard';
+import { useActivityDetails, useActivityPaymentDetails, useActivityTransferDetails } from '../viewmodels/useActivity';
+import { useSettlementWindow } from '../viewmodels/useSettlementWindow';
 
 const ActivityDetails = () => {
 
@@ -35,8 +53,10 @@ const ActivityDetails = () => {
     console.log('payment : ', payment);
     console.log('isPayment : ', isPayment);
     console.log('transfer?.status.toUpperCase() : ', transfer?.status.toUpperCase());
-    // console.log('batch : ', batchs);
 
+    // console.log('')
+    // console.log('transefer' )
+    // console.log('batch : ', batchs);
     return (
         <SafeAreaView className="flex-1 bg-white">
             {isLoadingActivity ? (<SimpleLoader />) :
@@ -147,7 +167,8 @@ const ActivityDetails = () => {
                                 icon={<BookmarkIcon size={24} color="#556767" />}
                                 title={t("Summary")}
                             >
-                                <FontText type="body" weight="bold" className="text-content-secondary self-start text-base mb-2 mt-6">
+                                <FontText type="body" weight="bold"
+                                    className="text-content-secondary self-start text-base mb-2 mt-6">
                                     {t("Activity")}
                                 </FontText>
                                 <SummaryItem
@@ -169,7 +190,8 @@ const ActivityDetails = () => {
                                     value={currencyNumber(activity.amount) + ' ' + t('EGP')}
                                     className='py-4 my-4 border-y border-tertiary'
                                 />
-                                <FontText type="body" weight="bold" className="text-content-secondary self-start text-base mb-2">
+                                <FontText type="body" weight="bold"
+                                    className="text-content-secondary self-start text-base mb-2">
                                     {t("Balance info")}
                                 </FontText>
                                 <SummaryItem
@@ -188,7 +210,8 @@ const ActivityDetails = () => {
                                 title={t("Comment")}
                                 className='mb-6'
                             >
-                                <FontText type="body" weight="regular" className="text-content-primary self-start text-base">
+                                <FontText type="body" weight="regular"
+                                    className="text-content-primary self-start text-base">
                                     {activity.comment !== undefined ? activity.comment : "----"}
                                 </FontText>
                             </DetailsSection>

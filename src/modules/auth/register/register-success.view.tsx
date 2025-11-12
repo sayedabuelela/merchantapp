@@ -16,7 +16,7 @@ const RegisterSuccessScreen = () => {
     }
 
     const handleActivate = () => {
-        router.replace(ROUTES.ONBOARDING.ACCOUNT_TYPE);
+        router.push(ROUTES.ONBOARDING.ACCOUNT_TYPE);
     }
     
     return (
