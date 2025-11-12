@@ -53,7 +53,6 @@ const ActivityDetails = () => {
     console.log('payment : ', payment);
     console.log('isPayment : ', isPayment);
     console.log('transfer?.status.toUpperCase() : ', transfer?.status.toUpperCase());
-
     // console.log('')
     // console.log('transefer' )
     // console.log('batch : ', batchs);

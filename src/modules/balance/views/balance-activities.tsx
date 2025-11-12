@@ -121,7 +121,7 @@ const BalanceActivitiesScreen = () => {
                     renderItem={renderItem}
                     ListHeaderComponent={
                         <View className="justify-between items-start my-2">
-                            {accounts !== undefined && accounts.length > 0 && (
+                            {accounts !== undefined && accounts.length > 1 && (
                                 <AccountsBtn
                                     className="mt-4"
                                     onPress={() => setShowAccountsModal(true)}
