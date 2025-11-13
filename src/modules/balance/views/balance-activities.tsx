@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -17,6 +17,7 @@ import useAccounts from '../viewmodels/useAccounts';
 import AccountsBtn from '../components/header/AccountsBtn';
 import AccountsModal from '../components/AccountsModal';
 import AnimatedInfoMsg from '@/src/shared/components/animated-messages/AnimatedInfoMsg';
+import { FlashList } from '@shopify/flash-list';
 
 const INITIAL_FILTERS: FetchActivitiesParams = {
     operation: undefined,
@@ -30,12 +31,19 @@ const INITIAL_FILTERS: FetchActivitiesParams = {
 
 const BalanceActivitiesScreen = () => {
     const {t} = useTranslation();
+    const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<Activity>>>>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [search, setSearchValue] = useState('');
     const [type, setType] = useState<ActivityType>("payout");
     const [filters, setFilters] = useState<FetchActivitiesParams>(INITIAL_FILTERS);
     const [showAccountsModal, setShowAccountsModal] = useState(false);
     const {accounts} = useAccounts();
+
+    // Scroll to top when tab changes
+    useEffect(() => {
+        listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }, [type]);
+
     // Update operation filter based on active tab
     useEffect(() => {
         setFilters(prev => ({
@@ -110,6 +118,7 @@ const BalanceActivitiesScreen = () => {
             <View className={cn("flex-1 px-6 ")}>
 
                 <StickyHeaderList
+                    ref={listRef}
                     listData={listData}
                     stickyHeaderIndices={stickyHeaderIndices}
                     fetchNextPage={fetchNextPage}

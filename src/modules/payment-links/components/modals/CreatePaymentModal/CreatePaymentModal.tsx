@@ -57,7 +57,7 @@ const CreatePaymentModal = ({ isVisible, onClose }: CreatePaymentModalProps) => 
                             transition={{ type: 'timing', duration: 400 }}
                             className={`bg-white w-full rounded-t-3xl pt-4 shadow-lg pb-12 px-6 `}
                         >
-                            <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-8" />
+                            <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-8" />
                             <View className="flex-row justify-between items-center mb-4">
                                 <FontText
                                     type="head"

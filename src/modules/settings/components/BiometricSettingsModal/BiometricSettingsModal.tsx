@@ -79,7 +79,7 @@ console.log('isBiometricEnabled : ', isBiometricEnabled);
                             }}
                             className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md shadow-md"
                         >
-                            <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-6" />
+                            <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-6" />
 
                             <BiometricHeader isBiometricEnabled={isBiometricEnabled} />
                             {/* <TouchableOpacity

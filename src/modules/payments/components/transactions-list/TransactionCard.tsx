@@ -46,9 +46,18 @@ const TransactionCard = ({transaction, onOpenActions}: TransactionCardProps) => 
 
     const isApproved = status === 'Approved';
 
+    const handleLongPress = () => {
+        if (onOpenActions) {
+            onOpenActions(transaction);
+        }
+    };
+
     return (
         <Link href={`/payments/transaction/${_id}`} asChild>
-            <Pressable className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1">
+            <Pressable
+                className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1"
+                onLongPress={handleLongPress}
+            >
                 <View className="flex-row items-center justify-between mb-1">
                     <View className="flex-row items-center gap-x-2">
                         <IconBox>

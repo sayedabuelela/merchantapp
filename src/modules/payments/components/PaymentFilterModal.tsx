@@ -1,5 +1,7 @@
 import { formatDateString } from "@/src/core/utils/dateUtils";
-import DateRangePickerBottomSheet, { DateRangePickerRef } from "@/src/shared/components/bottom-sheets/date-range/DateRangePickerBottomSheet";
+import DateRangePickerBottomSheet, {
+    DateRangePickerRef
+} from "@/src/shared/components/bottom-sheets/date-range/DateRangePickerBottomSheet";
 import { DateRangeSelector } from "@/src/shared/components/bottom-sheets/date-range/DateRangeSelector";
 import Button from "@/src/shared/components/Buttons/Button";
 import GeneralModalHeader from "@/src/shared/components/GeneralModal/GeneralModalHeader";
@@ -276,7 +278,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
         (isOrdersTab ?
             (origin === null || origin === undefined) :
             ((transactionType === null || transactionType === undefined) &&
-             (discount === null || discount === undefined))
+                (discount === null || discount === undefined))
         );
 
     return (
@@ -311,7 +313,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                     type: 'timing',
                                     duration: 500,
                                 }}
-                                className="bg-white w-full rounded-t-3xl pt-4 shadow-lg pb-12 px-6"
+                                className="bg-white w-full rounded-t-3xl pt-4 shadow-lg pb-6 px-6"
                                 style={{
                                     shadowColor: '#000',
                                     shadowOffset: { width: 0, height: -2 },
@@ -320,7 +322,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                     elevation: 5,
                                 }}
                             >
-                                <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-8" />
+                                <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-4" />
                                 <GeneralModalHeader
                                     title={t('Filters')}
                                     onClose={handleClose}
@@ -333,28 +335,15 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                     to={paymentDate?.to}
                                     onPress={() => paymentDateRef.current?.expand()}
                                     t={t}
-                                />
-
-                                {/* Channel Dropdown */}
-                                <DropDownUI
-                                    options={channelOptions}
-                                    selected={channel}
-                                    onChange={setChannel}
-                                    label={t('Channel')}
-                                    icon={<CubeTransparentIcon size={24} color="#556767" />}
-                                    placeholder={t('Channel')}
-                                    dropdownKey="channel"
-                                    variant="filter"
-                                />
-
+                                    className="mb-3"
+                                /> 
                                 {/* Status Dropdown */}
                                 <DropDownUI
                                     options={isOrdersTab ? orderStatusOptions : transactionStatusOptions}
                                     selected={status}
                                     onChange={setStatus}
-                                    label={t('Status')}
-                                    icon={<CheckCircleIcon size={24} color="#556767" />}
-                                    placeholder={t('Status')}
+                                    label={t('Order Status')}
+                                    placeholder={t('Order Status')}
                                     dropdownKey="status"
                                     variant="filter"
                                 />
@@ -365,19 +354,26 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                     selected={method}
                                     onChange={setMethod}
                                     label={t('Payment method')}
-                                    icon={<CreditCardIcon size={24} color="#556767" />}
                                     placeholder={t('Payment method')}
                                     dropdownKey="method"
                                     variant="filter"
                                 />
-
+                                {/* Channel Dropdown */}
+                                <DropDownUI
+                                    options={channelOptions}
+                                    selected={channel}
+                                    onChange={setChannel}
+                                    label={t('Channel')}
+                                    placeholder={t('Channel')}
+                                    dropdownKey="channel"
+                                    variant="filter"
+                                />
                                 {/* Branches Dropdown (Shared) */}
                                 <DropDownUI
                                     options={branchOptions}
                                     selected={isOrdersTab ? branchName : posBranch}
                                     onChange={isOrdersTab ? setBranchName : setPosBranch}
                                     label={t('Branch')}
-                                    icon={<BuildingStorefrontIcon size={24} color="#556767" />}
                                     placeholder={t('Branch')}
                                     dropdownKey="branch"
                                     variant="filter"
@@ -390,7 +386,6 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                         selected={origin}
                                         onChange={setOrigin}
                                         label={t('Payment source')}
-                                        icon={<TagIcon size={24} color="#556767" />}
                                         placeholder={t('Payment source')}
                                         dropdownKey="paymentSource"
                                         variant="filter"
@@ -405,7 +400,6 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                             selected={transactionType}
                                             onChange={setTransactionType}
                                             label={t('Transaction type')}
-                                            icon={<TagIcon size={24} color="#556767" />}
                                             placeholder={t('Transaction type')}
                                             dropdownKey="transactionType"
                                             variant="filter"
@@ -416,7 +410,6 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                             selected={discount}
                                             onChange={setDiscount}
                                             label={t('Discount')}
-                                            icon={<TagIcon size={24} color="#556767" />}
                                             placeholder={t('Discount')}
                                             dropdownKey="discount"
                                             variant="filter"
@@ -425,7 +418,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                 )}
 
                                 {/* Action Buttons */}
-                                <View className="mt-8">
+                                <View className="mt-4">
                                     <Button
                                         disabled={isDisabled}
                                         title={t('Apply Filters')}
@@ -435,7 +428,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                         variant="outline"
                                         title={t('Clear All')}
                                         onPress={handleClearAll}
-                                        className="border-0 mt-4"
+                                        className="border-0 mt-2"
                                         titleClasses="text-placeholder-color"
                                     />
                                 </View>

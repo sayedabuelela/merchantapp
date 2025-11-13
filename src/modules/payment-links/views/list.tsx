@@ -1,5 +1,5 @@
 import { cn } from '@/src/core/utils/cn';
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +20,7 @@ import PaymentLinkCard from '../components/PaymentLinkCard';
 import useCountries from '@/src/shared/hooks/useCountries';
 import CountyCodeBottomSheet, { CountyCodeBottomSheetRef } from '@/src/shared/components/bottom-sheets/phone-code-selector/CountyCodeBottomSheet';
 import { GroupedRow } from '@/src/core/utils/groupData';
+import { FlashList } from '@shopify/flash-list';
 
 // Constants
 const INITIAL_FILTERS: FetchPaymentLinksParams = {
@@ -33,6 +34,7 @@ const INITIAL_FILTERS: FetchPaymentLinksParams = {
 
 const PaymentLinksScreen = () => {
     const { t } = useTranslation();
+    const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<PaymentLink>>>>(null);
     const countyCodeBottomSheetRef = useRef<CountyCodeBottomSheetRef>(null);
     // State Management
     const [isCreateNewOpen, setIsCreateNewOpen] = useState(false);
@@ -50,6 +52,12 @@ const PaymentLinksScreen = () => {
     const handleCloseActions = useCallback(() => {
         setSelectedPaymentLink(null);
     }, []);
+
+    // Scroll to top when tab changes
+    useEffect(() => {
+        listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }, [paymentStatus]);
+
     // Memoized values
     const hasActiveFilters = useMemo(() => {
         const filterKeysToIgnore = ['page', 'limit', 'search', 'paymentStatus'];
@@ -139,6 +147,7 @@ const PaymentLinksScreen = () => {
                     <PaymentLinkCardSkeleton />
                 ) : (
                     <StickyHeaderList
+                        ref={listRef}
                         listData={listData}
                         stickyHeaderIndices={stickyHeaderIndices}
                         fetchNextPage={fetchNextPage}

@@ -63,7 +63,7 @@ const LogoutModal = ({ isVisible, onClose, onLogout }: Props) => {
                                     }}
                                     className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md shadow-md "
                                 >
-                                    <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-8" />
+                                    <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-8" />
 
                                     <View className="flex-row justify-center items-center mb-6">
                                         <FontText type="head" weight="bold" className="text-content-primary text-xl text-center">

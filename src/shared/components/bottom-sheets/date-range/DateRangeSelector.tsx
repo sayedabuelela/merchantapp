@@ -12,10 +12,11 @@ interface DateRangeSelectorProps {
     to: Date | undefined;
     onPress: () => void;
     t: any;
+    className?: string;
 }
 
-export const DateRangeSelector = memo(({ label, from, to, onPress, t }: DateRangeSelectorProps) => (
-    <View className="mb-6">
+export const DateRangeSelector = memo(({ label, from, to, onPress, t, className }: DateRangeSelectorProps) => (
+    <View className={cn("mb-6", className)}>
         <FontText type="body" weight="semi" className={'text-content-secondary text-sm mb-2 self-start'}>
             {label}
         </FontText>

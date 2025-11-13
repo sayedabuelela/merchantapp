@@ -205,9 +205,14 @@ src/modules/payments/
     ├── header/
     │   └── PaymentsHeader.tsx # Wrapper around ListHeader
     ├── orders-list/
-    │   └── OrderCard.tsx      # Payment session card component
-    └── transactions-list/
-        └── TransactionCard.tsx # Transaction card component
+    │   └── OrderCard.tsx      # Payment session card component (supports long press)
+    ├── transactions-list/
+    │   └── TransactionCard.tsx # Transaction card component (supports long press)
+    └── modals/
+        └── ActionsModal/
+            ├── ActionsModal.tsx # Payment actions bottom sheet
+            ├── ActionItem.tsx   # Action button component
+            └── index.tsx        # Export file
 ```
 
 ### Key APIs
@@ -361,6 +366,107 @@ const PaymentsTabs = ({ value, onSelectType, isListEmpty }: PaymentsTabsProps) =
 ```
 
 This approach maintains feature-specific naming while reusing shared logic.
+
+## Actions Modal Pattern
+
+Feature modules can implement bottom sheet action modals for quick actions on list items (similar to payment-links).
+
+### Implementation Pattern
+
+**For Payments Module:**
+- Long press on OrderCard or TransactionCard opens ActionsModal
+- Regular tap navigates to details screen using Link with `asChild` prop
+- Modal shows payment/transaction summary with action buttons
+
+**Structure:**
+```
+src/modules/payments/components/modals/ActionsModal/
+├── ActionsModal.tsx    # Main modal component
+├── ActionItem.tsx      # Reusable action button
+└── index.tsx          # Export file
+```
+
+**Usage Example:**
+```typescript
+// In OrderCard.tsx
+<Link href={`/payments/${_id}`} asChild>
+    <Pressable onLongPress={() => onOpenActions?.(payment)}>
+        {/* Card content */}
+    </Pressable>
+</Link>
+
+// In list view
+const [selectedPayment, setSelectedPayment] = useState<PaymentSession | Transaction | null>(null);
+
+<AnimatePresence>
+    {selectedPayment && (
+        <ActionsModal
+            isVisible={!!selectedPayment}
+            onClose={() => setSelectedPayment(null)}
+            payment={selectedPayment}
+            type={isOrdersTab ? "order" : "transaction"}
+        />
+    )}
+</AnimatePresence>
+```
+
+**Key Features:**
+- Type guards for handling different data types (orders vs transactions)
+- Computed values instead of getter functions for performance
+- Comprehensive null/undefined safety checks
+- Moti animations for smooth slide-up effect
+
+## Scroll-to-Top Pattern
+
+All tabbed list screens automatically scroll to top when switching tabs for better UX.
+
+### Implementation
+
+1. **Update StickyHeaderList** to support `forwardRef`:
+```typescript
+// src/shared/components/StickyHeaderList/StickyHeaderList.tsx
+const StickyHeaderList = forwardRef(StickyHeaderListComponent);
+```
+
+2. **In feature list views**:
+```typescript
+// Create ref
+const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<T>>>>(null);
+
+// Watch for tab changes
+useEffect(() => {
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+}, [tabState]);
+
+// Pass ref to list
+<StickyHeaderList ref={listRef} ... />
+```
+
+**Applied to:**
+- Payments module: Orders ↔ Transactions tabs
+- Payment-Links module: All/Paid/Unpaid/etc. tabs
+- Balance module: Payout/Transfer/All tabs
+
+## Debugging Utilities
+
+### Logger Utility
+Use the logger utility for formatted console output instead of plain `console.log`:
+
+```typescript
+// src/core/utils/logger.ts
+export const logJSON = (label: string, data: any) => {
+    console.log(`${label}:`, JSON.stringify(data, null, 2));
+};
+
+// Usage
+import { logJSON } from '@/src/core/utils/logger';
+logJSON('Payment Data', payment);
+```
+
+Benefits:
+- Formatted JSON output with proper indentation
+- Easy to read nested objects
+- Consistent logging pattern across codebase
 
 ## Common Gotchas
 

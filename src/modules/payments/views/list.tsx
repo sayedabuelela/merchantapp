@@ -1,7 +1,7 @@
 import {SafeAreaView} from "react-native-safe-area-context";
 import PaymentsHeader from "../components/header/PaymentsHeader";
 import PaymentsTabs from "../components/PaymentsTabs";
-import {useCallback, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import OrderCard from "@/src/modules/payments/components/orders-list/OrderCard";
 import TransactionCard from "@/src/modules/payments/components/transactions-list/TransactionCard";
 import {cn} from "@/src/core/utils/cn";
@@ -12,6 +12,9 @@ import {GroupedRow} from "@/src/core/utils/groupData";
 import HeaderRow from "@/src/shared/components/StickyHeaderList/HeaderRow";
 import {PaymentSession, Transaction, FetchSessionsParams, FetchTransactionsParams} from "@/src/modules/payments/payments.model";
 import PaymentFilterModal from "../components/PaymentFilterModal";
+import ActionsModal from "../components/modals/ActionsModal";
+import { AnimatePresence } from 'moti';
+import { FlashList } from "@shopify/flash-list";
 
 const INITIAL_ORDERS_FILTERS: FetchSessionsParams = {
     dateFrom: undefined,
@@ -38,15 +41,22 @@ const INITIAL_TRANSACTIONS_FILTERS: FetchTransactionsParams = {
 };
 
 const PaymentsScreen = () => {
+    const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<PaymentSession | Transaction>>>>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [search, setSearchValue] = useState('');
     const [status, setStatus] = useState<string>("sessions");
     const [ordersFilters, setOrdersFilters] = useState<FetchSessionsParams>(INITIAL_ORDERS_FILTERS);
     const [transactionsFilters, setTransactionsFilters] = useState<FetchTransactionsParams>(INITIAL_TRANSACTIONS_FILTERS);
+    const [selectedPayment, setSelectedPayment] = useState<PaymentSession | Transaction | null>(null);
 
     const isOrdersTab = status === "sessions";
     const activeFilters = isOrdersTab ? ordersFilters : transactionsFilters;
     const setActiveFilters = isOrdersTab ? setOrdersFilters : setTransactionsFilters;
+
+    // Scroll to top when tab changes
+    useEffect(() => {
+        listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }, [status]);
 
     const hasActiveFilters = useMemo(() => {
         const filterKeysToIgnore = ['page', 'limit', 'search', 'sortType', 'sortBy'];
@@ -86,8 +96,11 @@ const PaymentsScreen = () => {
     );
 
     const handleOpenActions = useCallback((item: PaymentSession | Transaction) => {
-        // Handle action sheet opening
-        console.log('Open actions for:', item);
+        setSelectedPayment(item);
+    }, []);
+
+    const handleCloseActions = useCallback(() => {
+        setSelectedPayment(null);
     }, []);
 
     const renderItem = useCallback(({item}: { item: GroupedRow<PaymentSession | Transaction> }) => {
@@ -126,6 +139,7 @@ const PaymentsScreen = () => {
             />
             <View className={cn("flex-1 px-6")}>
                 <StickyHeaderList
+                    ref={listRef}
                     listData={listData}
                     stickyHeaderIndices={stickyHeaderIndices}
                     fetchNextPage={fetchNextPage}
@@ -134,6 +148,16 @@ const PaymentsScreen = () => {
                     renderItem={renderItem}
                 />
             </View>
+            <AnimatePresence>
+                {selectedPayment && (
+                    <ActionsModal
+                        isVisible={!!selectedPayment}
+                        onClose={handleCloseActions}
+                        payment={selectedPayment}
+                        type={isOrdersTab ? "order" : "transaction"}
+                    />
+                )}
+            </AnimatePresence>
             <PaymentFilterModal
                 isVisible={isFiltersOpen}
                 onClose={() => setIsFiltersOpen(false)}

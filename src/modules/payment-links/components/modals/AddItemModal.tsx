@@ -118,7 +118,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                         elevation: 5,
                                     }}
                                 >
-                                    <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-8" />
+                                    <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-8" />
 
                                     {/* Header */}
                                     <View className="flex-row justify-between items-center mb-6">

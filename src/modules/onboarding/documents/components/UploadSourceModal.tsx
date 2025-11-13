@@ -71,7 +71,7 @@ const UploadSourceModal: FC<IUploadSourceModalProps> = ({
                                         ${Platform.OS === 'ios' ? 'pb-10' : 'pb-6'}
                                       `}
                         >
-                            <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-8" />
+                            <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-8" />
                             <View className="px-6">
                                 <FontText type="head" weight="bold" className="text-content-primary text-xl self-start mb-6">
                                     {t('Please select document type')}

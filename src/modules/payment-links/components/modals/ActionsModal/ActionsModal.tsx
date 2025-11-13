@@ -425,7 +425,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
                                         elevation: 5,
                                     }}
                                 >
-                                    <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-8" />
+                                    <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-8" />
 
                                     <ModalHeader
                                         customerName={paymentLink.customerName}

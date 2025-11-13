@@ -64,7 +64,7 @@ const GeneralModal = ({ isVisible, onClose }: Props) => {
                                     transition={{ type: 'timing', duration: 500 }}
                                     className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md shadow-md shadow-black"
                                 >
-                                    <View className="w-8 h-[3px] bg-content-disabled rounded-full self-center mb-8" />
+                                    <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-8" />
 
                                     <GeneralModalHeader
                                         title={t('Filters')}
@@ -103,7 +103,7 @@ const GeneralModal = ({ isVisible, onClose }: Props) => {
                                             //     onSelectStore(activeStore!);
                                             // }}
                                             className="mt-6"
-                                            // disabled={activeStore === currentMerchantId}
+                                        // disabled={activeStore === currentMerchantId}
                                         />
                                     </View>
                                 </MotiView>
