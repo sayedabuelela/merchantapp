@@ -14,6 +14,9 @@ import OrderDetailsTabs from "@/src/modules/payments/components/detail/OrderDeta
 import { OrderDetailsTabType } from '../payments.model';
 import { useState } from 'react';
 
+// Sticky tab threshold offset
+const STICKY_TAB_OFFSET = 10;
+
 const OrderDetailsScreen = () => {
     const {_id} = useLocalSearchParams<{ _id: string }>();
     const {t} = useTranslation();
@@ -24,7 +27,7 @@ const OrderDetailsScreen = () => {
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const scrollY = event.nativeEvent.contentOffset.y;
-        setIsTabsSticky(scrollY > summaryHeight - 10);
+        setIsTabsSticky(scrollY > summaryHeight - STICKY_TAB_OFFSET);
     };
 
     if (isError || !order) {

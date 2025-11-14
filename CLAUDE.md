@@ -725,6 +725,93 @@ const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 {activeTab === 'history' && <HistoryTab order={order} />}
 ```
 
+### Settlement Tab Implementation
+
+The Settlement tab displays payment-specific settlement information with different components for each payment type.
+
+#### Settlement Structure
+
+```
+src/modules/payments/components/
+├── detail/
+│   └── details-tabs/
+│       └── SettlementTab.tsx        # Smart wrapper component
+└── order-detail/
+    └── settlement/
+        ├── ValuSettlementDetails.tsx    # VALU installment information
+        ├── WalletSettlementDetails.tsx  # Wallet payment information
+        ├── CashSettlementDetails.tsx    # Cash/basic financial summary
+        └── index.ts                     # Clean exports
+```
+
+#### Settlement Components
+
+**SettlementTab (Smart Wrapper):**
+- Uses type guards (`isValuPayment`, `isWalletPayment`, `isCashPayment`) to detect payment type
+- Automatically renders the appropriate settlement detail component
+- Falls back to `CashSettlementDetails` for unknown payment types
+- Zero conditional logic in parent component
+
+**ValuSettlementDetails:**
+Displays VALU installment payment information:
+- Customer information: Mobile number, loan number, customer name, national ID
+- Installment details: Tenure, monthly payment (EMI), first/last installment dates
+- Financial breakdown: Financed amount, admin fees, down payment, cashback, ToU amount
+- Only renders if `sourceOfFunds.payerInfo` exists
+
+**WalletSettlementDetails:**
+Displays wallet payment information in two sections:
+- Wallet Information: Mobile number, payment scheme, paid through, wallet strategy
+- Financial Summary: Amount, captured amount, refunded amount (conditional), fees, settlement amount (conditional)
+- Uses `capitalizeWords()` formatter for readable field values
+
+**CashSettlementDetails:**
+Displays basic financial summary (used for cash and card payments):
+- Amount, captured amount, refunded amount (conditional)
+- Fees, VAT, settlement amount (conditional)
+- Minimal UI, focused on core transaction amounts
+
+#### Formatting Utilities
+
+New utility file: `src/modules/payments/utils/formatters.ts`
+
+```typescript
+// Formats monetary amounts with EGP currency
+export const formatAmount = (value: number | string | null | undefined): string => {
+    if (value === null || value === undefined || value === 0) return "0 EGP";
+    return `${value} EGP`;
+};
+
+// Formats text fields with fallback
+export const formatText = (value: string | null | undefined): string => {
+    return value || "--";
+};
+
+// Converts camelCase to Title Case
+export const capitalizeWords = (value: string | null | undefined): string => {
+    if (!value) return "--";
+    return value
+        .split(/(?=[A-Z])/)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+};
+```
+
+**Usage:**
+- `formatAmount(100)` → "100 EGP"
+- `formatAmount(null)` → "0 EGP"
+- `formatText(null)` → "--"
+- `capitalizeWords("vodafoneCash")` → "Vodafone Cash"
+
+#### Key Features
+
+- **Payment Type Detection**: Automatic component selection based on payment method
+- **Defensive Coding**: All components handle null/undefined data gracefully
+- **Conditional Rendering**: Fields like `refundedAmount` only show when > 0
+- **Consistent Formatting**: Shared formatters ensure uniform display across all settlement components
+- **Type Safety**: All components properly typed with `OrderDetailPayment` interface
+- **Reusable Utilities**: Formatters can be used across other payment-related components
+
 ### History Tab Implementation
 
 The History tab displays a complete timeline of all order events and transactions with contextual icons and descriptions.

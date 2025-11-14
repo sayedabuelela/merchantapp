@@ -3,18 +3,11 @@ import SectionRowItem from "@/src/shared/components/details-screens/SectionRowIt
 import { useTranslation } from "react-i18next"
 import { OrderDetailPayment } from "@/src/modules/payments/payments.model"
 import { View } from "react-native"
+import { formatAmount } from "@/src/modules/payments/utils/formatters"
 
 interface Props {
     order: OrderDetailPayment;
 }
-
-/**
- * Formats amount fields - returns "0 EGP" for null/undefined, otherwise formats the number
- */
-const formatAmount = (value: number | string | null | undefined): string => {
-    if (value === null || value === undefined || value === 0) return "0 EGP";
-    return `${value} EGP`;
-};
 
 const CashSettlementDetails = ({ order }: Props) => {
     const { t } = useTranslation();

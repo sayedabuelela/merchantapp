@@ -4,9 +4,6 @@ import FontText from '@/src/shared/components/FontText';
 import {MasterCardIcon, NBEIcon} from "@/src/shared/assets/svgs";
 import {SourceOfFunds} from "@/src/modules/payments/payments.model";
 
-// interface CardPaymentDetailsProps {
-//     order: OrderDetailPayment;
-// }
 interface CardPaymentDetailsProps {
     sourceOfFunds: SourceOfFunds;
     paymentChannel?: string;
@@ -22,15 +19,11 @@ export const CardPaymentDetails = ({sourceOfFunds, paymentChannel}: CardPaymentD
         <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded gap-y-5">
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-1">
-                    {/*<View className="w-6 h-6 bg-primary rounded"/>*/}
                     <NBEIcon/>
                     <FontText type="body" weight="semi"
                               className="text-content-primary text-xs uppercase">{sourceOfFunds.issuer} {paymentChannel && `- ${t(paymentChannel)}`}</FontText>
                 </View>
-                {/*<ValuIcon/>*/}
-                {/*<SouhoolaIcon/>*/}
                 <MasterCardIcon/>
-                {/*<VisaIcon/>*/}
             </View>
             <View className='gap-y-2'>
                 <FontText type="body" weight="bold"
