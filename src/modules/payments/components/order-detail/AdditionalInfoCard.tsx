@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { DetailSection, DetailRow } from '../detail';
+import DetailsSection from '@/src/shared/components/details-screens/DetailsSection';
+import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import { OrderDetailPayment } from '../../payments.model';
 
 interface AdditionalInfoCardProps {
@@ -24,12 +25,12 @@ export const AdditionalInfoCard = ({ order }: AdditionalInfoCardProps) => {
     if (!hasAdditionalInfo) return null;
 
     return (
-        <DetailSection title={t('Additional Information')}>
+        <DetailsSection title={t('Additional Information')}>
             {terminalId && terminalId !== 'NA' && (
-                <DetailRow label={t('Terminal ID')} value={terminalId} />
+                <SectionRowItem title={t('Terminal ID')} value={terminalId} />
             )}
-            {originType && <DetailRow label={t('Origin Type')} value={originType} />}
-            {originId && <DetailRow label={t('Origin ID')} value={originId} />}
-        </DetailSection>
+            {originType && <SectionRowItem title={t('Origin Type')} value={originType} />}
+            {originId && <SectionRowItem title={t('Origin ID')} value={originId} />}
+        </DetailsSection>
     );
 };

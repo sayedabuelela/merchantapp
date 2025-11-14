@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DetailsTab from '../components/detail/transaction-tabs/DetailsTab';
 import SettlementTab from '../components/detail/transaction-tabs/SettlementTab';
 import HistoryTab from '../components/detail/transaction-tabs/HistoryTab';
-import TransactionDetailsTabs from '../components/detail/TransactionDetailsTabs';
+import DetailsTabs from '../components/detail/DetailsTabs';
 import { TransactionDetailsTabType } from '../payments.model';
 import { useState } from 'react';
 
@@ -80,7 +80,7 @@ const TransactionDetailsScreen = () => {
 
                         {/* Tabs - Normal position (hidden when sticky to prevent duplicate) */}
                         <View style={{ opacity: isTabsSticky ? 0 : 1 }}>
-                            <TransactionDetailsTabs
+                            <DetailsTabs
                                 value={activeTab}
                                 onSelectType={setActiveTab}
                             />
@@ -110,7 +110,7 @@ const TransactionDetailsScreen = () => {
                             elevation: 3,
                         }}
                     >
-                        <TransactionDetailsTabs value={activeTab} onSelectType={setActiveTab} />
+                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} />
                     </View>
                 )}
             </View>

@@ -10,7 +10,7 @@ import FailedToLoad from '@/src/shared/components/errors/FailedToLoad';
 import DetailsTab from "@/src/modules/payments/components/detail/details-tabs/DetailsTab";
 import SettlementTab from "@/src/modules/payments/components/detail/details-tabs/SettlementTab";
 import HistoryTab from "@/src/modules/payments/components/detail/details-tabs/HistoryTab";
-import OrderDetailsTabs from "@/src/modules/payments/components/detail/OrderDetailsTabs";
+import DetailsTabs from "@/src/modules/payments/components/detail/DetailsTabs";
 import { OrderDetailsTabType } from '../payments.model';
 import { useState } from 'react';
 
@@ -72,7 +72,7 @@ const OrderDetailsScreen = () => {
 
                         {/* Tabs - Normal position (hidden when sticky to prevent duplicate) */}
                         <View style={{ opacity: isTabsSticky ? 0 : 1 }}>
-                            <OrderDetailsTabs value={activeTab} onSelectType={setActiveTab} />
+                            <DetailsTabs value={activeTab} onSelectType={setActiveTab} />
                         </View>
 
                         {/* Tab Content */}
@@ -97,7 +97,7 @@ const OrderDetailsScreen = () => {
                             elevation: 3
                         }}
                     >
-                        <OrderDetailsTabs value={activeTab} onSelectType={setActiveTab} />
+                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} />
                     </View>
                 )}
             </View>

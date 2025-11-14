@@ -4,9 +4,12 @@ import {
     isWalletPayment,
     isCashPayment,
 } from '@/src/modules/payments/payments.utils';
-import ValuSettlementDetails from '@/src/modules/payments/components/transaction-detail/settlement/ValuSettlementDetails';
-import WalletSettlementDetails from '@/src/modules/payments/components/transaction-detail/settlement/WalletSettlementDetails';
-import CashSettlementDetails from '@/src/modules/payments/components/transaction-detail/settlement/CashSettlementDetails';
+import {
+    ValuSettlementDetails,
+    WalletSettlementDetails,
+    CashSettlementDetails,
+    adaptTransactionData
+} from '@/src/modules/payments/components/detail/settlement';
 
 interface Props {
     transaction: TransactionDetail;
@@ -18,25 +21,26 @@ interface Props {
  */
 const SettlementTab = ({ transaction }: Props) => {
     const sourceOfFunds = transaction.sourceOfFunds;
+    const settlementData = adaptTransactionData(transaction);
 
     // VALU payments (installments)
     if (isValuPayment(sourceOfFunds)) {
-        return <ValuSettlementDetails transaction={transaction} />;
+        return <ValuSettlementDetails data={settlementData} />;
     }
 
     // Wallet payments (Vodafone Cash, Orange Cash, etc.)
     if (isWalletPayment(sourceOfFunds)) {
-        return <WalletSettlementDetails transaction={transaction} />;
+        return <WalletSettlementDetails data={settlementData} />;
     }
 
     // Cash payments or any other payment type
     // Shows basic financial summary (amount, fees, etc.)
     if (isCashPayment(sourceOfFunds)) {
-        return <CashSettlementDetails transaction={transaction} />;
+        return <CashSettlementDetails data={settlementData} />;
     }
 
     // Fallback: Show basic financial summary for unknown payment types
-    return <CashSettlementDetails transaction={transaction} />;
+    return <CashSettlementDetails data={settlementData} />;
 };
 
 export default SettlementTab;

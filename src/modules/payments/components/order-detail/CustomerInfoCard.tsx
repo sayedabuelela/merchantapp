@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { DetailSection, DetailRow } from '../detail';
+import DetailsSection from '@/src/shared/components/details-screens/DetailsSection';
+import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import { OrderDetailPayment } from '../../payments.model';
-import { UserIcon, EnvelopeIcon, PhoneIcon } from 'react-native-heroicons/outline';
 
 interface CustomerInfoCardProps {
     order: OrderDetailPayment;
@@ -22,28 +22,25 @@ export const CustomerInfoCard = ({ order }: CustomerInfoCardProps) => {
     if (!hasCustomerInfo) return null;
 
     return (
-        <DetailSection title={t('Customer Information')}>
+        <DetailsSection title={t('Customer Information')}>
             {customerName && (
-                <DetailRow
-                    label={t('Customer Name')}
+                <SectionRowItem
+                    title={t('Customer Name')}
                     value={customerName}
-                    icon={<UserIcon size={16} color="#666" />}
                 />
             )}
             {customerEmail && (
-                <DetailRow
-                    label={t('Email')}
+                <SectionRowItem
+                    title={t('Email')}
                     value={customerEmail}
-                    icon={<EnvelopeIcon size={16} color="#666" />}
                 />
             )}
             {customerPhone && (
-                <DetailRow
-                    label={t('Phone')}
+                <SectionRowItem
+                    title={t('Phone')}
                     value={customerPhone}
-                    icon={<PhoneIcon size={16} color="#666" />}
                 />
             )}
-        </DetailSection>
+        </DetailsSection>
     );
 };

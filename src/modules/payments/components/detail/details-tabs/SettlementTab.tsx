@@ -7,8 +7,9 @@ import {
 import {
     ValuSettlementDetails,
     WalletSettlementDetails,
-    CashSettlementDetails
-} from "@/src/modules/payments/components/order-detail/settlement"
+    CashSettlementDetails,
+    adaptOrderData
+} from "@/src/modules/payments/components/detail/settlement"
 
 interface Props {
     order: OrderDetailPayment;
@@ -20,25 +21,26 @@ interface Props {
  */
 const SettlementTab = ({ order }: Props) => {
     const sourceOfFunds = order.sourceOfFunds;
+    const settlementData = adaptOrderData(order);
 
     // VALU payments (installments)
     if (isValuPayment(sourceOfFunds)) {
-        return <ValuSettlementDetails order={order} />;
+        return <ValuSettlementDetails data={settlementData} />;
     }
 
     // Wallet payments (Vodafone Cash, Orange Cash, etc.)
     if (isWalletPayment(sourceOfFunds)) {
-        return <WalletSettlementDetails order={order} />;
+        return <WalletSettlementDetails data={settlementData} />;
     }
 
     // Cash payments or any other payment type
     // Shows basic financial summary (amount, fees, etc.)
     if (isCashPayment(sourceOfFunds)) {
-        return <CashSettlementDetails order={order} />;
+        return <CashSettlementDetails data={settlementData} />;
     }
 
     // Fallback: Show basic financial summary for unknown payment types
-    return <CashSettlementDetails order={order} />;
+    return <CashSettlementDetails data={settlementData} />;
 }
 
 export default SettlementTab

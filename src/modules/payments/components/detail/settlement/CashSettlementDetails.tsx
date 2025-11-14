@@ -1,15 +1,15 @@
 import DetailsSection from '@/src/shared/components/details-screens/DetailsSection';
 import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import { useTranslation } from 'react-i18next';
-import { TransactionDetail } from '@/src/modules/payments/payments.model';
 import { View } from 'react-native';
 import { formatAmount } from '@/src/modules/payments/utils/formatters';
+import { SettlementData } from './adapters';
 
 interface Props {
-    transaction: TransactionDetail;
+    data: SettlementData;
 }
 
-const CashSettlementDetails = ({ transaction }: Props) => {
+const CashSettlementDetails = ({ data }: Props) => {
     const { t } = useTranslation();
 
     return (
@@ -17,28 +17,34 @@ const CashSettlementDetails = ({ transaction }: Props) => {
             <DetailsSection>
                 <SectionRowItem
                     title={t('Amount')}
-                    value={formatAmount(transaction.amount)}
+                    value={formatAmount(data.amount)}
                 />
                 <SectionRowItem
                     title={t('Captured Amount')}
-                    value={formatAmount(transaction.totalCapturedAmount)}
+                    value={formatAmount(data.capturedAmount)}
                 />
-                {transaction.totalRefundedAmount > 0 && (
+                {data.refundedAmount > 0 && (
                     <SectionRowItem
                         title={t('Refunded Amount')}
-                        value={formatAmount(transaction.totalRefundedAmount)}
+                        value={formatAmount(data.refundedAmount)}
                     />
                 )}
-                {transaction.order?.feeTrxAmount && (
+                {data.fees && (
                     <SectionRowItem
                         title={t('Fees')}
-                        value={formatAmount(transaction.order.feeTrxAmount)}
+                        value={formatAmount(data.fees)}
                     />
                 )}
-                {transaction.order?.feeVatAmount && (
+                {data.vat && (
                     <SectionRowItem
                         title={t('VAT')}
-                        value={formatAmount(transaction.order.feeVatAmount)}
+                        value={formatAmount(data.vat)}
+                    />
+                )}
+                {data.settlementAmount && (
+                    <SectionRowItem
+                        title={t('Settlement Amount')}
+                        value={formatAmount(data.settlementAmount)}
                     />
                 )}
             </DetailsSection>

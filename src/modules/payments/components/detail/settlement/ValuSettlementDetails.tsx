@@ -1,19 +1,19 @@
 import DetailsSection from '@/src/shared/components/details-screens/DetailsSection';
 import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import { useTranslation } from 'react-i18next';
-import { TransactionDetail } from '@/src/modules/payments/payments.model';
 import { View } from 'react-native';
 import { formatAmount, formatText } from '@/src/modules/payments/utils/formatters';
+import { SettlementData } from './adapters';
 
 interface Props {
-    transaction: TransactionDetail;
+    data: SettlementData;
 }
 
-const ValuSettlementDetails = ({ transaction }: Props) => {
+const ValuSettlementDetails = ({ data }: Props) => {
     const { t } = useTranslation();
 
     // Access VALU payment info from sourceOfFunds
-    const payerInfo = transaction.sourceOfFunds?.payerInfo;
+    const payerInfo = data.sourceOfFunds?.payerInfo;
 
     // This component should only render if payerInfo exists
     if (!payerInfo) {

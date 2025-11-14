@@ -7,15 +7,15 @@ import {
     SouhoolaSettlementIcon,
     RefundSettlementIcon
 } from "@/src/shared/assets/svgs";
-import { OrderDetailHistoryItem } from "@/src/modules/payments/payments.model";
+import { OrderDetailHistoryItem, RelatedTransaction } from "@/src/modules/payments/payments.model";
 
 export interface HistoryIconData {
     icon: React.ReactNode;
     backgroundColor: string;
 }
 
-// Color constants
-const COLORS = {
+// Color constants - exported for reuse
+export const COLORS = {
     SUCCESS: '#4AAB4E',
     FAILURE: '#A50017',
     NEUTRAL: '#D5D9D9',
@@ -23,8 +23,8 @@ const COLORS = {
     ICON_WHITE: '#fff',
 } as const;
 
-// Icon configurations
-const ICONS = {
+// Icon configurations - exported for reuse
+export const ICONS = {
     SUCCESS: <CheckIcon size={16} color={COLORS.ICON_WHITE} />,
     FAILURE: <XMarkIcon size={16} color={COLORS.ICON_WHITE} />,
     SHIELD: <ShieldCheckIcon size={16} color={COLORS.ICON_GRAY} />,
@@ -121,5 +121,38 @@ export const getHistoryIcon = (item: OrderDetailHistoryItem): HistoryIconData =>
     }
 
     // 7. Default fallback icon
+    return createNeutralIcon(ICONS.BANKNOTES);
+};
+
+/**
+ * Gets the appropriate icon for a transaction history item (RelatedTransaction)
+ * Simplified version for transaction history which doesn't have as many operation types
+ */
+export const getTransactionHistoryIcon = (item: RelatedTransaction): HistoryIconData => {
+    const operation = item.operation?.toLowerCase();
+    const status = item.status;
+
+    // 1. Handle refund operations first (always show refund icon)
+    if (operation === 'refund') {
+        return createNeutralIcon(ICONS.REFUND);
+    }
+
+    // 2. Handle main payment success (pay operation with SUCCESS status)
+    if (operation === 'pay' && status === 'SUCCESS') {
+        return {
+            icon: ICONS.SUCCESS,
+            backgroundColor: COLORS.SUCCESS,
+        };
+    }
+
+    // 3. Handle FAILURE/FAILED status (for any operation)
+    if (status === 'FAILURE' || status === 'FAILED') {
+        return {
+            icon: ICONS.FAILURE,
+            backgroundColor: COLORS.FAILURE,
+        };
+    }
+
+    // 4. Default fallback
     return createNeutralIcon(ICONS.BANKNOTES);
 };

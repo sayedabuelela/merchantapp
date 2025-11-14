@@ -3,8 +3,7 @@ import { RelatedTransaction } from '@/src/modules/payments/payments.model';
 import { useTranslation } from 'react-i18next';
 import FontText from '@/src/shared/components/FontText';
 import { formatHistoryDate } from '@/src/modules/payments/utils/history.utils';
-import { CheckIcon, XMarkIcon, BanknotesIcon } from 'react-native-heroicons/outline';
-import { RefundSettlementIcon } from '@/src/shared/assets/svgs';
+import { getTransactionHistoryIcon } from '@/src/modules/payments/utils/history.icons';
 
 interface TransactionHistoryCardProps {
     historyItem: RelatedTransaction;
@@ -37,53 +36,8 @@ const TransactionHistoryCard = ({ historyItem }: TransactionHistoryCardProps) =>
         }
     };
 
-    // Get icon and background color based on status and operation
-    // Uses EXACT same icons and colors as order history (history.icons.tsx)
-    const getIconAndColor = () => {
-        const operation = historyItem.operation?.toLowerCase();
-        const status = historyItem.status;
-
-        // Color constants (matching history.icons.tsx)
-        const COLORS = {
-            SUCCESS: '#4AAB4E',
-            FAILURE: '#A50017',
-            NEUTRAL: '#D5D9D9',
-            ICON_GRAY: '#556767',
-            ICON_WHITE: '#fff',
-        };
-
-        // 1. Handle refund operations first (always show refund icon)
-        if (operation === 'refund') {
-            return {
-                icon: <RefundSettlementIcon />,
-                backgroundColor: COLORS.NEUTRAL,
-            };
-        }
-
-        // 2. Handle main payment success (pay operation with SUCCESS status)
-        if (operation === 'pay' && status === 'SUCCESS') {
-            return {
-                icon: <CheckIcon size={16} color={COLORS.ICON_WHITE} />,
-                backgroundColor: COLORS.SUCCESS,
-            };
-        }
-
-        // 3. Handle FAILURE/FAILED status (for any operation)
-        if (status === 'FAILURE' || status === 'FAILED') {
-            return {
-                icon: <XMarkIcon size={16} color={COLORS.ICON_WHITE} />,
-                backgroundColor: COLORS.FAILURE,
-            };
-        }
-
-        // 4. Default fallback
-        return {
-            icon: <BanknotesIcon size={16} color={COLORS.ICON_GRAY} />,
-            backgroundColor: COLORS.NEUTRAL,
-        };
-    };
-
-    const { icon, backgroundColor } = getIconAndColor();
+    // Get icon and background color using shared utility
+    const { icon, backgroundColor } = getTransactionHistoryIcon(historyItem);
     const description = getDescription();
 
     return (

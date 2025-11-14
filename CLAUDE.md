@@ -60,6 +60,19 @@ src/
 
 **Module Organization**: Each feature module follows a consistent structure with models, services, stores, viewmodels, views, and components. This separation ensures clear boundaries between data, logic, and presentation.
 
+**Adapter Pattern for Component Reusability**: When multiple data sources (e.g., orders and transactions) need to display similar UI components, use the adapter pattern:
+1. Define a normalized interface (e.g., `SettlementData`)
+2. Create adapter functions to transform each data source to the normalized interface
+3. Build components that accept the normalized interface
+4. Use thin wrapper components that handle adaptation and component selection
+
+**Example:** The settlement components (`CashSettlementDetails`, `ValuSettlementDetails`, `WalletSettlementDetails`) work for both orders and transactions by:
+- Accepting a common `SettlementData` interface
+- Using adapters (`adaptOrderData`, `adaptTransactionData`) to normalize different data structures
+- Having smart wrapper components that detect payment type and render appropriate components
+
+This eliminates code duplication and ensures consistency across similar features.
+
 **Navigation**: Uses Expo Router with file-based routing. The root `_layout.tsx` wraps the app in providers (QueryClient, Language, Splash, Notification, Toast, Keyboard). Protected routes use `Stack.Protected` with guard conditions based on authentication state.
 
 **State Management**:
@@ -116,6 +129,34 @@ When adding new features, follow the established module structure:
 5. Create `viewmodels/` directory for business logic hooks
 6. Create `views/` directory for screen components
 7. Create `components/` directory for feature-specific UI components
+
+### Component Reusability Strategies
+
+When building components that need to work with multiple data types:
+
+**1. TypeScript Generics:**
+Use generics for components that have the same UI but work with different type-safe values.
+
+Example: `DetailsTabs<T>` works for both `OrderDetailsTabType` and `TransactionDetailsTabType`:
+```typescript
+function DetailsTabs<T extends string>({ value, onSelectType }: Props<T>) {
+    // Same component, different types!
+}
+```
+
+**2. Adapter Pattern:**
+Use adapters when components need to work with different data structures that represent similar concepts.
+
+Steps:
+1. Define a normalized interface (e.g., `SettlementData`)
+2. Create adapter functions for each data source
+3. Build components that accept the normalized interface
+4. Use wrapper components for adaptation logic
+
+Example: Settlement components work for both orders and transactions using `adaptOrderData()` and `adaptTransactionData()`.
+
+**3. Shared Component Libraries:**
+Extract common UI patterns into `src/shared/components/` when multiple features need the same component (e.g., `ListHeader`, `ListTabs`).
 
 ### API Calls
 Always use the `useApi()` hook to get API clients. Never hardcode URLs or create standalone Axios instances:
@@ -666,24 +707,35 @@ Usage in `OrderSummaryCard`:
 - **Consistent Design**: All payment detail components use the same card-style UI
 - **No Breaking Changes**: Existing implementations continue to work
 
-### Order Details Tabbed Interface
+### Detail Screens Tabbed Interface
 
-The order detail screen uses a tabbed interface with sticky tab behavior for better UX.
+Both order and transaction detail screens use a unified tabbed interface with sticky tab behavior for better UX.
 
 #### Tab Structure
 
 ```
 src/modules/payments/
-├── payments.model.ts  # Added OrderDetailsTabType = 'details' | 'settlement' | 'history'
+├── payments.model.ts  # OrderDetailsTabType & TransactionDetailsTabType = 'details' | 'settlement' | 'history'
 ├── components/
 │   └── detail/
-│       ├── OrderDetailsTabs.tsx  # Tab switcher component
-│       └── details-tabs/
-│           ├── DetailsTab.tsx     # Order and transaction details
-│           ├── SettlementTab.tsx  # Settlement information
-│           └── HistoryTab.tsx     # Transaction history timeline
+│       ├── DetailsTabs.tsx        # Generic tab switcher (supports both order and transaction)
+│       ├── details-tabs/          # Order-specific tab content
+│       │   ├── DetailsTab.tsx     # Order details
+│       │   ├── SettlementTab.tsx  # Settlement wrapper with adapter
+│       │   └── HistoryTab.tsx     # Order history
+│       ├── transaction-tabs/      # Transaction-specific tab content
+│       │   ├── DetailsTab.tsx     # Transaction details
+│       │   ├── SettlementTab.tsx  # Settlement wrapper with adapter
+│       │   └── HistoryTab.tsx     # Transaction history
+│       └── settlement/            # Shared settlement components
+│           ├── adapters.ts        # Data normalization adapters
+│           ├── CashSettlementDetails.tsx
+│           ├── ValuSettlementDetails.tsx
+│           ├── WalletSettlementDetails.tsx
+│           └── index.ts
 └── views/
-    └── order-details.tsx  # Main screen with sticky tabs
+    ├── order-details.tsx          # Order screen with sticky tabs
+    └── transaction-details.tsx    # Transaction screen with sticky tabs
 ```
 
 #### Sticky Tabs Implementation
@@ -710,47 +762,122 @@ const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
 #### Tab Components
 
-**OrderDetailsTabs:**
-- Reusable tabs component using shared `ListTabs`
+**DetailsTabs (Generic Component):**
+- Consolidated tabs component using TypeScript generics
+- Works for both `OrderDetailsTabType` and `TransactionDetailsTabType`
 - Three tabs: Details, Settlement, History
-- Type-safe with `OrderDetailsTabType`
 - Supports i18n translations
+- Eliminates code duplication between order and transaction detail screens
 
 **Usage:**
 ```typescript
-<OrderDetailsTabs value={activeTab} onSelectType={setActiveTab} />
-
+// For Orders
+<DetailsTabs<OrderDetailsTabType> value={activeTab} onSelectType={setActiveTab} />
 {activeTab === 'details' && <DetailsTab order={order} />}
 {activeTab === 'settlement' && <SettlementTab order={order} />}
 {activeTab === 'history' && <HistoryTab order={order} />}
+
+// For Transactions (same component!)
+<DetailsTabs<TransactionDetailsTabType> value={activeTab} onSelectType={setActiveTab} />
+{activeTab === 'details' && <DetailsTab transaction={transaction} />}
+{activeTab === 'settlement' && <SettlementTab transaction={transaction} />}
+{activeTab === 'history' && <HistoryTab transaction={transaction} />}
 ```
 
 ### Settlement Tab Implementation
 
-The Settlement tab displays payment-specific settlement information with different components for each payment type.
+The Settlement tab displays payment-specific settlement information with shared components for both orders and transactions using an adapter pattern.
+
+#### Settlement Architecture
+
+The settlement system uses:
+1. **Adapter Pattern**: Normalizes order and transaction data into a common `SettlementData` interface
+2. **Shared Components**: Same settlement components work for both orders and transactions
+3. **Smart Wrappers**: Tab-specific wrappers handle data adaptation and component selection
 
 #### Settlement Structure
 
 ```
-src/modules/payments/components/
-├── detail/
-│   └── details-tabs/
-│       └── SettlementTab.tsx        # Smart wrapper component
-└── order-detail/
-    └── settlement/
-        ├── ValuSettlementDetails.tsx    # VALU installment information
-        ├── WalletSettlementDetails.tsx  # Wallet payment information
-        ├── CashSettlementDetails.tsx    # Cash/basic financial summary
-        └── index.ts                     # Clean exports
+src/modules/payments/components/detail/
+├── settlement/
+│   ├── adapters.ts                  # Data normalization layer
+│   ├── CashSettlementDetails.tsx    # Basic financial summary
+│   ├── ValuSettlementDetails.tsx    # VALU installment information
+│   ├── WalletSettlementDetails.tsx  # Wallet payment information
+│   └── index.ts                     # Clean exports
+├── details-tabs/
+│   └── SettlementTab.tsx            # Order wrapper with adaptOrderData()
+└── transaction-tabs/
+    └── SettlementTab.tsx            # Transaction wrapper with adaptTransactionData()
+```
+
+#### Adapter Pattern
+
+**SettlementData Interface:**
+```typescript
+export interface SettlementData {
+    amount: number;
+    capturedAmount: number;
+    refundedAmount: number;
+    fees?: string | number;
+    vat?: string | number;
+    settlementAmount?: string;
+    sourceOfFunds?: SourceOfFunds;
+}
+```
+
+**Data Adapters:**
+```typescript
+// Normalizes OrderDetailPayment to SettlementData
+export const adaptOrderData = (order: OrderDetailPayment): SettlementData => ({
+    amount: order.amount,
+    capturedAmount: order.capturedAmount,
+    refundedAmount: order.refundedAmount,
+    fees: order.fees,
+    vat: order.vat,
+    settlementAmount: order.settlementAmount,
+    sourceOfFunds: order.sourceOfFunds,
+});
+
+// Normalizes TransactionDetail to SettlementData
+export const adaptTransactionData = (transaction: TransactionDetail): SettlementData => ({
+    amount: transaction.amount,
+    capturedAmount: transaction.totalCapturedAmount,
+    refundedAmount: transaction.totalRefundedAmount,
+    fees: transaction.order?.feeTrxAmount,
+    vat: transaction.order?.feeVatAmount,
+    settlementAmount: undefined, // Transactions don't have settlementAmount
+    sourceOfFunds: transaction.sourceOfFunds,
+});
 ```
 
 #### Settlement Components
 
-**SettlementTab (Smart Wrapper):**
-- Uses type guards (`isValuPayment`, `isWalletPayment`, `isCashPayment`) to detect payment type
-- Automatically renders the appropriate settlement detail component
-- Falls back to `CashSettlementDetails` for unknown payment types
-- Zero conditional logic in parent component
+**SettlementTab Wrappers (Smart Components):**
+- Use type guards (`isValuPayment`, `isWalletPayment`, `isCashPayment`) to detect payment type
+- Automatically render the appropriate settlement detail component
+- Adapt data using `adaptOrderData()` or `adaptTransactionData()`
+- Fall back to `CashSettlementDetails` for unknown payment types
+- Identical logic in both `details-tabs/SettlementTab.tsx` and `transaction-tabs/SettlementTab.tsx`
+
+**Example (works for both orders and transactions):**
+```typescript
+const SettlementTab = ({ order }: Props) => {
+    const sourceOfFunds = order.sourceOfFunds;
+    const settlementData = adaptOrderData(order); // or adaptTransactionData(transaction)
+
+    if (isValuPayment(sourceOfFunds)) {
+        return <ValuSettlementDetails data={settlementData} />;
+    }
+    if (isWalletPayment(sourceOfFunds)) {
+        return <WalletSettlementDetails data={settlementData} />;
+    }
+    if (isCashPayment(sourceOfFunds)) {
+        return <CashSettlementDetails data={settlementData} />;
+    }
+    return <CashSettlementDetails data={settlementData} />; // Fallback
+}
+```
 
 **ValuSettlementDetails:**
 Displays VALU installment payment information:
@@ -767,9 +894,11 @@ Displays wallet payment information in two sections:
 
 **CashSettlementDetails:**
 Displays basic financial summary (used for cash and card payments):
+- Accepts normalized `SettlementData` interface
 - Amount, captured amount, refunded amount (conditional)
 - Fees, VAT, settlement amount (conditional)
 - Minimal UI, focused on core transaction amounts
+- Works for both orders and transactions via adapter
 
 #### Formatting Utilities
 
@@ -805,12 +934,15 @@ export const capitalizeWords = (value: string | null | undefined): string => {
 
 #### Key Features
 
+- **Adapter Pattern**: Normalizes different data structures into a common interface
+- **Component Reusability**: Same settlement components work for orders and transactions
 - **Payment Type Detection**: Automatic component selection based on payment method
 - **Defensive Coding**: All components handle null/undefined data gracefully
 - **Conditional Rendering**: Fields like `refundedAmount` only show when > 0
 - **Consistent Formatting**: Shared formatters ensure uniform display across all settlement components
-- **Type Safety**: All components properly typed with `OrderDetailPayment` interface
-- **Reusable Utilities**: Formatters can be used across other payment-related components
+- **Type Safety**: All components properly typed with normalized `SettlementData` interface
+- **Zero Code Duplication**: No need for separate order and transaction settlement components
+- **Extensibility**: Easy to add new payment types by creating one new component
 
 ### History Tab Implementation
 
@@ -1080,3 +1212,5 @@ Benefits:
 - try to dont break any thing that arleady works while you fix an issue or add new feature this is a production grade app
 - When implementing filters with multiple tabs/views, maintain separate filter states to avoid param name conflicts
 - Always check if similar UI patterns already exist as shared components before creating new ones
+- When components need to work with multiple data types, prefer TypeScript generics or the adapter pattern over code duplication
+- When refactoring for reusability, consolidate duplicate components into shared implementations (e.g., `DetailsTabs` replaced separate `OrderDetailsTabs` and `TransactionDetailsTabs`)
