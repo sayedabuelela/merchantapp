@@ -13,7 +13,6 @@ import HistoryTab from "@/src/modules/payments/components/detail/details-tabs/Hi
 import OrderDetailsTabs from "@/src/modules/payments/components/detail/OrderDetailsTabs";
 import { OrderDetailsTabType } from '../payments.model';
 import { useState } from 'react';
-import { logJSON } from '@/src/core/utils/logger';
 
 const OrderDetailsScreen = () => {
     const {_id} = useLocalSearchParams<{ _id: string }>();
@@ -27,9 +26,6 @@ const OrderDetailsScreen = () => {
         const scrollY = event.nativeEvent.contentOffset.y;
         setIsTabsSticky(scrollY > summaryHeight - 10);
     };
-
-    // console.log('order : ', order);
-    logJSON('order : ', order);
 
     if (isError || !order) {
         return (

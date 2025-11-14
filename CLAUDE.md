@@ -548,6 +548,296 @@ The mobile detail screens display the same information as the web version:
    - Date formatting uses `formatAMPM()` utility
    - Amount formatting uses `currencyNumber()` utility
 
+### Multiple Payment Method Support
+
+The order detail screen supports displaying payment information for 4 different payment types with appropriate UI components.
+
+#### Supported Payment Types
+
+**1. Card Payments:**
+- Fields: `maskedCard`, `cardBrand`, `cardHolderName`, `expiryMonth`, `expiryYear`, `issuer`
+- Component: `CardPaymentDetails.tsx`
+- Displays: Card brand icon, issuer logo, masked card number, holder name, expiry date
+
+**2. VALU Payments (Installment):**
+- Fields: `payerInfo` with `mobileNumber`, `loanNumber`, `emi`, `tenure`, `financedAmount`, etc.
+- Component: `ValuPaymentDetails.tsx`
+- Displays: Mobile number, loan number, financed amount, EMI, tenure, installment dates
+
+**3. Wallet Payments (Vodafone Cash, Orange Cash, etc.):**
+- Fields: `payerAccount`, `payScheme`, `paidThrough`, `walletStrategy`
+- Component: `WalletPaymentDetails.tsx`
+- Displays: Phone number, payment scheme, wallet provider name
+
+**4. Cash Payments:**
+- Fields: `type: "Cash"`
+- Component: `CashPaymentDetails.tsx`
+- Displays: Payment type indicator
+
+#### Updated SourceOfFunds Model
+
+```typescript
+// VALU Payment Info
+interface ValuPayerInfo {
+    mobileNumber?: string;
+    loanNumber?: string;
+    emi?: number;
+    tenure?: number;
+    financedAmount?: number;
+    firstEmiDueDate?: string;
+    lastInstallmentDate?: string;
+    valuTransactionId?: string;
+    // ... other VALU fields
+}
+
+// Unified SourceOfFunds interface supporting all payment types
+interface SourceOfFunds {
+    // Card Payment fields
+    maskedCard?: string;
+    cardBrand?: string;
+    cardHolderName?: string;
+    expiryYear?: string;
+    expiryMonth?: string;
+    issuer?: string;
+
+    // VALU Payment fields
+    payerInfo?: ValuPayerInfo;
+
+    // Wallet Payment fields
+    payerAccount?: string;
+    payScheme?: string;
+    paidThrough?: string;
+    walletStrategy?: string;
+
+    // Type discriminator
+    type?: string; // "VALU", "Cash", etc.
+}
+```
+
+#### Type Guards (payments.utils.ts)
+
+```typescript
+export const isCardPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    return !!(sourceOfFunds?.maskedCard || sourceOfFunds?.cardBrand);
+};
+
+export const isValuPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    return sourceOfFunds?.type === 'VALU' || !!sourceOfFunds?.payerInfo;
+};
+
+export const isWalletPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    return !!(sourceOfFunds?.payerAccount && sourceOfFunds?.payScheme);
+};
+
+export const isCashPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    return sourceOfFunds?.type === 'Cash';
+};
+```
+
+#### PaymentMethodDetails Wrapper
+
+Smart wrapper component that automatically detects payment type and renders the appropriate component:
+
+```typescript
+// src/modules/payments/components/order-detail/PaymentMethodDetails.tsx
+export const PaymentMethodDetails = ({ sourceOfFunds }: Props) => {
+    if (!sourceOfFunds) return null;
+
+    if (isValuPayment(sourceOfFunds)) return <ValuPaymentDetails sourceOfFunds={sourceOfFunds} />;
+    if (isCashPayment(sourceOfFunds)) return <CashPaymentDetails sourceOfFunds={sourceOfFunds} />;
+    if (isWalletPayment(sourceOfFunds)) return <WalletPaymentDetails sourceOfFunds={sourceOfFunds} />;
+    if (isCardPayment(sourceOfFunds)) return <CardPaymentDetails sourceOfFunds={sourceOfFunds} />;
+
+    return null;
+};
+```
+
+Usage in `OrderSummaryCard`:
+```typescript
+<PaymentMethodDetails sourceOfFunds={order.sourceOfFunds} />
+```
+
+#### Key Features
+
+- **Defensive Programming**: All components use optional chaining for safe property access
+- **Graceful Degradation**: Missing fields don't break the UI
+- **Type Safety**: TypeScript type guards ensure correct type detection
+- **Extensibility**: Easy to add new payment types without refactoring
+- **Consistent Design**: All payment detail components use the same card-style UI
+- **No Breaking Changes**: Existing implementations continue to work
+
+### Order Details Tabbed Interface
+
+The order detail screen uses a tabbed interface with sticky tab behavior for better UX.
+
+#### Tab Structure
+
+```
+src/modules/payments/
+├── payments.model.ts  # Added OrderDetailsTabType = 'details' | 'settlement' | 'history'
+├── components/
+│   └── detail/
+│       ├── OrderDetailsTabs.tsx  # Tab switcher component
+│       └── details-tabs/
+│           ├── DetailsTab.tsx     # Order and transaction details
+│           ├── SettlementTab.tsx  # Settlement information
+│           └── HistoryTab.tsx     # Transaction history timeline
+└── views/
+    └── order-details.tsx  # Main screen with sticky tabs
+```
+
+#### Sticky Tabs Implementation
+
+The tabs become sticky (fixed at top) when scrolling:
+
+```typescript
+const [activeTab, setActiveTab] = useState<OrderDetailsTabType>('details');
+const [isTabsSticky, setIsTabsSticky] = useState(false);
+const [summaryHeight, setSummaryHeight] = useState(0);
+
+const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    setIsTabsSticky(scrollY > summaryHeight - 10);
+};
+```
+
+**Features:**
+- Tabs fixed at top when scrolling past OrderSummaryCard
+- Smooth transition with shadow/elevation when sticky
+- Content scrolls independently below sticky tabs
+- Tab state preserved during scrolling
+- Performance optimized with `scrollEventThrottle={16}`
+
+#### Tab Components
+
+**OrderDetailsTabs:**
+- Reusable tabs component using shared `ListTabs`
+- Three tabs: Details, Settlement, History
+- Type-safe with `OrderDetailsTabType`
+- Supports i18n translations
+
+**Usage:**
+```typescript
+<OrderDetailsTabs value={activeTab} onSelectType={setActiveTab} />
+
+{activeTab === 'details' && <DetailsTab order={order} />}
+{activeTab === 'settlement' && <SettlementTab order={order} />}
+{activeTab === 'history' && <HistoryTab order={order} />}
+```
+
+### History Tab Implementation
+
+The History tab displays a complete timeline of all order events and transactions with contextual icons and descriptions.
+
+#### History Data Structure
+
+```typescript
+interface OrderDetailHistoryItem {
+    orderId?: string;
+    method?: string;              // "valu", "wallet", "card", "cash"
+    provider?: string;            // "vodafone", "valu", etc.
+    status: string;               // "SUCCESS", "FAILURE", "OPENED", etc.
+    date: string;
+    transactionId?: string;
+    operation?: string;           // "pay", "refund", "verify_customer", etc.
+    amount?: number;
+    transactionResponseCode?: string;
+    transactionResponseMessage?: TransactionResponseMessage;
+    sourceOfFunds?: SourceOfFunds;
+}
+```
+
+#### History Card Display
+
+Each history item shows:
+- **Date**: Full date with relative date and time (e.g., "13 Nov 2025 • Yesterday 11:34 AM")
+- **Transaction ID**: Displayed inline with date when available
+- **Icon**: Contextual icon based on operation/status/payment method
+- **Description**: User-friendly message matching web version
+
+#### Icon System
+
+Icons are determined by priority:
+
+1. **Refund Operations** → Refund settlement icon (gray background)
+2. **Main Payment Success** (`pay` + `SUCCESS`) → Green checkmark icon
+3. **Failure Status** → Red X mark icon
+4. **Payment Method Icons** (all other operations) → Settlement icons:
+   - Valu → `<ValuSettlementIcon />`
+   - Aman → `<AmanSettlementIcon />`
+   - Basata → `<BasataSettlementIcon />`
+   - Souhoola → `<SouhoolaSettlementIcon />`
+   - Contact → `<ContactSettlementIcon />`
+5. **Generic Status** (no payment method) → Banknotes or shield icons
+
+#### Description Messages
+
+Matches web version phrasing:
+
+**VALU Operations:**
+- `pay`: "Successful payment with Valu"
+- `verify_customer`: "Valu client was successfuly verified using 01096909624"
+- `inquiry`: "Customer choose installment plan successfully 01096909624"
+- `initiate_valu`: "Succeeded getting Valu Customer Information using 01096909624"
+
+**Wallet Operations:**
+- `initiate_r2p` (success): "Vodafone Cash payment initiated"
+- `initiate_r2p` (failure): "Failed to send R2P to wallet 01018644489 [error message]"
+- `payment_key_request`: "Order keys verified successfully"
+- `order_register`: "Order registered successfully"
+- `merchant_login`: "Vodafone Cash service initiated successfully"
+
+**Refund Operations:**
+- `refund`: "Successfully refunded 40 EGP due to customer request. It may take a few days for the money to reach the customer"
+
+**Status Changes:**
+- `CREATED`: "Session created"
+- `OPENED`: "Payment Intent"
+- `PENDING`: "New payment started"
+- `EXPIRED`: "Session expired"
+
+#### Implementation Details
+
+```typescript
+// Extract phone number from various sources
+const getPhoneNumber = (item: OrderDetailHistoryItem): string | null => {
+    return item.sourceOfFunds?.payerInfo?.mobileNumber
+        || item.sourceOfFunds?.payerAccount
+        || null;
+};
+
+// Get user-friendly payment method name
+const getPaymentMethodName = (item: OrderDetailHistoryItem): string => {
+    if (item.method === 'valu') return 'Valu';
+    if (item.method === 'wallet') {
+        if (item.provider === 'vodafone') return 'Vodafone Cash';
+        // ... other wallet providers
+    }
+    // ... other payment methods
+};
+
+// Format date with full details
+const formatHistoryDate = (dateInput: string): string => {
+    const date = new Date(dateInput);
+    const day = date.getDate();
+    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    const year = date.getFullYear();
+    const relativeDate = formatRelativeDate(dateInput, false);
+    const time = formatAMPM(dateInput);
+
+    return `${day} ${month} ${year} • ${relativeDate} ${time}`;
+};
+```
+
+#### Key Features
+
+- **Complete Timeline**: Shows all events from session creation to final status
+- **Bilingual Support**: Uses `transactionResponseMessage` for error messages in English/Arabic
+- **Contextual Icons**: Different icons for different payment methods and operations
+- **Detailed Information**: Includes amounts, phone numbers, and transaction IDs
+- **Defensive Coding**: Handles missing/null data gracefully
+- **Web Parity**: Matches web version descriptions and formatting
+
 ## Platform-Specific Notes
 
 ### iOS

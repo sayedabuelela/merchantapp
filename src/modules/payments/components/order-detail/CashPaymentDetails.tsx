@@ -5,12 +5,13 @@ import { SourceOfFunds } from '@/src/modules/payments/payments.model';
 
 interface CashPaymentDetailsProps {
     sourceOfFunds: SourceOfFunds;
+    paymentChannel?: string;
 }
 
 /**
  * Cash payment details component
  */
-export const CashPaymentDetails = ({ sourceOfFunds }: CashPaymentDetailsProps) => {
+export const CashPaymentDetails = ({ sourceOfFunds, paymentChannel }: CashPaymentDetailsProps) => {
     const { t } = useTranslation();
 
     return (
@@ -18,7 +19,7 @@ export const CashPaymentDetails = ({ sourceOfFunds }: CashPaymentDetailsProps) =
             {/* Header with Cash branding */}
             <View className="flex-row items-center justify-between">
                 <FontText type="body" weight="bold" className="text-content-primary text-lg">
-                    {t('Cash Payment')}
+                    {t('Cash Payment') + (paymentChannel && ` - ${t(paymentChannel)}`)}
                 </FontText>
             </View>
 

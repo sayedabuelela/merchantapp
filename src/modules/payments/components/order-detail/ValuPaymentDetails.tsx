@@ -10,12 +10,13 @@ import { ValuIcon } from '@/src/shared/assets/svgs';
 
 interface ValuPaymentDetailsProps {
     sourceOfFunds: SourceOfFunds;
+    paymentChannel?: string;
 }
 
 /**
  * VALU payment details component
  */
-export const ValuPaymentDetails = ({ sourceOfFunds }: ValuPaymentDetailsProps) => {
+export const ValuPaymentDetails = ({ sourceOfFunds, paymentChannel }: ValuPaymentDetailsProps) => {
     const { t } = useTranslation();
     const payerInfo = sourceOfFunds.payerInfo;
 
@@ -28,9 +29,9 @@ export const ValuPaymentDetails = ({ sourceOfFunds }: ValuPaymentDetailsProps) =
                     {/*<View className="w-6 h-6 bg-primary rounded"/>*/}
                     {/* <NBEIcon /> */}
                     <FontText type="body" weight="semi"
-                        className="text-content-primary text-xs uppercase">{t('VALU')}</FontText>
+                        className="text-content-primary text-xs uppercase">{t('VALU')} {paymentChannel && `-${t(paymentChannel)}`}</FontText>
                 </View>
-                <ValuIcon/>
+                <ValuIcon />
                 {/*<SouhoolaIcon/>*/}
                 {/* <MasterCardIcon /> */}
                 {/*<VisaIcon/>*/}

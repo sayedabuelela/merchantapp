@@ -5,12 +5,13 @@ import { SourceOfFunds } from '@/src/modules/payments/payments.model';
 
 interface WalletPaymentDetailsProps {
     sourceOfFunds: SourceOfFunds;
+    paymentChannel?: string;
 }
 
 /**
  * Wallet payment details component
  */
-export const WalletPaymentDetails = ({ sourceOfFunds }: WalletPaymentDetailsProps) => {
+export const WalletPaymentDetails = ({ sourceOfFunds, paymentChannel }: WalletPaymentDetailsProps) => {
     const { t } = useTranslation();
 
     if (!sourceOfFunds.payerAccount) return null;
@@ -23,7 +24,7 @@ export const WalletPaymentDetails = ({ sourceOfFunds }: WalletPaymentDetailsProp
             {/* Header with Wallet branding */}
             <View className="flex-row items-center justify-between">
                 <FontText type="body" weight="bold" className="text-content-primary text-lg capitalize">
-                    {displayName}
+                    {displayName} {paymentChannel && `- ${t(paymentChannel)}`}
                 </FontText>
             </View>
 

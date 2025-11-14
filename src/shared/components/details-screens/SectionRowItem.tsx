@@ -5,7 +5,7 @@ import FontText from '../FontText'
 
 interface Props {
     title: string;
-    value: string;
+    value?: string;
     labelClassName?: string;
     valueClassName?: string;
     className?: string;

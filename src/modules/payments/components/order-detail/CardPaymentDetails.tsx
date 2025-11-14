@@ -9,12 +9,13 @@ import {SourceOfFunds} from "@/src/modules/payments/payments.model";
 // }
 interface CardPaymentDetailsProps {
     sourceOfFunds: SourceOfFunds;
+    paymentChannel?: string;
 }
 
 /**
  * Card payment details card
  */
-export const CardPaymentDetails = ({sourceOfFunds}: CardPaymentDetailsProps) => {
+export const CardPaymentDetails = ({sourceOfFunds, paymentChannel}: CardPaymentDetailsProps) => {
     const {t} = useTranslation();
 
     return (
@@ -24,7 +25,7 @@ export const CardPaymentDetails = ({sourceOfFunds}: CardPaymentDetailsProps) => 
                     {/*<View className="w-6 h-6 bg-primary rounded"/>*/}
                     <NBEIcon/>
                     <FontText type="body" weight="semi"
-                              className="text-content-primary text-xs uppercase">{sourceOfFunds.issuer}</FontText>
+                              className="text-content-primary text-xs uppercase">{sourceOfFunds.issuer} {paymentChannel && `- ${t(paymentChannel)}`}</FontText>
                 </View>
                 {/*<ValuIcon/>*/}
                 {/*<SouhoolaIcon/>*/}
@@ -36,9 +37,9 @@ export const CardPaymentDetails = ({sourceOfFunds}: CardPaymentDetailsProps) => 
                           className="text-content-primary text-base">{sourceOfFunds.maskedCard}</FontText>
                 <View className="flex-row items-center justify-between">
                     <FontText type="body" weight="bold"
-                              className="text-content-primary text-[10px]">{sourceOfFunds.cardHolderName}</FontText>
+                              className="text-content-primary text-[10px] uppercase">{sourceOfFunds.cardHolderName}</FontText>
                     <FontText type="body" weight="bold"
-                              className="text-content-primary text-[10px]">{`${sourceOfFunds.expiryMonth}/${sourceOfFunds.expiryYear}`}</FontText>
+                              className="text-content-primary text-[10px] uppercase">{`${sourceOfFunds.expiryMonth}/${sourceOfFunds.expiryYear}`}</FontText>
                 </View>
             </View>
         </View>
