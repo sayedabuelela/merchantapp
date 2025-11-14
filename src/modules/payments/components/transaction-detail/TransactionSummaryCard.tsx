@@ -1,8 +1,9 @@
-import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { DetailSection, DetailRow, StatusBadge, AmountDisplay } from '../detail';
+import { AmountDisplay } from '../detail';
 import { TransactionDetail } from '../../payments.model';
-import { formatAMPM } from '@/src/core/utils/dateUtils';
+import DetailsSection from '@/src/shared/components/details-screens/DetailsSection';
+import SectionItem from '@/src/shared/components/details-screens/SectionItem';
+import { PaymentMethodDetails } from '../order-detail/PaymentMethodDetails';
 
 interface TransactionSummaryCardProps {
     transaction: TransactionDetail;
@@ -10,47 +11,34 @@ interface TransactionSummaryCardProps {
 
 /**
  * Main transaction summary card displaying key transaction information
+ * Matches OrderSummaryCard style with AmountDisplay and PaymentMethodDetails
  */
 export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardProps) => {
     const { t } = useTranslation();
 
     return (
-        <DetailSection>
-            <View className="flex-row items-start justify-between mb-4">
-                <View className="flex-1">
-                    <AmountDisplay
-                        amount={transaction.amount}
-                        currency={transaction.currency}
-                        size="large"
-                    />
-                </View>
-                <StatusBadge status={transaction.status} type="transaction" />
-            </View>
-
-            <View className="border-t border-tertiary pt-3">
-                <DetailRow label={t('Transaction ID')} value={transaction.transactionId} />
-                <DetailRow label={t('Type')} value={transaction.trxType} />
-                <DetailRow label={t('Status')} value={transaction.status} />
-                <DetailRow label={t('Payment Status')} value={transaction.paymentStatus} />
-                <DetailRow label={t('Transaction Date')} value={formatAMPM(transaction.date)} />
-                {transaction.merchantOrderId && (
-                    <DetailRow label={t('Merchant Order ID')} value={transaction.merchantOrderId} />
-                )}
-                {transaction.totalCapturedAmount > 0 && (
-                    <DetailRow
-                        label={t('Captured Amount')}
-                        value={`${transaction.totalCapturedAmount} ${transaction.currency}`}
-                        valueColor="text-green-700"
-                    />
-                )}
-                {transaction.totalRefundedAmount > 0 && (
-                    <DetailRow
-                        label={t('Refunded Amount')}
-                        value={`${transaction.totalRefundedAmount} ${transaction.currency}`}
-                        valueColor="text-purple-700"
-                    />
-                )}
-            </View>
-        </DetailSection>
+        <>
+            <AmountDisplay
+                amount={transaction.amount}
+                currency={transaction.currency}
+                status={transaction.paymentStatus}
+                orderId={transaction.transactionId}
+            />
+            <PaymentMethodDetails
+                sourceOfFunds={transaction.sourceOfFunds}
+                paymentChannel={transaction.paymentChannel}
+            />
+            <DetailsSection className="mt-4">
+                <SectionItem title={t('Merchant order ID')} value={transaction.merchantOrderId} />
+                <SectionItem
+                    title={t('Network order ID')}
+                    value={transaction.order?.orderId}
+                />
+                <SectionItem
+                    title={t('Origin')}
+                    value={transaction.metaData?.kashierOriginDetails?.id}
+                />
+            </DetailsSection>
+        </>
     );
 };

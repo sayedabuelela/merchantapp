@@ -29,7 +29,8 @@ export const AmountDisplay = ({
 
     const formattedAmount = currencyNumber(amount);
     const { t } = useTranslation();
-    const isPaid = status === 'PAID';
+    // Handle both order statuses (PAID) and transaction statuses (SUCCESS, APPROVED)
+    const isPaid = status === 'PAID' || status === 'SUCCESS' || status === 'APPROVED';
     return (
         <View className={cn('gap-y-0.5 mb-4 pl-6', className)}>
             <View className="flex-row items-center gap-x-2">

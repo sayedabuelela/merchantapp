@@ -13,6 +13,9 @@ export type SortType = 1 | -1; // 1 for ascending, -1 for descending
 // Order Details Tab Type
 export type OrderDetailsTabType = 'details' | 'settlement' | 'history';
 
+// Transaction Details Tab Type
+export type TransactionDetailsTabType = 'details' | 'settlement' | 'history';
+
 // Payment Session Interfaces
 export interface PaymentParams {
     amount: number;

@@ -43,17 +43,22 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
     }, []);
 
     const handleNavigateDetails = useCallback(() => {
-        if (!payment?._id) {
+        // For orders: use _id
+        // For transactions: use transactionId
+        const routeId = type === 'order'
+            ? payment?._id
+            : isTransaction(payment) ? payment.transactionId : null;
+
+        if (!routeId) {
             handleClose();
             return;
         }
 
-        // TODO: Uncomment when detail screens are implemented
-        // if (type === 'order') {
-        //     router.push(`/payments/${payment._id}`);
-        // } else {
-        //     router.push(`/payments/transaction/${payment._id}`);
-        // }
+        if (type === 'order') {
+            router.push(`/payments/${routeId}`);
+        } else {
+            router.push(`/payments/transaction/${routeId}`);
+        }
         handleClose();
     }, [handleClose, payment, router, type]);
 

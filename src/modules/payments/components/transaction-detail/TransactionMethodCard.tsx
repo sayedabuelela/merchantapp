@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { DetailSection, DetailRow } from '../detail';
+import DetailsSection from '@/src/shared/components/details-screens/DetailsSection';
+import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import { TransactionDetail } from '../../payments.model';
 
 interface TransactionMethodCardProps {
@@ -21,34 +22,34 @@ export const TransactionMethodCard = ({ transaction }: TransactionMethodCardProp
     if (!hasPaymentDetails) return null;
 
     return (
-        <DetailSection title={t('Payment Details')}>
-            {transaction.method && <DetailRow label={t('Payment Method')} value={transaction.method} />}
-            {transaction.provider && <DetailRow label={t('Provider')} value={transaction.provider} />}
-            {transaction.paymentChannel && <DetailRow label={t('Channel')} value={transaction.paymentChannel} />}
+        <DetailsSection title={t('Payment Details')}>
+            {transaction.method && <SectionRowItem title={t('Payment Method')} value={transaction.method} />}
+            {transaction.provider && <SectionRowItem title={t('Provider')} value={transaction.provider} />}
+            {transaction.paymentChannel && <SectionRowItem title={t('Channel')} value={transaction.paymentChannel} />}
             {transaction.sourceOfFunds?.cardBrand && (
-                <DetailRow label={t('Card Scheme')} value={transaction.sourceOfFunds.cardBrand} />
+                <SectionRowItem title={t('Card Scheme')} value={transaction.sourceOfFunds.cardBrand} />
             )}
             {transaction.sourceOfFunds?.maskedCard && (
-                <DetailRow label={t('Card Number')} value={transaction.sourceOfFunds.maskedCard} />
+                <SectionRowItem title={t('Card Number')} value={transaction.sourceOfFunds.maskedCard} />
             )}
             {transaction.sourceOfFunds?.cardHolderName && (
-                <DetailRow label={t('Card Holder')} value={transaction.sourceOfFunds.cardHolderName} />
+                <SectionRowItem title={t('Card Holder')} value={transaction.sourceOfFunds.cardHolderName} />
             )}
             {transaction.sourceOfFunds?.issuer && (
-                <DetailRow label={t('Issuer')} value={transaction.sourceOfFunds.issuer} />
+                <SectionRowItem title={t('Issuer')} value={transaction.sourceOfFunds.issuer} />
             )}
             {transaction.transactionResponseCode && (
-                <DetailRow label={t('Response Code')} value={transaction.transactionResponseCode} />
+                <SectionRowItem title={t('Response Code')} value={transaction.transactionResponseCode} />
             )}
             {transaction.transactionResponseMessage?.en && (
-                <DetailRow
-                    label={t('Response Message')}
+                <SectionRowItem
+                    title={t('Response Message')}
                     value={transaction.transactionResponseMessage.en}
                 />
             )}
             {transaction.pcc?.financial_institution && (
-                <DetailRow label={t('Financial Institution')} value={transaction.pcc.financial_institution} />
+                <SectionRowItem title={t('Financial Institution')} value={transaction.pcc.financial_institution} />
             )}
-        </DetailSection>
+        </DetailsSection>
     );
 };
