@@ -25,7 +25,7 @@ interface TransactionCardProps {
 }
 
 const TransactionCard = ({transaction, onOpenActions}: TransactionCardProps) => {
-    const {t, i18n} = useTranslation();
+    const {t} = useTranslation();
     const {
         _id,
         status,
@@ -53,7 +53,7 @@ const TransactionCard = ({transaction, onOpenActions}: TransactionCardProps) => 
     };
 
     return (
-        <Link href={`/payments/transaction/${_id}`} asChild>
+        <Link href={`/payments/transaction/${transactionId}`} asChild>
             <Pressable
                 className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1"
                 onLongPress={handleLongPress}

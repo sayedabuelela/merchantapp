@@ -323,6 +323,231 @@ export const useOrdersVM = (params?: FetchSessionsParams) => {
    - Keyboard-aware with `KeyboardController`
    - Disabled "Apply Filters" button when no filters are selected
 
+### Payment Detail Screens
+
+The payments module includes comprehensive detail screens for both orders and transactions.
+
+#### Structure
+
+```
+src/modules/payments/
+├── viewmodels/
+│   ├── useOrderDetailVM.ts        # Order detail view model with React Query
+│   └── useTransactionDetailVM.ts  # Transaction detail view model with React Query
+├── views/
+│   ├── order-details.tsx          # Order detail screen view
+│   └── transaction-details.tsx    # Transaction detail screen view
+└── components/
+    ├── detail/                     # Shared detail components
+    │   ├── DetailSection.tsx       # Reusable card container
+    │   ├── DetailRow.tsx          # Key-value pair display
+    │   ├── StatusBadge.tsx        # Colored status indicators
+    │   └── AmountDisplay.tsx      # Formatted amount with currency and status
+    ├── order-detail/
+    │   ├── OrderSummaryCard.tsx   # Main order info with amount and status
+    │   ├── CardPaymentDetails.tsx # Card payment details (if available)
+    │   ├── CustomerInfoCard.tsx   # Customer details (conditional)
+    │   └── AdditionalInfoCard.tsx # Metadata and origin info
+    └── transaction-detail/
+        ├── TransactionSummaryCard.tsx    # Transaction info with amounts
+        ├── TransactionMethodCard.tsx     # Payment method and card details
+        ├── TransactionCustomerCard.tsx   # Customer information
+        └── TransactionAdditionalCard.tsx # Order references, labels, flags
+```
+
+#### Detail APIs
+
+**Order Detail:**
+- Endpoint: `GET /v3/payment/sessions/{sessionId}/payment`
+- Model: `OrderDetailPayment`, `FetchOrderDetailResponse`
+- Returns: Complete order data including `sourceOfFunds`, `history`, `metaData`, `fees`, `vat`, etc.
+
+**Transaction Detail:**
+- Endpoint: `GET /v2/aggregator/transactions/{transactionId}`
+- Model: `TransactionDetail`, `FetchTransactionDetailResponse`
+- Returns: Complete transaction data with `sourceOfFunds`, `order`, `transactions`, etc.
+
+#### Data Models - Shared Interfaces
+
+To avoid duplication, the following interfaces are shared between Order and Transaction:
+
+**`SourceOfFunds`** - Card payment information:
+```typescript
+interface SourceOfFunds {
+    maskedCard?: string;
+    extendedMaskedCard?: string;
+    cardBrand?: string;
+    cardHolderName?: string;
+    cardDataToken?: string;
+    ccvToken?: string;
+    expiryYear?: string;
+    expiryMonth?: string;
+    storedOnFile?: string;
+    save?: boolean;
+    issuer?: string;
+    agreement?: string | null;
+}
+```
+
+**`SharedMetaData`** - Origin and tracking information:
+```typescript
+interface SharedMetaData {
+    kashierOriginType?: string;
+    kashierOriginDetails?: {
+        id?: string;
+        customerName?: string;
+        customerEmail?: string;
+        customerPhone?: string;
+    };
+    'kashier payment UI version'?: string;
+    'referral url'?: string;
+    termsAndConditions?: {
+        ip?: string;
+    };
+}
+```
+
+**`TransactionResponseMessage`** - Bilingual response messages:
+```typescript
+interface TransactionResponseMessage {
+    en: string;
+    ar: string;
+}
+```
+
+#### OrderDetailPayment Interface
+
+Complete order detail model matching web version display:
+
+```typescript
+interface OrderDetailPayment {
+    sessionId: string;
+    status: SessionStatus;
+    createdAt: string;
+    updatedAt: string;
+    merchantId: string;
+    merchantOrderId: string;
+    amount: number;
+    currency: string;
+    method?: string;              // "card", "wallet", etc.
+    pcc: OrderDetailPCC;
+    provider?: string;            // "mpgs", etc.
+    acquirer?: string;            // "nbe", etc.
+    orderId: string;              // Kashier order ID
+    capturedAmount: number;
+    refundedAmount: number;
+    paymentChannel: string;       // "ONLINE", "POS"
+    rfsDate?: string;
+    lastTransactionType?: string; // "pay", "refund", etc.
+    issuerAuthorizationCode?: string;
+    merchantType?: string;        // "pf", etc.
+    metaData?: SharedMetaData;
+    fees?: string;
+    vat?: string;
+    settlementAmount?: string;
+    sourceOfFunds?: SourceOfFunds; // Card details
+    posTerminal?: OrderDetailPosTerminal;
+    targetTransactionId?: string;
+    history?: OrderDetailHistoryItem[]; // Transaction history
+}
+```
+
+#### ViewModels Pattern
+
+Both detail viewmodels use React Query's `useQuery`:
+
+```typescript
+export const useOrderDetailVM = (sessionId: string) => {
+    const { api } = useApi();
+
+    const orderDetailQuery = useQuery<FetchOrderDetailResponse>({
+        queryKey: ['payment-order-detail', sessionId],
+        queryFn: () => fetchOrderDetail(api, sessionId),
+        enabled: !!sessionId,
+        staleTime: 5 * 60 * 1000,
+    });
+
+    return {
+        ...orderDetailQuery,
+        order: orderDetailQuery.data?.data,
+    };
+};
+```
+
+#### Navigation
+
+- **Order Details**: Tap `OrderCard` → `/payments/{_id}` → `order-details.tsx`
+- **Transaction Details**: Tap `TransactionCard` → `/payments/transaction/{transactionId}` → `transaction-details.tsx`
+- Long press opens `ActionsModal` (already implemented in list view)
+
+#### Web Version Parity
+
+The mobile detail screens display the same information as the web version:
+
+**Main Summary:**
+- Amount + Currency
+- Status badge with color coding
+- Order ID / Transaction ID
+
+**Order Details Section:**
+- Merchant order ID
+- Kashier order ID
+- Payment Method
+- Last Update
+- Channel
+- Last transaction type
+- Origin
+- Merchant Type
+
+**Card Payment Details Section** (if `sourceOfFunds` available):
+- Card holder Name
+- Card Type (brand)
+- Masked Card number
+- Expiry Date (formatted as "MM / YY")
+
+**Metadata Section:**
+- kashierOriginType
+- kashierOriginDetails (id, customerName)
+- kashier payment UI version
+- referral url
+- termsAndConditions.ip
+
+#### Important Implementation Notes
+
+1. **Route Pattern:**
+   - Route files (`app/payments/[_id].tsx`) are thin wrappers that import from view files
+   - Actual implementation in `src/modules/payments/views/{order|transaction}-details.tsx`
+   - Follows established pattern from balance and payment-links modules
+
+2. **Shared Components:**
+   - Use `MainHeader` for header (not Stack.Screen options)
+   - Use `SimpleLoader` for loading state
+   - Use `FaildToLoad` for error state with retry functionality
+   - Use `SafeAreaView` for proper safe area handling
+
+3. **AmountDisplay Component:**
+   - Custom component that shows amount, currency, status badge, and order ID
+   - Includes icon box with up/down arrow based on payment status
+   - Integrated with StatusBox component for consistent status display
+
+4. **Conditional Rendering:**
+   - All detail cards check if data exists before rendering
+   - Card Payment Details only shows if `sourceOfFunds` is available
+   - Customer Info only shows if customer data exists in `metaData.kashierOriginDetails`
+   - Metadata section displays nested objects properly
+
+5. **Data Access Patterns:**
+   - Order detail: All data in single response from `/v3/payment/sessions/{id}/payment`
+   - No need for separate transaction fetch - `history` array contains transaction timeline
+   - Use optional chaining (`?.`) for nested data access
+   - Filter out "NA" values when displaying
+
+6. **Localization:**
+   - All field labels support English/Arabic
+   - Status badges adapt to RTL layout
+   - Date formatting uses `formatAMPM()` utility
+   - Amount formatting uses `currencyNumber()` utility
+
 ## Platform-Specific Notes
 
 ### iOS

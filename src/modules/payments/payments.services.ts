@@ -5,7 +5,9 @@ import {
     FetchTransactionsParams,
     FetchTransactionsResponse,
     FetchDiscountsResponse,
-    FetchBranchesResponse
+    FetchBranchesResponse,
+    FetchOrderDetailResponse,
+    FetchTransactionDetailResponse
 } from './payments.model';
 
 /**
@@ -143,5 +145,39 @@ export const fetchBranches = async (
     const response = await api.get<FetchBranchesResponse>('/v3/payment/pos/branches', {
         params: { limit: 100 } // Get all branches
     });
+    return response.data;
+};
+
+/**
+ * Fetch order (session) detail
+ * Endpoint: GET /v3/payment/sessions/{sessionId}/payment
+ * @param api - Axios instance from useApi hook
+ * @param sessionId - The payment session _id
+ * @returns Promise with order detail data
+ */
+export const fetchOrderDetail = async (
+    api: AxiosInstance,
+    sessionId: string
+): Promise<FetchOrderDetailResponse> => {
+    const response = await api.get<FetchOrderDetailResponse>(
+        `/v3/payment/sessions/${sessionId}/payment`
+    );
+    return response.data;
+};
+
+/**
+ * Fetch transaction detail
+ * Endpoint: GET /v2/aggregator/transactions/{transactionId}
+ * @param api - Axios instance from useApi hook
+ * @param transactionId - The transaction ID
+ * @returns Promise with transaction detail data
+ */
+export const fetchTransactionDetail = async (
+    api: AxiosInstance,
+    transactionId: string
+): Promise<FetchTransactionDetailResponse> => {
+    const response = await api.get<FetchTransactionDetailResponse>(
+        `/v2/aggregator/transactions/${transactionId}`
+    );
     return response.data;
 };

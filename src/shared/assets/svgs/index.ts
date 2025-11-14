@@ -37,3 +37,14 @@ export { default as DisabledFingerprintSettingsIcon } from './files/DisabledFing
 export { default as AccountsIcon } from './files/accounts-icon.svg';
 export { default as NoActivitiesIcon } from './files/balance/no-activities.svg';
 export { default as NoActivitiesSmallIcon } from './files/balance/no-activities-small.svg';
+export { default as MasterCardIcon } from './files/card-types/mastercard-icon.svg';
+export { default as VisaIcon } from './files/card-types/visa-icon.svg';
+export { default as SouhoolaIcon } from './files/card-types/souhola-icon.svg';
+export { default as ValuIcon } from './files/card-types/valu-icon.svg';
+export { default as NBEIcon } from './files/banks/nbe-icon.svg';
+export { default as ContactSettlementIcon } from './files/settlement-types/contact-icon.svg';
+export { default as ValuSettlementIcon } from './files/settlement-types/valu-icon.svg';
+export { default as AmanSettlementIcon } from './files/settlement-types/aman-icon.svg';
+export { default as BasataSettlementIcon } from './files/settlement-types/basata-icon.svg';
+export { default as SouhoolaSettlementIcon } from './files/settlement-types/souhoola-icon.svg';
+export { default as RefundSettlementIcon } from './files/settlement-types/refund-icon.svg';

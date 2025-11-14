@@ -26,8 +26,8 @@ import {
     UserIcon
 } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DetailsSection from '../../payment-links/components/details-screen/DetailsSection';
-import SectionItem from '../../payment-links/components/details-screen/SectionItem';
+import DetailsSection from '../../../shared/components/details-screens/DetailsSection';
+import SectionItem from '../../../shared/components/details-screens/SectionItem';
 import SummaryItem from '../../payment-links/components/details-screen/SummaryItem';
 import StatusBox from '../../payment-links/components/StatusBox';
 import { PaymentStatus } from '../../payment-links/payment-links.model';

@@ -14,13 +14,14 @@ interface Props<T = string> {
     value: T;
     onSelectType: (val: T) => void;
     isListEmpty?: boolean;
+    className?:string;
 }
 
-export default function ListTabs<T = string>({ tabs, value, onSelectType, isListEmpty }: Props<T>) {
+export default function ListTabs<T = string>({ tabs, value, onSelectType, isListEmpty, className }: Props<T>) {
     const { t } = useTranslation();
 
     return (
-        <View className="border-b border-stroke-divider mt-4 flex-row items-center justify-center gap-x-8 ">
+        <View className={cn("border-b border-tertiary mt-4 flex-row items-center justify-center gap-x-8 ", className)}>
             {!isListEmpty && tabs.map(tab => {
                 const isActive = tab.value === value;
                 return (

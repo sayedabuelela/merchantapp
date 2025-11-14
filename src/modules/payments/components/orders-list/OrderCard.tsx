@@ -11,14 +11,8 @@ import StatusBox from "@/src/modules/payment-links/components/StatusBox";
 import { PaymentSession } from "@/src/modules/payments/payments.model";
 import { PhoneIcon } from "react-native-heroicons/mini";
 import { logJSON } from "@/src/core/utils/logger"
+import IconBox from "@/src/shared/components/wrappers/IconBox"
 
-const IconBox = ({ children, className }: { children: React.ReactNode, className?: string }) => {
-    return (
-        <View className={cn("w-[14px] h-[14px] p-0.5 rounded-full items-center justify-center", className)}>
-            {children}
-        </View>
-    )
-}
 
 interface OrderCardProps {
     payment: PaymentSession;
@@ -28,7 +22,7 @@ interface OrderCardProps {
 const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
     const { t } = useTranslation();
     const { paymentParams, status, capturedAmount, targetTransactionId, _id, createdAt, method } = payment;
-    logJSON('OrderCard payment', payment);
+    // logJSON('OrderCard payment', payment);
     const isPaid = status === 'PAID';
 
     const handleLongPress = () => {
