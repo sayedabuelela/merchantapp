@@ -11,14 +11,7 @@ import StatusBox from '@/src/modules/payment-links/components/StatusBox';
 import { currencyNumber } from '@/src/core/utils/number-fields';
 import { formatAMPM, formatRelativeDate } from '@/src/core/utils/dateUtils';
 import { useTranslation } from 'react-i18next';
-import {
-    isVoidAvailable,
-    isRefundAvailable,
-    isVoidAvailableForTransaction,
-    isRefundAvailableForTransaction,
-} from '../../../utils/action-validators';
-import { useOrderActionsVM } from '../../../viewmodels/useOrderActionsVM';
-import { useTransactionActionsVM } from '../../../viewmodels/useTransactionActionsVM';
+import { usePaymentActionsModal } from '../../../hooks/usePaymentActionsModal';
 import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
 import VoidConfirmation from '../VoidConfirmation';
 import RefundConfirmation from '../RefundConfirmation';
@@ -42,93 +35,23 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
     const [isAnimating, setIsAnimating] = useState(false);
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
-    const router = useRouter();
 
     // Extract orderId from payment data
     const orderId = type === 'order' 
         ? (payment as PaymentSession).orderId 
         : isTransaction(payment) ? payment.id : null;
 
-    // Use appropriate actions viewmodel
-    const orderActions = useOrderActionsVM(orderId || '');
-    const transactionActions = useTransactionActionsVM(orderId || '');
-
-    // Select the correct actions based on type
+    // Use payment actions hook for all eligibility and action handling
     const {
-        voidOrder: voidAction,
-        isVoidingOrder: isVoiding,
-        refundOrder: refundAction,
-        isRefundingOrder: isRefunding,
-    } = type === 'order' ? orderActions : {
-        voidOrder: transactionActions.voidTransaction,
-        isVoidingOrder: transactionActions.isVoidingTransaction,
-        refundOrder: transactionActions.refundTransaction,
-        isRefundingOrder: transactionActions.isRefundingTransaction,
-    };
-
-    // Check if actions are available
-    // For orders from list: use simplified checks (list API doesn't return complete data like PCC, sourceOfFunds)
-    // For transactions: use full validators (transaction list has complete data)
-    // User can always go to detail screen for full validation and actions
-    const canVoid = type === 'order' 
-        ? (() => {
-            const order = payment as PaymentSession;
-            // Simplified void check for list data (doesn't have complete PCC data for bank cutoff checks)
-            const isMpgsProvider = order.provider?.toLowerCase() === 'mpgs';
-            const isApprovedStatus = ['PAID', 'paid', 'approved', 'success'].includes(order.status);
-            const noRefunds = order.refundedAmount === 0;
-            
-            return isMpgsProvider && isApprovedStatus && noRefunds;
-        })() 
-        : isVoidAvailableForTransaction({
-            ...(payment as Transaction),
-            date: (payment as Transaction).date || (payment as Transaction).createdAt,
-            discount: null,
-            paymentChannel: (payment as Transaction).channel || 'ECOMMERCE',
-            paymentStatus: (payment as Transaction).status,
-            trxType: (payment as Transaction).type || 'PAYMENT',
-            merchantOrderId: (payment as Transaction).merchantOrderId || '',
-            origin: 'portal',
-            transactionResponseCode: (payment as Transaction).transactionResponseCode || '',
-            transactionResponseMessage: (payment as Transaction).transactionResponseMessage || { en: '', ar: '' },
-            isReversed: false,
-            // Map PCCOperations to TransactionDetailPCC structure
-            pcc: { 
-                rfs_due_after: undefined, 
-                financial_institution: undefined 
-            },
-            transactions: (payment as Transaction).transactions || [],
-        } as any);
-    
-    const canRefund = type === 'order'
-        ? (() => {
-            const order = payment as PaymentSession;
-            // Simplified refund check for list data (doesn't have sourceOfFunds or lastTransactionType)
-            const isApprovedStatus = ['PAID', 'paid', 'approved', 'success'].includes(order.status);
-            const hasRefundableAmount = order.refundedAmount < order.capturedAmount;
-            const isNotCash = order.method?.toLowerCase() !== 'cash';
-            
-            return isApprovedStatus && hasRefundableAmount && isNotCash;
-        })()
-        : isRefundAvailableForTransaction({
-            ...(payment as Transaction),
-            date: (payment as Transaction).date || (payment as Transaction).createdAt,
-            discount: null,
-            paymentChannel: (payment as Transaction).channel || 'ECOMMERCE',
-            paymentStatus: (payment as Transaction).status,
-            trxType: (payment as Transaction).type || 'PAYMENT',
-            merchantOrderId: (payment as Transaction).merchantOrderId || '',
-            origin: 'portal',
-            transactionResponseCode: (payment as Transaction).transactionResponseCode || '',
-            transactionResponseMessage: (payment as Transaction).transactionResponseMessage || { en: '', ar: '' },
-            isReversed: false,
-            // Map PCCOperations to TransactionDetailPCC structure
-            pcc: { 
-                rfs_due_after: undefined, 
-                financial_institution: undefined 
-            },
-            transactions: (payment as Transaction).transactions || [],
-        } as any);
+        canVoid,
+        canRefund,
+        voidAction,
+        refundAction,
+        isVoiding,
+        isRefunding,
+        navigateToDetails,
+        getRefundParams,
+    } = usePaymentActionsModal({ payment, type, orderId });
 
     useEffect(() => {
         if (isVisible) {
@@ -144,24 +67,9 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
     }, []);
 
     const handleNavigateDetails = useCallback(() => {
-        // For orders: use _id
-        // For transactions: use transactionId
-        const routeId = type === 'order'
-            ? payment?._id
-            : isTransaction(payment) ? payment.transactionId : null;
-
-        if (!routeId) {
-            handleClose();
-            return;
-        }
-
-        if (type === 'order') {
-            router.push(`/payments/${routeId}`);
-        } else {
-            router.push(`/payments/transaction/${routeId}`);
-        }
+        navigateToDetails();
         handleClose();
-    }, [handleClose, payment, router, type]);
+    }, [handleClose, navigateToDetails]);
 
     // Void handlers
     const handleVoidPress = useCallback(() => {
@@ -197,27 +105,8 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
     const handleRefundConfirm = useCallback((amount: number) => {
         if (!orderId) return;
 
-        const currency = type === 'order'
-            ? (payment as PaymentSession).paymentParams?.currency || 'EGP'
-            : (payment as Transaction).currency || 'EGP';
-
-        // Check if POS refund for transactions
-        const isPosRefund = type === 'transaction' 
-            ? (payment as Transaction).channel?.toLowerCase() === 'pos' &&
-              (payment as Transaction).method === 'card' &&
-              !!(payment as Transaction).sourceOfFunds?.cardDataToken
-            : false;
-
         refundAction(
-            {
-                orderId,
-                amount,
-                currency,
-                isPosRefund,
-                merchantId: isPosRefund ? (payment as Transaction).merchantId : undefined,
-                terminalId: undefined,
-                cardDataToken: isPosRefund ? (payment as Transaction).sourceOfFunds?.cardDataToken : undefined,
-            },
+            getRefundParams(amount),
             {
                 onSuccess: () => {
                     // Only close the confirmation modal
@@ -229,7 +118,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                 },
             }
         );
-    }, [orderId, payment, type, refundAction]);
+    }, [orderId, refundAction, getRefundParams]);
 
     const handleRefundCancel = useCallback(() => {
         setShowRefundModal(false);
