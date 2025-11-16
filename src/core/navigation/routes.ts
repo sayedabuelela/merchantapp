@@ -49,10 +49,9 @@ export const ROUTES = {
     },
     // Tabs routes
     TABS: {
-        // ROOT: "/(tabs)" as Route,
-        BALANCE: "/(tabs)/balance" as Route,
-        DASHBOARD: "/(tabs)/dashboard" as Route,
-        TRANSACTIONS: "/(tabs)/transactions" as Route,
+        HOME: "/(tabs)/home" as Route,
+        PAYMENTS: "/(tabs)/payments" as Route,
+        PAYMENT_LINKS: "/(tabs)/payment-links" as Route,
         SETTINGS: "/(tabs)/settings" as Route,
     },
     // Payment links routes
@@ -74,9 +73,13 @@ export const ROUTES = {
         },
         LIST: "/payment-links" as Route,
     },
+    //payments
+    PAYMENTS: {
+        ROOT: "/payments" as Route,
+    },
     // Balance
     BALANCE: {
-        // ROOT: "/balance" as Route,
+        ROOT: "/balance" as Route,
         ACTIVITIES: "/balance/activities" as Route,
     },
 };

@@ -47,7 +47,7 @@ const _TabsLayout = () => {
                     tabBarInactiveTintColor: '#919C9C',
                 }}
             >
-                <Tabs.Screen name="balance" options={{ tabBarIcon: ({ color }) => <HomeIcon color={color} /> }} />
+                <Tabs.Screen name="home" options={{ tabBarIcon: ({ color }) => <HomeIcon color={color} /> }} />
                 <Tabs.Screen name="payments" options={{ tabBarIcon: ({ color }) => <ArrowsUpDownIcon color={color} /> }} />
                 <Tabs.Screen
                     name="add"

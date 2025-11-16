@@ -1,3 +1,5 @@
+import { Transaction } from "../payments/payments.model"
+
 export interface AccountStatistics {
     balanceOverview: {
         availableBalance: number,
@@ -16,6 +18,54 @@ export interface TransfersStatistics {
         transfersCount: number,
         date: string
     }>
+}
+export interface DashboardStatistics {
+  _id: string | null;
+  transactionDays: string[];
+  successfullTransactionsCount: number[];
+  failedTransactionsCount: number[];
+  transactionPaymentAmount: number[];
+  refundedTransactionsAmount: number[];
+  totalTrxCountArray: number[];
+  totalSuccessTrx: number;
+  totalFailedTrx: number;
+  totalPaymentAmount: number;
+  totalRefundAmount: number;
+  totalTransactionsCount: number;
+  avgSuccessToFailureTrxs: number;
+}
+export interface DashboardGrowthRatio {
+  successfullRatio: string;
+  failedRatio: string;
+  amountRatio: string;
+  refundRatio: string;
+  countTrxRatio: string;
+}
+export interface PaginationData {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+}
+export interface DashboardStatisticsResponse {
+    status: string;
+    response: {
+        responseTransactions: Transaction[];
+        currentStatistic: DashboardStatistics;
+        prevStatistic: DashboardStatistics;
+        growthRatio: DashboardGrowthRatio;
+        paginationData: PaginationData;
+    };
+    messages: {
+        en: string;
+        ar: string;
+    };
+}
+
+export interface FlattenedDashboardStatistics {
+    currentStatistic: DashboardStatistics;
+    latestTransaction: Transaction | null;
+    topMethod: string;
 }
 
 export type UpcomingValueDate = {

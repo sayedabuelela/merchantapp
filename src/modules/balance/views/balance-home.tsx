@@ -39,7 +39,7 @@ const BalancesScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <BalanceHeader
                     userName={user?.fullName || user?.userName}
                     balanceOverview={accountStats?.balanceOverview}

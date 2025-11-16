@@ -37,7 +37,7 @@ const LoginScreen = () => {
             if (isBiometricAvailable && !isInitialized) {
                 router.replace(ROUTES.AUTH.ENABLE_BIOMETRIC);
             } else {
-                router.replace(ROUTES.TABS.BALANCE);
+                router.replace(ROUTES.TABS.HOME);
             }
         } catch (error) {
             console.log("error", error);

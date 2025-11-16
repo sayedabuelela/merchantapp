@@ -5,7 +5,7 @@ import { currencyNumber } from "@/src/core/utils/number-fields";
 
 interface Props {
     title: string;
-    value: number;
+    value: number | string;
     currency: string;
     mainBalance?: boolean;
 }
@@ -16,6 +16,10 @@ const BalanceHeaderItem = ({
     currency,
     mainBalance = false,
 }: Props) => {
+    const displayValue = typeof value === 'number' && currency
+        ? currencyNumber(value) + ' ' + currency
+        : value;
+
     return (
         <View className="items-center justify-center">
             <FontText
@@ -26,7 +30,7 @@ const BalanceHeaderItem = ({
                 type="head" weight="bold"
                 className={cn("text-content-primary uppercase", mainBalance ? "text-xl" : "text-base")}
             >
-                {currencyNumber(value) + ' ' + currency}
+                {displayValue}
             </FontText>
         </View>
     )

@@ -1,0 +1,24 @@
+import { Link } from "expo-router"
+import { TouchableOpacity, View } from "react-native"
+import { BellAlertIcon } from "react-native-heroicons/outline"
+import FontText from "./FontText"
+
+const NotificationBell = ({ notificationsCount }: { notificationsCount: number }) => {
+    return (
+        <Link href="/notifications" asChild>
+            <TouchableOpacity
+                className="w-10 items-center justify-center relative ml-auto">
+                <BellAlertIcon size={24} color="#001F5F" />
+                {(notificationsCount && notificationsCount > 0) && (
+                    <View className="absolute top-0 right-1 w-4 h-4 rounded-full bg-danger items-center justify-center">
+                        <FontText type="body" weight="bold" className="text-[8px] text-white">
+                            {notificationsCount}
+                        </FontText>
+                    </View>
+                )}
+            </TouchableOpacity>
+        </Link>
+    )
+}
+
+export default NotificationBell

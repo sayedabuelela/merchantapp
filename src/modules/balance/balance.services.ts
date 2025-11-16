@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { AccountStatistics, TransfersStatistics, AccountsListResponse, AccountsListParams, ActivitiesResponse, FetchActivitiesParams, ActivityDetailsResponse, TransferDetailsResponse, PaymentDetailsResponse, SettlementWindowParams } from "./balance.model";
+import { AccountStatistics, TransfersStatistics, AccountsListResponse, AccountsListParams, ActivitiesResponse, FetchActivitiesParams, ActivityDetailsResponse, TransferDetailsResponse, PaymentDetailsResponse, SettlementWindowParams, DashboardStatisticsResponse } from "./balance.model";
 
 export const getTransfersStatistics = async (api: AxiosInstance, accountId: string = 'all'): Promise<TransfersStatistics> => {
     console.log('getTransfersStatistics api', api.defaults.baseURL);
@@ -19,6 +19,25 @@ export const getAccountStatistics = async (api: AxiosInstance, accountId: string
         return response.data;
     } catch (error) {
         console.error("Error fetching account statistics:", error);
+        throw error;
+    }
+};
+
+export const getDashboardStatistics = async (
+    api: AxiosInstance,
+    params?: { startDate?: string; endDate?: string; currency?: string }
+): Promise<DashboardStatisticsResponse> => {
+    console.log('getDashboardStatistics api', api.defaults.baseURL);
+    try {
+        const queryParams: Record<string, string> = {};
+        if (params?.startDate) queryParams.startDate = params.startDate;
+        if (params?.endDate) queryParams.endDate = params.endDate;
+        if (params?.currency) queryParams.currency = params.currency;
+
+        const response = await api.get(`v2/aggregator/dashboard`, { params: queryParams });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching dashboard statistics:", error);
         throw error;
     }
 };
