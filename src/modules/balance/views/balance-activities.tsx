@@ -2,6 +2,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useLocalSearchParams} from 'expo-router';
 import StickyHeaderList from '../../../shared/components/StickyHeaderList';
 import HeaderRow from '../../../shared/components/StickyHeaderList/HeaderRow';
 import {Activity, ActivityType, FetchActivitiesParams} from '../balance.model';
@@ -31,10 +32,20 @@ const INITIAL_FILTERS: FetchActivitiesParams = {
 
 const BalanceActivitiesScreen = () => {
     const {t} = useTranslation();
+    const params = useLocalSearchParams<{ tab?: string }>();
     const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<Activity>>>>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [search, setSearchValue] = useState('');
-    const [type, setType] = useState<ActivityType>("payout");
+
+    // Initialize tab from route params, default to "payout" if not provided or invalid
+    const getInitialTab = (): ActivityType => {
+        if (params.tab === 'transfer' || params.tab === 'payout' || params.tab === 'all') {
+            return params.tab as ActivityType;
+        }
+        return 'payout';
+    };
+
+    const [type, setType] = useState<ActivityType>(getInitialTab());
     const [filters, setFilters] = useState<FetchActivitiesParams>(INITIAL_FILTERS);
     const [showAccountsModal, setShowAccountsModal] = useState(false);
     const {accounts} = useAccounts();

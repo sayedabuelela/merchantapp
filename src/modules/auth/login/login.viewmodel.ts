@@ -31,10 +31,8 @@ export const useLoginViewModel = () => {
         mutationFn: (credentials) => authenticate(api, credentials),
         onSuccess: async (data, credentials) => {
             // data maybe has body or twoFactorAuth
-            console.log("authenticate data : ", data);
             await storeCredentials(credentials);
             if (data.twoFactorAuth) {
-                console.log("credentials : ", credentials);
                 showToast?.({ message: t('Two factor authentication required'), type: 'info' });
                 router.push({
                     pathname: `/(auth)/(login)/login-twofactor-auth`,
@@ -42,6 +40,7 @@ export const useLoginViewModel = () => {
                 })
                 return;
             }
+            
             const { accessToken: { token } } = data.body;
             const { success, refreshToken, accessToken, ...user } = data.body;
             setMode(data.body.isLive ? Mode.LIVE : Mode.TEST)

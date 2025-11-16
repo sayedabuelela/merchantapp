@@ -18,6 +18,7 @@ import {NoActivitiesIcon, NoActivitiesSmallIcon} from '@/src/shared/assets/svgs'
 const BalancesScreen = () => {
     const {t} = useTranslation();
     const {user} = useAuthStore();
+    console.log('user : ', user);
     const {data: recentActivities} = useRecentBalanceActivities();
     const {accountStatistics: {data: accountStats}, transfersStatistics: {data: transfersStats}} = useStatistics();
     const [showAccountsModal, setShowAccountsModal] = useState(false);

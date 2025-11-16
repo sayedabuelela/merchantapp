@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, TouchableOpacity, View } from 'react-native';
 import { XMarkIcon } from 'react-native-heroicons/outline';
 import PaymentLinkOptionItem from './PaymentLinkOptionItem';
+import GeneralModalHeader from '@/src/shared/components/GeneralModal/GeneralModalHeader';
 interface CreatePaymentModalProps {
     isVisible: boolean;
     onClose: () => void;
@@ -51,27 +52,31 @@ const CreatePaymentModal = ({ isVisible, onClose }: CreatePaymentModalProps) => 
                         </MotiView>
 
                         <MotiView
-                            from={{ translateY: 300 }}
+                            from={{ translateY: 550 }}
                             animate={{ translateY: 0 }}
-                            exit={{ translateY: 300 }}
-                            transition={{ type: 'timing', duration: 400 }}
-                            className={`bg-white w-full rounded-t-3xl pt-4 shadow-lg pb-12 px-6 `}
+                            exit={{ translateY: 550 }}
+                            transition={{
+                                type: 'timing',
+                                duration: 500,
+                                // Add damping for smoother animation
+                                // damping: 20,
+                                // stiffness: 90
+                            }}
+                            className="bg-white w-full rounded-t-3xl pt-4 shadow-lg pb-12 px-6"
+                            style={{
+                                shadowColor: '#000',
+                                shadowOffset: { width: 0, height: -2 },
+                                shadowOpacity: 0.1,
+                                shadowRadius: 3,
+                                elevation: 5,
+                            }}
                         >
                             <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-8" />
-                            <View className="flex-row justify-between items-center mb-4">
-                                <FontText
-                                    type="head"
-                                    weight="bold"
-                                    className="text-content-primary text-xl self-start"
-                                >
-                                    {t('New payment link')}
-                                </FontText>
-                                <TouchableOpacity onPress={handleClose} className="self-end items-center justify-center bg-feedback-error-bg
-                                w-7 h-7 rounded-full
-                                ">
-                                    <XMarkIcon size={18} color="#A50017" />
-                                </TouchableOpacity>
-                            </View>
+
+                            <GeneralModalHeader
+                                title={t('New payment link')}
+                                onClose={handleClose}
+                            />
                             <View className='gap-2'>
                                 <PaymentLinkOptionItem
                                     title={t('Fixed Amount')}

@@ -125,6 +125,10 @@ export interface User {
     hasAccounts: boolean;
     enabledFeatures: string[];
     belongsToMerchants: Record<string, BelongsToMerchantStore>;
+    mobileNumber: string;
+    signupKey: string;
+    countryCode: string;
+    countLoginAttemps: number;
     // [key: string]: any;
 }
 
@@ -143,6 +147,10 @@ export interface AuthResponse {
     body: AuthResponseBody;
     twoFactorAuth?: boolean;
     message?: string;
+}
+
+export interface GetMerchantResponse {
+    body: User;
 }
 
 

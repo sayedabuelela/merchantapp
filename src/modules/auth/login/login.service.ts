@@ -1,7 +1,7 @@
-import { LoginFormData, LoginRequest } from './login.model';
 import { getDeviceInfo, getPushToken } from "@/src/modules/notifications/notification.service";
 import { AxiosInstance } from "axios";
-import { AuthResponse, User } from "../auth.model";
+import { AuthResponse, GetMerchantResponse } from "../auth.model";
+import { LoginFormData, LoginRequest } from './login.model';
 
 export const authenticate = async (api: AxiosInstance, credentials: LoginFormData & { biometricEnabled?: boolean }): Promise<AuthResponse> => {
     // console.log("authenticate");
@@ -22,9 +22,9 @@ export const authenticate = async (api: AxiosInstance, credentials: LoginFormDat
     return response.data;
 };
 
-export const getMerchant = async (api: AxiosInstance): Promise<User> => {
+export const getMerchant = async (api: AxiosInstance): Promise<GetMerchantResponse> => {
     // console.log("getMerchant");
-    const response = await api.get<User>('/v2/identity/user');
+    const response = await api.get<GetMerchantResponse>('/v2/identity/user');
     // console.log("getMerchant response", response.data);
     return response.data;
 };

@@ -7,15 +7,14 @@ import { Route } from 'expo-router';
 interface ServiceCardProps {
     title: string;
     description: string;
-    href: Route;
+    href?: Route;
     icon: React.ReactNode;
     onPress?: () => void;
 }
 
 const ServiceCard = ({ title, description, href, icon, onPress }: ServiceCardProps) => {
-    return (
-        <Link href={href} asChild>
-            <Pressable onPress={onPress} className="min-w-[160px] p-4 rounded border border-tertiary bg-white/10 "
+    const content = (
+        <Pressable onPress={onPress} className="min-w-[160px] p-4 rounded border border-tertiary bg-white/10 "
                 style={{
                     shadowColor: '#fff',
                     shadowOffset: { width: -5, height: -5 },
@@ -39,9 +38,16 @@ const ServiceCard = ({ title, description, href, icon, onPress }: ServiceCardPro
                     weight="regular"
                     className='text-[10px] text-content-secondary self-start'
                 >{description}</FontText>
-            </Pressable>
-        </Link>
-    )
+        </Pressable>
+    );
+
+    // If href is provided and not empty, wrap with Link
+    if (href) {
+        return <Link href={href} asChild>{content}</Link>;
+    }
+
+    // Otherwise, just return the pressable (for action-only items)
+    return content;
 }
 
 export default ServiceCard

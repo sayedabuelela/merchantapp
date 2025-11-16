@@ -45,9 +45,9 @@ module.exports = {
                 "stroke-success": "#1A541D",      // feedback border danger
 
                 // Feedback States
-                "feedback-success-bg": "#D1FFD3",
+                // "feedback-success-bg": "#D1FFD3",
                 "feedback-success-text": "#1A541D",
-                // "feedback-success-bg": "#F3FFF4",
+                "feedback-success-bg": "#F3FFF4",
                 "feedback-warning-bg": "#FFF7E8",
                 "feedback-warning-text": "#513500",
                 "feedback-error-bg": "#FFEAED",

@@ -3,51 +3,13 @@ import { FlatList, Pressable, View } from 'react-native'
 import FontText from '@/src/shared/components/FontText'
 import ServiceCard from './ServiceCard'
 import { useTranslation } from 'react-i18next'
-import { ArrowRightIcon, ArrowsUpDownIcon, ArrowUpLeftIcon, BanknotesIcon, LinkIcon, PlusIcon, QrCodeIcon } from 'react-native-heroicons/outline'
+import { ArrowRightIcon } from 'react-native-heroicons/outline'
 import { Link } from 'expo-router'
-import { ROUTES } from '@/src/core/navigation/routes'
+import { useServices } from '../../hooks/useServices.tsx'
 
-const ServicesList = () => {
+const ServicesList = ({qrCodeActionPress}: {qrCodeActionPress: () => void}) => {
     const { t } = useTranslation()
-
-    const services = [
-        {
-            title: t('QR code payments'),
-            description: t('Get paid with a QR code'),
-            href: '/service',
-            icon: <QrCodeIcon size={20} color="#001F5F" />
-        },
-        {
-            title: t('POS'),
-            description: t('Request a new terminal'),
-            href: '/service',
-            icon: <PlusIcon size={20} color="#001F5F" />
-        },
-        {
-            title: t('Payment links'),
-            description: t('Request payments easily'),
-            href: ROUTES.TABS.PAYMENT_LINKS,
-            icon: <LinkIcon size={20} color="#001F5F" />
-        },
-        {
-            title: t('Transfers'),
-            description: t('Send money to others'),
-            href: '/service',
-            icon: <ArrowUpLeftIcon size={20} color="#001F5F" />
-        },
-        {
-            title: t('Payouts'),
-            description: t('Receive your funds'),
-            href: ROUTES.BALANCE.ACTIVITIES,
-            icon: <BanknotesIcon size={20} color="#001F5F" />
-        },
-        {
-            title: t('Orders'),
-            description: t('Track all of your transactions'),
-            href: ROUTES.TABS.PAYMENTS,
-            icon: <ArrowsUpDownIcon size={20} color="#001F5F" />
-        },
-    ];
+    const services = useServices(qrCodeActionPress);
     return (
         <View className="my-8">
             <View className='flex-row items-center justify-between mb-4'>
@@ -65,7 +27,7 @@ const ServicesList = () => {
                 contentContainerClassName='gap-2'
                 data={services}
                 renderItem={({ item }) => <ServiceCard {...item} />}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(_, index) => index.toString()}
             />
         </View>
     )

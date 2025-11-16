@@ -13,6 +13,7 @@ import React, { useState } from "react"
 import useAccounts from "../balance/viewmodels/useAccounts"
 import AccountsModal from "../balance/components/AccountsModal"
 import AccountsBtn from "../balance/components/header/AccountsBtn"
+import CreatePaymentModal from "../payment-links/components/modals/CreatePaymentModal"
 
 const HomeScreen = () => {
     const { user } = useAuthStore();
@@ -25,6 +26,11 @@ const HomeScreen = () => {
     const notificationsCount = recentActivities?.data?.length || 0;
     const userName = user?.userName || user?.fullName;
     const [showAccountsModal, setShowAccountsModal] = useState(false);
+    const [isCreatePLModalVisible, setCreatePLModalVisible] = useState(false);
+
+    const handleAddPress = () => {
+        setCreatePLModalVisible(!isCreatePLModalVisible);
+    };
     const { accounts } = useAccounts();
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -40,7 +46,7 @@ const HomeScreen = () => {
                         )}
                         <NotificationBell notificationsCount={notificationsCount || 0} />
                     </View>
-                    <ServicesList />
+                    <ServicesList qrCodeActionPress={handleAddPress} />
                     {(accounts !== undefined && accounts?.length > 1) && (
                         <AccountsBtn
                             onPress={() => setShowAccountsModal(true)}
@@ -53,7 +59,7 @@ const HomeScreen = () => {
                     transfersStats={transfersStats}
                     dashboardStats={dashboardStats}
                 />
-                <Link href="/balance">Balance</Link>
+                {/* <Link href="/balance">Balance</Link> */}
 
             </ScrollView>
             {accounts !== undefined && accounts?.length > 1 && (
@@ -63,6 +69,7 @@ const HomeScreen = () => {
                     accounts={accounts}
                 />
             )}
+            <CreatePaymentModal isVisible={isCreatePLModalVisible} onClose={handleAddPress} />
         </SafeAreaView>
     )
 }
