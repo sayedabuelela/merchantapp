@@ -4,10 +4,8 @@ import { AuthResponse, GetMerchantResponse } from "../auth.model";
 import { LoginFormData, LoginRequest } from './login.model';
 
 export const authenticate = async (api: AxiosInstance, credentials: LoginFormData & { biometricEnabled?: boolean }): Promise<AuthResponse> => {
-    // console.log("authenticate");
     const fcmToken = await getPushToken() as string;
     const { deviceId, huawei } = await getDeviceInfo();
-    console.log('authenticate credentials : ', credentials);
     const loginRequest: LoginRequest = {
         ...credentials,
         fcmData: {
@@ -18,13 +16,12 @@ export const authenticate = async (api: AxiosInstance, credentials: LoginFormDat
     };
 
     const response = await api.post<AuthResponse>('/v2/identity/authenticate', loginRequest);
-    // console.log("authenticate response", response.data);
+    console.log("authenticate response", response.data);
     return response.data;
 };
 
 export const getMerchant = async (api: AxiosInstance): Promise<GetMerchantResponse> => {
-    // console.log("getMerchant");
     const response = await api.get<GetMerchantResponse>('/v2/identity/user');
-    // console.log("getMerchant response", response.data);
+    console.log("getMerchant response", response.data);
     return response.data;
 };

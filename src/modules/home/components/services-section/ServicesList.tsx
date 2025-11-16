@@ -5,9 +5,9 @@ import ServiceCard from './ServiceCard'
 import { useTranslation } from 'react-i18next'
 import { ArrowRightIcon } from 'react-native-heroicons/outline'
 import { Link } from 'expo-router'
-import { useServices } from '../../hooks/useServices.tsx'
+import { useServices } from '../../hooks/useServices'
 
-const ServicesList = ({qrCodeActionPress}: {qrCodeActionPress: () => void}) => {
+const ServicesList = ({ qrCodeActionPress }: { qrCodeActionPress: () => void }) => {
     const { t } = useTranslation()
     const services = useServices(qrCodeActionPress);
     return (

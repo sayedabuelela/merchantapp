@@ -129,6 +129,7 @@ export interface User {
     signupKey: string;
     countryCode: string;
     countLoginAttemps: number;
+    notifications: string[];
     // [key: string]: any;
 }
 

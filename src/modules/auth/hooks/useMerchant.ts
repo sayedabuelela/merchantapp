@@ -9,12 +9,14 @@ import { useToast } from '@/src/core/providers/ToastProvider';
 
 export const fetchAndSyncMerchant = async (api: AxiosInstance, updateUser: (user: Partial<User>) => void) => {
     const data = await getMerchant(api);
-    console.log("fetchAndSyncMerchant data : ", data.body);
+    // console.log("fetchAndSyncMerchant data : ", data.body);
     updateUser({
         belongsToMerchants: data.body.belongsToMerchants,
         mobileNumber: data.body.mobileNumber,
         countryCode: data.body.countryCode,
         countLoginAttemps: data.body.countLoginAttemps,
+        fullName: data.body.fullName,
+        notifications: data.body.notifications,
     });
     return data;
 };

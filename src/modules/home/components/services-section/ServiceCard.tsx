@@ -1,8 +1,7 @@
-import { Link } from 'expo-router';
+import { Link , Route } from 'expo-router';
 import React from 'react'
 import { Pressable, View } from 'react-native'
 import FontText from '@/src/shared/components/FontText'
-import { Route } from 'expo-router';
 
 interface ServiceCardProps {
     title: string;
