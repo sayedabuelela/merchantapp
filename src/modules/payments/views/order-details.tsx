@@ -13,6 +13,12 @@ import HistoryTab from "@/src/modules/payments/components/detail/details-tabs/Hi
 import DetailsTabs from "@/src/modules/payments/components/detail/DetailsTabs";
 import { OrderDetailsTabType } from '../payments.model';
 import { useState } from 'react';
+import Button from '@/src/shared/components/Buttons/Button';
+import { useOrderActionsVM } from '../viewmodels/useOrderActionsVM';
+import { isVoidAvailable, isRefundAvailable } from '../utils/action-validators';
+import VoidConfirmation from '../components/modals/VoidConfirmation';
+import RefundConfirmation from '../components/modals/RefundConfirmation';
+import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -25,9 +31,83 @@ const OrderDetailsScreen = () => {
     const [isTabsSticky, setIsTabsSticky] = useState(false);
     const [summaryHeight, setSummaryHeight] = useState(0);
 
+    // Action modals state
+    const [showVoidModal, setShowVoidModal] = useState(false);
+    const [showRefundModal, setShowRefundModal] = useState(false);
+
+    // Actions viewmodel
+    const {
+        voidOrder,
+        isVoidingOrder,
+        refundOrder: refundOrderMutation,
+        isRefundingOrder,
+    } = useOrderActionsVM(_id || '');
+
+    // Determine button visibility
+    const canVoid = order ? isVoidAvailable(order) : false;
+    const canRefund = order ? isRefundAvailable(order) : false;
+    const showActionButtons = canVoid || canRefund;
+
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const scrollY = event.nativeEvent.contentOffset.y;
         setIsTabsSticky(scrollY > summaryHeight - STICKY_TAB_OFFSET);
+    };
+
+    // Void handlers
+    const handleVoidPress = () => {
+        setShowVoidModal(true);
+    };
+
+    const handleVoidConfirm = () => {
+        if (!order) return;
+        voidOrder(
+            { orderId: order.orderId },
+            {
+                onSuccess: () => {
+                    setShowVoidModal(false);
+                },
+            }
+        );
+    };
+
+    const handleVoidCancel = () => {
+        setShowVoidModal(false);
+    };
+
+    // Refund handlers
+    const handleRefundPress = () => {
+        setShowRefundModal(true);
+    };
+
+    const handleRefundConfirm = (amount: number) => {
+        if (!order) return;
+
+        // Check if POS refund
+        const isPosRefund =
+            order.paymentChannel?.toLowerCase() === 'pos' &&
+            order.method === 'card' &&
+            !!order.sourceOfFunds?.cardDataToken;
+
+        refundOrderMutation(
+            {
+                orderId: order.orderId,
+                amount,
+                currency: order.currency,
+                isPosRefund,
+                merchantId: isPosRefund ? order.merchantId : undefined,
+                terminalId: isPosRefund ? order.posTerminal?.terminalId : undefined,
+                cardDataToken: isPosRefund ? order.sourceOfFunds?.cardDataToken : undefined,
+            },
+            {
+                onSuccess: () => {
+                    setShowRefundModal(false);
+                },
+            }
+        );
+    };
+
+    const handleRefundCancel = () => {
+        setShowRefundModal(false);
     };
 
     if (isError || !order) {
@@ -80,7 +160,8 @@ const OrderDetailsScreen = () => {
                         {activeTab === 'settlement' && <SettlementTab order={order} />}
                         {activeTab === 'history' && <HistoryTab order={order} />}
 
-                        <View className="h-6"/>
+                        {/* Extra padding at bottom to prevent content from being hidden by action buttons */}
+                        <View className={showActionButtons ? "h-24" : "h-6"} />
                     </View>
                 </ScrollView>
 
@@ -100,7 +181,67 @@ const OrderDetailsScreen = () => {
                         <DetailsTabs value={activeTab} onSelectType={setActiveTab} />
                     </View>
                 )}
+
+                {/* Fixed Bottom Action Buttons */}
+                {showActionButtons && (
+                    <View className="px-4 pb-4 pt-3 border-t border-stroke-divider bg-white">
+                        <View className="flex-row gap-x-3">
+                            {canVoid && (
+                                <View className="flex-1">
+                                    <Button
+                                        title={t('Void')}
+                                        variant="outline"
+                                        onPress={handleVoidPress}
+                                        className="border-feedback-error"
+                                        titleClasses="text-feedback-error"
+                                    />
+                                </View>
+                            )}
+                            {canRefund && (
+                                <View className="flex-1">
+                                    <Button
+                                        title={t('Refund')}
+                                        variant="danger"
+                                        onPress={handleRefundPress}
+                                    />
+                                </View>
+                            )}
+                        </View>
+                    </View>
+                )}
             </View>
+
+            {/* Void Confirmation Modal */}
+            {order && (
+                <ConfirmationModal
+                    isVisible={showVoidModal}
+                    onClose={handleVoidCancel}
+                    title={t('Void Transaction')}
+                >
+                    <VoidConfirmation
+                        order={order}
+                        onConfirm={handleVoidConfirm}
+                        onCancel={handleVoidCancel}
+                        isVoiding={isVoidingOrder}
+                    />
+                </ConfirmationModal>
+            )}
+
+            {/* Refund Confirmation Modal */}
+            {order && (
+                <ConfirmationModal
+                    isVisible={showRefundModal}
+                    onClose={handleRefundCancel}
+                    title={t('Refund Transaction')}
+                >
+                    <RefundConfirmation
+                        order={order}
+                        onConfirm={handleRefundConfirm}
+                        onCancel={handleRefundCancel}
+                        isRefunding={isRefundingOrder}
+                    />
+                </ConfirmationModal>
+            )}
         </SafeAreaView>
     )
 }

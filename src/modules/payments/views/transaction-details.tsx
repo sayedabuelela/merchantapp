@@ -13,6 +13,12 @@ import HistoryTab from '../components/detail/transaction-tabs/HistoryTab';
 import DetailsTabs from '../components/detail/DetailsTabs';
 import { TransactionDetailsTabType } from '../payments.model';
 import { useState } from 'react';
+import Button from '@/src/shared/components/Buttons/Button';
+import { useTransactionActionsVM } from '../viewmodels/useTransactionActionsVM';
+import { isVoidAvailableForTransaction, isRefundAvailableForTransaction } from '../utils/action-validators';
+import VoidConfirmationTransaction from '../components/modals/VoidConfirmationTransaction';
+import RefundConfirmationTransaction from '../components/modals/RefundConfirmationTransaction';
+import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -27,9 +33,85 @@ const TransactionDetailsScreen = () => {
     const [isTabsSticky, setIsTabsSticky] = useState(false);
     const [summaryHeight, setSummaryHeight] = useState(0);
 
+    // Action modals state
+    const [showVoidModal, setShowVoidModal] = useState(false);
+    const [showRefundModal, setShowRefundModal] = useState(false);
+
+    // Actions viewmodel
+    const {
+        voidTransaction,
+        isVoidingTransaction,
+        refundTransaction: refundTransactionMutation,
+        isRefundingTransaction,
+    } = useTransactionActionsVM(transactionId || '');
+
+    // Determine button visibility
+    const canVoid = transaction ? isVoidAvailableForTransaction(transaction) : false;
+    const canRefund = transaction ? isRefundAvailableForTransaction(transaction) : false;
+    const showActionButtons = canVoid || canRefund;
+
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const scrollY = event.nativeEvent.contentOffset.y;
         setIsTabsSticky(scrollY > summaryHeight - STICKY_TAB_OFFSET);
+    };
+
+    // Void handlers
+    const handleVoidPress = () => {
+        setShowVoidModal(true);
+    };
+
+    const handleVoidConfirm = () => {
+        if (!transaction || !transaction.order?.orderId) return;
+        voidTransaction(
+            { orderId: transaction.order.orderId },
+            {
+                onSuccess: () => {
+                    setShowVoidModal(false);
+                },
+            }
+        );
+    };
+
+    const handleVoidCancel = () => {
+        setShowVoidModal(false);
+    };
+
+    // Refund handlers
+    const handleRefundPress = () => {
+        setShowRefundModal(true);
+    };
+
+    const handleRefundConfirm = (amount: number) => {
+        if (!transaction || !transaction.order?.orderId) return;
+
+        // Check if POS refund
+        const isPosRefund =
+            transaction.paymentChannel?.toLowerCase() === 'pos' &&
+            transaction.method === 'card' &&
+            !!transaction.sourceOfFunds?.cardDataToken;
+
+        refundTransactionMutation(
+            {
+                orderId: transaction.order.orderId,
+                amount,
+                currency: transaction.currency,
+                isPosRefund,
+                merchantId: isPosRefund ? transaction.order.orderId.split('-')[0] : undefined,
+                // Terminal ID should be extracted from transaction metadata or order details
+                // For now, leaving undefined - backend may handle this
+                terminalId: undefined,
+                cardDataToken: isPosRefund ? transaction.sourceOfFunds?.cardDataToken : undefined,
+            },
+            {
+                onSuccess: () => {
+                    setShowRefundModal(false);
+                },
+            }
+        );
+    };
+
+    const handleRefundCancel = () => {
+        setShowRefundModal(false);
     };
 
     if (isError || !transaction) {
@@ -93,7 +175,8 @@ const TransactionDetailsScreen = () => {
                         )}
                         {activeTab === 'history' && <HistoryTab transaction={transaction} />}
 
-                        <View className="h-6" />
+                        {/* Extra padding at bottom to prevent content from being hidden by action buttons */}
+                        <View className={showActionButtons ? "h-24" : "h-6"} />
                     </View>
                 </ScrollView>
 
@@ -113,7 +196,67 @@ const TransactionDetailsScreen = () => {
                         <DetailsTabs value={activeTab} onSelectType={setActiveTab} />
                     </View>
                 )}
+
+                {/* Fixed Bottom Action Buttons */}
+                {showActionButtons && (
+                    <View className="px-4 pb-4 pt-3 border-t border-stroke-divider bg-white">
+                        <View className="flex-row gap-x-3">
+                            {canVoid && (
+                                <View className="flex-1">
+                                    <Button
+                                        title={t('Void')}
+                                        variant="outline"
+                                        onPress={handleVoidPress}
+                                        className="border-feedback-error"
+                                        titleClasses="text-feedback-error"
+                                    />
+                                </View>
+                            )}
+                            {canRefund && (
+                                <View className="flex-1">
+                                    <Button
+                                        title={t('Refund')}
+                                        variant="danger"
+                                        onPress={handleRefundPress}
+                                    />
+                                </View>
+                            )}
+                        </View>
+                    </View>
+                )}
             </View>
+
+            {/* Void Confirmation Modal */}
+            {transaction && (
+                <ConfirmationModal
+                    isVisible={showVoidModal}
+                    onClose={handleVoidCancel}
+                    title={t('Void Transaction')}
+                >
+                    <VoidConfirmationTransaction
+                        transaction={transaction}
+                        onConfirm={handleVoidConfirm}
+                        onCancel={handleVoidCancel}
+                        isVoiding={isVoidingTransaction}
+                    />
+                </ConfirmationModal>
+            )}
+
+            {/* Refund Confirmation Modal */}
+            {transaction && (
+                <ConfirmationModal
+                    isVisible={showRefundModal}
+                    onClose={handleRefundCancel}
+                    title={t('Refund Transaction')}
+                >
+                    <RefundConfirmationTransaction
+                        transaction={transaction}
+                        onConfirm={handleRefundConfirm}
+                        onCancel={handleRefundCancel}
+                        isRefunding={isRefundingTransaction}
+                    />
+                </ConfirmationModal>
+            )}
         </SafeAreaView>
     );
 };

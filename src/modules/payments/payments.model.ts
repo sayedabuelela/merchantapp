@@ -393,3 +393,121 @@ export interface FetchTransactionDetailResponse {
     message: string;
     body: TransactionDetail;
 }
+
+// Void and Refund Operation Interfaces
+
+/**
+ * Request payload for voiding an order
+ */
+export interface VoidOrderRequest {
+    orderId: string;
+}
+
+/**
+ * Response structure for void operation
+ */
+export interface VoidOrderResponse {
+    response: {
+        apiOperation: string;
+        operation: string;
+        currency: string;
+        result: string;
+        status: string;
+        authorizationNumber?: string;
+        authentication?: any;
+        paymentMethod?: any;
+        metaData?: SharedMetaData;
+        origin?: any;
+        reconciliation?: any;
+        merchantId: string;
+        order: {
+            amount: number;
+            currency: string;
+            originalAmount: number;
+            callbackURL?: string;
+            systemOrderId: string;
+            reference: string;
+        };
+        amount: number;
+        totalRefundedAmount: number;
+        totalCapturedAmount: number;
+        totalAuthorizedAmount: number;
+        apiKeyId?: string;
+        method: string;
+        creationDate: string;
+        orderId: string;
+        provider: string;
+        merchantOrderId: string;
+        orderReference?: string;
+        paymentType?: string;
+        interactionSource?: string;
+        device?: any;
+        transactionId: string;
+        transactionResponseCode: string;
+        transactionResponseMessage: TransactionResponseMessage;
+    };
+    messages: TransactionResponseMessage;
+    status: string;
+    statusCode: number;
+}
+
+/**
+ * Request payload for refunding an order
+ */
+export interface RefundOrderRequest {
+    orderId: string;
+    amount: number;
+    currency: string;
+    isPosRefund?: boolean;
+    merchantId?: string;
+    terminalId?: string;
+    cardDataToken?: string;
+}
+
+/**
+ * Response structure for refund operation
+ */
+export interface RefundOrderResponse {
+    response: {
+        apiOperation: string;
+        operation: string;
+        currency: string;
+        result: string;
+        status: string;
+        authorizationNumber?: string;
+        authentication?: any;
+        paymentMethod?: any;
+        metaData?: SharedMetaData;
+        origin?: any;
+        reconciliation?: any;
+        merchantId: string;
+        order: {
+            amount: number;
+            currency: string;
+            originalAmount: number;
+            callbackURL?: string;
+            systemOrderId: string;
+            reference: string;
+        };
+        amount: number;
+        totalRefundedAmount: number;
+        totalCapturedAmount: number;
+        totalAuthorizedAmount: number;
+        apiKeyId?: string;
+        method: string;
+        creationDate: string;
+        orderId: string;
+        provider: string;
+        merchantOrderId: string;
+        orderReference?: string;
+        paymentType?: string;
+        interactionSource?: string;
+        device?: any;
+        transactionId: string;
+        transactionResponseCode: string;
+        transactionResponseMessage: TransactionResponseMessage;
+    };
+    messages: TransactionResponseMessage;
+    status: string;
+    statusCode: number;
+}

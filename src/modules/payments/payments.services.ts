@@ -7,7 +7,11 @@ import {
     FetchDiscountsResponse,
     FetchBranchesResponse,
     FetchOrderDetailResponse,
-    FetchTransactionDetailResponse
+    FetchTransactionDetailResponse,
+    VoidOrderRequest,
+    VoidOrderResponse,
+    RefundOrderRequest,
+    RefundOrderResponse
 } from './payments.model';
 
 /**
@@ -179,5 +183,93 @@ export const fetchTransactionDetail = async (
     const response = await api.get<FetchTransactionDetailResponse>(
         `/v2/aggregator/transactions/${transactionId}`
     );
+    return response.data;
+};
+
+/**
+ * Void an order
+ * Endpoint: PUT /v3/orders/{orderId}?api-version=2
+ * @param api - Axios instance from useApi hook
+ * @param request - Void request parameters
+ * @returns Promise with void operation response
+ */
+export const voidOrder = async (
+    api: AxiosInstance,
+    request: VoidOrderRequest
+): Promise<VoidOrderResponse> => {
+    const { orderId } = request;
+
+    const response = await api.put<VoidOrderResponse>(
+        `/v3/orders/${orderId}?api-version=2`,
+        {
+            apiOperation: 'VOID',
+        }
+    );
+
+    return response.data;
+};
+
+/**
+ * Refund an order (full or partial)
+ * Endpoint: PUT /v3/orders/{orderId}?api-version=2
+ * @param api - Axios instance from useApi hook
+ * @param request - Refund request parameters
+ * @returns Promise with refund operation response
+ */
+export const refundOrder = async (
+    api: AxiosInstance,
+    request: RefundOrderRequest
+): Promise<RefundOrderResponse> => {
+    const {
+        orderId,
+        amount,
+        currency,
+        isPosRefund,
+        merchantId,
+        terminalId,
+        cardDataToken,
+    } = request;
+
+    let payload: Record<string, any> = {
+        apiOperation: 'REFUND',
+    };
+
+    // Regular refund payload
+    if (!isPosRefund) {
+        payload.transaction = {
+            amount,
+            currency,
+        };
+    }
+
+    // POS refund requires special payload
+    if (isPosRefund && merchantId && terminalId && cardDataToken) {
+        payload = {
+            apiOperation: 'REFUND',
+            merchantId,
+            interactionSource: 'POS',
+            isPOSPortalRefund: true,
+            posTerminal: {
+                terminalId,
+            },
+            paymentMethod: {
+                type: 'CARD',
+                card: {
+                    cardToken: cardDataToken,
+                },
+            },
+            reason: 'Customer requested refund',
+            transaction: {
+                amount: amount * 100, // POS refunds need amount in cents
+                currency,
+            },
+        };
+    }
+
+    const response = await api.put<RefundOrderResponse>(
+        `/v3/orders/${orderId}?api-version=2`,
+        payload
+    );
+
     return response.data;
 };

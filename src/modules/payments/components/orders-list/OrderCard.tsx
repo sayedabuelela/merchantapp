@@ -35,8 +35,7 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
         <Link href={`/payments/${_id}`} asChild>
             <Pressable
                 className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1"
-                onLongPress={handleLongPress}
-            >
+                onLongPress={handleLongPress}>
                 <View className="flex-row items-center justify-between mb-1">
                     <View className="flex-row items-center gap-x-2">
                         <IconBox className={cn(isPaid ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
