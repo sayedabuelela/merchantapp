@@ -22,7 +22,7 @@ interface BalanceStatsCardProps {
 
 const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail }: BalanceStatsCardProps) => {
     return (
-        <View className="px-6 pt-6 pb-9 bg-[#F1F6FF] rounded mt-6">
+        <View className="px-6 pt-6 pb-9 bg-[#F1F6FF] rounded">
             {/* Main Balance */}
             <BalanceHeaderItem
                 title={mainBalance.title}

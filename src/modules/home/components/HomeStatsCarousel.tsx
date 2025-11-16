@@ -3,6 +3,7 @@ import { Dimensions, FlatList, View, NativeScrollEvent, NativeSyntheticEvent } f
 import { MotiView } from 'moti'
 import BalanceStatsCard from '../../balance/components/header/BalanceStatsCard'
 import { AccountStatistics, FlattenedDashboardStatistics, TransfersStatistics } from '../../balance/balance.model'
+import { useTranslation } from 'react-i18next'
 
 const { width } = Dimensions.get('window')
 const CARD_PADDING = 24
@@ -15,6 +16,7 @@ interface HomeStatsCarouselProps {
 }
 
 const HomeStatsCarousel = ({ accountStats, transfersStats, dashboardStats }: HomeStatsCarouselProps) => {
+    const { t } = useTranslation();
     const [currentIndex, setCurrentIndex] = useState(0)
     const flatListRef = useRef<FlatList>(null)
 
@@ -28,17 +30,17 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, dashboardStats }: Hom
         {
             id: 'card-1',
             mainBalance: {
-                title: 'Available Balance',
+                title: t('Available Balance'),
                 value: accountStats?.balanceOverview?.availableBalance || 0,
                 currency: 'EGP'
             },
             leftDetail: {
-                title: 'Total Balance',
+                title: t('Total Balance'),
                 value: accountStats?.balanceOverview?.totalBalance || 0,
                 currency: 'EGP'
             },
             rightDetail: {
-                title: 'Held funds',
+                title: t('Held funds'),
                 value: transfersStats?.onGoingTransfersAmount || 0,
                 currency: 'EGP'
             }
@@ -46,17 +48,17 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, dashboardStats }: Hom
         {
             id: 'card-2',
             mainBalance: {
-                title: "Today's total payments",
+                title: t('Today\'s total payments'),
                 value: dashboardStats?.currentStatistic?.totalPaymentAmount || 0,
                 currency: 'EGP'
             },
             leftDetail: {
-                title: 'Transactions',
+                title: t('Transactions'),
                 value: dashboardStats?.currentStatistic?.totalTransactionsCount || 0,
                 currency: ''
             },
             rightDetail: {
-                title: 'Top Method',
+                title: t('Top Method'),
                 value: dashboardStats?.topMethod || '--',
                 currency: ''
             }

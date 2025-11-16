@@ -10,12 +10,12 @@ const AccountsBtn = ({ onPress, className }: { onPress: () => void, className?: 
     const { t } = useTranslation();
     const { activeAccount } = useBalanceContext();
     return (
-        <Pressable onPress={onPress} className={cn('flex-row items-center rounded-3xl border border-[#F5F6F6] p-1', className)}>
+        <Pressable onPress={onPress} className={cn('flex-row items-center rounded-full border border-[#F5F6F6] p-1', className)}>
             <AccountsIcon />
-            <FontText type="body" weight="regular" className="text-content-primary ml-1 text-xs">
+            <FontText type="body" weight="regular" className="text-primary ml-1 mr-2 text-xs">
                 {activeAccount.accountName === 'all' ? t('All accounts') : activeAccount.accountName}
             </FontText>
-            <ChevronDownIcon size={18} color="#001F5F" />
+            <ChevronDownIcon size={14} color="#001F5F" />
         </Pressable>
     )
 }
