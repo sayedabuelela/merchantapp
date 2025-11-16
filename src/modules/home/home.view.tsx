@@ -66,13 +66,13 @@ const HomeScreen = () => {
     const getListData = () => {
         switch (activeTab) {
             case 'all':
-                return (allActivitiesQuery.data?.pages.flatMap((p) => p.data) ?? []).slice(0, 5);
+                return (allActivitiesQuery.data?.pages.flatMap((p) => p.data) ?? []).slice(0, 3);
             case 'payouts':
-                return (payoutsQuery.data?.pages.flatMap((p) => p.data) ?? []).slice(0, 5);
+                return (payoutsQuery.data?.pages.flatMap((p) => p.data) ?? []).slice(0, 3);
             case 'transfers':
-                return (transfersQuery.data?.pages.flatMap((p) => p.data) ?? []).slice(0, 5);
+                return (transfersQuery.data?.pages.flatMap((p) => p.data) ?? []).slice(0, 3);
             case 'orders':
-                return (ordersQuery.data?.pages.flatMap((p) => p.data) ?? []).slice(0, 5);
+                return (ordersQuery.data?.pages.flatMap((p) => p.data) ?? []).slice(0, 3);
             default:
                 return [];
         }

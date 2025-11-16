@@ -15,7 +15,7 @@ interface CreatePaymentModalProps {
 
 const CreatePaymentModal = ({ isVisible, onClose }: CreatePaymentModalProps) => {
     const [showModal, setShowModal] = useState(isVisible);
-    const [selectedOption, setSelectedOption] = useState<'simple' | 'professional' | ''>('');
+    const [selectedOption, setSelectedOption] = useState<'simple' | 'professional' | ''>('simple');
 
     useEffect(() => {
         if (isVisible) {
