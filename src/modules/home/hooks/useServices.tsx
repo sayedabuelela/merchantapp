@@ -9,6 +9,7 @@ import {
     PlusIcon,
     QrCodeIcon
 } from 'react-native-heroicons/outline';
+import { POSIcon } from '@/src/shared/assets/svgs';
 
 export interface ServiceItem {
     title: string;
@@ -33,7 +34,7 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
             title: t('POS'),
             description: t('Request a new terminal'),
             href: '/service' as Route,
-            icon: <PlusIcon size={20} color="#001F5F" />
+            icon: <POSIcon />
         },
         {
             title: t('Payment links'),

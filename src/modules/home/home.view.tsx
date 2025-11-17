@@ -112,9 +112,9 @@ const HomeScreen = () => {
                     <View className="bg-white">
                         <HomeTabs value={activeTab} onSelectType={setActiveTab} />
                     </View>
-                    <Link href="/balance">
+                    {/* <Link href="/balance">
                         <FontText>Balance</FontText>
-                    </Link>
+                    </Link> */}
                     {/* List */}
                     <View className="px-6 mt-4 pb-6">
                         {listData.length > 0 ? (

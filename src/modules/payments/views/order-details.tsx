@@ -19,6 +19,7 @@ import { isVoidAvailable, isRefundAvailable } from '../utils/action-validators';
 import VoidConfirmation from '../components/modals/VoidConfirmation';
 import RefundConfirmation from '../components/modals/RefundConfirmation';
 import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
+import { cn } from '@/src/core/utils/cn';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -131,7 +132,9 @@ const OrderDetailsScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <MainHeader title={t('Order Details')}/>
+            <MainHeader title={t('Order Details')}
+                        className={cn( isTabsSticky ? "mb-0 border-0 pb-0" : "mb-6 border-b")}
+            />
             <View className="flex-1">
                 <ScrollView
                     className="flex-1"
@@ -151,8 +154,12 @@ const OrderDetailsScreen = () => {
                         </View>
 
                         {/* Tabs - Normal position (hidden when sticky to prevent duplicate) */}
-                        <View style={{ opacity: isTabsSticky ? 0 : 1 }}>
-                            <DetailsTabs value={activeTab} onSelectType={setActiveTab} />
+                        <View style={{ opacity: isTabsSticky ? 0 : 1,}}>
+                            <DetailsTabs 
+                            value={activeTab} 
+                            onSelectType={setActiveTab} 
+                            className={cn(isTabsSticky ? "mt-0" : "my-4")}
+                            />
                         </View>
 
                         {/* Tab Content */}
@@ -171,11 +178,11 @@ const OrderDetailsScreen = () => {
                         className="absolute top-0 left-0 right-0 px-4 bg-white"
                         style={{
                             zIndex: 10,
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.1,
-                            shadowRadius: 3,
-                            elevation: 3
+                            // shadowColor: '#000',
+                            // shadowOffset: { width: 0, height: 2 },
+                            // shadowOpacity: 0.1,
+                            // shadowRadius: 3,
+                            // elevation: 3
                         }}
                     >
                         <DetailsTabs value={activeTab} onSelectType={setActiveTab} />

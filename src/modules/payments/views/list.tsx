@@ -15,6 +15,8 @@ import PaymentFilterModal from "../components/PaymentFilterModal";
 import ActionsModal from "../components/modals/ActionsModal";
 import { AnimatePresence } from 'moti';
 import { FlashList } from "@shopify/flash-list";
+import PaymentsListEmpty from "../components/PaymentsListEmpty";
+import CreatePaymentModal from "@/src/modules/payment-links/components/modals/CreatePaymentModal";
 
 const INITIAL_ORDERS_FILTERS: FetchSessionsParams = {
     dateFrom: undefined,
@@ -43,6 +45,7 @@ const INITIAL_TRANSACTIONS_FILTERS: FetchTransactionsParams = {
 const PaymentsScreen = () => {
     const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<PaymentSession | Transaction>>>>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+    const [isCreateNewOpen, setIsCreateNewOpen] = useState(false);
     const [search, setSearchValue] = useState('');
     const [status, setStatus] = useState<string>("sessions");
     const [ordersFilters, setOrdersFilters] = useState<FetchSessionsParams>(INITIAL_ORDERS_FILTERS);
@@ -121,6 +124,18 @@ const PaymentsScreen = () => {
         setSearchValue(text);
     }, []);
 
+    const handleToggleCreateNew = useCallback(() => {
+        setIsCreateNewOpen(prev => !prev);
+    }, []);
+
+    const handleClearFilters = useCallback(() => {
+        if (isOrdersTab) {
+            setOrdersFilters(INITIAL_ORDERS_FILTERS);
+        } else {
+            setTransactionsFilters(INITIAL_TRANSACTIONS_FILTERS);
+        }
+    }, [isOrdersTab]);
+
     return (
         <SafeAreaView className="flex-1 bg-white">
             <PaymentsHeader
@@ -146,6 +161,16 @@ const PaymentsScreen = () => {
                     hasNextPage={hasNextPage}
                     isFetchingNextPage={isFetchingNextPage}
                     renderItem={renderItem}
+                    ListEmptyComponent={
+                        <PaymentsListEmpty
+                            currentTab={isOrdersTab ? 'sessions' : 'transactions'}
+                            search={search}
+                            hasFilters={hasActiveFilters}
+                            handleClearSearch={handleClearSearch}
+                            handleClearFilters={handleClearFilters}
+                            handleCreatePaymentLink={handleToggleCreateNew}
+                        />
+                    }
                 />
             </View>
             <AnimatePresence>
@@ -164,6 +189,10 @@ const PaymentsScreen = () => {
                 filters={activeFilters}
                 setFilters={setActiveFilters as any}
                 currentTab={isOrdersTab ? "sessions" : "transactions"}
+            />
+            <CreatePaymentModal
+                isVisible={isCreateNewOpen}
+                onClose={handleToggleCreateNew}
             />
         </SafeAreaView>
     )

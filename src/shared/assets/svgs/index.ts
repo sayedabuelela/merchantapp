@@ -48,3 +48,5 @@ export { default as AmanSettlementIcon } from './files/settlement-types/aman-ico
 export { default as BasataSettlementIcon } from './files/settlement-types/basata-icon.svg';
 export { default as SouhoolaSettlementIcon } from './files/settlement-types/souhoola-icon.svg';
 export { default as RefundSettlementIcon } from './files/settlement-types/refund-icon.svg';
+export { default as POSIcon } from './files/banks/pos-icon.svg';
+export { default as PaymentsEmptyListIcon } from './files/payments/payments-empyt-list-icon.svg';

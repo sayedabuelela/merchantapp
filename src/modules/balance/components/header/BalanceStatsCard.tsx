@@ -1,6 +1,7 @@
 import React from 'react'
-import { View } from 'react-native'
+import { Pressable, View } from 'react-native'
 import BalanceHeaderItem from './BalanceHeaderItem'
+import { useRouter } from 'expo-router'
 
 interface BalanceStatsCardProps {
     mainBalance: {
@@ -21,8 +22,11 @@ interface BalanceStatsCardProps {
 }
 
 const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail }: BalanceStatsCardProps) => {
+    const router = useRouter();
     return (
-        <View className="px-6 pt-6 pb-9 bg-[#F1F6FF] rounded">
+        <Pressable
+            onPress={() => router.push('/balance')}
+            className="px-6 pt-6 pb-9 bg-[#F1F6FF] rounded">
             {/* Main Balance */}
             <BalanceHeaderItem
                 title={mainBalance.title}
@@ -50,7 +54,7 @@ const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail }: BalanceStats
                     currency={rightDetail.currency}
                 />
             </View>
-        </View>
+        </Pressable>
     )
 }
 

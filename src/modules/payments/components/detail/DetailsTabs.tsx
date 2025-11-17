@@ -1,16 +1,18 @@
+import { cn } from '@/src/core/utils/cn';
 import ListTabs, { Tab } from '@/src/shared/components/ListTabs/ListTabs';
 import { useTranslation } from 'react-i18next';
 
 interface Props<T extends string> {
     value: T;
     onSelectType: (val: T) => void;
+    className?: string;
 }
 
 /**
  * Generic tabs component for detail screens (orders and transactions)
  * Supports both OrderDetailsTabType and TransactionDetailsTabType
  */
-export default function DetailsTabs<T extends string>({ value, onSelectType }: Props<T>) {
+export default function DetailsTabs<T extends string>({ value, onSelectType, className }: Props<T>) {
     const { t } = useTranslation();
 
     const TABS: Tab<T>[] = [
@@ -24,7 +26,7 @@ export default function DetailsTabs<T extends string>({ value, onSelectType }: P
             tabs={TABS}
             value={value}
             onSelectType={onSelectType}
-            className="my-6"
+            className={cn("my-4", className)}
         />
     );
 }
