@@ -4,7 +4,9 @@ import { CreatePaymentLinkTypes } from './payment-links.scheme';
 
 interface PaymentLinkStore {
     formData: DeepPartial<CreatePaymentLinkTypes>;
+    qrCode: boolean;
     setFormData: (data: DeepPartial<CreatePaymentLinkTypes>) => void;
+    setQrCode: (qrCode: boolean) => void;
     clearFormData: () => void;
 }
 
@@ -19,9 +21,11 @@ export const usePaymentLinkStore = create<PaymentLinkStore>((set) => ({
         referenceId: '',
         description: '',
     },
+    qrCode: false,
     setFormData: (data) => set((state) => ({
         formData: { ...state.formData, ...data }
     })),
+    setQrCode: (qrCode) => set({ qrCode }),
     clearFormData: () => set({
         formData: {
             paymentType: '',
@@ -32,6 +36,7 @@ export const usePaymentLinkStore = create<PaymentLinkStore>((set) => ({
             dueDate: undefined,
             referenceId: '',
             description: '',
-        }
+        },
+        qrCode: false,
     }),
 }));

@@ -2,9 +2,9 @@ import { cn } from "@/src/core/utils/cn";
 import FontText from "@/src/shared/components/FontText";
 import { COMMON_STYLES } from "@/src/shared/styles/main";
 import { useTranslation } from "react-i18next";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import usePaymentLinkActionsVM from "../../../viewmodels/usePaymentLinkActionsVM";
-import { ArrowTopRightOnSquareIcon } from "react-native-heroicons/outline";
+import { ArrowTopRightOnSquareIcon, QrCodeIcon } from "react-native-heroicons/outline";
 import Button from "@/src/shared/components/Buttons/Button";
 import Input from "@/src/shared/components/inputs/Input";
 import CountryPhoneInput from "@/src/shared/components/inputs/CountryPhoneInput";
@@ -17,10 +17,12 @@ import AnimatedError from "@/src/shared/components/animated-messages/AnimatedErr
 import AnimatedSuccessMsg from "@/src/shared/components/animated-messages/AnimatedSuccessMsg";
 import { useClipboard } from "@/src/shared/hooks/useClipboard";
 import { useShare } from "@/src/shared/hooks/useShare";
+import { Link } from "expo-router";
 const EgyptPhoneCode = { phone: "+20", name: "مصر", flag: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABDElEQVQ4y6WTMUvDQBiGkxRMCpKEA8GlILj1DzhLQd1EUTsIDh0EB/9Cof4IF/+RzjqX2JhChdDBC0Sat/eG9MTekrQHDwf5vufhllgArG3g2VEIxX5DROVae/FlH5tAl4GDyfkVZsNRLb6HT+VNhy4Dh9HxCaYPj4j7t/+5qVj7zl06dMvAuHeG6eAe8cV1Lbg77p3+BaSUWD9FkSOTHyXFIjPmdHQgTVNjIf+J8Pk2QPR6h2z+bszp6ECSJOYLfueQXy+Qk2cs8pkxp6MDQRBACAHXdWvBXTo64HkewjAE7zqsdnXAcRz4vt8IOqtAx7ZtbAJdBgJFV3HUkG7lWi1FW7HbkHbpbvs7LwEg89oYVCxAMQAAAABJRU5ErkJggg==" }
 interface Props {
     countries: ICountry[] | undefined;
     paymentLinkId: string;
+    setIsQrCodeModalVisible: (value: boolean) => void;
 }
 
 interface CountryListProps {
@@ -59,7 +61,7 @@ const CountryList = memo(({ countries, handleSelect }: CountryListProps) => {
     );
 });
 
-const ShareOptions = ({ countries, paymentLinkId }: Props) => {
+const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Props) => {
     const { t } = useTranslation();
     const { generateSherableUrl } = usePaymentLinkActionsVM()
     const [countryListVisible, setCountryListVisible] = useState(false);
@@ -190,6 +192,14 @@ const ShareOptions = ({ countries, paymentLinkId }: Props) => {
                                 successMsg={t("Payment link shared successfully")}
                             />
                         )}
+                        <View>
+                            <Pressable 
+                            onPress={() => setIsQrCodeModalVisible(true)}
+                            className="py-3 px-4 border border-primary rounded flex-row items-center justify-center gap-x-2.5">
+                                <QrCodeIcon size={19} color="#001F5F" />
+                                <FontText type="body" weight="semi" className="text-primary">{t("Share with QR code")}</FontText>
+                            </Pressable>
+                        </View>
                         <View>
                             <FontText
                                 type="body"

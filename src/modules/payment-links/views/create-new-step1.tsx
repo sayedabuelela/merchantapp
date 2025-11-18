@@ -8,12 +8,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import PaymentLinkForm from '../components/create-payment/PaymentLinkForm';
 import { usePaymentLinkStore } from '../paymentLink.store';
 import usePaymentLinkVM from '../viewmodels/usePaymentLinkVM';
+
 const CreateNewPaymentLinkStep1Screen = () => {
     const { t } = useTranslation();
-    const { paymentType, paymentLinkId } = useLocalSearchParams<{
-        paymentType: 'simple' | 'professional',
-        paymentLinkId?: string
+    const params = useLocalSearchParams<{
+        paymentType?: string,
+        paymentLinkId?: string,
+        qrCode?: string
     }>();
+
+    // Convert route params to proper types
+    const paymentType = params.paymentType as 'simple' | 'professional' | undefined;
+    const paymentLinkId = params.paymentLinkId;
+    const qrCode = params.qrCode === 'true';
 
     const {
         paymentLink,
@@ -23,13 +30,15 @@ const CreateNewPaymentLinkStep1Screen = () => {
         error,
         submitPaymentLink
     } = usePaymentLinkVM(paymentLinkId);
-    const { clearFormData } = usePaymentLinkStore();
+    const { clearFormData, setQrCode } = usePaymentLinkStore();
     useFocusEffect(
         useCallback(() => {
             if (!isEditMode) {
                 clearFormData();
             }
-        }, [isEditMode, clearFormData])
+            // Store qrCode value in the store
+            setQrCode(qrCode);
+        }, [isEditMode, clearFormData, qrCode, setQrCode])
     );
     const onNext = async () => {
 
@@ -50,6 +59,7 @@ const CreateNewPaymentLinkStep1Screen = () => {
                     paymentType={paymentType}
                     isEditMode={isEditMode}
                     paymentLink={paymentLink}
+                    qrCode={qrCode}
                 />
             </KeyboardAwareScrollView>
         </SafeAreaView>

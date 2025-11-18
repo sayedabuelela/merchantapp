@@ -1,22 +1,25 @@
-import {SafeAreaView} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import PaymentsHeader from "../components/header/PaymentsHeader";
 import PaymentsTabs from "../components/PaymentsTabs";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import OrderCard from "@/src/modules/payments/components/orders-list/OrderCard";
 import TransactionCard from "@/src/modules/payments/components/transactions-list/TransactionCard";
-import {cn} from "@/src/core/utils/cn";
-import {View} from "react-native";
-import {useOrdersVM, useTransactionsVM} from "@/src/modules/payments/viewmodels";
+import { cn } from "@/src/core/utils/cn";
+import { View } from "react-native";
+import { useOrdersVM, useTransactionsVM } from "@/src/modules/payments/viewmodels";
 import StickyHeaderList from "@/src/shared/components/StickyHeaderList";
-import {GroupedRow} from "@/src/core/utils/groupData";
+import { GroupedRow } from "@/src/core/utils/groupData";
 import HeaderRow from "@/src/shared/components/StickyHeaderList/HeaderRow";
-import {PaymentSession, Transaction, FetchSessionsParams, FetchTransactionsParams} from "@/src/modules/payments/payments.model";
+import { PaymentSession, Transaction, FetchSessionsParams, FetchTransactionsParams } from "@/src/modules/payments/payments.model";
 import PaymentFilterModal from "../components/PaymentFilterModal";
 import ActionsModal from "../components/modals/ActionsModal";
 import { AnimatePresence } from 'moti';
 import { FlashList } from "@shopify/flash-list";
 import PaymentsListEmpty from "../components/PaymentsListEmpty";
 import CreatePaymentModal from "@/src/modules/payment-links/components/modals/CreatePaymentModal";
+import SimpleLoader from "@/src/shared/components/loaders/SimpleLoader";
+import SkeletonLoader from "@/src/shared/components/loaders/SkeletonLoader";
+import PaymentLinkCardSkeleton from "../../payment-links/components/PaymentLinkCardSkeleton";
 
 const INITIAL_ORDERS_FILTERS: FetchSessionsParams = {
     dateFrom: undefined,
@@ -94,7 +97,7 @@ const PaymentsScreen = () => {
     } = activeQuery;
 
     const isListEmpty = useMemo(() =>
-            listData.length === 0 && !isLoading && !search && !hasActiveFilters,
+        listData.length === 0 && !isLoading && !search && !hasActiveFilters,
         [listData.length, isLoading, search, hasActiveFilters]
     );
 
@@ -106,13 +109,15 @@ const PaymentsScreen = () => {
         setSelectedPayment(null);
     }, []);
 
-    const renderItem = useCallback(({item}: { item: GroupedRow<PaymentSession | Transaction> }) => {
-        if (item.type === 'header') return <HeaderRow title={item.date}/>;
+    const renderItem = useCallback(({ item }: { item: GroupedRow<PaymentSession | Transaction> }) => {
+        console.log('PaymentsScreen item', item);
+
+        if (item.type === 'header') return <HeaderRow title={item.date} />;
 
         if (isOrdersTab) {
-            return <OrderCard payment={item as PaymentSession} onOpenActions={handleOpenActions}/>;
+            return <OrderCard payment={item as PaymentSession} onOpenActions={handleOpenActions} />;
         } else {
-            return <TransactionCard transaction={item as Transaction} onOpenActions={handleOpenActions}/>;
+            return <TransactionCard transaction={item as Transaction} onOpenActions={handleOpenActions} />;
         }
     }, [handleOpenActions, isOrdersTab]);
 
@@ -147,32 +152,41 @@ const PaymentsScreen = () => {
                 handleClearSearch={handleClearSearch}
                 searchValue={search}
             />
-            <PaymentsTabs
-                value={status}
-                onSelectType={setStatus}
-                isListEmpty={isListEmpty}
-            />
-            <View className={cn("flex-1 px-6")}>
-                <StickyHeaderList
-                    ref={listRef}
-                    listData={listData}
-                    stickyHeaderIndices={stickyHeaderIndices}
-                    fetchNextPage={fetchNextPage}
-                    hasNextPage={hasNextPage}
-                    isFetchingNextPage={isFetchingNextPage}
-                    renderItem={renderItem}
-                    ListEmptyComponent={
-                        <PaymentsListEmpty
-                            currentTab={isOrdersTab ? 'sessions' : 'transactions'}
-                            search={search}
-                            hasFilters={hasActiveFilters}
-                            handleClearSearch={handleClearSearch}
-                            handleClearFilters={handleClearFilters}
-                            handleCreatePaymentLink={handleToggleCreateNew}
+            {isLoading ? (
+                <View className={cn("flex-1 px-6 mt-6")}>
+                    <PaymentLinkCardSkeleton />
+                </View>
+            ) : (
+                <>
+                    <PaymentsTabs
+                        value={status}
+                        onSelectType={setStatus}
+                        isListEmpty={isListEmpty}
+                    />
+                    <View className={cn("flex-1 px-6")}>
+                        <StickyHeaderList
+                            ref={listRef}
+                            listData={listData}
+                            stickyHeaderIndices={stickyHeaderIndices}
+                            fetchNextPage={fetchNextPage}
+                            hasNextPage={hasNextPage}
+                            isFetchingNextPage={isFetchingNextPage}
+                            renderItem={renderItem}
+                            ListEmptyComponent={
+                                <PaymentsListEmpty
+                                    currentTab={isOrdersTab ? 'sessions' : 'transactions'}
+                                    search={search}
+                                    hasFilters={hasActiveFilters}
+                                    handleClearSearch={handleClearSearch}
+                                    handleClearFilters={handleClearFilters}
+                                    handleCreatePaymentLink={handleToggleCreateNew}
+                                />
+                            }
                         />
-                    }
-                />
-            </View>
+                    </View>
+                </>
+            )}
+
             <AnimatePresence>
                 {selectedPayment && (
                     <ActionsModal

@@ -29,9 +29,10 @@ interface PaymentLinkFormProps {
     paymentType: "simple" | "professional";
     isEditMode?: boolean;
     paymentLink?: PaymentLink;
+    qrCode?: boolean;
 }
 
-const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, paymentLink }: PaymentLinkFormProps) => {
+const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, paymentLink, qrCode }: PaymentLinkFormProps) => {
 
     const [isItemModalVisible, setIsItemModalVisible] = useState(false);
     const [isFeeModalVisible, setIsFeeModalVisible] = useState(false);

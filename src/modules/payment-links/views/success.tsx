@@ -1,19 +1,26 @@
-import { CheckCircleIcon, ShareIcon } from 'react-native-heroicons/outline'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import ShareOptions from '../components/modals/ActionsModal/ShareOptions'
-import useCountries from '@/src/shared/hooks/useCountries'
-import { useTranslation } from 'react-i18next'
-import { Link, useLocalSearchParams } from 'expo-router'
-import DetailsSection from '../../../shared/components/details-screens/DetailsSection'
-import CreateOptionBox from '../components/create-payment/CreateOptionBox'
-import { View } from 'react-native'
-import FontText from '@/src/shared/components/FontText'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import Button from '@/src/shared/components/Buttons/Button'
+import FontText from '@/src/shared/components/FontText'
+import useCountries from '@/src/shared/hooks/useCountries'
+import { Link, useLocalSearchParams } from 'expo-router'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import { CheckCircleIcon, ShareIcon } from 'react-native-heroicons/outline'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import CreateOptionBox from '../components/create-payment/CreateOptionBox'
+import ShareOptions from '../components/modals/ActionsModal/ShareOptions'
+import ShareQrCode from '../components/ShareQrCode'
+import usePaymentLinkActionsVM from '../viewmodels/usePaymentLinkActionsVM'
+import { useState } from 'react'
+import QrCodeShareModal from '../components/modals/QrCodeShareModal'
 const CreateNewPaymentLinkSuccessScreen = () => {
-    const { paymentLinkId } = useLocalSearchParams<{ paymentLinkId: string }>();
+    const { paymentLinkId, query } = useLocalSearchParams<{ paymentLinkId: string, query?: string }>();
+    const { generateSherableUrl } = usePaymentLinkActionsVM()
     const { t } = useTranslation();
     const { countries } = useCountries();
+    const isQrCode = query && query === "qr-code";
+    const qrValue = generateSherableUrl(paymentLinkId);
+    const [isQrCodeModalVisible, setIsQrCodeModalVisible] = useState(false);
     return (
         <SafeAreaView className="flex-1 bg-white pt-11 px-6 ">
             <KeyboardAwareScrollView
@@ -32,7 +39,17 @@ const CreateNewPaymentLinkSuccessScreen = () => {
                     icon={<ShareIcon color="#202020" size={24} />}
                     title={t("Share payment link")}
                 >
-                    <ShareOptions countries={countries} paymentLinkId={paymentLinkId} />
+                    {isQrCode ? (
+                        <ShareQrCode
+                            qrValue={qrValue}
+                        />
+                    ) : (
+                        <ShareOptions
+                            setIsQrCodeModalVisible={setIsQrCodeModalVisible}
+                            countries={countries}
+                            paymentLinkId={paymentLinkId}
+                        />
+                    )}
                 </CreateOptionBox>
                 <View>
                     <Link
@@ -57,6 +74,11 @@ const CreateNewPaymentLinkSuccessScreen = () => {
                     </Link>
                 </View>
             </KeyboardAwareScrollView>
+            <QrCodeShareModal
+                isVisible={isQrCodeModalVisible}
+                onClose={() => setIsQrCodeModalVisible(false)}
+                qrCodeUrl={qrValue}
+            />
         </SafeAreaView>
     )
 }

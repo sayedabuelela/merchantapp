@@ -39,11 +39,15 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
         mutationFn: (data) => createPaymentLink(api, data),
         onSuccess: async (response) => {
             await queryClient.invalidateQueries({ queryKey: ["payment-links"], exact: false });
+            const qrCode = usePaymentLinkStore.getState().qrCode;
             usePaymentLinkStore.getState().clearFormData();
             showToast({ message: 'Payment link created successfully',type: 'success' });
             router.replace({
                 pathname: "/payment-links/create-success",
-                params: { paymentLinkId: response.data.paymentLinkId }
+                params: { 
+                    paymentLinkId: response.data.paymentLinkId,
+                    ...(qrCode && { query: 'qr-code' })
+                }
             });
         },
     });

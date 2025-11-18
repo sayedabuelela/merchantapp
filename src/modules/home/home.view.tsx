@@ -126,7 +126,8 @@ const HomeScreen = () => {
                             ) : (
                                 listData.map((item) => {
                                     const activity = item as Activity;
-                                    return <ActivityCard key={activity._id} {...activity} fromBalance={activeTab === 'all'} />;
+                                    return <ActivityCard key={activity._id} {...activity} fromBalance={activeTab === 'all'}
+                                    />;
                                 })
                             )
                         ) : (
@@ -142,7 +143,11 @@ const HomeScreen = () => {
                     accounts={accounts}
                 />
             )}
-            <CreatePaymentModal isVisible={isCreatePLModalVisible} onClose={handleAddPress} />
+            <CreatePaymentModal
+                isVisible={isCreatePLModalVisible}
+                onClose={handleAddPress}
+                qrCode={true}
+            />
         </SafeAreaView>
     )
 }

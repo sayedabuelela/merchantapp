@@ -11,9 +11,10 @@ import GeneralModalHeader from '@/src/shared/components/GeneralModal/GeneralModa
 interface CreatePaymentModalProps {
     isVisible: boolean;
     onClose: () => void;
+    qrCode?: boolean;
 }
 
-const CreatePaymentModal = ({ isVisible, onClose }: CreatePaymentModalProps) => {
+const CreatePaymentModal = ({ isVisible, onClose, qrCode }: CreatePaymentModalProps) => {
     const [showModal, setShowModal] = useState(isVisible);
     const [selectedOption, setSelectedOption] = useState<'simple' | 'professional' | ''>('simple');
 
@@ -94,7 +95,7 @@ const CreatePaymentModal = ({ isVisible, onClose }: CreatePaymentModalProps) => 
                             <Link
                                 href={{
                                     pathname: "/payment-links/create-step1",
-                                    params: { paymentType: selectedOption },
+                                    params: { paymentType: selectedOption, qrCode },
                                 }}
                                 asChild disabled={selectedOption === ''}>
                                 <Button title={t('New payment link')} disabled={selectedOption === ''} onPress={handleClose} className="mt-8" />

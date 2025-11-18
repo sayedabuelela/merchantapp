@@ -65,6 +65,7 @@
     "react-native-ios-context-menu": "github:dominicstop/react-native-ios-context-menu",
     "react-native-ios-utilities": "github:dominicstop/react-native-ios-utilities",
     "react-native-keyboard-controller": "1.18.5",
+    "react-native-qrcode-svg": "^6.3.20",
     "react-native-reanimated": "~4.1.0",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
