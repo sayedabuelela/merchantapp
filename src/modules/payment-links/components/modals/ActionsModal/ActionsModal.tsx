@@ -12,6 +12,7 @@ import DeleteConfirmation from './DeleteConfirmation';
 import MarkAsPaidConfirmation from './MarkAsPaidConfirmation';
 import RejectConfirmation from './RejectConfirmation';
 import ShareOptions from './ShareOptions';
+import QrCodeShareModal from '../QrCodeShareModal';
 
 import { formatRelativeDate } from '@/src/core/utils/dateUtils';
 import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store';
@@ -248,6 +249,8 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
     const [isAnimating, setIsAnimating] = useState(false);
     const [mode, setMode] = useState<Mode>("actions");
     const [rejectReason, setRejectReason] = useState<string>("");
+    const [isQrCodeModalVisible, setIsQrCodeModalVisible] = useState(false);
+    const { generateSherableUrl } = usePaymentLinkActionsVM();
 
     // Refs and hooks
 
@@ -347,6 +350,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
                 return <ShareOptions
                     paymentLinkId={paymentLink.paymentLinkId}
                     countries={countries}
+                    setIsQrCodeModalVisible={setIsQrCodeModalVisible}
                 />;
             case "delete":
                 return (
@@ -446,6 +450,11 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
 
 
             </KeyboardAvoidingView>
+            <QrCodeShareModal
+                isVisible={isQrCodeModalVisible}
+                onClose={() => setIsQrCodeModalVisible(false)}
+                qrCodeUrl={generateSherableUrl(paymentLink.paymentLinkId)}
+            />
         </Modal>
     );
 };

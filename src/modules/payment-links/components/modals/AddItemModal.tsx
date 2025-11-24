@@ -186,8 +186,13 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
 
                                                                 setUnitPriceText(cleaned);
 
-                                                                // Only update form when it's a valid number like 1 or 1.23
-                                                                if (/^\d+(?:\.\d+)?$/.test(cleaned)) {
+                                                                if (cleaned === '') {
+                                                                    onChange(0);
+                                                                    return;
+                                                                }
+
+                                                                // Only update form when it's a valid number like 1, 1.23, or .5
+                                                                if (/^\d*\.?\d+$/.test(cleaned)) {
                                                                     const parsed = parseFloat(cleaned);
                                                                     if (!isNaN(parsed)) onChange(parsed);
                                                                 }
@@ -199,7 +204,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                                                     setUnitPriceText(trimmed);
                                                                 }
                                                                 // After blur, if valid number, ensure form value is in sync
-                                                                if (unitPriceText && /^\d+(?:\.\d+)?$/.test(unitPriceText)) {
+                                                                if (unitPriceText && /^\d*\.?\d+$/.test(unitPriceText)) {
                                                                     const parsed = parseFloat(unitPriceText);
                                                                     if (!isNaN(parsed)) setValue('unitPrice', parsed, { shouldValidate: true });
                                                                 }

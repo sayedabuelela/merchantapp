@@ -145,9 +145,9 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
     const handleShare = async () => {
         try {
             const url = generateSherableUrl(paymentLinkId);
+            console.log('handleShare url', url)
             await share({
-                url,
-                message: t("Check out this payment link"),
+                message: url,
                 title: t("Payment Link"),
             });
         } catch (error) {
@@ -193,9 +193,9 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
                             />
                         )}
                         <View>
-                            <Pressable 
-                            onPress={() => setIsQrCodeModalVisible(true)}
-                            className="py-3 px-4 border border-primary rounded flex-row items-center justify-center gap-x-2.5">
+                            <Pressable
+                                onPress={() => setIsQrCodeModalVisible(true)}
+                                className="py-3 px-4 border border-primary rounded flex-row items-center justify-center gap-x-2.5">
                                 <QrCodeIcon size={19} color="#001F5F" />
                                 <FontText type="body" weight="semi" className="text-primary">{t("Share with QR code")}</FontText>
                             </Pressable>

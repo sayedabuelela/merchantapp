@@ -104,7 +104,7 @@ const useOnboardingDataViewModel = () => {
         queryClient.invalidateQueries({
             queryKey: onboardingDataQueryKey,
         });
-        router.replace(ROUTES.TABS.BALANCE);
+        router.replace(ROUTES.TABS.HOME);
     }
     useEffect(() => {
         if (onboardingData) {

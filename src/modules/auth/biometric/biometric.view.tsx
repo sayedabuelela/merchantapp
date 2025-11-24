@@ -3,7 +3,7 @@ import { KashierLogo } from "@/src/shared/assets/svgs";
 import FontText from "@/src/shared/components/FontText";
 import { Link, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import {  View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { selectUser, useAuthStore } from "../auth.store";
 import { useBiometricViewModel } from "./biometric.viewmodel";
@@ -18,7 +18,7 @@ const BiometricScreen = () => {
 
     const onSubmit = async () => {
         await login();
-        router.replace(ROUTES.TABS.BALANCE);
+        router.replace(ROUTES.TABS.HOME);
     }
 
 

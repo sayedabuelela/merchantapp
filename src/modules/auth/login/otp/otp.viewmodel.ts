@@ -45,7 +45,7 @@ const useOtp = () => {
                 router.replace(ROUTES.TABS.SETTINGS);
                 // router.replace(ROUTES.ONBOARDING.ACCOUNT_TYPE);
             }
-            // router.replace(ROUTES.TABS.BALANCE);
+            // router.replace(ROUTES.TABS.HOME);
         }
     });
 

@@ -105,12 +105,12 @@ export default function PaymentLinkDetailsScreen() {
                                         <>
                                             <SectionItem
                                                 icon={<CalendarIcon size={24} color="#556767" />}
-                                                title={t("Expiry date")}
+                                                title={paymentLink?.isSuspendedPayment ? t("Expiry date") : t("Due date")}
                                                 value={formatRelativeDate(paymentLink?.dueDate)}
                                             />
                                             <SectionItem
                                                 icon={<ClockIcon size={24} color="#556767" />}
-                                                title={t("Expiry time")}
+                                                title={paymentLink?.isSuspendedPayment ? t("Expiry time") : t("Due time")}
                                                 value={formatTime(paymentLink?.dueDate)}
                                             />
                                         </>

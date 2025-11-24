@@ -20,6 +20,7 @@ import CreatePaymentModal from "@/src/modules/payment-links/components/modals/Cr
 import SimpleLoader from "@/src/shared/components/loaders/SimpleLoader";
 import SkeletonLoader from "@/src/shared/components/loaders/SkeletonLoader";
 import PaymentLinkCardSkeleton from "../../payment-links/components/PaymentLinkCardSkeleton";
+import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView";
 
 const INITIAL_ORDERS_FILTERS: FetchSessionsParams = {
     dateFrom: undefined,
@@ -143,15 +144,17 @@ const PaymentsScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <PaymentsHeader
-                onFilterPress={() => setIsFiltersOpen(!isFiltersOpen)}
-                onSubmitSearch={handleSearchChange}
-                isFilterOpen={isFiltersOpen}
-                isListEmpty={isListEmpty}
-                hasFilters={hasActiveFilters}
-                handleClearSearch={handleClearSearch}
-                searchValue={search}
-            />
+            <FadeInDownView delay={100}>
+                <PaymentsHeader
+                    onFilterPress={() => setIsFiltersOpen(!isFiltersOpen)}
+                    onSubmitSearch={handleSearchChange}
+                    isFilterOpen={isFiltersOpen}
+                    isListEmpty={isListEmpty}
+                    hasFilters={hasActiveFilters}
+                    handleClearSearch={handleClearSearch}
+                    searchValue={search}
+                />
+            </FadeInDownView>
             {isLoading ? (
                 <View className={cn("flex-1 px-6 mt-6")}>
                     <PaymentLinkCardSkeleton />
@@ -186,7 +189,6 @@ const PaymentsScreen = () => {
                     </View>
                 </>
             )}
-
             <AnimatePresence>
                 {selectedPayment && (
                     <ActionsModal

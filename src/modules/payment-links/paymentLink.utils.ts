@@ -36,8 +36,8 @@ export function mapApiToFormValues(api: PaymentLink): CreatePaymentLinkTypes {
             ...base,
             // convert number -> string for the text input
             totalAmount:
-                api.totalAmount !== undefined && api.totalAmount !== null
-                    ? String(api.totalAmount)
+                api.totalAmountWithoutFees !== undefined && api.totalAmountWithoutFees !== null
+                    ? String(api.totalAmountWithoutFees)
                     : '',
         } as CreatePaymentLinkTypes;
     } else {

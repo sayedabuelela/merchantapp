@@ -13,7 +13,7 @@ const CurrencySettingsScreen = () => {
     const { t } = useTranslation();
     const { currencyData, staticCurrencies, selectedCurrencies, handleCurrencyChange, isSubmittingPartialData, submitCurrencyData } = useCurrencyViewModel();
     console.log('selectedCurrencies : ', selectedCurrencies);
-    
+
     const submitHandler = () => {
         submitCurrencyData(selectedCurrencies);
     }
@@ -47,7 +47,7 @@ const CurrencySettingsScreen = () => {
                         disabled={!selectedCurrencies.length}
                         onPress={submitHandler}
                     />
-                    <Link href={ROUTES.TABS.BALANCE}>
+                    <Link href={ROUTES.TABS.HOME}>
                         <FontText
                             type="body"
                             weight='bold'

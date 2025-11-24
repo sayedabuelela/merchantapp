@@ -56,10 +56,10 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
         storesListBottomSheetRef.current?.close();
 
         switchMerchant(merchantId);
-        router.replace(ROUTES.TABS.BALANCE);
+        router.replace(ROUTES.TABS.HOME);
         handleClose();
     };
-    
+
     return (
         <Modal
             transparent

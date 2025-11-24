@@ -13,7 +13,7 @@ export default function AuthLayout() {
     // }
 
     if (isAuthenticated && currentScreen !== 'enable-biometric') {
-        return <Redirect href={ROUTES.TABS.BALANCE} />;
+        return <Redirect href={ROUTES.TABS.HOME} />;
     }
     return (
         <Stack

@@ -190,7 +190,9 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                             className="flex-row items-center border-t border-tertiary pt-6 mt-6"
                             onPress={handleToggleFees}
                         >
-                            {hasExtraFees ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
+                            <View>
+                                {hasExtraFees ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
+                            </View>
                             <FontText type="body" weight="regular" className="text-content-primary text-base ml-2">
                                 {t("Additional Fees")}
                             </FontText>
@@ -218,7 +220,9 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                             className="flex-row items-center border-t border-tertiary pt-6 mt-6"
                             onPress={handleToggleFees}
                         >
-                            {hasExtraFees ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
+                            <View>
+                                {hasExtraFees ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
+                            </View>
                             <FontText type="body" weight="regular" className="text-content-primary text-base ml-2">
                                 {t("Additional Fees")}
                             </FontText>

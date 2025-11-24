@@ -117,7 +117,7 @@ const PaymentLinksScreen = () => {
     const handleToggleFilters = useCallback(() => {
         setIsFiltersOpen(prev => !prev);
     }, []);
-    
+
     const renderItem = useCallback(({ item }: { item: GroupedRow<PaymentLink> }) => {
         if (item.type === 'header') return <HeaderRow title={item.date} />;
         return <PaymentLinkCard paymentLink={item} onOpenActions={handleOpenActions} />;
@@ -135,7 +135,6 @@ const PaymentLinksScreen = () => {
                 handleClearSearch={handleClearSearch}
                 searchValue={search}
             />
-
             <PaymentLinksTabs
                 value={paymentStatus}
                 onSelectStatus={setPaymentStatus}

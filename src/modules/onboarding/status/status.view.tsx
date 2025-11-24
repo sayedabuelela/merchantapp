@@ -15,7 +15,7 @@ const OnboardingStatusScreen = () => {
     const router = useRouter();
     console.log('StatusScreen onboardingData : ', onboardingData);
     const handleSkip = () => {
-        router.replace(ROUTES.TABS.BALANCE);
+        router.replace(ROUTES.TABS.HOME);
     }
 
     return (

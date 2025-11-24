@@ -8,7 +8,7 @@ import GeneralModalHeader from "@/src/shared/components/GeneralModal/GeneralModa
 import { AnimatePresence, MotiView } from "moti";
 import { memo, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Pressable, TouchableWithoutFeedback, View } from "react-native";
+import { Modal, Pressable, ScrollView, TouchableWithoutFeedback, View } from "react-native";
 import { KeyboardController } from "react-native-keyboard-controller";
 import { FetchSessionsParams, FetchTransactionsParams } from "../payments.model";
 import DropDownUI from "@/src/shared/components/dropdown/DropDownUI";
@@ -328,94 +328,99 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                     onClose={handleClose}
                                 />
 
-                                {/* Payment Date Range */}
-                                <DateRangeSelector
-                                    label={t('Payment date')}
-                                    from={paymentDate?.from}
-                                    to={paymentDate?.to}
-                                    onPress={() => paymentDateRef.current?.expand()}
-                                    t={t}
-                                    className="mb-3"
-                                /> 
-                                {/* Status Dropdown */}
-                                <DropDownUI
-                                    options={isOrdersTab ? orderStatusOptions : transactionStatusOptions}
-                                    selected={status}
-                                    onChange={setStatus}
-                                    label={t('Order Status')}
-                                    placeholder={t('Order Status')}
-                                    dropdownKey="status"
-                                    variant="filter"
-                                />
-
-                                {/* Payment Method Dropdown */}
-                                <DropDownUI
-                                    options={paymentMethodOptions}
-                                    selected={method}
-                                    onChange={setMethod}
-                                    label={t('Payment method')}
-                                    placeholder={t('Payment method')}
-                                    dropdownKey="method"
-                                    variant="filter"
-                                />
-                                {/* Channel Dropdown */}
-                                <DropDownUI
-                                    options={channelOptions}
-                                    selected={channel}
-                                    onChange={setChannel}
-                                    label={t('Channel')}
-                                    placeholder={t('Channel')}
-                                    dropdownKey="channel"
-                                    variant="filter"
-                                />
-                                {/* Branches Dropdown (Shared) */}
-                                <DropDownUI
-                                    options={branchOptions}
-                                    selected={isOrdersTab ? branchName : posBranch}
-                                    onChange={isOrdersTab ? setBranchName : setPosBranch}
-                                    label={t('Branch')}
-                                    placeholder={t('Branch')}
-                                    dropdownKey="branch"
-                                    variant="filter"
-                                />
-
-                                {/* Orders Only Filters */}
-                                {isOrdersTab && (
+                                <ScrollView
+                                    showsVerticalScrollIndicator={false}
+                                    className="max-h-[65vh]"
+                                >
+                                    {/* Payment Date Range */}
+                                    <DateRangeSelector
+                                        label={t('Payment date')}
+                                        from={paymentDate?.from}
+                                        to={paymentDate?.to}
+                                        onPress={() => paymentDateRef.current?.expand()}
+                                        t={t}
+                                        className="mb-3"
+                                    />
+                                    {/* Status Dropdown */}
                                     <DropDownUI
-                                        options={paymentSourceOptions}
-                                        selected={origin}
-                                        onChange={setOrigin}
-                                        label={t('Payment source')}
-                                        placeholder={t('Payment source')}
-                                        dropdownKey="paymentSource"
+                                        options={isOrdersTab ? orderStatusOptions : transactionStatusOptions}
+                                        selected={status}
+                                        onChange={setStatus}
+                                        label={t('Order Status')}
+                                        placeholder={t('Order Status')}
+                                        dropdownKey="status"
                                         variant="filter"
                                     />
-                                )}
 
-                                {/* Transactions Only Filters */}
-                                {isTransactionsTab && (
-                                    <>
+                                    {/* Payment Method Dropdown */}
+                                    <DropDownUI
+                                        options={paymentMethodOptions}
+                                        selected={method}
+                                        onChange={setMethod}
+                                        label={t('Payment method')}
+                                        placeholder={t('Payment method')}
+                                        dropdownKey="method"
+                                        variant="filter"
+                                    />
+                                    {/* Channel Dropdown */}
+                                    <DropDownUI
+                                        options={channelOptions}
+                                        selected={channel}
+                                        onChange={setChannel}
+                                        label={t('Channel')}
+                                        placeholder={t('Channel')}
+                                        dropdownKey="channel"
+                                        variant="filter"
+                                    />
+                                    {/* Branches Dropdown (Shared) */}
+                                    <DropDownUI
+                                        options={branchOptions}
+                                        selected={isOrdersTab ? branchName : posBranch}
+                                        onChange={isOrdersTab ? setBranchName : setPosBranch}
+                                        label={t('Branch')}
+                                        placeholder={t('Branch')}
+                                        dropdownKey="branch"
+                                        variant="filter"
+                                    />
+
+                                    {/* Orders Only Filters */}
+                                    {isOrdersTab && (
                                         <DropDownUI
-                                            options={transactionTypeOptions}
-                                            selected={transactionType}
-                                            onChange={setTransactionType}
-                                            label={t('Transaction type')}
-                                            placeholder={t('Transaction type')}
-                                            dropdownKey="transactionType"
+                                            options={paymentSourceOptions}
+                                            selected={origin}
+                                            onChange={setOrigin}
+                                            label={t('Payment source')}
+                                            placeholder={t('Payment source')}
+                                            dropdownKey="paymentSource"
                                             variant="filter"
                                         />
+                                    )}
 
-                                        <DropDownUI
-                                            options={discountOptions}
-                                            selected={discount}
-                                            onChange={setDiscount}
-                                            label={t('Discount')}
-                                            placeholder={t('Discount')}
-                                            dropdownKey="discount"
-                                            variant="filter"
-                                        />
-                                    </>
-                                )}
+                                    {/* Transactions Only Filters */}
+                                    {isTransactionsTab && (
+                                        <>
+                                            <DropDownUI
+                                                options={transactionTypeOptions}
+                                                selected={transactionType}
+                                                onChange={setTransactionType}
+                                                label={t('Transaction type')}
+                                                placeholder={t('Transaction type')}
+                                                dropdownKey="transactionType"
+                                                variant="filter"
+                                            />
+
+                                            <DropDownUI
+                                                options={discountOptions}
+                                                selected={discount}
+                                                onChange={setDiscount}
+                                                label={t('Discount')}
+                                                placeholder={t('Discount')}
+                                                dropdownKey="discount"
+                                                variant="filter"
+                                            />
+                                        </>
+                                    )}
+                                </ScrollView>
 
                                 {/* Action Buttons */}
                                 <View className="mt-4">

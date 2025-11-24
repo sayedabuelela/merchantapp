@@ -16,13 +16,13 @@ interface DateSelectorProps {
 
 const DateSelector = memo(
     ({ label, date, onPress, t, className }: DateSelectorProps) => (
-        <View>
+        <View className={className}>
             <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label)}>
                 {label}
             </FontText>
             <Pressable
                 onPress={onPress}
-                className={cn("flex-row items-center w-full px-3 h-11 bg-white border border-stroke-input rounded", className)}
+                className={cn("flex-row items-center w-full px-3 h-11 bg-white border border-stroke-input rounded")}
             >
                 <CalendarDaysIcon size={18} color="#556767" />
                 <FontText

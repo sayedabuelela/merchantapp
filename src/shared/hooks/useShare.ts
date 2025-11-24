@@ -2,17 +2,16 @@ import { Share } from "react-native";
 import { useCallback } from "react";
 
 interface ShareOptions {
-    message?: string;
-    url: string;
+    message: string;
+    // url: string;
     title?: string;
 }
 
 export const useShare = () => {
-    const share = useCallback(async ({ message, url, title }: ShareOptions) => {
+    const share = useCallback(async ({ message, title }: ShareOptions) => {
         try {
             const result = await Share.share({
-                message: message || url,
-                url,
+                message,
                 title,
             });
 

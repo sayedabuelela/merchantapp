@@ -55,6 +55,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'Password500$$',
             // email: 'vawoyal409@fandoe.com',
             // password: 'P@ssw0rd',
+            // email: 'eabdallah@kashier.io',
+            // password: 'Password500$$',
         },
     });
 

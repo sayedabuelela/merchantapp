@@ -4,7 +4,7 @@ import Button from "@/src/shared/components/Buttons/Button";
 import FontText from "@/src/shared/components/FontText";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import {  View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const RegisterSuccessScreen = () => {
@@ -12,13 +12,13 @@ const RegisterSuccessScreen = () => {
     const router = useRouter();
 
     const handleSkip = () => {
-        router.replace(ROUTES.TABS.BALANCE);
+        router.replace(ROUTES.TABS.HOME);
     }
 
     const handleActivate = () => {
         router.push(ROUTES.ONBOARDING.ACCOUNT_TYPE);
     }
-    
+
     return (
         <SafeAreaView className="flex-1 bg-white">
             <View className="flex-1 items-center justify-center px-6 pb-16 pt-28">

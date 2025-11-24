@@ -27,7 +27,24 @@ const baseSchema = z.object({
     }),
     currency: z.string().optional(),
     extraFees: z.array(feeSchema).optional(),
-    dueDate: z.date().optional(),
+    dueDate: z.date().optional()
+        .refine((date) => {
+            if (!date) return true;
+            return date > new Date();
+        }, {
+            message: "The selected date has been passed",
+        })
+        .refine((date) => {
+            if (!date) return true;
+            // If date is in the past, let the first refinement handle the error
+            if (date <= new Date()) return true;
+
+            const now = new Date();
+            const thirtyMinutesLater = new Date(now.getTime() + 30 * 60 * 1000);
+            return date > thirtyMinutesLater;
+        }, {
+            message: "Due date must be at least 30 minutes in the future",
+        }),
     referenceId: z.string().optional(),
     description: z.string().optional(),
     isSuspendedPayment: z.boolean().optional(),

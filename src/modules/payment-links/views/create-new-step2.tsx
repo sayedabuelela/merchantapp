@@ -3,10 +3,12 @@ import AnimatedError from "@/src/shared/components/animated-messages/AnimatedErr
 import AnimatedErrorMsg from "@/src/shared/components/animated-messages/AnimatedErrorMsg";
 import DateSelector from "@/src/shared/components/bottom-sheets/select-date/DateSelector";
 import DateSelectPickerBottomSheet, { DateSelectPickerRef } from "@/src/shared/components/bottom-sheets/select-date/DateSelectPickerBottomSheet";
+import TimeSelectPickerBottomSheet, { TimeSelectPickerRef } from "@/src/shared/components/bottom-sheets/select-date/TimeSelectPickerBottomSheet";
 import Button from "@/src/shared/components/Buttons/Button";
 import FontText from "@/src/shared/components/FontText";
 import MainHeader from "@/src/shared/components/headers/MainHeader";
 import Input from "@/src/shared/components/inputs/Input";
+import TimeSelector from "@/src/shared/components/inputs/TimeSelector";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
@@ -25,6 +27,7 @@ const CreateNewPaymentLinkStep2Screen = () => {
     const { t } = useTranslation();
     const router = useRouter();
     const dateSelectPickerRef = useRef<DateSelectPickerRef>(null);
+    const timeSelectPickerRef = useRef<TimeSelectPickerRef>(null);
     const { formData, clearFormData, setFormData } = usePaymentLinkStore();
     const { paymentLinkId } = useLocalSearchParams<{ paymentLinkId?: string }>();
     const {
@@ -41,6 +44,7 @@ const CreateNewPaymentLinkStep2Screen = () => {
         control,
         handleSubmit,
         setValue,
+        trigger,
         formState: { errors, isValid },
     } = useForm<CreatePaymentLinkTypes>({
         resolver: zodResolver(createPaymentLinkSchema),
@@ -59,6 +63,14 @@ const CreateNewPaymentLinkStep2Screen = () => {
 
     const handleDateSelectPickerExpand = () => {
         dateSelectPickerRef.current?.expand();
+    };
+
+    const handleTimeSelectPickerClose = () => {
+        timeSelectPickerRef.current?.close();
+    };
+
+    const handleTimeSelectPickerExpand = () => {
+        timeSelectPickerRef.current?.expand();
     };
 
     const onSubmit = async (data: CreatePaymentLinkTypes) => {
@@ -81,13 +93,24 @@ const CreateNewPaymentLinkStep2Screen = () => {
                         control={control}
                         name="dueDate"
                         render={({ field: { onChange, value } }) => (
-                            <DateSelector
-                                label={t("Due Date")}
-                                date={value}
-                                onPress={handleDateSelectPickerExpand}
-                                t={t}
-                                className="w-2/3"
-                            />
+                            <View className="flex-row gap-x-3 w-full">
+                                <DateSelector
+                                    label={t("Due Date")}
+                                    date={value}
+                                    onPress={handleDateSelectPickerExpand}
+                                    t={t}
+                                    className="flex-1"
+                                />
+                                {value && (
+                                    <TimeSelector
+                                        label={t("Time")}
+                                        date={value}
+                                        onPress={handleTimeSelectPickerExpand}
+                                        t={t}
+                                        className="flex-1"
+                                    />
+                                )}
+                            </View>
                         )}
                     />
                     {values.dueDate && (
@@ -173,10 +196,37 @@ const CreateNewPaymentLinkStep2Screen = () => {
                 title={t("Select a date")}
                 savedDate={formData.dueDate}
                 onDateSelected={(date) => {
-                    setValue("dueDate", date, { shouldValidate: true });
+                    if (date) {
+                        const currentDueDate = values.dueDate || new Date();
+                        const newDate = new Date(date);
+                        // Preserve existing time or use current time
+                        newDate.setHours(currentDueDate.getHours());
+                        newDate.setMinutes(currentDueDate.getMinutes());
+                        newDate.setSeconds(0);
+                        newDate.setMilliseconds(0);
+                        setValue("dueDate", newDate, { shouldValidate: true });
+                    } else {
+                        setValue("dueDate", undefined, { shouldValidate: true });
+                    }
                     // handleDateSelectPickerClose();
                 }}
                 onClose={handleDateSelectPickerClose}
+            />
+            <TimeSelectPickerBottomSheet
+                ref={timeSelectPickerRef}
+                title={t("Select time")}
+                savedDate={formData.dueDate}
+                onTimeSelected={(time) => {
+                    const currentDueDate = values.dueDate || new Date();
+                    const newDate = new Date(currentDueDate);
+                    newDate.setHours(time.getHours());
+                    newDate.setMinutes(time.getMinutes());
+                    newDate.setSeconds(0);
+                    newDate.setMilliseconds(0);
+                    setValue("dueDate", newDate, { shouldValidate: true });
+                    handleTimeSelectPickerClose();
+                }}
+                onClose={handleTimeSelectPickerClose}
             />
         </SafeAreaView>
     );

@@ -21,7 +21,7 @@ const AccountTypeScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white px-6">
-            <Header title={t('Account Type')} 
+            <Header title={t('Account Type')}
             // progress={0} 
             />
             <View className="flex-1 justify-between pb-4">
@@ -50,7 +50,7 @@ const AccountTypeScreen = () => {
                     />
                 </View>
 
-                <Link href={ROUTES.TABS.BALANCE}>
+                <Link href={ROUTES.TABS.HOME}>
                     <FontText
                         type="body"
                         weight='bold'

@@ -22,6 +22,8 @@ import { PaymentSession } from "../payments/payments.model"
 import { Link } from "expo-router"
 import FontText from "@/src/shared/components/FontText"
 import HomeListEmpty from "./components/HomeListEmpty"
+import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView"
+import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/ScaleView"
 
 const HomeScreen = () => {
     const { user } = useAuthStore();
@@ -87,7 +89,7 @@ const HomeScreen = () => {
                     showsVerticalScrollIndicator={false}
                     stickyHeaderIndices={[2]}
                 >
-                    <View className="px-6 mb-2">
+                    <FadeInDownView className="px-6 mb-2" delay={100}>
                         {/* Header row */}
                         <View className="flex-row justify-between items-start">
                             {userName && (
@@ -102,21 +104,25 @@ const HomeScreen = () => {
                                 className="self-start"
                             />
                         )}
-                    </View>
-                    <HomeStatsCarousel
-                        accountStats={accountStats}
-                        transfersStats={transfersStats}
-                        dashboardStats={dashboardStats}
-                    />
+                    </FadeInDownView>
+                    <ScaleFadeIn delay={200}>
+                        <View className="mb-2">
+                            <HomeStatsCarousel
+                                accountStats={accountStats}
+                                transfersStats={transfersStats}
+                                dashboardStats={dashboardStats}
+                            />
+                        </View>
+                    </ScaleFadeIn>
                     {/* Home tabs */}
-                    <View className="bg-white">
+                    <FadeInDownView className="bg-white" delay={200}>
                         <HomeTabs value={activeTab} onSelectType={setActiveTab} />
-                    </View>
+                    </FadeInDownView>
                     {/* <Link href="/balance">
                         <FontText>Balance</FontText>
                     </Link> */}
                     {/* List */}
-                    <View className="px-6 mt-4 pb-6">
+                    <FadeInDownView className="px-6 mt-4 pb-6" delay={300}>
                         {listData.length > 0 ? (
                             activeTab === 'orders' ? (
                                 listData.map((item) => {
@@ -133,7 +139,7 @@ const HomeScreen = () => {
                         ) : (
                             <HomeListEmpty activeTab={activeTab} />
                         )}
-                    </View>
+                    </FadeInDownView>
                 </ScrollView>
             </View>
             {accounts !== undefined && accounts?.length > 1 && (

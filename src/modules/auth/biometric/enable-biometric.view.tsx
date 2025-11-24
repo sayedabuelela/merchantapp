@@ -4,7 +4,7 @@ import Button from "@/src/shared/components/Buttons/Button";
 import FontText from "@/src/shared/components/FontText";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import {  View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { selectUser, useAuthStore } from "../auth.store";
 import { useBiometricViewModel } from "./biometric.viewmodel";
@@ -19,12 +19,12 @@ const EnableBiometricScreen = () => {
     const onEnable = async () => {
         // isLoading = true;
         const success = await enableBiometric();
-        if (success) router.replace(ROUTES.TABS.BALANCE);
+        if (success) router.replace(ROUTES.TABS.HOME);
     }
 
     const onSkip = () => {
         setInitialized(true);
-        router.replace(ROUTES.TABS.BALANCE);
+        router.replace(ROUTES.TABS.HOME);
     }
     return (
         <SafeAreaView className="flex-1 bg-white">

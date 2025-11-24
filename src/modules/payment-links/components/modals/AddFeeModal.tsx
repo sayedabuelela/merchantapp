@@ -151,7 +151,7 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                         />
                                         {errors.name && (
                                             <FontText type="body" className="text-feedback-error mt-1">
-                                                {t(errors.name.message as string)}
+                                                {t(errors.name?.message || '')}
                                             </FontText>
                                         )}
                                     </View>
@@ -194,8 +194,8 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                                     onChange(undefined);
                                                                     return;
                                                                 }
-                                                                // only commit to form when it's a valid number like 1 or 1.2 (not ending with dot)
-                                                                if (/^\d+(?:\.\d+)?$/.test(cleaned)) {
+                                                                // only commit to form when it's a valid number like 1, 1.2, .5 (not ending with dot)
+                                                                if (/^\d*\.?\d+$/.test(cleaned)) {
                                                                     const parsed = parseFloat(cleaned);
                                                                     if (!isNaN(parsed)) onChange(parsed);
                                                                 }
@@ -248,7 +248,7 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                                     onChange(undefined);
                                                                     return;
                                                                 }
-                                                                if (/^\d+(?:\.\d+)?$/.test(cleaned)) {
+                                                                if (/^\d*\.?\d+$/.test(cleaned)) {
                                                                     const parsed = parseFloat(cleaned);
                                                                     if (!isNaN(parsed)) onChange(parsed);
                                                                 }
@@ -268,7 +268,7 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                         </View>
                                         {errors.flatFee && (
                                             <FontText type="body" className="text-feedback-error mt-1">
-                                                {errors.flatFee.message}
+                                                {t(errors.flatFee?.message || '')}
                                             </FontText>
                                         )}
                                     </View>
