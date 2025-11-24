@@ -36,7 +36,7 @@ const ResendTimer = ({ initialSeconds = 30, onResend }: ResendTimerProps) => {
                 {/* {t('OTP not received?')} */}
                 {t(isEnabled
                     ? 'You can now resend the OTP'
-                    : `Resend OTP in`)} {secondsLeft}
+                    : `Resend OTP in`)} {secondsLeft !== 0 && secondsLeft}
             </FontText>
             <TouchableOpacity onPress={handlePress} disabled={!isEnabled}>
                 <FontText

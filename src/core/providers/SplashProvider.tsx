@@ -1,4 +1,3 @@
-// src/core/providers/SplashProvider.tsx
 import staticImages from '@/src/core/utils/static-images';
 import { useAuthStore } from "@/src/modules/auth/auth.store";
 import { StatusBar } from 'expo-status-bar';
