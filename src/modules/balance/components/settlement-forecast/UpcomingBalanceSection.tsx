@@ -2,7 +2,7 @@ import { Route } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import SectionHeader from "../SectionHeader";
-import SettlementForecastItem from "./SettlementForecastItem";
+import SettlementForecastItem from "./UpcomingBalanceItem";
 
 interface Props {
     upcomingValueDates: { amount: number; date: string }[];
@@ -10,14 +10,14 @@ interface Props {
     nextRoute: Route;
 }
 
-const SettlementForecast = ({ upcomingValueDates, currency, nextRoute }: Props) => {
+const UpcomingBalanceSection = ({ upcomingValueDates, currency, nextRoute }: Props) => {
 
     const { t } = useTranslation();
 
     return (
         <View className="mb-8">
             <SectionHeader
-                title={t('Settlement forecast')}
+                title={t('Upcoming balance')}
                 nextRouteTitle={t('Payouts')}
                 nextRoute={nextRoute}
             />
@@ -34,4 +34,4 @@ const SettlementForecast = ({ upcomingValueDates, currency, nextRoute }: Props) 
     );
 };
 
-export default SettlementForecast;
+export default UpcomingBalanceSection;

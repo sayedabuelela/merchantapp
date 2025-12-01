@@ -8,7 +8,7 @@ import ActivityCard from '../components/ActivityCard';
 import AccountsModal from '../components/AccountsModal';
 import BalanceHeader from '../components/header/BalanceHeader';
 import SectionHeader from '../components/SectionHeader';
-import SettlementForecast from '../components/settlement-forecast/SettlementForecast';
+import SettlementForecast from '../components/settlement-forecast/UpcomingBalanceSection';
 import useAccounts from '../viewmodels/useAccounts';
 import {useRecentBalanceActivities} from '../viewmodels/useActivitiesVM';
 import useStatistics from '../viewmodels/useStatistics';

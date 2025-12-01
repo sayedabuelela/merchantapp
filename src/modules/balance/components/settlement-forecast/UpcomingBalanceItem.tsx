@@ -5,7 +5,7 @@ import { View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { formatRelativeDate } from '@/src/core/utils/dateUtils'
 
-const SettlementForecastItem = ({ amount, date }: { amount: number; date: string }) => {
+const UpcomingBalanceItem = ({ amount, date }: { amount: number; date: string }) => {
     const { t } = useTranslation();
     return (
         <View className='border border-stroke-main p-4 rounded w-[200px] mr-3'>
@@ -19,4 +19,4 @@ const SettlementForecastItem = ({ amount, date }: { amount: number; date: string
     )
 }
 
-export default SettlementForecastItem
+export default UpcomingBalanceItem
