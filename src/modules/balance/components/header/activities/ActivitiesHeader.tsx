@@ -9,14 +9,15 @@ interface Props {
     hasFilters: boolean;
     handleClearSearch: () => void;
     searchValue: string;
+    className?: string;
 }
 
-const ActivitiesHeader = ({ onFilterPress, onSubmitSearch, isFilterOpen, isListEmpty, hasFilters, handleClearSearch, searchValue }: Props) => {
+const ActivitiesHeader = ({ onFilterPress, onSubmitSearch, isFilterOpen, isListEmpty, hasFilters, handleClearSearch, searchValue, className }: Props) => {
     const { t } = useTranslation();
 
     return (
         <ListHeader
-            title={t('Balance activities')}
+            title={t('Balances')}
             onFilterPress={onFilterPress}
             onSubmitSearch={onSubmitSearch}
             isFilterOpen={isFilterOpen}
@@ -24,6 +25,7 @@ const ActivitiesHeader = ({ onFilterPress, onSubmitSearch, isFilterOpen, isListE
             hasFilters={hasFilters}
             handleClearSearch={handleClearSearch}
             searchValue={searchValue}
+            className={className}
         />
     )
 }

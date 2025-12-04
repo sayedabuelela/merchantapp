@@ -1,24 +1,25 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useLocalSearchParams} from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLocalSearchParams } from 'expo-router';
 import StickyHeaderList from '../../../shared/components/StickyHeaderList';
 import HeaderRow from '../../../shared/components/StickyHeaderList/HeaderRow';
-import {Activity, ActivityType, FetchActivitiesParams} from '../balance.model';
+import { Activity, ActivityType, FetchActivitiesParams } from '../balance.model';
 import ActivitiesTabs from '../components/ActivitiesTabs';
 import ActivityCard from '../components/ActivityCard';
 import ActivityFilterModal from '../components/ActivityFilterModal';
 import ActivitiesHeader from '../components/header/activities/ActivitiesHeader';
-import {useActivitiesVM} from '../viewmodels/useActivitiesVM';
-import {cn} from '@/src/core/utils/cn';
-import {GroupedRow} from '@/src/core/utils/groupData';
+import { useActivitiesVM } from '../viewmodels/useActivitiesVM';
+import { cn } from '@/src/core/utils/cn';
+import { GroupedRow } from '@/src/core/utils/groupData';
 import ActivitiesListEmpty from '@/src/shared/components/StickyHeaderList/list-empty/ActivitiesListEmpty';
 import useAccounts from '../viewmodels/useAccounts';
 import AccountsBtn from '../components/header/AccountsBtn';
 import AccountsModal from '../components/AccountsModal';
 import AnimatedInfoMsg from '@/src/shared/components/animated-messages/AnimatedInfoMsg';
 import { FlashList } from '@shopify/flash-list';
+import { getInitialTab } from '../balance.utils';
 
 const INITIAL_FILTERS: FetchActivitiesParams = {
     operation: undefined,
@@ -31,24 +32,24 @@ const INITIAL_FILTERS: FetchActivitiesParams = {
 }
 
 const BalanceActivitiesScreen = () => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const params = useLocalSearchParams<{ tab?: string }>();
     const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<Activity>>>>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [search, setSearchValue] = useState('');
 
     // Initialize tab from route params, default to "payout" if not provided or invalid
-    const getInitialTab = (): ActivityType => {
-        if (params.tab === 'transfer' || params.tab === 'payout' || params.tab === 'all') {
-            return params.tab as ActivityType;
-        }
-        return 'payout';
-    };
+    // const getInitialTab = (): ActivityType => {
+    //     if (params.tab === 'transfer' || params.tab === 'payout' || params.tab === 'all') {
+    //         return params.tab as ActivityType;
+    //     }
+    //     return 'payout';
+    // };
 
-    const [type, setType] = useState<ActivityType>(getInitialTab());
+    const [type, setType] = useState<ActivityType>(getInitialTab(params.tab || ''));
     const [filters, setFilters] = useState<FetchActivitiesParams>(INITIAL_FILTERS);
     const [showAccountsModal, setShowAccountsModal] = useState(false);
-    const {accounts} = useAccounts();
+    const { accounts } = useAccounts();
 
     // Scroll to top when tab changes
     useEffect(() => {
@@ -81,7 +82,7 @@ const BalanceActivitiesScreen = () => {
         isFetchingNextPage,
         hasNextPage,
         fetchNextPage,
-    } = useActivitiesVM({...filters, search});
+    } = useActivitiesVM({ ...filters, search });
 
     // console.log('listData', listData);
 
@@ -91,11 +92,11 @@ const BalanceActivitiesScreen = () => {
         }
     };
 
-    const renderItem = useCallback(({item}: { item: GroupedRow<Activity> }) => {
+    const renderItem = useCallback(({ item }: { item: GroupedRow<Activity> }) => {
         if (item.type === 'header') {
-            return <HeaderRow title={item.date}/>;
+            return <HeaderRow title={item.date} />;
         }
-        return <ActivityCard {...item} fromBalance={type === 'all'}/>;
+        return <ActivityCard {...item} fromBalance={type === 'all'} />;
     }, [type]);
 
     const handleClearSearch = useCallback(() => {
@@ -124,10 +125,9 @@ const BalanceActivitiesScreen = () => {
                 handleClearSearch={handleClearSearch}
                 searchValue={search}
             />
-            <ActivitiesTabs value={type} onSelectType={setType}  />
+            <ActivitiesTabs value={type} onSelectType={setType} />
 
             <View className={cn("flex-1 px-6 ")}>
-
                 <StickyHeaderList
                     ref={listRef}
                     listData={listData}
@@ -144,7 +144,7 @@ const BalanceActivitiesScreen = () => {
                                     onPress={() => setShowAccountsModal(true)}
                                 />
                             )}
-                            {type !== 'all' && <AnimatedInfoMsg infoMsg={infoMsg}/>}
+                            {type !== 'all' && <AnimatedInfoMsg infoMsg={infoMsg} />}
                         </View>
                     }
                     ListEmptyComponent={

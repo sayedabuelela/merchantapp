@@ -2,8 +2,9 @@ import ListTabs, { Tab } from "@/src/shared/components/ListTabs/ListTabs";
 import { ActivityType } from "../balance.model";
 
 const TABS: Tab<ActivityType>[] = [
+    { label: "Overview", value: "overview" },
     { label: "Payouts", value: "payout" },
-    { label: "Transfers", value: "transfer" },
+    { label: "Upcoming balance", value: "upcoming_balance" },
     { label: "All Activities", value: "all" },
 ];
 

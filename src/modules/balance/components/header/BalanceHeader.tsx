@@ -16,19 +16,18 @@ interface Props {
     showAccountsBtn?: boolean
 }
 const BalanceHeader = ({ notificationsCount, userName, balanceOverview, ongoingTransfers, onPressAccounts, showAccountsBtn }: Props) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     return (
-        <View className="mb-8 px-6">
+        <View className="mb-8">
             {/* Header row */}
-            <View className="flex-row justify-between items-center mb-6">
+            {/* <View className="flex-row justify-between items-center mb-6">
                 {showAccountsBtn && (
                     <AccountsBtn onPress={onPressAccounts}
                     //  activeAccount={activeAccount}
                     />
                 )}
-                {/* Notifications */}
-                <NotificationBell notificationsCount={notificationsCount || 0} />
-            </View>
+                <NotificationBell notificationsCount={0} />
+            </View> */}
             <BalanceStatsCard
                 mainBalance={{
                     title: t('Available Balance'),

@@ -1,5 +1,5 @@
 import { I18nManager } from "react-native";
-import { GroupedUpcomingDates, UpcomingValueDate } from "./balance.model";
+import { ActivityType, GroupedUpcomingDates, UpcomingValueDate } from "./balance.model";
 
 export const getGreeting = () => {
     const hour = new Date().getHours();
@@ -34,4 +34,11 @@ export const groupUpcomingDates = (
         },
         { later: [] }
     );
+};
+
+export const getInitialTab = (paramTab: string): ActivityType => {
+    if (paramTab === 'transfer' || paramTab === 'payout' || paramTab === 'all') {
+        return paramTab as ActivityType;
+    }
+    return 'overview';
 };

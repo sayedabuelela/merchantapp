@@ -2,7 +2,7 @@ import { cn } from "@/src/core/utils/cn";
 import FontText from "@/src/shared/components/FontText";
 import { MotiView } from "moti";
 import { useTranslation } from "react-i18next";
-import { Pressable, View } from "react-native";
+import { Pressable, ScrollView } from "react-native";
 
 export interface Tab<T = string> {
     label: string;
@@ -14,14 +14,18 @@ interface Props<T = string> {
     value: T;
     onSelectType: (val: T) => void;
     isListEmpty?: boolean;
-    className?:string;
+    className?: string;
 }
 
 export default function ListTabs<T = string>({ tabs, value, onSelectType, isListEmpty, className }: Props<T>) {
     const { t } = useTranslation();
 
     return (
-        <View className={cn("border-b border-tertiary mt-4 flex-row items-center justify-center gap-x-8 ", className)}>
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerClassName="gap-8 px-6"
+            className={cn("border-b border-tertiary mt-4 ", className)}>
             {!isListEmpty && tabs.map(tab => {
                 const isActive = tab.value === value;
                 return (
@@ -48,6 +52,6 @@ export default function ListTabs<T = string>({ tabs, value, onSelectType, isList
                     </Pressable>
                 );
             })}
-        </View>
+        </ScrollView>
     );
 }

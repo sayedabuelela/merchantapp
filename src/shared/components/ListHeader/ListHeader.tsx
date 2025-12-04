@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { FunnelIcon, MagnifyingGlassIcon } from 'react-native-heroicons/outline';
 import SearchInput from '@/src/modules/payment-links/components/SearchInput';
+import { cn } from '@/src/core/utils/cn';
 
 interface Props {
     title: string;
@@ -20,6 +21,7 @@ interface Props {
         icon: React.ReactNode;
         onPress: () => void;
     };
+    className?: string;
 }
 
 const ListHeader = ({
@@ -31,13 +33,14 @@ const ListHeader = ({
     hasFilters,
     handleClearSearch,
     searchValue,
-    actionButton
+    actionButton,
+    className
 }: Props) => {
     const { t } = useTranslation();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     return (
-        <View className="px-6">
+        <View className={cn("px-6", className)}>
             <View className="flex-row justify-between items-center">
                 <FontText
                     type="head"

@@ -20,26 +20,26 @@ export interface TransfersStatistics {
     }>
 }
 export interface DashboardStatistics {
-  _id: string | null;
-  transactionDays: string[];
-  successfullTransactionsCount: number[];
-  failedTransactionsCount: number[];
-  transactionPaymentAmount: number[];
-  refundedTransactionsAmount: number[];
-  totalTrxCountArray: number[];
-  totalSuccessTrx: number;
-  totalFailedTrx: number;
-  totalPaymentAmount: number;
-  totalRefundAmount: number;
-  totalTransactionsCount: number;
-  avgSuccessToFailureTrxs: number;
+    _id: string | null;
+    transactionDays: string[];
+    successfullTransactionsCount: number[];
+    failedTransactionsCount: number[];
+    transactionPaymentAmount: number[];
+    refundedTransactionsAmount: number[];
+    totalTrxCountArray: number[];
+    totalSuccessTrx: number;
+    totalFailedTrx: number;
+    totalPaymentAmount: number;
+    totalRefundAmount: number;
+    totalTransactionsCount: number;
+    avgSuccessToFailureTrxs: number;
 }
 export interface DashboardGrowthRatio {
-  successfullRatio: string;
-  failedRatio: string;
-  amountRatio: string;
-  refundRatio: string;
-  countTrxRatio: string;
+    successfullRatio: string;
+    failedRatio: string;
+    amountRatio: string;
+    refundRatio: string;
+    countTrxRatio: string;
 }
 export interface PaginationData {
     page: number;
@@ -105,7 +105,7 @@ export interface AccountsListParams {
 }
 
 // Activity Types
-export type ActivityType = 'payout' | 'transfer' | 'all';
+export type ActivityType = 'overview' | 'payout' | 'upcoming_balance' | 'all';
 
 export interface Activity {
     id: string;

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Pressable, View } from 'react-native'
 import BalanceHeaderItem from './BalanceHeaderItem'
-import { useRouter } from 'expo-router'
+import { useRouter, useSegments } from 'expo-router'
 
 interface BalanceStatsCardProps {
     mainBalance: {
@@ -22,10 +22,20 @@ interface BalanceStatsCardProps {
 }
 
 const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail }: BalanceStatsCardProps) => {
+    
     const router = useRouter();
+    const segments = useSegments();
+    const current = segments[segments.length - 1];
+
+    const handleNavigateToBalance = () => {
+        if (current !== 'balance') {
+            router.push('/balance');
+        }
+    }
+
     return (
         <Pressable
-            onPress={() => router.push('/balance')}
+            onPress={handleNavigateToBalance}
             className="px-6 pt-6 pb-9 bg-[#F1F6FF] rounded">
             {/* Main Balance */}
             <BalanceHeaderItem
