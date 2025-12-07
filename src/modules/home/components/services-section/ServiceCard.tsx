@@ -1,7 +1,8 @@
-import { Link , Route } from 'expo-router';
+import { Link, Route } from 'expo-router';
 import React from 'react'
 import { Pressable, View } from 'react-native'
 import FontText from '@/src/shared/components/FontText'
+import ScaleFadeIn from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
 
 interface ServiceCardProps {
     title: string;
@@ -13,15 +14,18 @@ interface ServiceCardProps {
 
 const ServiceCard = ({ title, description, href, icon, onPress }: ServiceCardProps) => {
     const content = (
-        <Pressable onPress={onPress} className="flex-1 p-4 rounded border border-tertiary bg-white/10 "
-                style={{
-                    shadowColor: '#fff',
-                    shadowOffset: { width: -5, height: -5 },
-                    shadowOpacity: 0.16,
-                    shadowRadius: 2,
-                    elevation: 2, // For Android
-                }}
-            >
+        <Pressable
+            className="flex-1 min-w-[160px] p-4 rounded border border-tertiary bg-white/10 "
+            onPress={onPress}
+            style={{
+                shadowColor: '#fff',
+                shadowOffset: { width: -5, height: -5 },
+                shadowOpacity: 0.16,
+                shadowRadius: 2,
+                elevation: 2, // For Android
+            }}
+        >
+            <ScaleFadeIn delay={300} duration={1000}>
                 {icon && (
                     <View className='w-7 h-7 rounded-full bg-[#F1F6FF] p-1 items-center justify-center mb-2'>
                         {icon}
@@ -37,6 +41,7 @@ const ServiceCard = ({ title, description, href, icon, onPress }: ServiceCardPro
                     weight="regular"
                     className='text-[10px] text-content-secondary self-start'
                 >{description}</FontText>
+            </ScaleFadeIn>
         </Pressable>
     );
 

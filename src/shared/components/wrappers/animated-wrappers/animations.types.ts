@@ -3,6 +3,7 @@ import { ViewProps } from 'react-native';
 export interface BaseAnimationProps extends ViewProps {
   children: React.ReactNode;
   delay?: number;
+  duration?: number;
   className?: string; // For NativeWind
 }
 
@@ -20,6 +21,7 @@ export interface ShakeProps extends BaseAnimationProps {
 export interface StaggerProps extends BaseAnimationProps {
   staggerDelay?: number; // default 100ms between children
   animationType?: 'fadeInDown' | 'fadeInUp' | 'scale'; // which animation to apply
+  duration?: number;
 }
 
 export interface FadeOutProps extends BaseAnimationProps {

@@ -8,6 +8,7 @@ const StaggerChildrenView = ({
   staggerDelay = 100,
   animationType = 'fadeInDown',
   delay = 0,
+  duration = 1000,
   className,
   style
 }: StaggerProps) => {
@@ -36,7 +37,7 @@ const StaggerChildrenView = ({
           animate={animation.animate}
           transition={{
             type: 'spring',
-            duration: 1000,
+            duration,
             delay: delay + index * staggerDelay,
           }}
         >

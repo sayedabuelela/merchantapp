@@ -21,7 +21,7 @@ const PressScaleView = ({
       }}
       transition={{
         type: 'spring',
-        duration: 200,
+        duration: 500,
       }}
       className={className}
       style={style}

@@ -19,6 +19,9 @@ import { isVoidAvailableForTransaction, isRefundAvailableForTransaction } from '
 import VoidConfirmationTransaction from '../components/modals/VoidConfirmationTransaction';
 import RefundConfirmationTransaction from '../components/modals/RefundConfirmationTransaction';
 import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
+import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
+import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
+import ScaleView from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -141,7 +144,9 @@ const TransactionDetailsScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <MainHeader title={t('Transaction Details')} />
+            <FadeInDownView delay={0} duration={600}>
+                <MainHeader title={t('Transaction Details')} />
+            </FadeInDownView>
             <View className="flex-1">
                 <ScrollView
                     className="flex-1"
@@ -151,29 +156,35 @@ const TransactionDetailsScreen = () => {
                 >
                     <View className="px-4">
                         {/* Transaction Summary Card - Measure height */}
-                        <View
-                            onLayout={(event) => {
-                                const { height } = event.nativeEvent.layout;
-                                setSummaryHeight(height);
-                            }}
-                        >
-                            <TransactionSummaryCard transaction={transaction} />
-                        </View>
+                        <ScaleView delay={150} duration={600}>
+                            <View
+                                onLayout={(event) => {
+                                    const { height } = event.nativeEvent.layout;
+                                    setSummaryHeight(height);
+                                }}
+                            >
+                                <TransactionSummaryCard transaction={transaction} />
+                            </View>
+                        </ScaleView>
 
                         {/* Tabs - Normal position (hidden when sticky to prevent duplicate) */}
                         <View style={{ opacity: isTabsSticky ? 0 : 1 }}>
-                            <DetailsTabs
-                                value={activeTab}
-                                onSelectType={setActiveTab}
-                            />
+                            <FadeInUpView delay={300} duration={600}>
+                                <DetailsTabs
+                                    value={activeTab}
+                                    onSelectType={setActiveTab}
+                                />
+                            </FadeInUpView>
                         </View>
 
                         {/* Tab Content */}
-                        {activeTab === 'details' && <DetailsTab transaction={transaction} />}
-                        {activeTab === 'settlement' && (
-                            <SettlementTab transaction={transaction} />
-                        )}
-                        {activeTab === 'history' && <HistoryTab transaction={transaction} />}
+                        <FadeInUpView key={activeTab} delay={0} duration={400}>
+                            {activeTab === 'details' && <DetailsTab transaction={transaction} />}
+                            {activeTab === 'settlement' && (
+                                <SettlementTab transaction={transaction} />
+                            )}
+                            {activeTab === 'history' && <HistoryTab transaction={transaction} />}
+                        </FadeInUpView>
 
                         {/* Extra padding at bottom to prevent content from being hidden by action buttons */}
                         <View className={showActionButtons ? "h-24" : "h-6"} />

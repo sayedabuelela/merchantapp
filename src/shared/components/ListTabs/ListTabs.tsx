@@ -3,6 +3,7 @@ import FontText from "@/src/shared/components/FontText";
 import { MotiView } from "moti";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView } from "react-native";
+import PressScaleView from "@/src/shared/components/wrappers/animated-wrappers/PressScaleView";
 
 export interface Tab<T = string> {
     label: string;
@@ -29,7 +30,7 @@ export default function ListTabs<T = string>({ tabs, value, onSelectType, isList
             {!isListEmpty && tabs.map(tab => {
                 const isActive = tab.value === value;
                 return (
-                    <Pressable
+                    <PressScaleView
                         key={String(tab.value)}
                         onPress={() => onSelectType(tab.value)}
                     >
@@ -49,7 +50,7 @@ export default function ListTabs<T = string>({ tabs, value, onSelectType, isList
                             transition={{ type: "timing", duration: 200 }}
                             className="h-0.5 bg-primary rounded-full mt-3"
                         />
-                    </Pressable>
+                    </PressScaleView>
                 );
             })}
         </ScrollView>

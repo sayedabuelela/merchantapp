@@ -20,6 +20,9 @@ import VoidConfirmation from '../components/modals/VoidConfirmation';
 import RefundConfirmation from '../components/modals/RefundConfirmation';
 import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
 import { cn } from '@/src/core/utils/cn';
+import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
+import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
+import ScaleView from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -132,9 +135,11 @@ const OrderDetailsScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <MainHeader title={t('Order Details')}
-                        className={cn( isTabsSticky ? "mb-0 border-0 pb-0" : "mb-6 border-b")}
-            />
+            <FadeInDownView delay={0} duration={600}>
+                <MainHeader title={t('Order Details')}
+                            className={cn( isTabsSticky ? "mb-0 border-0 pb-0" : "mb-6 border-b")}
+                />
+            </FadeInDownView>
             <View className="flex-1">
                 <ScrollView
                     className="flex-1"
@@ -144,28 +149,34 @@ const OrderDetailsScreen = () => {
                 >
                     <View className="px-4">
                         {/* Order Summary Card - Measure height */}
-                        <View
-                            onLayout={(event) => {
-                                const { height } = event.nativeEvent.layout;
-                                setSummaryHeight(height);
-                            }}
-                        >
-                            <OrderSummaryCard order={order}/>
-                        </View>
+                        <ScaleView delay={150} duration={600}>
+                            <View
+                                onLayout={(event) => {
+                                    const { height } = event.nativeEvent.layout;
+                                    setSummaryHeight(height);
+                                }}
+                            >
+                                <OrderSummaryCard order={order}/>
+                            </View>
+                        </ScaleView>
 
                         {/* Tabs - Normal position (hidden when sticky to prevent duplicate) */}
                         <View style={{ opacity: isTabsSticky ? 0 : 1,}}>
-                            <DetailsTabs 
-                            value={activeTab} 
-                            onSelectType={setActiveTab} 
-                            className={cn(isTabsSticky ? "mt-0" : "my-4")}
-                            />
+                            <ScaleView delay={300} duration={600}>
+                                <DetailsTabs
+                                value={activeTab}
+                                onSelectType={setActiveTab}
+                                className={cn(isTabsSticky ? "mt-0" : "my-4")}
+                                />
+                            </ScaleView>
                         </View>
 
                         {/* Tab Content */}
-                        {activeTab === 'details' && <DetailsTab order={order} />}
-                        {activeTab === 'settlement' && <SettlementTab order={order} />}
-                        {activeTab === 'history' && <HistoryTab order={order} />}
+                        <FadeInUpView key={activeTab} delay={400} duration={400}>
+                            {activeTab === 'details' && <DetailsTab order={order} />}
+                            {activeTab === 'settlement' && <SettlementTab order={order} />}
+                            {activeTab === 'history' && <HistoryTab order={order} />}
+                        </FadeInUpView>
 
                         {/* Extra padding at bottom to prevent content from being hidden by action buttons */}
                         <View className={showActionButtons ? "h-24" : "h-6"} />

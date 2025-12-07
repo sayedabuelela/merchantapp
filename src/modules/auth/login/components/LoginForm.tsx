@@ -33,8 +33,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // email: 'logare2532@frisbook.com',
             // email: 'saboelela@kashier.io',
             // password: 'P@ssw0rdd',
-            email: 'awageeh@kashier.io',
-            password: 'P@ssw0rd012',
+            // email: 'awageeh@kashier.io',
+            // password: 'P@ssw0rd012',
             // email: 'kexoka8183@fixwap.com',
             // email: 'sexepic929@fixwap.com',
             // email: 'xihoxi2002@elygifts.com',
@@ -46,8 +46,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // production 
             // email: 'bayoumi.store@gmail.com',
             // password: 'Aa@12345',
-            // email: 'pesyamao2@gmail.com',
-            // password: 'SaraTest@010',
+            email: 'pesyamao2@gmail.com',
+            password: 'SaraTest@010',
             // staging
             // email: 'duaa.bst@gmail.com',
             // password: 'AsmaaTest110@',

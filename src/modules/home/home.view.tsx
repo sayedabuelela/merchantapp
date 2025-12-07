@@ -23,7 +23,9 @@ import { Link } from "expo-router"
 import FontText from "@/src/shared/components/FontText"
 import HomeListEmpty from "./components/HomeListEmpty"
 import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView"
+import FadeInUpView from "@/src/shared/components/wrappers/animated-wrappers/FadeInUpView"
 import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/ScaleView"
+import StaggerChildrenView from "@/src/shared/components/wrappers/animated-wrappers/StaggerChildrenView"
 
 const HomeScreen = () => {
     const { user } = useAuthStore();
@@ -89,7 +91,7 @@ const HomeScreen = () => {
                     showsVerticalScrollIndicator={false}
                     stickyHeaderIndices={[2]}
                 >
-                    <FadeInDownView className="px-6 mb-2" delay={100}>
+                    <FadeInDownView className="px-6 mb-2" delay={100} duration={600}>
                         {/* Header row */}
                         <View className="flex-row justify-between items-start">
                             {userName && (
@@ -105,7 +107,7 @@ const HomeScreen = () => {
                             />
                         )}
                     </FadeInDownView>
-                    <ScaleFadeIn delay={200}>
+                    <ScaleFadeIn delay={200} duration={600}>
                         <View className="mb-2">
                             <HomeStatsCarousel
                                 accountStats={accountStats}
@@ -115,16 +117,22 @@ const HomeScreen = () => {
                         </View>
                     </ScaleFadeIn>
                     {/* Home tabs */}
-                    <FadeInDownView className="bg-white" delay={200}>
+                    <FadeInUpView className="bg-white" delay={300} duration={600}>
                         <HomeTabs value={activeTab} onSelectType={setActiveTab} />
-                    </FadeInDownView>
+                    </FadeInUpView>
                     {/* <Link href="/balance">
                         <FontText>Balance</FontText>
                     </Link> */}
                     {/* List */}
-                    <FadeInDownView className="px-6 mt-4 pb-6" delay={300}>
-                        {listData.length > 0 ? (
-                            activeTab === 'orders' ? (
+                    {listData.length > 0 ? (
+                        <StaggerChildrenView
+                            className="px-6 mt-4 pb-6"
+                            delay={300}
+                            staggerDelay={100}
+                            animationType="fadeInUp"
+                            duration={600}
+                        >
+                            {activeTab === 'orders' ? (
                                 listData.map((item) => {
                                     const payment = item as PaymentSession;
                                     return <OrderCard key={payment._id} payment={payment} />;
@@ -135,11 +143,13 @@ const HomeScreen = () => {
                                     return <ActivityCard key={activity._id} {...activity} fromBalance={activeTab === 'all'}
                                     />;
                                 })
-                            )
-                        ) : (
+                            )}
+                        </StaggerChildrenView>
+                    ) : (
+                        <FadeInDownView className="px-6 mt-4 pb-6" delay={300} duration={600}>
                             <HomeListEmpty activeTab={activeTab} />
-                        )}
-                    </FadeInDownView>
+                        </FadeInDownView>
+                    )}
                 </ScrollView>
             </View>
             {accounts !== undefined && accounts?.length > 1 && (

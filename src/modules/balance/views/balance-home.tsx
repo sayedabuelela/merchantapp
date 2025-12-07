@@ -28,6 +28,11 @@ import useAccounts from '../viewmodels/useAccounts';
 import { useActivitiesVM, useRecentBalanceActivities } from '../viewmodels/useActivitiesVM';
 import useStatistics from '../viewmodels/useStatistics';
 import UpcomingBalanceSection from '../components/settlement-forecast/UpcomingBalanceSection';
+import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
+import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
+import ScaleView from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
+import StaggerChildrenView from '@/src/shared/components/wrappers/animated-wrappers/StaggerChildrenView';
+import AnimatedListItem from '@/src/shared/components/wrappers/animated-wrappers/AnimatedListItem';
 
 const BalancesScreen = () => {
     const { t } = useTranslation();
@@ -67,12 +72,20 @@ const BalancesScreen = () => {
         }
     };
 
-    const renderItem = useCallback(({ item }: { item: GroupedRow<Activity> }) => {
+    const renderItem = useCallback(({ item, index }: { item: GroupedRow<Activity>; index: number }) => {
         if (item.type === 'header') {
             return <HeaderRow title={item.date} />;
         }
-        return <ActivityCard {...item} fromBalance={type === 'all'} />;
-    }, [type]);
+
+        // Calculate the actual item index (excluding headers)
+        const itemsBefore = listData.slice(0, index).filter(i => i.type !== 'header').length;
+
+        return (
+            <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
+                <ActivityCard {...item} fromBalance={type === 'all'} />
+            </AnimatedListItem>
+        );
+    }, [type, listData]);
 
     const handleClearSearch = useCallback(() => {
         setSearchValue('');
@@ -103,60 +116,75 @@ const BalancesScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <ActivitiesHeader
-                type={type}
-                notificationsCount={0}
-                className="mt-2"
-                onFilterPress={() => setIsFiltersOpen(!isFiltersOpen)}
-                onSubmitSearch={handleSearchChange}
-                isFilterOpen={isFiltersOpen}
-                isListEmpty={listData.length === 0}
-                hasFilters={hasActiveFilters}
-                handleClearSearch={handleClearSearch}
-                searchValue={search}
-                accounts={accounts}
-                setShowAccountsModal={setShowAccountsModal}
-            />
-            <View className="">
+            <FadeInDownView delay={0} duration={600}>
+                <ActivitiesHeader
+                    type={type}
+                    notificationsCount={0}
+                    className="mt-2"
+                    onFilterPress={() => setIsFiltersOpen(!isFiltersOpen)}
+                    onSubmitSearch={handleSearchChange}
+                    isFilterOpen={isFiltersOpen}
+                    isListEmpty={listData.length === 0}
+                    hasFilters={hasActiveFilters}
+                    handleClearSearch={handleClearSearch}
+                    searchValue={search}
+                    accounts={accounts}
+                    setShowAccountsModal={setShowAccountsModal}
+                />
+            </FadeInDownView>
+            <FadeInUpView delay={200} duration={600}>
                 <ActivitiesTabs value={type} onSelectType={setType} />
-            </View>
+            </FadeInUpView>
             <ScrollView showsVerticalScrollIndicator={false} >
                 {type === 'overview' ? (
                     <View className="px-6 mt-6">
-                        <BalanceHeader
-                            userName={user?.fullName || user?.userName}
-                            balanceOverview={accountStats?.balanceOverview}
-                            ongoingTransfers={transfersStats?.onGoingTransfersAmount}
-                            onPressAccounts={() => setShowAccountsModal(true)}
-                            showAccountsBtn={(accounts !== undefined && accounts?.length > 1)}
-                        />
-                        {accountStats?.upcomingValueDates && accountStats?.upcomingValueDates.length > 0 && (
-                            <UpcomingBalanceSection
-                                upcomingValueDates={accountStats?.upcomingValueDates}
-                                currency={t("EGP")}
-                                nextRoute={ROUTES.BALANCE.ACTIVITIES}
+                        <ScaleView delay={150} duration={600}>
+                            <BalanceHeader
+                                userName={user?.fullName || user?.userName}
+                                balanceOverview={accountStats?.balanceOverview}
+                                ongoingTransfers={transfersStats?.onGoingTransfersAmount}
+                                onPressAccounts={() => setShowAccountsModal(true)}
+                                showAccountsBtn={(accounts !== undefined && accounts?.length > 1)}
                             />
+                        </ScaleView>
+                        {accountStats?.upcomingValueDates && accountStats?.upcomingValueDates.length > 0 && (
+                            <FadeInUpView delay={300} duration={600}>
+                                <UpcomingBalanceSection
+                                    upcomingValueDates={accountStats?.upcomingValueDates}
+                                    currency={t("EGP")}
+                                    nextRoute={ROUTES.BALANCE.ACTIVITIES}
+                                />
+                            </FadeInUpView>
                         )}
                         <View>
-                            <View className="flex-row items-center justify-between mb-4">
-                                <FontText type="head" weight="bold" className="text-xl text-content-primary">
-                                    {t("Recent activities")}
-                                </FontText>
-                                <Pressable className="flex-row items-center" onPress={() => setType('all')}>
-                                    <FontText type="body" weight="regular" className="text-xs text-primary mr-2">
-                                        {t("All activities")}
+                            <FadeInUpView delay={350} duration={600}>
+                                <View className="flex-row items-center justify-between mb-4">
+                                    <FontText type="head" weight="bold" className="text-xl text-content-primary">
+                                        {t("Recent activities")}
                                     </FontText>
-                                    <ArrowRightIcon size={16} color="#001F5F" />
-                                </Pressable>
-                            </View>
+                                    <Pressable className="flex-row items-center" onPress={() => setType('all')}>
+                                        <FontText type="body" weight="regular" className="text-xs text-primary mr-2">
+                                            {t("All activities")}
+                                        </FontText>
+                                        <ArrowRightIcon size={16} color="#001F5F" />
+                                    </Pressable>
+                                </View>
+                            </FadeInUpView>
                             {recentActivities?.data && recentActivities.data.length > 0 ? (
-                                recentActivities.data.map((item) => (
-                                    <ActivityCard
-                                        key={item._id}
-                                        {...item}
-                                        fromBalance
-                                    />
-                                ))
+                                <StaggerChildrenView
+                                    delay={400}
+                                    staggerDelay={80}
+                                    animationType="fadeInUp"
+                                    duration={500}
+                                >
+                                    {recentActivities.data.map((item) => (
+                                        <ActivityCard
+                                            key={item._id}
+                                            {...item}
+                                            fromBalance
+                                        />
+                                    ))}
+                                </StaggerChildrenView>
                             ) : (<RecentActivitiesEmpty />)}
                         </View>
                     </View>) : (

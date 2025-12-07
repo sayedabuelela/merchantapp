@@ -21,6 +21,9 @@ import SimpleLoader from "@/src/shared/components/loaders/SimpleLoader";
 import SkeletonLoader from "@/src/shared/components/loaders/SkeletonLoader";
 import PaymentLinkCardSkeleton from "../../payment-links/components/PaymentLinkCardSkeleton";
 import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView";
+import FadeInUpView from "@/src/shared/components/wrappers/animated-wrappers/FadeInUpView";
+import AnimatedListItem from "@/src/shared/components/wrappers/animated-wrappers/AnimatedListItem";
+import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/ScaleView";
 
 const INITIAL_ORDERS_FILTERS: FetchSessionsParams = {
     dateFrom: undefined,
@@ -110,17 +113,28 @@ const PaymentsScreen = () => {
         setSelectedPayment(null);
     }, []);
 
-    const renderItem = useCallback(({ item }: { item: GroupedRow<PaymentSession | Transaction> }) => {
+    const renderItem = useCallback(({ item, index }: { item: GroupedRow<PaymentSession | Transaction>; index: number }) => {
         console.log('PaymentsScreen item', item);
 
         if (item.type === 'header') return <HeaderRow title={item.date} />;
 
+        // Calculate the actual item index (excluding headers)
+        const itemsBefore = listData.slice(0, index).filter(i => i.type !== 'header').length;
+
         if (isOrdersTab) {
-            return <OrderCard payment={item as PaymentSession} onOpenActions={handleOpenActions} />;
+            return (
+                <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
+                    <OrderCard payment={item as PaymentSession} onOpenActions={handleOpenActions} />
+                </AnimatedListItem>
+            );
         } else {
-            return <TransactionCard transaction={item as Transaction} onOpenActions={handleOpenActions} />;
+            return (
+                <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
+                    <TransactionCard transaction={item as Transaction} onOpenActions={handleOpenActions} />
+                </AnimatedListItem>
+            );
         }
-    }, [handleOpenActions, isOrdersTab]);
+    }, [handleOpenActions, isOrdersTab, listData]);
 
     const handleClearSearch = useCallback(() => {
         setSearchValue('');
@@ -144,7 +158,7 @@ const PaymentsScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <FadeInDownView delay={100}>
+            <FadeInDownView delay={0} duration={600}>
                 <PaymentsHeader
                     onFilterPress={() => setIsFiltersOpen(!isFiltersOpen)}
                     onSubmitSearch={handleSearchChange}
@@ -161,11 +175,13 @@ const PaymentsScreen = () => {
                 </View>
             ) : (
                 <>
-                    <PaymentsTabs
-                        value={status}
-                        onSelectType={setStatus}
-                        isListEmpty={isListEmpty}
-                    />
+                    <ScaleFadeIn delay={200} duration={600}>
+                        <PaymentsTabs
+                            value={status}
+                            onSelectType={setStatus}
+                            isListEmpty={isListEmpty}
+                        />
+                    </ScaleFadeIn>
                     <View className={cn("flex-1 px-6")}>
                         <StickyHeaderList
                             ref={listRef}

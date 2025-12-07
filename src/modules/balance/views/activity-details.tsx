@@ -48,11 +48,12 @@ const ActivityDetails = () => {
     const { data: transfer } = useActivityTransferDetails(originReference, { enabled: isTransfer });
     const { data: payment } = useActivityPaymentDetails(originReference, { enabled: isPayment });
     const { data: settlementBatchs } = useSettlementWindow({ accountId: activity?.accountId ?? "" });
+    console.log('_id : ', _id);
     console.log('activity : ', activity);
     console.log('transfer : ', transfer);
     console.log('payment : ', payment);
     console.log('isPayment : ', isPayment);
-    console.log('transfer?.status.toUpperCase() : ', transfer?.status.toUpperCase());
+    console.log('transfer?.status.toUpperCase() : ', activity?.originalAmount);
     // console.log('')
     // console.log('transefer' )
     // console.log('batch : ', batchs);
@@ -61,7 +62,7 @@ const ActivityDetails = () => {
             {isLoadingActivity ? (<SimpleLoader />) :
                 activity && (
                     <>
-                        <MainHeader title={t(`${activity?.operation} details`)} />
+                        <MainHeader title={t(`${activity.operation === 'topup' || activity.operation === 'deduct' ? "Adjustment" : activity.operation} details`)} />
                         <ScrollView
                             showsHorizontalScrollIndicator={false}
                             showsVerticalScrollIndicator={false}
@@ -81,7 +82,7 @@ const ActivityDetails = () => {
                                 <SectionItem
                                     icon={<ArrowsUpDownIcon size={24} color="#556767" />}
                                     title={t("Type")}
-                                    value={activity.operation}
+                                    value={activity.operation === 'topup' || activity.operation === 'deduct' ? t('Kashier Adjustments') : activity.operation}
                                     valueClassName="capitalize"
                                 />
 
@@ -101,7 +102,7 @@ const ActivityDetails = () => {
                                 <SectionItem
                                     icon={<CubeTransparentIcon size={24} color="#556767" />}
                                     title={t("Origin")}
-                                    value={activity.origin}
+                                    value={activity.origin === "operations team" ? t('System') : activity.origin}
                                     valueClassName="capitalize"
                                 />
 
@@ -172,12 +173,12 @@ const ActivityDetails = () => {
                                 </FontText>
                                 <SummaryItem
                                     title={t("Gross amount")}
-                                    value={currencyNumber(activity.originalAmount) + ' ' + t('EGP')}
+                                    value={activity.originalAmount === undefined ? '--' : currencyNumber(activity.originalAmount) + ' ' + t('EGP')}
                                     className='mb-4'
                                 />
                                 <SummaryItem
                                     title={t("Fees")}
-                                    value={currencyNumber(Number(activity.fees)) + ' ' + t('EGP')}
+                                    value={activity.fees === undefined ? '--' : currencyNumber(Number(activity.fees)) + ' ' + t('EGP')}
                                     className='mb-1'
                                 />
                                 {/* <SummaryItem
