@@ -5,6 +5,7 @@ import { CheckBoxSquareFilledIcon, CheckBoxSquareEmptyIcon } from '@/src/shared/
 import FontText from '@/src/shared/components/FontText'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/src/core/utils/cn'
+import { PressScaleView } from '@/src/shared/components/wrappers/animated-wrappers'
 interface LanguageBtnProps {
     language: string;
     handlePress: () => void;
@@ -14,20 +15,20 @@ interface LanguageBtnProps {
 
 const LanguageBtn = ({ language, handlePress, isActive, className }: LanguageBtnProps) => {
     return (
-        <Pressable className={cn("flex-row items-center justify-between border-b border-stroke-main py-4", className)}
-            onPress={handlePress}
-        >
-            <View className="flex-row items-center">
-                <FontText
-                    type="body"
-                    weight="bold"
-                    className="text-content-secondary ml-2 text-base self-start"
-                >
-                    {language}
-                </FontText>
+        <PressScaleView onPress={handlePress} scaleValue={0.97}>
+            <View className={cn("flex-row items-center justify-between border-b border-stroke-main py-4", className)}>
+                <View className="flex-row items-center">
+                    <FontText
+                        type="body"
+                        weight="bold"
+                        className="text-content-secondary ml-2 text-base self-start"
+                    >
+                        {language}
+                    </FontText>
+                </View>
+                {isActive ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
             </View>
-            {isActive ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
-        </Pressable>
+        </PressScaleView>
     )
 }
 

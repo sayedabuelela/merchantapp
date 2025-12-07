@@ -13,6 +13,7 @@ import { LoginForm } from './components/LoginForm';
 import { useLoginViewModel } from './login.viewmodel';
 import { DeveloperSettings } from '../../settings/components/DeveloperSettings';
 import { useNetworkStatus } from '@/src/core/hooks/useNetworkStatus';
+import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
 
 const LoginScreen = () => {
     const { t } = useTranslation();
@@ -55,29 +56,35 @@ const LoginScreen = () => {
             >
                 <View className="items-center px-6">
                     <DeveloperSettings/>
-                    <KashierLogo
-                    // style={{ marginBottom: 28 }}
-                    />
-                    <LoginForm
-                        onSubmit={handleSubmit}
-                        loading={isLoading}
-                        error={networkError || error?.error || error?.message}
-                    />
-                    <View className="flex-row justify-center mt-8">
-                        <FontText
-                            className={'text-content-secondary text-sm'}
-                        >
-                            {t("Don't have an account?") + " "}
-                        </FontText>
-                        <Link href={ROUTES.AUTH.REGISTER_EMAIL}>
+                    <FadeInDownView delay={0} duration={600}>
+                        <KashierLogo
+                        // style={{ marginBottom: 28 }}
+                        />
+                    </FadeInDownView>
+                    <FadeInUpView delay={150} duration={600}>
+                        <LoginForm
+                            onSubmit={handleSubmit}
+                            loading={isLoading}
+                            error={networkError || error?.error || error?.message}
+                        />
+                    </FadeInUpView>
+                    <FadeInUpView delay={300} duration={600}>
+                        <View className="flex-row justify-center mt-8">
                             <FontText
-                                weight='bold'
-                                className={'text-secondary text-sm'}
+                                className={'text-content-secondary text-sm'}
                             >
-                                {t('Create Account')}
+                                {t("Don't have an account?") + " "}
                             </FontText>
-                        </Link>
-                    </View>
+                            <Link href={ROUTES.AUTH.REGISTER_EMAIL}>
+                                <FontText
+                                    weight='bold'
+                                    className={'text-secondary text-sm'}
+                                >
+                                    {t('Create Account')}
+                                </FontText>
+                            </Link>
+                        </View>
+                    </FadeInUpView>
                 </View>
 
             </KeyboardAwareScrollView>

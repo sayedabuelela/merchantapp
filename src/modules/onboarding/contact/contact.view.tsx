@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FadeInDownView, FadeInUpView } from "@/src/shared/components/wrappers/animated-wrappers";
 
 const ContactDetailsScreen = () => {
     const { t } = useTranslation();
@@ -36,7 +37,9 @@ const ContactDetailsScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white px-6">
-            <Header title={t('Business Contact Info')} progress={46} />
+            <FadeInDownView delay={0} duration={600}>
+                <Header title={t('Business Contact Info')} progress={46} />
+            </FadeInDownView>
 
             <KeyboardAwareScrollView
                 bottomOffset={40}
@@ -45,25 +48,29 @@ const ContactDetailsScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerClassName="pb-12"
             >
-                <BusinessContactForm
-                    onSubmit={onSubmit}
-                    loading={citiesLoading || isLoadingContactData || isSubmittingContactData}
-                    error={contactDataError?.message || submitPartialDataError?.message}
-                    cities={cities}
-                    existingData={businessContactData}
-                    selectedCity={selectedCity}
-                    handleCityChange={handleCityChange}
-                />
+                <FadeInUpView delay={150} duration={600}>
+                    <BusinessContactForm
+                        onSubmit={onSubmit}
+                        loading={citiesLoading || isLoadingContactData || isSubmittingContactData}
+                        error={contactDataError?.message || submitPartialDataError?.message}
+                        cities={cities}
+                        existingData={businessContactData}
+                        selectedCity={selectedCity}
+                        handleCityChange={handleCityChange}
+                    />
+                </FadeInUpView>
 
-                <TouchableOpacity onPress={handleSkip} className="mt-6">
-                    <FontText
-                        type="body"
-                        weight='bold'
-                        className={'text-primary text-sm text-center'}
-                    >
-                        {t('Skip')}
-                    </FontText>
-                </TouchableOpacity>
+                <FadeInUpView delay={300} duration={600}>
+                    <TouchableOpacity onPress={handleSkip} className="mt-6">
+                        <FontText
+                            type="body"
+                            weight='bold'
+                            className={'text-primary text-sm text-center'}
+                        >
+                            {t('Skip')}
+                        </FontText>
+                    </TouchableOpacity>
+                </FadeInUpView>
 
             </KeyboardAwareScrollView>
         </SafeAreaView>

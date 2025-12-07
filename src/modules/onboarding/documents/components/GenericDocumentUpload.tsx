@@ -15,6 +15,7 @@ import useDocumentViewModel from "../documents.viewmodel";
 import DocumentRules from "./DocumentRules";
 import DocumentUploadBox from "./DocumentUploadBox";
 import UploadSourceModal from "./UploadSourceModal";
+import { FadeInDownView, FadeInUpView, ScaleView } from "@/src/shared/components/wrappers/animated-wrappers";
 
 interface GenericDocumentUploadScreenProps {
     headerTitle?: string;
@@ -81,35 +82,45 @@ const GenericDocumentUploadScreen = ({
 
     return (
         <SafeAreaView className="flex-1 px-6 pb-4 bg-white">
-            <Header title={t('Business Document')} progress={progress} />
+            <FadeInDownView delay={0} duration={600}>
+                <Header title={t('Business Document')} progress={progress} />
+            </FadeInDownView>
             <View className="flex-1 justify-between">
                 <View>
-                    <DocumentRules rule={documentRule} />
-                    <DocumentUploadBox
-                        title={documentUploadBoxTitle}
-                        handleUpload={openModal}
-                        isUploading={isUploading}
-                        isLoadingDocument={isLoadingDocument}
-                        fileData={image ? { dataUri: image?.uri, key: image?.name, deletable: true } : { dataUri: displayableFileUri, key: currentFileKey, deletable: false }}
-                        clearImage={clearImage}
-                        clearDocument={clearDocument}
-                        uploadProgress={uploadProgress}
-                    />
+                    <FadeInUpView delay={150} duration={600}>
+                        <DocumentRules rule={documentRule} />
+                    </FadeInUpView>
+                    <ScaleView delay={250} duration={600}>
+                        <DocumentUploadBox
+                            title={documentUploadBoxTitle}
+                            handleUpload={openModal}
+                            isUploading={isUploading}
+                            isLoadingDocument={isLoadingDocument}
+                            fileData={image ? { dataUri: image?.uri, key: image?.name, deletable: true } : { dataUri: displayableFileUri, key: currentFileKey, deletable: false }}
+                            clearImage={clearImage}
+                            clearDocument={clearDocument}
+                            uploadProgress={uploadProgress}
+                        />
+                    </ScaleView>
                 </View>
 
                 <View>
-                    <Button
-                        className='mt-6'
-                        title={t('Continue')}
-                        isLoading={isPicking || isUploading}
-                        disabled={
-                            isOptional
-                                ? (isPicking || isUploading)
-                                : ((!image && !displayableFileUri) || isPicking || isUploading)
-                        }
-                        onPress={handleSubmit}
-                    />
-                    <SkipButton onPress={handleSkip} />
+                    <FadeInUpView delay={350} duration={600}>
+                        <Button
+                            className='mt-6'
+                            title={t('Continue')}
+                            isLoading={isPicking || isUploading}
+                            disabled={
+                                isOptional
+                                    ? (isPicking || isUploading)
+                                    : ((!image && !displayableFileUri) || isPicking || isUploading)
+                            }
+                            onPress={handleSubmit}
+                        />
+                    </FadeInUpView>
+                    <FadeInUpView delay={450} duration={600}>
+                        <SkipButton onPress={handleSkip} />
+                    </FadeInUpView>
                 </View>
                 <UploadSourceModal
                     isVisible={isModalVisible}

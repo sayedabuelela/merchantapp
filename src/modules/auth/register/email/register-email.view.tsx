@@ -16,6 +16,7 @@ import useRegisterOtp from '../otp/otp.viewmodel';
 import { RegisterEmailFormData } from './register-email.model';
 import { RegisterEmailSchema } from './register-email.scheme';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { FadeInDownView, FadeInUpView } from "@/src/shared/components/wrappers/animated-wrappers";
 const RegisterEmailScreen = () => {
     const { t } = useTranslation();
     const router = useRouter();
@@ -61,64 +62,70 @@ const RegisterEmailScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1,flex:1 }}
             >
-                <KashierLogo
-                    style={{
-                        // marginBottom: 30,
-                        alignSelf: 'center'
-                    }}
-                />
+                <FadeInDownView delay={0} duration={600}>
+                    <KashierLogo
+                        style={{
+                            // marginBottom: 30,
+                            alignSelf: 'center'
+                        }}
+                    />
+                </FadeInDownView>
 
                 {displayedError && (
                     <AnimatedError errorMsg={t(displayedError)} />
                 )}
 
                 <View className={`flex-1 justify-between ${!displayedError ? 'mt-20' : ''}`}>
-                    <View className="">
-                        <Controller
-                            control={control}
-                            name="email"
-                            render={({ field: { onChange, onBlur, value, ref } }) => (
-                                <Input
-                                    ref={ref}
-                                    value={value}
-                                    onChangeText={handleInputChange(onChange)}
-                                    onBlur={onBlur}
-                                    label={t('Email')}
-                                    returnKeyType='next'
-                                    keyboardType='email-address'
-                                    autoCorrect={false}
-                                    error={!!errors.email}
-                                    placeholder={t('Enter your email address')}
-                                    onSubmitEditing={() => {
-                                        setFocus('email');
-                                    }}
-                                />
-                            )}
+                    <FadeInUpView delay={150} duration={600}>
+                        <View className="">
+                            <Controller
+                                control={control}
+                                name="email"
+                                render={({ field: { onChange, onBlur, value, ref } }) => (
+                                    <Input
+                                        ref={ref}
+                                        value={value}
+                                        onChangeText={handleInputChange(onChange)}
+                                        onBlur={onBlur}
+                                        label={t('Email')}
+                                        returnKeyType='next'
+                                        keyboardType='email-address'
+                                        autoCorrect={false}
+                                        error={!!errors.email}
+                                        placeholder={t('Enter your email address')}
+                                        onSubmitEditing={() => {
+                                            setFocus('email');
+                                        }}
+                                    />
+                                )}
+                            />
+
+                            {errors.email &&
+                                <Animated.View
+                                    className="flex-row items-center mt-2"
+                                    entering={FadeIn}
+                                    exiting={FadeOut}>
+                                    <AlertIcon />
+                                    <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap`}>
+                                        {t(errors?.email?.message || 'This is required.')}
+                                    </FontText>
+                                </Animated.View>
+                            }
+
+                        </View>
+                    </FadeInUpView>
+
+                    <FadeInUpView delay={300} duration={600}>
+                        <Button
+                            className='mt-6 '
+                            title={t('Continue')}
+                            isLoading={isGenerating}
+                            disabled={!isValid || isGenerating}
+                            fullWidth
+                            onPress={handleSubmit(onSubmit)}
+                        // onPress={() => { router.push(ROUTES.AUTH.REGISTER_OTP) }}
                         />
-
-                        {errors.email &&
-                            <Animated.View
-                                className="flex-row items-center mt-2"
-                                entering={FadeIn}
-                                exiting={FadeOut}>
-                                <AlertIcon />
-                                <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap`}>
-                                    {t(errors?.email?.message || 'This is required.')}
-                                </FontText>
-                            </Animated.View>
-                        }
-
-                    </View>
-
-                    <Button
-                        className='mt-6 '
-                        title={t('Continue')}
-                        isLoading={isGenerating}
-                        disabled={!isValid || isGenerating}
-                        fullWidth
-                        onPress={handleSubmit(onSubmit)}
-                    // onPress={() => { router.push(ROUTES.AUTH.REGISTER_OTP) }}
-                    />
+                    </FadeInUpView>
                 </View>
             </KeyboardAwareScrollView>
         </SafeAreaView>

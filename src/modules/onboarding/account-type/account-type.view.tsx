@@ -8,6 +8,7 @@ import AcountTypeItem from "../components/AcountTypeItem";
 import Header from "../components/Header";
 import { useOnboardingStore } from "../onboarding.store";
 import { AccountType } from "./account-type.model";
+import { FadeInDownView, FadeInUpView, StaggerChildrenView } from "@/src/shared/components/wrappers/animated-wrappers";
 
 const AccountTypeScreen = () => {
     const { t } = useTranslation();
@@ -21,44 +22,52 @@ const AccountTypeScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white px-6">
-            <Header title={t('Account Type')}
-            // progress={0} 
-            />
+            <FadeInDownView delay={0} duration={600}>
+                <Header title={t('Account Type')}
+                // progress={0}
+                />
+            </FadeInDownView>
             <View className="flex-1 justify-between pb-4">
                 <View>
-                    <FontText type="body" weight="semi" className="text-content-secondary text-base mb-6">
-                        {t('Choose account type')}
-                    </FontText>
+                    <FadeInUpView delay={150} duration={600}>
+                        <FontText type="body" weight="semi" className="text-content-secondary text-base mb-6">
+                            {t('Choose account type')}
+                        </FontText>
+                    </FadeInUpView>
 
-                    <AcountTypeItem
-                        title={t('Individual Seller')}
-                        description={t('For small-scale businesses like online selling, provide your National ID and Utility Bill for credibility as a seller.')}
-                        onPress={() => { handleSelectAccountType('individual') }}
-                        isSelected={accountType === 'individual'}
-                    />
-                    <AcountTypeItem
-                        title={t('Registered Business')}
-                        description={t('For registered and tax-compliant businesses, provide your National ID, Commercial Register, and Tax ID for validation.')}
-                        onPress={() => { handleSelectAccountType('registered') }}
-                        isSelected={accountType === 'registered'}
-                    />
-                    <AcountTypeItem
-                        title={t('Professional Business')}
-                        description={t('For professional service businesses (e.g., consultancy, teaching, healthcare). Along with your National ID, provide a Tax ID to verify your professional status and qualifications.')}
-                        onPress={() => { handleSelectAccountType('professional') }}
-                        isSelected={accountType === 'professional'}
-                    />
+                    <StaggerChildrenView delay={250} staggerDelay={100} animationType="fadeInUp" duration={600}>
+                        <AcountTypeItem
+                            title={t('Individual Seller')}
+                            description={t('For small-scale businesses like online selling, provide your National ID and Utility Bill for credibility as a seller.')}
+                            onPress={() => { handleSelectAccountType('individual') }}
+                            isSelected={accountType === 'individual'}
+                        />
+                        <AcountTypeItem
+                            title={t('Registered Business')}
+                            description={t('For registered and tax-compliant businesses, provide your National ID, Commercial Register, and Tax ID for validation.')}
+                            onPress={() => { handleSelectAccountType('registered') }}
+                            isSelected={accountType === 'registered'}
+                        />
+                        <AcountTypeItem
+                            title={t('Professional Business')}
+                            description={t('For professional service businesses (e.g., consultancy, teaching, healthcare). Along with your National ID, provide a Tax ID to verify your professional status and qualifications.')}
+                            onPress={() => { handleSelectAccountType('professional') }}
+                            isSelected={accountType === 'professional'}
+                        />
+                    </StaggerChildrenView>
                 </View>
 
-                <Link href={ROUTES.TABS.HOME}>
-                    <FontText
-                        type="body"
-                        weight='bold'
-                        className={'text-primary text-sm text-center'}
-                    >
-                        {t('Skip')}
-                    </FontText>
-                </Link>
+                <FadeInUpView delay={650} duration={600}>
+                    <Link href={ROUTES.TABS.HOME}>
+                        <FontText
+                            type="body"
+                            weight='bold'
+                            className={'text-primary text-sm text-center'}
+                        >
+                            {t('Skip')}
+                        </FontText>
+                    </Link>
+                </FadeInUpView>
             </View>
         </SafeAreaView>
     );

@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
 import CurrencyCheckBox from "./components/CurrencyCheckBox";
 import useCurrencyViewModel from "./currency.viewmodel";
+import { FadeInDownView, FadeInUpView } from "@/src/shared/components/wrappers/animated-wrappers";
 
 const CurrencySettingsScreen = () => {
     const { t } = useTranslation();
@@ -21,41 +22,51 @@ const CurrencySettingsScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white px-6">
-            <Header title={t('Currency Settings')} progress={98} />
+            <FadeInDownView delay={0} duration={600}>
+                <Header title={t('Currency Settings')} progress={98} />
+            </FadeInDownView>
             <View className="flex-1 justify-between pb-6">
                 <View>
-                    <FontText type="body" weight="bold" className="text-content-secondary text-sm mb-6">
-                        {t('Account Currencies')}
-                    </FontText>
-                    <View className="flex-row items-center flex-wrap mt-5 gap-4">
-                        {staticCurrencies?.map((currency) => (
-                            <CurrencyCheckBox
-                                key={currency.name}
-                                currency={currency}
-                                isSelected={currencyData?.some(c => c.name === currency.name) ?? false}
-                                handleCurrencyChange={handleCurrencyChange}
-                            />
-                        ))}
-                    </View>
+                    <FadeInUpView delay={150} duration={600}>
+                        <FontText type="body" weight="bold" className="text-content-secondary text-sm mb-6">
+                            {t('Account Currencies')}
+                        </FontText>
+                    </FadeInUpView>
+                    <FadeInUpView delay={250} duration={600}>
+                        <View className="flex-row items-center flex-wrap mt-5 gap-4">
+                            {staticCurrencies?.map((currency) => (
+                                <CurrencyCheckBox
+                                    key={currency.name}
+                                    currency={currency}
+                                    isSelected={currencyData?.some(c => c.name === currency.name) ?? false}
+                                    handleCurrencyChange={handleCurrencyChange}
+                                />
+                            ))}
+                        </View>
+                    </FadeInUpView>
 
                 </View>
                 <View>
-                    <Button
-                        className='mb-6'
-                        title={t('Continue')}
-                        isLoading={isSubmittingPartialData}
-                        disabled={!selectedCurrencies.length}
-                        onPress={submitHandler}
-                    />
-                    <Link href={ROUTES.TABS.HOME}>
-                        <FontText
-                            type="body"
-                            weight='bold'
-                            className={'text-primary text-sm text-center'}
-                        >
-                            {t('Skip')}
-                        </FontText>
-                    </Link>
+                    <FadeInUpView delay={350} duration={600}>
+                        <Button
+                            className='mb-6'
+                            title={t('Continue')}
+                            isLoading={isSubmittingPartialData}
+                            disabled={!selectedCurrencies.length}
+                            onPress={submitHandler}
+                        />
+                    </FadeInUpView>
+                    <FadeInUpView delay={450} duration={600}>
+                        <Link href={ROUTES.TABS.HOME}>
+                            <FontText
+                                type="body"
+                                weight='bold'
+                                className={'text-primary text-sm text-center'}
+                            >
+                                {t('Skip')}
+                            </FontText>
+                        </Link>
+                    </FadeInUpView>
                 </View>
             </View>
         </SafeAreaView>

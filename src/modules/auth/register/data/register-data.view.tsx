@@ -12,6 +12,7 @@ import { ROUTES } from '@/src/core/navigation/routes';
 import { Mode } from "@/src/core/environment/environments";
 import { useEnvironmentStore } from "@/src/core/environment/environments.store";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
 
 const RegisterDataScreen = () => {
     const { t } = useTranslation();
@@ -40,17 +41,21 @@ const RegisterDataScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerClassName="pb-12"
             >
-                <KashierLogo
-                    style={{
-                        alignSelf: 'center'
-                    }}
-                />
+                <FadeInDownView delay={0} duration={600}>
+                    <KashierLogo
+                        style={{
+                            alignSelf: 'center'
+                        }}
+                    />
+                </FadeInDownView>
 
-                <RegisterDataForm
-                    onSubmit={onSubmit}
-                    loading={isLoading}
-                    error={error?.error || error?.message}
-                />
+                <FadeInUpView delay={150} duration={600}>
+                    <RegisterDataForm
+                        onSubmit={onSubmit}
+                        loading={isLoading}
+                        error={error?.error || error?.message}
+                    />
+                </FadeInUpView>
             </KeyboardAwareScrollView>
         </SafeAreaView>
     );

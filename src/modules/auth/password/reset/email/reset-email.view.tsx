@@ -15,6 +15,7 @@ import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ResetEmailFormData } from './reset-email.model';
+import { FadeInDownView, FadeInUpView } from "@/src/shared/components/wrappers/animated-wrappers";
 
 const ResetEmailScreen = () => {
     const { t } = useTranslation();
@@ -61,67 +62,73 @@ const ResetEmailScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1 }}
             >
-                <View className="items-center justify-center mb-8">
-                    <ResetPassword />
-                    <FontText
-                        type="head"
-                        weight="bold"
-                        className="text-content-secondary text-2xl mt-4">
-                        {t('Reset your password')}
-                    </FontText>
-                </View>
+                <FadeInDownView delay={0} duration={600}>
+                    <View className="items-center justify-center mb-8">
+                        <ResetPassword />
+                        <FontText
+                            type="head"
+                            weight="bold"
+                            className="text-content-secondary text-2xl mt-4">
+                            {t('Reset your password')}
+                        </FontText>
+                    </View>
+                </FadeInDownView>
 
                 {displayedError && (
                     <AnimatedError errorMsg={t(displayedError)} />
                 )}
 
                 <View className="flex-1 justify-between">
-                    <View>
-                        <Controller
-                            control={control}
-                            name="email"
-                            render={({ field: { onChange, onBlur, value, ref } }) => (
-                                <Input
-                                    ref={ref}
-                                    value={value}
-                                    onChangeText={handleInputChange(onChange)}
-                                    onBlur={onBlur}
-                                    label={t('Email')}
-                                    returnKeyType='next'
-                                    keyboardType='email-address'
-                                    autoCorrect={false}
-                                    error={!!errors.email}
-                                    placeholder={t('Enter your email address')}
-                                    onSubmitEditing={() => {
-                                        handleSubmit(onSubmit)();
-                                    }}
-                                />
-                            )}
+                    <FadeInUpView delay={150} duration={600}>
+                        <View>
+                            <Controller
+                                control={control}
+                                name="email"
+                                render={({ field: { onChange, onBlur, value, ref } }) => (
+                                    <Input
+                                        ref={ref}
+                                        value={value}
+                                        onChangeText={handleInputChange(onChange)}
+                                        onBlur={onBlur}
+                                        label={t('Email')}
+                                        returnKeyType='next'
+                                        keyboardType='email-address'
+                                        autoCorrect={false}
+                                        error={!!errors.email}
+                                        placeholder={t('Enter your email address')}
+                                        onSubmitEditing={() => {
+                                            handleSubmit(onSubmit)();
+                                        }}
+                                    />
+                                )}
+                            />
+
+                            {errors.email &&
+                                <Animated.View
+                                    className="flex-row items-center mt-2"
+                                    entering={FadeIn}
+                                    exiting={FadeOut}>
+                                    <AlertIcon />
+                                    <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap`}>
+                                        {t(errors?.email?.message || 'This is required.')}
+                                    </FontText>
+                                </Animated.View>
+                            }
+
+                        </View>
+                    </FadeInUpView>
+
+                    <FadeInUpView delay={300} duration={600}>
+                        <Button
+                            className='mt-6 '
+                            title={t('Send Email')}
+                            isLoading={isGenerating}
+                            disabled={!isValid || isGenerating}
+                            fullWidth
+                            onPress={handleSubmit(onSubmit)}
+                        // onPress={() => { router.push(ROUTES.AUTH.REGISTER_OTP) }}
                         />
-
-                        {errors.email &&
-                            <Animated.View
-                                className="flex-row items-center mt-2"
-                                entering={FadeIn}
-                                exiting={FadeOut}>
-                                <AlertIcon />
-                                <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap`}>
-                                    {t(errors?.email?.message || 'This is required.')}
-                                </FontText>
-                            </Animated.View>
-                        }
-
-                    </View>
-
-                    <Button
-                        className='mt-6 '
-                        title={t('Send Email')}
-                        isLoading={isGenerating}
-                        disabled={!isValid || isGenerating}
-                        fullWidth
-                        onPress={handleSubmit(onSubmit)}
-                    // onPress={() => { router.push(ROUTES.AUTH.REGISTER_OTP) }}
-                    />
+                    </FadeInUpView>
                 </View>
             </ScrollView>
         </SafeAreaView>

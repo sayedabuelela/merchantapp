@@ -6,6 +6,7 @@ import {ScrollView} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import PasswordForm from '@/src/modules/auth/components/PasswordForm';
 import { PasswordFormData } from '@/src/modules/auth/auth.model';
+import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
 
 const RegisterPasswordScreen = () => {
     const { t } = useTranslation();
@@ -29,13 +30,17 @@ const RegisterPasswordScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1 }}
             >
-                <KashierLogo
-                    style={{
-                        marginBottom: 30,
-                        alignSelf: 'center'
-                    }}
-                />
-                <PasswordForm onSubmit={onSubmit} />
+                <FadeInDownView delay={0} duration={600}>
+                    <KashierLogo
+                        style={{
+                            marginBottom: 30,
+                            alignSelf: 'center'
+                        }}
+                    />
+                </FadeInDownView>
+                <FadeInUpView delay={150} duration={600}>
+                    <PasswordForm onSubmit={onSubmit} />
+                </FadeInUpView>
             </ScrollView>
         </SafeAreaView>
     );

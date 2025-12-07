@@ -21,6 +21,9 @@ import useCountries from '@/src/shared/hooks/useCountries';
 import CountyCodeBottomSheet, { CountyCodeBottomSheetRef } from '@/src/shared/components/bottom-sheets/phone-code-selector/CountyCodeBottomSheet';
 import { GroupedRow } from '@/src/core/utils/groupData';
 import { FlashList } from '@shopify/flash-list';
+import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
+import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
+import AnimatedListItem from '@/src/shared/components/wrappers/animated-wrappers/AnimatedListItem';
 
 // Constants
 const INITIAL_FILTERS: FetchPaymentLinksParams = {
@@ -118,28 +121,40 @@ const PaymentLinksScreen = () => {
         setIsFiltersOpen(prev => !prev);
     }, []);
 
-    const renderItem = useCallback(({ item }: { item: GroupedRow<PaymentLink> }) => {
+    const renderItem = useCallback(({ item, index }: { item: GroupedRow<PaymentLink>; index: number }) => {
         if (item.type === 'header') return <HeaderRow title={item.date} />;
-        return <PaymentLinkCard paymentLink={item} onOpenActions={handleOpenActions} />;
-    }, [handleOpenActions]);
+
+        // Calculate actual item index (excluding headers)
+        const itemsBefore = listData.slice(0, index).filter(i => i.type !== 'header').length;
+
+        return (
+            <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
+                <PaymentLinkCard paymentLink={item} onOpenActions={handleOpenActions} />
+            </AnimatedListItem>
+        );
+    }, [handleOpenActions, listData]);
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <PaymentLinksHeader
-                isFilterOpen={isFiltersOpen}
-                onPlusPress={handleToggleCreateNew}
-                onSubmitSearch={handleSearchChange}
-                onFilterPress={handleToggleFilters}
-                isListEmpty={isListEmpty}
-                hasFilters={hasActiveFilters}
-                handleClearSearch={handleClearSearch}
-                searchValue={search}
-            />
-            <PaymentLinksTabs
-                value={paymentStatus}
-                onSelectStatus={setPaymentStatus}
-                isListEmpty={isListEmpty}
-            />
+            <FadeInDownView delay={0} duration={600}>
+                <PaymentLinksHeader
+                    isFilterOpen={isFiltersOpen}
+                    onPlusPress={handleToggleCreateNew}
+                    onSubmitSearch={handleSearchChange}
+                    onFilterPress={handleToggleFilters}
+                    isListEmpty={isListEmpty}
+                    hasFilters={hasActiveFilters}
+                    handleClearSearch={handleClearSearch}
+                    searchValue={search}
+                />
+            </FadeInDownView>
+            <FadeInUpView delay={200} duration={600}>
+                <PaymentLinksTabs
+                    value={paymentStatus}
+                    onSelectStatus={setPaymentStatus}
+                    isListEmpty={isListEmpty}
+                />
+            </FadeInUpView>
 
             <View className={cn("flex-1 px-6")}>
                 {isLoading ? (

@@ -22,6 +22,8 @@ import CreateOptionBox from "../components/create-payment/CreateOptionBox";
 import { CreatePaymentLinkTypes, createPaymentLinkSchema } from "../payment-links.scheme";
 import { usePaymentLinkStore } from "../paymentLink.store";
 import usePaymentLinkVM from "../viewmodels/usePaymentLinkVM";
+import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView";
+import FadeInUpView from "@/src/shared/components/wrappers/animated-wrappers/FadeInUpView";
 
 const CreateNewPaymentLinkStep2Screen = () => {
     const { t } = useTranslation();
@@ -80,10 +82,13 @@ const CreateNewPaymentLinkStep2Screen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <MainHeader title={t("Additional Options")} withBack />
+            <FadeInDownView delay={0} duration={600}>
+                <MainHeader title={t("Additional Options")} withBack />
+            </FadeInDownView>
 
             <KeyboardAwareScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
                 <AnimatedError errorMsg={t(error?.message || '')} />
+                <FadeInUpView delay={150} duration={600}>
                 {/* Due Date */}
                 <CreateOptionBox
                     title={t("Set a due date")}
@@ -189,6 +194,7 @@ const CreateNewPaymentLinkStep2Screen = () => {
                     />
 
                 </View>
+                </FadeInUpView>
 
             </KeyboardAwareScrollView>
             <DateSelectPickerBottomSheet

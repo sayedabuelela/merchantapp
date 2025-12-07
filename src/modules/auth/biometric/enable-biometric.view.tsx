@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { selectUser, useAuthStore } from "../auth.store";
 import { useBiometricViewModel } from "./biometric.viewmodel";
 import BiometricIcons from "./components/BiometricIcons";
+import { FadeInDownView, FadeInUpView, ScaleView } from "@/src/shared/components/wrappers/animated-wrappers";
 const EnableBiometricScreen = () => {
     const router = useRouter();
     const { t } = useTranslation();
@@ -29,32 +30,42 @@ const EnableBiometricScreen = () => {
     return (
         <SafeAreaView className="flex-1 bg-white">
             <View className="items-center px-6 pt-36">
-                <KashierLogo style={{ marginBottom: 24 }} />
+                <FadeInDownView delay={0} duration={600}>
+                    <KashierLogo style={{ marginBottom: 24 }} />
+                </FadeInDownView>
 
-                <FontText
-                    type="head"
-                    weight="bold"
-                    className="text-center text-xl text-primary"
-                >
-                    {t("Welcome")} {fullName.length > 1 && fullName}
-                </FontText>
+                <FadeInUpView delay={150} duration={600}>
+                    <FontText
+                        type="head"
+                        weight="bold"
+                        className="text-center text-xl text-primary"
+                    >
+                        {t("Welcome")} {fullName.length > 1 && fullName}
+                    </FontText>
+                </FadeInUpView>
 
-                <FontText
-                    type="body"
-                    weight="semi"
-                    className="text-center text-sm text-content-hint mt-8"
-                >
-                    {t('Add your fingerprint or Face ID to login with next time')}
-                </FontText>
+                <FadeInUpView delay={250} duration={600}>
+                    <FontText
+                        type="body"
+                        weight="semi"
+                        className="text-center text-sm text-content-hint mt-8"
+                    >
+                        {t('Add your fingerprint or Face ID to login with next time')}
+                    </FontText>
+                </FadeInUpView>
 
-                <BiometricIcons onPress={onEnable} />
+                <ScaleView delay={350} duration={600}>
+                    <BiometricIcons onPress={onEnable} />
+                </ScaleView>
 
-                <Button
-                    className="mt-12"
-                    title={t('Remind Me Later')}
-                    fullWidth
-                    onPress={onSkip}
-                />
+                <FadeInUpView delay={450} duration={600}>
+                    <Button
+                        className="mt-12"
+                        title={t('Remind Me Later')}
+                        fullWidth
+                        onPress={onSkip}
+                    />
+                </FadeInUpView>
 
             </View>
         </SafeAreaView>

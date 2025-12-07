@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { selectUser, useAuthStore } from "../auth.store";
 import { useBiometricViewModel } from "./biometric.viewmodel";
 import BiometricIcons from "./components/BiometricIcons";
+import { FadeInDownView, FadeInUpView, ScaleView } from "@/src/shared/components/wrappers/animated-wrappers";
 
 const BiometricScreen = () => {
     const router = useRouter();
@@ -25,34 +26,44 @@ const BiometricScreen = () => {
     return (
         <SafeAreaView className="flex-1 bg-white">
             <View className="items-center px-6 pt-36">
-                <KashierLogo style={{ marginBottom: 24 }} />
+                <FadeInDownView delay={0} duration={600}>
+                    <KashierLogo style={{ marginBottom: 24 }} />
+                </FadeInDownView>
 
-                <FontText
-                    type="head"
-                    weight="bold"
-                    className="text-center text-xl text-primary"
-                >
-                    {t("Welcome")} {fullName.length <= 1 ? t('Back') : fullName}
-                </FontText>
-
-                <FontText
-                    type="body"
-                    weight="semi"
-                    className="text-center text-sm text-content-hint mt-8"
-                >
-                    {t('Login with Fingerprint or Face ID')}
-                </FontText>
-
-                <BiometricIcons onPress={onSubmit} isLoading={loading} />
-
-                <Link href={ROUTES.AUTH.LOGIN} className={`mt-14 self-center`}>
+                <FadeInUpView delay={150} duration={600}>
                     <FontText
-                        weight='semi'
-                        className={'text-primary'}
+                        type="head"
+                        weight="bold"
+                        className="text-center text-xl text-primary"
                     >
-                        {t('Login with Email')}
+                        {t("Welcome")} {fullName.length <= 1 ? t('Back') : fullName}
                     </FontText>
-                </Link>
+                </FadeInUpView>
+
+                <FadeInUpView delay={250} duration={600}>
+                    <FontText
+                        type="body"
+                        weight="semi"
+                        className="text-center text-sm text-content-hint mt-8"
+                    >
+                        {t('Login with Fingerprint or Face ID')}
+                    </FontText>
+                </FadeInUpView>
+
+                <ScaleView delay={350} duration={600}>
+                    <BiometricIcons onPress={onSubmit} isLoading={loading} />
+                </ScaleView>
+
+                <FadeInUpView delay={450} duration={600}>
+                    <Link href={ROUTES.AUTH.LOGIN} className={`mt-14 self-center`}>
+                        <FontText
+                            weight='semi'
+                            className={'text-primary'}
+                        >
+                            {t('Login with Email')}
+                        </FontText>
+                    </Link>
+                </FadeInUpView>
 
             </View>
         </SafeAreaView>

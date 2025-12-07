@@ -19,6 +19,8 @@ import SummaryItem from '../components/details-screen/SummaryItem';
 import ActionsModal from '../components/modals/ActionsModal';
 import StatusBox from '../components/StatusBox';
 import usePaymentLinkVM from '../viewmodels/usePaymentLinkVM';
+import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
+import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
 
 export default function PaymentLinkDetailsScreen() {
     const { paymentLinkId } = useLocalSearchParams<{ paymentLinkId?: string }>();
@@ -49,16 +51,19 @@ export default function PaymentLinkDetailsScreen() {
             {isLoadingPaymentLink ? (<SimpleLoader />) :
                 paymentLink && (
                     <>
-                        <MainHeader title={paymentLink?.customerName} actionBtn={actionBtnStatus} onActionBtnPress={() => setActionsVisible(true)} />
+                        <FadeInDownView delay={0} duration={600}>
+                            <MainHeader title={paymentLink?.customerName} actionBtn={actionBtnStatus} onActionBtnPress={() => setActionsVisible(true)} />
+                        </FadeInDownView>
                         <ScrollView
                             showsHorizontalScrollIndicator={false}
                             showsVerticalScrollIndicator={false}
                             className="flex-1 px-6">
-                            <DetailsSection
-                                className='mb-6'
-                                icon={<RectangleGroupIcon size={24} color="#556767" />}
-                                title={t("Details")}
-                            >
+                            <FadeInUpView delay={200} duration={600}>
+                                <DetailsSection
+                                    className='mb-6'
+                                    icon={<RectangleGroupIcon size={24} color="#556767" />}
+                                    title={t("Details")}
+                                >
                                 <SectionItem
                                     icon={<UserIcon size={24} color="#556767" />}
                                     title={t("Customer Name")}
@@ -90,12 +95,14 @@ export default function PaymentLinkDetailsScreen() {
                                     value={formatTime(paymentLink?.creationDate)}
                                 />
                             </DetailsSection>
+                            </FadeInUpView>
                             {(paymentLink?.dueDate || paymentLink?.referenceId) && (
-                                <DetailsSection
-                                    className='mb-6'
-                                    icon={<AdjustmentsHorizontalIcon size={24} color="#556767" />}
-                                    title={t("Custom options")}
-                                >
+                                <FadeInUpView delay={300} duration={600}>
+                                    <DetailsSection
+                                        className='mb-6'
+                                        icon={<AdjustmentsHorizontalIcon size={24} color="#556767" />}
+                                        title={t("Custom options")}
+                                    >
                                     <SectionItem
                                         icon={<QrCodeIcon size={24} color="#556767" />}
                                         title={t("Serial number")}
@@ -116,23 +123,27 @@ export default function PaymentLinkDetailsScreen() {
                                         </>
                                     )}
                                 </DetailsSection>
+                                </FadeInUpView>
                             )}
                             {paymentLink?.description && (
-                                <DetailsSection
-                                    icon={<DocumentTextIcon size={24} color="#556767" />}
-                                    title={t("Notes")}
-                                    className='mb-6'
-                                >
-                                    <FontText type="body" weight="regular" className="text-content-secondary self-start text-base">
-                                        {paymentLink?.description}
-                                    </FontText>
-                                </DetailsSection>
+                                <FadeInUpView delay={350} duration={600}>
+                                    <DetailsSection
+                                        icon={<DocumentTextIcon size={24} color="#556767" />}
+                                        title={t("Notes")}
+                                        className='mb-6'
+                                    >
+                                        <FontText type="body" weight="regular" className="text-content-secondary self-start text-base">
+                                            {paymentLink?.description}
+                                        </FontText>
+                                    </DetailsSection>
+                                </FadeInUpView>
                             )}
-                            <DetailsSection
-                                className='gap-y-2 mb-6'
-                                icon={<TagIcon size={24} color="#556767" />}
-                                title={t("Summary")}
-                            >
+                            <FadeInUpView delay={400} duration={600}>
+                                <DetailsSection
+                                    className='gap-y-2 mb-6'
+                                    icon={<TagIcon size={24} color="#556767" />}
+                                    title={t("Summary")}
+                                >
                                 {paymentLink?.paymentType === 'simple' && paymentLink?.totalAmountWithoutFees && (
                                     <SummaryItem
                                         title={t("Amount")}
@@ -170,11 +181,13 @@ export default function PaymentLinkDetailsScreen() {
                                     />
                                 </View>
                             </DetailsSection>
+                            </FadeInUpView>
                             {(paymentLink?.lastShareStatus.email.status || paymentLink?.lastShareStatus.sms.status) && (
-                                <DetailsSection
-                                    icon={<ShareIcon size={24} color="#556767" />}
-                                    title={t("Delivery status")}
-                                >
+                                <FadeInUpView delay={450} duration={600}>
+                                    <DetailsSection
+                                        icon={<ShareIcon size={24} color="#556767" />}
+                                        title={t("Delivery status")}
+                                    >
                                     <View className='flex-row items-center gap-x-8 '>
                                         <SectionItem
                                             icon={<EnvelopeIcon size={24} color="#556767" />}
@@ -190,6 +203,7 @@ export default function PaymentLinkDetailsScreen() {
                                         />
                                     </View>
                                 </DetailsSection>
+                                </FadeInUpView>
                             )}
                         </ScrollView>
                     </>

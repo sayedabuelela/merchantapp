@@ -8,6 +8,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import PaymentLinkForm from '../components/create-payment/PaymentLinkForm';
 import { usePaymentLinkStore } from '../paymentLink.store';
 import usePaymentLinkVM from '../viewmodels/usePaymentLinkVM';
+import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
+import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
 
 const CreateNewPaymentLinkStep1Screen = () => {
     const { t } = useTranslation();
@@ -46,21 +48,25 @@ const CreateNewPaymentLinkStep1Screen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <MainHeader
-                title={t(isEditMode ? 'Edit payment link' : 'Create a payment link')}
-                withBack
-            />
+            <FadeInDownView delay={0} duration={600}>
+                <MainHeader
+                    title={t(isEditMode ? 'Edit payment link' : 'Create a payment link')}
+                    withBack
+                />
+            </FadeInDownView>
             <KeyboardAwareScrollView className="flex-1 px-6">
                 <AnimatedError errorMsg={t(error?.message || '')} />
-                <PaymentLinkForm
-                    key={paymentLinkId ?? "create"}
-                    onSubmit={submitPaymentLink}
-                    isLoading={isSubmitting}
-                    paymentType={paymentType}
-                    isEditMode={isEditMode}
-                    paymentLink={paymentLink}
-                    qrCode={qrCode}
-                />
+                <FadeInUpView delay={150} duration={600}>
+                    <PaymentLinkForm
+                        key={paymentLinkId ?? "create"}
+                        onSubmit={submitPaymentLink}
+                        isLoading={isSubmitting}
+                        paymentType={paymentType}
+                        isEditMode={isEditMode}
+                        paymentLink={paymentLink}
+                        qrCode={qrCode}
+                    />
+                </FadeInUpView>
             </KeyboardAwareScrollView>
         </SafeAreaView>
     );

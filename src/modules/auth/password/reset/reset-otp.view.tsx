@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useResetPasswordOtp } from './otp/otp.viewmodel';
+import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
 
 const ResetPasswordOTPScreen = () => {
     const { t } = useTranslation();
@@ -55,19 +56,25 @@ const ResetPasswordOTPScreen = () => {
                 contentContainerStyle={{ flexGrow: 1 }}
             >
                 <View className='items-center mb-10'>
-                    <OtpIcon />
+                    <FadeInDownView delay={0} duration={600}>
+                        <OtpIcon />
+                    </FadeInDownView>
 
-                    <FontText
-                        type='head'
-                        weight='bold'
-                        className='text-xl mt-10'>
-                        {t('Verification Code')}
-                    </FontText>
+                    <FadeInUpView delay={150} duration={600}>
+                        <FontText
+                            type='head'
+                            weight='bold'
+                            className='text-xl mt-10'>
+                            {t('Verification Code')}
+                        </FontText>
+                    </FadeInUpView>
 
-                    <FontText
-                        className='text-center mt-8'>
-                        {t('An Email with a verification code was sent to')} {email}
-                    </FontText>
+                    <FadeInUpView delay={250} duration={600}>
+                        <FontText
+                            className='text-center mt-8'>
+                            {t('An Email with a verification code was sent to')} {email}
+                        </FontText>
+                    </FadeInUpView>
 
                 </View>
 
@@ -77,31 +84,35 @@ const ResetPasswordOTPScreen = () => {
 
                 <View className="flex-1 justify-between">
 
-                    <View>
-                        <OtpInput
-                            value={otpValue}
-                            onChange={handleOtpChange}
-                            onComplete={handleOtpComplete}
-                            length={4}
-                            autoFocus={true}
-                            disabled={isVerifying}
-                        />
+                    <FadeInUpView delay={350} duration={600}>
+                        <View>
+                            <OtpInput
+                                value={otpValue}
+                                onChange={handleOtpChange}
+                                onComplete={handleOtpComplete}
+                                length={4}
+                                autoFocus={true}
+                                disabled={isVerifying}
+                            />
 
-                        <ResendTimer
-                            initialSeconds={30}
-                            onResend={onResendOtp}
-                        />
-                    </View>
+                            <ResendTimer
+                                initialSeconds={30}
+                                onResend={onResendOtp}
+                            />
+                        </View>
+                    </FadeInUpView>
 
-                    <Button
-                        className='mt-6 '
-                        title={t('Continue')}
-                        disabled={otpValue.length < 4}
-                        isLoading={isVerifying || isGenerating}
-                        fullWidth
-                        onPress={onSubmit}
-                    // onPress={() => { router.push(ROUTES.AUTH.REGISTER_DATA) }}
-                    />
+                    <FadeInUpView delay={450} duration={600}>
+                        <Button
+                            className='mt-6 '
+                            title={t('Continue')}
+                            disabled={otpValue.length < 4}
+                            isLoading={isVerifying || isGenerating}
+                            fullWidth
+                            onPress={onSubmit}
+                        // onPress={() => { router.push(ROUTES.AUTH.REGISTER_DATA) }}
+                        />
+                    </FadeInUpView>
 
                 </View>
             </ScrollView>

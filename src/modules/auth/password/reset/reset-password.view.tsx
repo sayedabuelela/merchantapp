@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useResetPassword } from './reset.viewmodel';
+import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
 
 const ResetCreatePasswordScreen = () => {
     const { t } = useTranslation();
@@ -31,18 +32,22 @@ const ResetCreatePasswordScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1 }}
             >
-                <KashierLogo
-                    style={{
-                        marginBottom: 30,
-                        alignSelf: 'center'
-                    }}
-                />
+                <FadeInDownView delay={0} duration={600}>
+                    <KashierLogo
+                        style={{
+                            marginBottom: 30,
+                            alignSelf: 'center'
+                        }}
+                    />
+                </FadeInDownView>
 
                 {resetError && (
                     <AnimatedError errorMsg={t(resetError.error || resetError.message || "Something went wrong")} />
                 )}
 
-                <PasswordForm onSubmit={onSubmit} />
+                <FadeInUpView delay={150} duration={600}>
+                    <PasswordForm onSubmit={onSubmit} />
+                </FadeInUpView>
             </ScrollView>
         </SafeAreaView>
     );

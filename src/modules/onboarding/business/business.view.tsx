@@ -10,6 +10,7 @@ import { BusinessDetailsFormData } from "./business.model";
 import { TERMS_AR, TERMS_EN } from "./business.static";
 import useBusinessViewModel from "./business.viewmodel";
 import BusinessDetailsForm from "./components/BusinessDetailsForm";
+import { FadeInDownView, FadeInUpView } from "@/src/shared/components/wrappers/animated-wrappers";
 
 const BusinessDetailsScreen = () => {
     const { t } = useTranslation();
@@ -54,7 +55,9 @@ const BusinessDetailsScreen = () => {
     }
     return (
         <SafeAreaView className="flex-1 bg-white px-6">
-            <Header title={t('Business Details')} progress={31} />
+            <FadeInDownView delay={0} duration={600}>
+                <Header title={t('Business Details')} progress={31} />
+            </FadeInDownView>
 
             <KeyboardAwareScrollView
                 bottomOffset={40}
@@ -63,27 +66,31 @@ const BusinessDetailsScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerClassName="pb-12"
             >
-                <BusinessDetailsForm
-                    onSubmit={onSubmit}
-                    loading={isLoadingLogo || isSubmittingPartialData || isUploadingLogo}
-                    error={submitPartialDataError?.message || logoUploadError?.message}
-                    businessIndustries={businessIndustries}
-                    existingData={normalizedData}
-                    selectedIndustry={selectedIndustry}
-                    selectedSector={selectedSector}
-                    handleIndustryChange={handleIndustryChange}
-                    handleSectorChange={handleSectorChange}
-                />
+                <FadeInUpView delay={150} duration={600}>
+                    <BusinessDetailsForm
+                        onSubmit={onSubmit}
+                        loading={isLoadingLogo || isSubmittingPartialData || isUploadingLogo}
+                        error={submitPartialDataError?.message || logoUploadError?.message}
+                        businessIndustries={businessIndustries}
+                        existingData={normalizedData}
+                        selectedIndustry={selectedIndustry}
+                        selectedSector={selectedSector}
+                        handleIndustryChange={handleIndustryChange}
+                        handleSectorChange={handleSectorChange}
+                    />
+                </FadeInUpView>
 
-                <TouchableOpacity onPress={handleSkip} className="mt-6">
-                    <FontText
-                        type="body"
-                        weight='bold'
-                        className={'text-primary text-sm text-center'}
-                    >
-                        {t('Skip')}
-                    </FontText>
-                </TouchableOpacity>
+                <FadeInUpView delay={300} duration={600}>
+                    <TouchableOpacity onPress={handleSkip} className="mt-6">
+                        <FontText
+                            type="body"
+                            weight='bold'
+                            className={'text-primary text-sm text-center'}
+                        >
+                            {t('Skip')}
+                        </FontText>
+                    </TouchableOpacity>
+                </FadeInUpView>
 
             </KeyboardAwareScrollView>
         </SafeAreaView>
