@@ -10,13 +10,13 @@ export const itemSchema = z.object({
 export const feeSchema = z
     .object({
         name: z.string().min(1, "Fee name is required"),
-        flatFee: z.number().min(0).optional(),
-        rate: z.number().min(0).optional(),
+        flatFee: z.number().min(0, "Flat fee must be 0 or greater").default(0),
+        rate: z.number().min(0, "Rate must be 0 or greater").default(0),
     })
     .refine(
-        (fee) => typeof fee.flatFee === "number" || typeof fee.rate === "number",
+        (fee) => fee.flatFee > 0 || fee.rate > 0,
         {
-            message: "Either flat fee or rate is required",
+            message: "At least one fee value must be greater than 0",
             path: ["flatFee"],
         }
     );

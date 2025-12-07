@@ -51,7 +51,7 @@ const FeeItem = ({ fee, onEdit, onDelete }: FeeItemProps) => {
                 </DropdownMenu.Root>
             </View>
             <View className='flex-row items-center mt-2'>
-                {fee.flatFee && (
+                {fee.flatFee > 0 && (
                     <View className=''>
                         <FontText type="body" weight="semi" className="text-content-secondary text-sm">
                             {t('Flat fee')}
@@ -61,13 +61,13 @@ const FeeItem = ({ fee, onEdit, onDelete }: FeeItemProps) => {
                         </FontText>
                     </View>
                 )}
-                {fee.rate && (
+                {fee.rate > 0 && (
                     <View className='ml-auto mr-auto'>
                         <FontText type="body" weight="semi" className="text-content-secondary text-sm">
                             {t('Rate')}
                         </FontText>
                         <FontText type="body" weight="bold" className="text-black text-base">
-                            {fee.rate}
+                            {fee.rate}%
                         </FontText>
                     </View>
                 )}

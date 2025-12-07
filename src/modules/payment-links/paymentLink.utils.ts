@@ -9,8 +9,8 @@ export function mapApiToFormValues(api: PaymentLink): CreatePaymentLinkTypes {
 
     const extraFees = api.extraFees?.map((f) => ({
         name: f.name,
-        flatFee: f.flatFee !== undefined ? Number(f.flatFee) : undefined,
-        rate: f.rate !== undefined ? Number(f.rate) : undefined,
+        flatFee: Number(f.flatFee) || 0,
+        rate: Number(f.rate) || 0,
     }));
 
     // Map invoiceItems (api) -> items (form)

@@ -12,6 +12,7 @@ import { KeyboardAvoidingView, Modal, Pressable, TouchableOpacity, TouchableWith
 import { XMarkIcon } from 'react-native-heroicons/outline';
 import { KeyboardController } from 'react-native-keyboard-controller';
 import { FeeType, feeSchema } from '../../payment-links.scheme';
+import { cleanDecimalInput, formatDecimalDisplay, parseDecimalInput } from '../../utils/numberInputUtils';
 
 interface Props {
     isVisible: boolean;
@@ -25,19 +26,19 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
     const [showModal, setShowModal] = useState(isVisible);
     const [isAnimating, setIsAnimating] = useState(false);
 
+    // Text state for handling partial decimal input (e.g., "3.")
+    const [flatFeeText, setFlatFeeText] = useState('');
+    const [rateText, setRateText] = useState('');
+
     const { control, handleSubmit, reset, formState: { errors, isValid } } = useForm<FeeType>({
         resolver: zodResolver(feeSchema),
+        mode: 'onChange',
         defaultValues: {
             name: '',
-            flatFee: undefined,
-            rate: undefined,
+            flatFee: 0,
+            rate: 0,
         },
     });
-
-    const [flatFeeText, setFlatFeeText] = useState<string>('');
-    const [rateText, setRateText] = useState<string>('');
-    const [flatFeeTouched, setFlatFeeTouched] = useState<boolean>(false);
-    const [rateTouched, setRateTouched] = useState<boolean>(false);
 
     useEffect(() => {
         if (isVisible) {
@@ -45,45 +46,31 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
             setIsAnimating(true);
 
             if (editingFee) {
-                reset(editingFee);
-                setFlatFeeText(
-                    editingFee.flatFee !== undefined && editingFee.flatFee !== null
-                        ? (Number(editingFee.flatFee) === 0 ? '' : String(editingFee.flatFee))
-                        : ''
-                );
-                setRateText(
-                    editingFee.rate !== undefined && editingFee.rate !== null
-                        ? (Number(editingFee.rate) === 0 ? '' : String(editingFee.rate))
-                        : ''
-                );
+                reset({
+                    name: editingFee.name,
+                    flatFee: editingFee.flatFee ?? 0,
+                    rate: editingFee.rate ?? 0,
+                });
+                setFlatFeeText(formatDecimalDisplay(editingFee.flatFee));
+                setRateText(formatDecimalDisplay(editingFee.rate));
             } else {
-                reset({ name: '', flatFee: undefined, rate: undefined });
+                reset({ name: '', flatFee: 0, rate: 0 });
                 setFlatFeeText('');
                 setRateText('');
             }
-            setFlatFeeTouched(false);
-            setRateTouched(false);
         }
     }, [isVisible, editingFee, reset]);
 
     const handleClose = () => {
-        reset({ name: '', flatFee: undefined, rate: undefined });
+        reset({ name: '', flatFee: 0, rate: 0 });
         setFlatFeeText('');
         setRateText('');
-        setFlatFeeTouched(false);
-        setRateTouched(false);
         onClose();
         setIsAnimating(false);
     };
 
     const onSubmit = (fee: FeeType) => {
-        // Transform undefined to 0 for API
-        const feeForApi = {
-            ...fee,
-            flatFee: fee.flatFee ?? 0,
-            rate: fee.rate ?? 0,
-        };
-        onAddFee(feeForApi);
+        onAddFee(fee);
         handleClose();
     };
 
@@ -167,45 +154,16 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                 <Controller
                                                     control={control}
                                                     name="flatFee"
-                                                    render={({ field: { onChange, value } }) => (
+                                                    render={({ field: { onChange } }) => (
                                                         <Input
                                                             placeholder={t('Flat fee')}
-                                                            value={flatFeeTouched ? flatFeeText : (flatFeeText !== '' ? flatFeeText : (value !== undefined && value !== 0 ? value.toString() : ''))}
-                                                            onFocus={() => {
-                                                                setFlatFeeTouched(true);
-                                                                if (typeof value === 'number' && value === 0) {
-                                                                    setFlatFeeText('');
-                                                                } else if (flatFeeText === '' && value !== undefined && value !== 0) {
-                                                                    setFlatFeeText(String(value));
-                                                                }
-                                                            }}
+                                                            value={flatFeeText}
                                                             onChangeText={(text) => {
-                                                                // normalize locale-specific separators
-                                                                let normalized = text
-                                                                    .replace(/[\u066C]/g, '') // Arabic thousands separator
-                                                                    .replace(/[\u066B,\u060C]/g, '.'); // Arabic decimal, comma
-                                                                let cleaned = normalized.replace(/[^0-9.]/g, '');
-                                                                cleaned = cleaned.replace(/(\..*)\./g, '$1'); // single dot
-
-                                                                // allow intermediate '.' states by keeping text only
+                                                                const cleaned = cleanDecimalInput(text);
                                                                 setFlatFeeText(cleaned);
 
-                                                                if (cleaned === '' || cleaned === '.') {
-                                                                    onChange(undefined);
-                                                                    return;
-                                                                }
-                                                                // only commit to form when it's a valid number like 1, 1.2, .5 (not ending with dot)
-                                                                if (/^\d*\.?\d+$/.test(cleaned)) {
-                                                                    const parsed = parseFloat(cleaned);
-                                                                    if (!isNaN(parsed)) onChange(parsed);
-                                                                }
-                                                            }}
-                                                            onBlur={() => {
-                                                                // finalize trailing dot like '1.' -> '1'
-                                                                if (flatFeeText && /\.$/.test(flatFeeText)) {
-                                                                    const trimmed = flatFeeText.replace(/\.$/, '');
-                                                                    setFlatFeeText(trimmed);
-                                                                }
+                                                                const parsed = parseDecimalInput(cleaned);
+                                                                onChange(parsed ?? 0);
                                                             }}
                                                             keyboardType="decimal-pad"
                                                             isHasCurrency
@@ -223,41 +181,16 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                 <Controller
                                                     control={control}
                                                     name="rate"
-                                                    render={({ field: { onChange, value } }) => (
+                                                    render={({ field: { onChange } }) => (
                                                         <Input
                                                             placeholder={t('Rate %')}
-                                                            value={rateTouched ? rateText : (rateText !== '' ? rateText : (value !== undefined && value !== 0 ? value.toString() : ''))}
-                                                            onFocus={() => {
-                                                                setRateTouched(true);
-                                                                if (typeof value === 'number' && value === 0) {
-                                                                    setRateText('');
-                                                                } else if (rateText === '' && value !== undefined && value !== 0) {
-                                                                    setRateText(String(value));
-                                                                }
-                                                            }}
+                                                            value={rateText}
                                                             onChangeText={(text) => {
-                                                                let normalized = text
-                                                                    .replace(/[\u066C]/g, '')
-                                                                    .replace(/[\u066B,\u060C]/g, '.');
-                                                                let cleaned = normalized.replace(/[^0-9.]/g, '');
-                                                                cleaned = cleaned.replace(/(\..*)\./g, '$1');
-
+                                                                const cleaned = cleanDecimalInput(text);
                                                                 setRateText(cleaned);
 
-                                                                if (cleaned === '' || cleaned === '.') {
-                                                                    onChange(undefined);
-                                                                    return;
-                                                                }
-                                                                if (/^\d*\.?\d+$/.test(cleaned)) {
-                                                                    const parsed = parseFloat(cleaned);
-                                                                    if (!isNaN(parsed)) onChange(parsed);
-                                                                }
-                                                            }}
-                                                            onBlur={() => {
-                                                                if (rateText && /\.$/.test(rateText)) {
-                                                                    const trimmed = rateText.replace(/\.$/, '');
-                                                                    setRateText(trimmed);
-                                                                }
+                                                                const parsed = parseDecimalInput(cleaned);
+                                                                onChange(parsed ?? 0);
                                                             }}
                                                             keyboardType="decimal-pad"
                                                             error={!!errors.rate}
@@ -276,7 +209,7 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                     {/* Submit */}
                                     <View className="mt-8">
                                         <Button
-                                            // disabled={!isValid}
+                                            disabled={!isValid}
                                             title={editingFee ? t('Update fee') : t('Add new fee')}
                                             onPress={handleSubmit(onSubmit)}
                                         />
