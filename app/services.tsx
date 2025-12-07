@@ -23,7 +23,7 @@ const Services = () => {
                 <FlatList
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
-                    columnWrapperStyle={{ gap: 8 }}
+                    columnWrapperStyle={{ gap: 12 }}
                     contentContainerStyle={{ gap: 8, paddingVertical: 16 }}
                     data={services}
                     renderItem={({ item }) => (

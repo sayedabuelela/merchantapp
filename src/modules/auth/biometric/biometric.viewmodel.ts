@@ -1,12 +1,18 @@
 import { useApi } from "@/src/core/api/clients.hooks";
+import { Mode } from "@/src/core/environment/environments";
+import { selectSetMode, useEnvironmentStore } from "@/src/core/environment/environments.store";
+import { useToast } from "@/src/core/providers/ToastProvider";
 import { selectSetAuth, useAuthStore } from "@/src/modules/auth/auth.store";
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from "expo-router";
 import { useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
+import { AuthResponse } from '../auth.model';
+import { fetchAndSyncMerchant } from "../hooks/useMerchant";
 import { authenticate } from "../login/login.service";
 import { biometricAuthenticate, checkDeviceBiometric } from './biometric.service';
-import { selectIsEnabled, selectIsInitialized, selectSetEnabled, selectSetInitialized, useBiometricStore } from './biometric.store';
-import { clearCredentials, getCredentials } from "./biometric.utils";
-import { AuthResponse } from '../auth.model';
+import { selectIsInitialized, selectSetEnabled, selectSetInitialized, useBiometricStore } from './biometric.store';
+import { getCredentials } from "./biometric.utils";
 
 type BiometricViewModel = {
     isBiometricAvailable: boolean;
@@ -27,6 +33,11 @@ export const useBiometricViewModel = (): BiometricViewModel => {
     const setEnabled = useBiometricStore(selectSetEnabled);
     const isInitialized = useBiometricStore(selectIsInitialized);
     const setInitialized = useBiometricStore(selectSetInitialized);
+    const setMode = useEnvironmentStore(selectSetMode);
+    const queryClient = useQueryClient();
+    const router = useRouter();
+    const { showToast } = useToast?.() ?? { showToast: () => { } };
+    const { t } = useTranslation();
 
 
     useEffect(() => {
@@ -97,12 +108,37 @@ export const useBiometricViewModel = (): BiometricViewModel => {
 
             return authenticate(api, { ...credentials, biometricEnabled: true });
         },
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             console.log('biometricAuthenticate data : ', data);
-            const { success, refreshToken, accessToken, ...user } = data.body;
-            setAuth(user, accessToken.token);
+
+            // Handle 2FA requirement
+            if (data.twoFactorAuth) {
+                const credentials = await getCredentials();
+                showToast?.({ message: t('Two factor authentication required'), type: 'info' });
+                if (credentials) {
+                    router.push({
+                        pathname: `/(auth)/(login)/login-twofactor-auth`,
+                        params: { email: credentials.email, password: credentials.password },
+                    });
+                }
+                return;
+            }
+
+            // Extract auth data
             const { accessToken: { token } } = data.body;
+            const { success, refreshToken, accessToken, ...user } = data.body;
+
+            // Set environment mode based on isLive flag
+            setMode(data.body.isLive ? Mode.LIVE : Mode.TEST);
+
+            // Store auth
             setAuth({ ...user, email: user.signupKey }, token);
+
+            // Fetch and sync merchant data
+            await queryClient.fetchQuery({
+                queryKey: ['merchantData', user.merchantId],
+                queryFn: () => fetchAndSyncMerchant(api, useAuthStore.getState().updateUser),
+            });
         }
     });
     return {

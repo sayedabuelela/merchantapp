@@ -33,7 +33,7 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
         {
             title: t('POS'),
             description: t('Request a new terminal'),
-            href: '/service' as Route,
+            // href: '/service' as Route,
             icon: <POSIcon />
         },
         {

@@ -13,7 +13,7 @@ interface ServiceCardProps {
 
 const ServiceCard = ({ title, description, href, icon, onPress }: ServiceCardProps) => {
     const content = (
-        <Pressable onPress={onPress} className="min-w-[160px] p-4 rounded border border-tertiary bg-white/10 "
+        <Pressable onPress={onPress} className="flex-1 p-4 rounded border border-tertiary bg-white/10 "
                 style={{
                     shadowColor: '#fff',
                     shadowOffset: { width: -5, height: -5 },
