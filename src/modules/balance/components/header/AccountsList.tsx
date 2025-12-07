@@ -1,5 +1,4 @@
 import { cn } from "@/src/core/utils/cn";
-import { BelongsTo } from "@/src/modules/auth/auth.model";
 import { CheckBoxFilledIcon, CheckBoxEmptyIcon } from "@/src/shared/assets/svgs";
 import FontText from "@/src/shared/components/FontText";
 import { FlatList, Pressable, View } from "react-native";
@@ -40,14 +39,18 @@ export const AccountItem = ({ accountId, accountName, onSelectAccount, accountBa
     )
 }
 
-interface Props { accounts: Account[], setActiveAccount: (account: { accountId: string; accountName: string }) => void, activeAccount: { accountId: string; accountName: string } }
+interface Props {
+    accounts: Account[];
+    setActiveAccount: (account: { accountId: string; accountName: string }) => void;
+    activeAccount: { accountId: string; accountName: string } | null;
+}
 
 const AccountsList = ({ accounts, setActiveAccount, activeAccount }: Props) => {
 
     const handleSelectAccount = (account: { accountId: string; accountName: string }) => {
         setActiveAccount(account);
     };
-    console.log('accounts : ', accounts);
+
     return (
         <View className="max-h-[180px]">
             <FlatList
@@ -60,7 +63,7 @@ const AccountsList = ({ accounts, setActiveAccount, activeAccount }: Props) => {
                         accountName={item.accountName}
                         accountBalance={item.availableBalance}
                         onSelectAccount={handleSelectAccount}
-                        isActive={activeAccount.accountId === item.accountId}
+                        isActive={activeAccount?.accountId === item.accountId || (!activeAccount && item.accountId === 'all')}
                     />
                 )}
             />

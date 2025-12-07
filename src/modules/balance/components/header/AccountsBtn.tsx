@@ -14,7 +14,7 @@ const AccountsBtn = ({ onPress, className }: { onPress: () => void, className?: 
         <Pressable onPress={onPress} className={cn('flex-row items-center rounded-full border border-[#F5F6F6] p-1 px-2', className)}>
             <AccountsIcon />
             <FontText type="body" weight="regular" className="text-primary ml-1 mr-2 text-xs">
-                {activeAccount.accountName === 'all' ? t('All accounts') : activeAccount.accountName}
+                {activeAccount?.accountName === 'all' ? t('All accounts') : activeAccount?.accountName || t('All accounts')}
             </FontText>
             <ChevronDownIcon size={14} color="#001F5F" />
         </Pressable>

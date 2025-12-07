@@ -1,9 +1,5 @@
-import { cn } from '@/src/core/utils/cn';
 import Button from '@/src/shared/components/Buttons/Button';
-import FontText from '@/src/shared/components/FontText';
 import GeneralModalHeader from '@/src/shared/components/GeneralModal/GeneralModalHeader';
-import Input from '@/src/shared/components/inputs/Input';
-import { COMMON_STYLES } from '@/src/shared/styles/main';
 import { t } from 'i18next';
 import { AnimatePresence, MotiView } from 'moti';
 import React, { useEffect, useState } from 'react';
@@ -30,8 +26,14 @@ const AccountsModal = ({ isVisible, onClose, accounts }: Props) => {
         if (isVisible) {
             setShowModal(true);
             setIsAnimating(true);
+            // If activeAccount is null, default to "All Accounts"
+            if (!activeAccount) {
+                setAccount({ accountId: 'all', accountName: 'all' });
+            } else {
+                setAccount(activeAccount);
+            }
         }
-    }, [isVisible]);
+    }, [isVisible, activeAccount]);
 
     const handleClose = () => {
         onClose();
@@ -93,7 +95,9 @@ const AccountsModal = ({ isVisible, onClose, accounts }: Props) => {
                                         disabled={(accounts?.length <= 1)}
                                         title={t('Select')}
                                         onPress={() => {
-                                            setActiveAccount(account);
+                                            if (account) {
+                                                setActiveAccount(account);
+                                            }
                                             handleClose();
                                         }}
                                         className="mt-6"

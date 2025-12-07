@@ -30,7 +30,7 @@ const useAccounts = (params?: AccountsListParams) => {
     // Set active account to 'all' when accounts are loaded and has data
     useEffect(() => {
         if (accounts !== undefined && accounts.length > 0 && !currentActiveAccount) {
-            setActiveAccount({ accountId: 'all', accountName: 'All Accounts' });
+            setActiveAccount({ accountName: "all", accountId: "all" });
         }
     }, [accounts, currentActiveAccount, setActiveAccount]);
 
