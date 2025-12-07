@@ -11,7 +11,7 @@ import { KeyboardAvoidingView, Modal, Pressable, TouchableWithoutFeedback, View 
 import { KeyboardController } from 'react-native-keyboard-controller';
 import AccountsList from './header/AccountsList';
 import { Account } from '../balance.model';
-import { useBalanceContext } from '../context/BalanceContext';
+import { useBalanceStore, selectActiveAccount, selectSetActiveAccount } from '../balance.store';
 
 interface Props {
     isVisible: boolean;
@@ -22,7 +22,8 @@ interface Props {
 const AccountsModal = ({ isVisible, onClose, accounts }: Props) => {
     const [showModal, setShowModal] = useState(isVisible);
     const [isAnimating, setIsAnimating] = useState(false);
-    const { activeAccount, setActiveAccount } = useBalanceContext();
+    const activeAccount = useBalanceStore(selectActiveAccount);
+    const setActiveAccount = useBalanceStore(selectSetActiveAccount);
     const [account, setAccount] = useState(activeAccount);
 
     useEffect(() => {

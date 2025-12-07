@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import StickyHeaderList from '../../../shared/components/StickyHeaderList';
 import HeaderRow from '../../../shared/components/StickyHeaderList/HeaderRow';
-import { Activity, ActivityType, FetchActivitiesParams } from '../balance.model';
+import { Activity, ActivityType } from '../balance.model';
 import ActivitiesTabs from '../components/ActivitiesTabs';
 import ActivityCard from '../components/ActivityCard';
 import ActivityFilterModal from '../components/ActivityFilterModal';
@@ -19,17 +19,8 @@ import AccountsBtn from '../components/header/AccountsBtn';
 import AccountsModal from '../components/AccountsModal';
 import AnimatedInfoMsg from '@/src/shared/components/animated-messages/AnimatedInfoMsg';
 import { FlashList } from '@shopify/flash-list';
-import { getInitialTab } from '../balance.utils';
-
-const INITIAL_FILTERS: FetchActivitiesParams = {
-    operation: undefined,
-    isReflected: undefined,
-    origin: undefined,
-    dateFrom: undefined,
-    dateTo: undefined,
-    creationDateFrom: undefined,
-    creationDateTo: undefined,
-}
+import { getInitialTab, getActivityInfoMessage } from '../balance.utils';
+import { useActivityFilters } from '../hooks/useActivityFilters';
 
 const BalanceActivitiesScreen = () => {
     const { t } = useTranslation();
@@ -37,42 +28,17 @@ const BalanceActivitiesScreen = () => {
     const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<Activity>>>>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [search, setSearchValue] = useState('');
-
-    // Initialize tab from route params, default to "payout" if not provided or invalid
-    // const getInitialTab = (): ActivityType => {
-    //     if (params.tab === 'transfer' || params.tab === 'payout' || params.tab === 'all') {
-    //         return params.tab as ActivityType;
-    //     }
-    //     return 'payout';
-    // };
-
     const [type, setType] = useState<ActivityType>(getInitialTab(params.tab || ''));
-    const [filters, setFilters] = useState<FetchActivitiesParams>(INITIAL_FILTERS);
     const [showAccountsModal, setShowAccountsModal] = useState(false);
     const { accounts } = useAccounts();
+
+    // Use custom hook for filter management
+    const { filters, setFilters, hasActiveFilters, clearFilters } = useActivityFilters(type);
 
     // Scroll to top when tab changes
     useEffect(() => {
         listRef.current?.scrollToOffset({ offset: 0, animated: true });
     }, [type]);
-
-    // Update operation filter based on active tab
-    useEffect(() => {
-        setFilters(prev => ({
-            ...prev,
-            // For 'all' tab, remove operation filter (undefined)
-            // For specific tabs (payout/transfer), set operation to tab value
-            operation: type === 'all' ? undefined : type
-        }));
-    }, [type]);
-
-    const hasActiveFilters = useMemo(() => {
-        const filterKeysToIgnore = ['page', 'limit', 'search', 'operation', 'accountId'];
-        return Object.entries(filters).some(([key, value]) => {
-            if (filterKeysToIgnore.includes(key)) return false;
-            return value !== undefined && value !== '';
-        });
-    }, [filters]);
 
     // Fetch activities with filters
     const {
@@ -104,19 +70,19 @@ const BalanceActivitiesScreen = () => {
     }, []);
 
     const handleClearFilters = useCallback(() => {
-        setFilters(INITIAL_FILTERS);
-    }, []);
+        clearFilters();
+    }, [clearFilters]);
 
     const handleSearchChange = useCallback((text: string) => {
         setSearchValue(text);
     }, []);
 
-    const payoutInfoMsg = type === 'payout' ? t('Scheduled automatic transfers of your earnings to your bank account.') : '';
-    const transferInfoMsg = type === 'transfer' ? t('On-demand transfers to bank accounts, cards, or mobile wallets.') : '';
-    const infoMsg = payoutInfoMsg || transferInfoMsg;
+    const infoMsg = getActivityInfoMessage(type, t);
     return (
         <SafeAreaView className="flex-1 bg-white">
             <ActivitiesHeader
+                type={type}
+                notificationsCount={0}
                 onFilterPress={() => setIsFiltersOpen(!isFiltersOpen)}
                 onSubmitSearch={handleSearchChange}
                 isFilterOpen={isFiltersOpen}

@@ -109,6 +109,7 @@ export interface BelongsToMerchantStore {
     storeName: string;
 }
 export interface User {
+    _id: string;
     userType: string;
     email: string;
     merchantId: string;

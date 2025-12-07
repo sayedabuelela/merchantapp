@@ -37,8 +37,20 @@ export const groupUpcomingDates = (
 };
 
 export const getInitialTab = (paramTab: string): ActivityType => {
-    if (paramTab === 'transfer' || paramTab === 'payout' || paramTab === 'all') {
+    const validTabs: ActivityType[] = ['overview', 'payout', 'upcoming_balance', 'all'];
+    if (validTabs.includes(paramTab as ActivityType)) {
         return paramTab as ActivityType;
     }
     return 'overview';
+};
+
+export const getActivityInfoMessage = (type: ActivityType, t: (key: string) => string): string => {
+    switch (type) {
+        case 'payout':
+            return t('Scheduled automatic transfers of your earnings to your bank account.');
+        case 'upcoming_balance':
+            return t('Funds pending settlement that will be added to your available balance.');
+        default:
+            return '';
+    }
 };

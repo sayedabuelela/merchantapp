@@ -5,16 +5,16 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { selectUser, useAuthStore } from "../../auth/auth.store";
 import useHasFeature from "../../auth/hooks/useHasFeature";
 import usePermissions from "../../auth/hooks/usePermissions";
-import { ActivitiesInfinityResponse, ActivitiesResponse, FetchActivitiesParams } from "../balance.model";
+import { Activity, ActivitiesInfinityResponse, ActivitiesResponse, FetchActivitiesParams } from "../balance.model";
 import { getActivities } from "../balance.services";
-import { useBalanceContext } from "../context/BalanceContext";
+import { useBalanceStore, selectActiveAccountId } from "../balance.store";
 
 export const useActivitiesVM = (params?: FetchActivitiesParams) => {
     const { api } = useApi();
     const user = useAuthStore(selectUser);
     const { canViewBalance } = usePermissions(user?.actions!);
     const hasBalanceFeature = useHasFeature("multi accounts");
-    const { activeAccount } = useBalanceContext();
+    const activeAccountId = useBalanceStore(selectActiveAccountId);
 
     const activitiesQuery = useInfiniteQuery<
         ActivitiesResponse,
@@ -23,9 +23,9 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
         (string | FetchActivitiesParams | undefined)[],
         number
     >({
-        queryKey: ["balance-activities", activeAccount?.accountId, params],
+        queryKey: ["balance-activities", activeAccountId, params],
         queryFn: ({ pageParam = 1 }) =>
-            getActivities(api, { ...params, page: pageParam,accountId: activeAccount?.accountId }),
+            getActivities(api, { ...params, page: pageParam, accountId: activeAccountId }),
         getNextPageParam: (lastPage) => {
             const { page, totalPages } = lastPage.pagination;
             return page < totalPages ? page + 1 : undefined;
@@ -38,14 +38,26 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
 
     const allItems = activitiesQuery.data?.pages.flatMap((p) => p.data) ?? [];
 
-    // Only group by date if operation is NOT 'payout'
-    // When operation is undefined (all activities tab) or 'transfer', group the data
-    const shouldGroup = params?.operation !== 'payout';
-    const grouped = shouldGroup ? groupByDate(allItems, 'createdAt') : [];
+    // Determine grouping based on filter params
+    let shouldGroup = true;
+    let groupByField: keyof Activity = 'createdAt';
+
+    if (params?.operation === 'payout') {
+        // Payouts: No date grouping
+        shouldGroup = false;
+    } else if (params?.isReflected === false) {
+        // Upcoming balance: Group by value date (when it will be reflected)
+        groupByField = 'valueDate';
+    } else {
+        // All activities: Group by creation date
+        groupByField = 'createdAt';
+    }
+
+    const grouped = shouldGroup ? groupByDate(allItems, groupByField) : [];
     const { listData, stickyHeaderIndices } = useGroupedData(allItems.length ? grouped : []);
 
     // For payouts (ungrouped), return items directly without headers
-    // For all other cases (transfers, all activities), return grouped data
+    // For all other cases (upcoming balance, all activities), return grouped data
     const finalListData = shouldGroup ? listData : allItems.map(item => ({ type: 'item' as const, ...item }));
     const finalStickyIndices = shouldGroup ? stickyHeaderIndices : [];
 
@@ -61,11 +73,11 @@ export const useRecentBalanceActivities = () => {
     const user = useAuthStore(selectUser);
     const { canViewBalance } = usePermissions(user?.actions!);
     const hasBalanceFeature = useHasFeature("multi accounts");
-    const { activeAccount } = useBalanceContext();
+    const activeAccountId = useBalanceStore(selectActiveAccountId);
 
     return useQuery<ActivitiesResponse, Error, ActivitiesResponse>({
-        queryKey: ["balanceActivities", activeAccount?.accountId, { limit: 3, page: 1 }],
-        queryFn: () => getActivities(api, { limit: 3, page: 1, accountId: activeAccount?.accountId }),
+        queryKey: ["balanceActivities", activeAccountId, { limit: 3, page: 1 }],
+        queryFn: () => getActivities(api, { limit: 3, page: 1, accountId: activeAccountId }),
         enabled: !!(canViewBalance && hasBalanceFeature),
         staleTime: 5 * 60 * 1000,
     });

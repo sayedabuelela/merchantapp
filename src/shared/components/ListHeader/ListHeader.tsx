@@ -45,7 +45,7 @@ const ListHeader = ({
                 <FontText
                     type="head"
                     weight="bold"
-                    className="text-content-primary text-2xl self-start"
+                    className="text-content-primary text-xl self-start"
                 >
                     {title}
                 </FontText>

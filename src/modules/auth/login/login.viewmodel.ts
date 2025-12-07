@@ -15,7 +15,7 @@ import { authenticate } from "./login.service";
 export const useLoginViewModel = () => {
     const { api } = useApi();
     // console.log('api : ',);
-    
+
     const setAuth = useAuthStore((state) => state.setAuth);
     const setMode = useEnvironmentStore(selectSetMode);
     const queryClient = useQueryClient();
@@ -40,7 +40,6 @@ export const useLoginViewModel = () => {
                 })
                 return;
             }
-            
             const { accessToken: { token } } = data.body;
             const { success, refreshToken, accessToken, ...user } = data.body;
             setMode(data.body.isLive ? Mode.LIVE : Mode.TEST)

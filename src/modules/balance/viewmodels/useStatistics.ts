@@ -5,7 +5,7 @@ import { AccountStatistics, DashboardStatisticsResponse, TransfersStatistics } f
 import { useAuthStore, selectUser } from "../../auth/auth.store"
 import usePermissions from "../../auth/hooks/usePermissions"
 import useHasFeature from "../../auth/hooks/useHasFeature";
-import { useBalanceContext } from "../context/BalanceContext"
+import { useBalanceStore, selectActiveAccountId } from "../balance.store"
 
 const useStatistics = () => {
     const { api } = useApi()
@@ -15,24 +15,24 @@ const useStatistics = () => {
     console.log('hasBalanceFeature actions : ', user?.actions);
     console.log('hasBalanceFeature enabledFeatures : ', user?.enabledFeatures);
 
-    const { activeAccount } = useBalanceContext();
+    const activeAccountId = useBalanceStore(selectActiveAccountId);
 
-    console.log('hasBalanceFeature activeAccount : ', activeAccount.accountId);
+    console.log('hasBalanceFeature activeAccount : ', activeAccountId);
     const accountStatistics = useQuery<AccountStatistics>({
-        queryKey: ["account-statistics", activeAccount.accountId],
-        queryFn: () => getAccountStatistics(api, activeAccount.accountId),
+        queryKey: ["account-statistics", activeAccountId],
+        queryFn: () => getAccountStatistics(api, activeAccountId!),
         staleTime: 5 * 60 * 1000, // 5 minutes
-        enabled: !!(canViewBalance && hasBalanceFeature),
+        enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId),
     })
 
     const transfersStatistics = useQuery<TransfersStatistics>({
-        queryKey: ["transfers-statistics", activeAccount.accountId],
-        queryFn: () => getTransfersStatistics(api, activeAccount.accountId),
+        queryKey: ["transfers-statistics", activeAccountId],
+        queryFn: () => getTransfersStatistics(api, activeAccountId!),
         staleTime: 5 * 60 * 1000, // 5 minutes
-        enabled: !!(canViewBalance && hasBalanceFeature),
+        enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId),
     })
     const dashboardStatistics = useQuery({
-        queryKey: ["dashboard-statistics", activeAccount.accountId],
+        queryKey: ["dashboard-statistics", activeAccountId],
         queryFn: () => {
             // Get today's date range
             const today = new Date();
@@ -46,7 +46,7 @@ const useStatistics = () => {
             });
         },
         staleTime: 5 * 60 * 1000, // 5 minutes
-        enabled: !!(canViewBalance && hasBalanceFeature),
+        enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId),
         select: (data: DashboardStatisticsResponse) => {
             // Extract latest transaction and its method
             const latestTransaction = data.response.responseTransactions?.[0];

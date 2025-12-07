@@ -1,16 +1,70 @@
 // src/modules/notifications/notification.service.ts
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import {Platform} from 'react-native';
-import {NotificationPermissionStatus, PushNotificationData} from './notification.model';
-import {router} from "expo-router";
-import {getOrCreateDeviceId} from "@/src/core/utils/deviceId";
-
+import { Platform } from 'react-native';
+import { NotificationPermissionStatus, NotificationData, PushNotificationData, NotificationsAPIResponse, NotificationsResponse } from './notification.model';
+import { router } from "expo-router";
+import { getOrCreateDeviceId } from "@/src/core/utils/deviceId";
+import { AxiosInstance } from "axios";
 
 // const getProjectId = (): string => {
 //     console.log('getProjectId', Constants.expoConfig?.extra?.firebaseProjectId)
 //     return Constants.expoConfig?.extra?.firebaseProjectId || '';
 // };
+
+export const getNotificationsList = async (
+    api: AxiosInstance,
+    addedById: string,
+    pageSize = 10,
+    pageParam = 1,
+): Promise<NotificationsResponse> => {
+    try {
+        const response = await api.get<NotificationsAPIResponse>(
+            `notifications/${addedById}`,
+            { params: { pageSize, pageParam } }
+        );
+
+        // Extract from deeply nested structure
+        // Handle both possible response structures
+        const innerResponse = response.data?.response?.body?.response || response.data;
+
+        // Validate the response has the expected structure
+        if (!innerResponse || !Array.isArray(innerResponse.docs)) {
+            console.error('Invalid notification response structure:', response.data);
+            throw new Error('Invalid notification response structure');
+        }
+
+        return {
+            data: innerResponse.docs,
+            pagination: {
+                page: innerResponse.page,
+                totalPages: innerResponse.totalPages,
+                limit: innerResponse.limit,
+                totalDocs: innerResponse.totalDocs,
+                pagingCounter: innerResponse.pagingCounter,
+                hasPrevPage: innerResponse.hasPrevPage,
+                hasNextPage: innerResponse.hasNextPage,
+                prevPage: innerResponse.prevPage,
+                nextPage: innerResponse.nextPage,
+                unSeenCount: innerResponse.unSeenCount,
+            },
+            unSeenCount: innerResponse.unSeenCount,
+        };
+    } catch (error) {
+        console.error('Error fetching notifications list:', error);
+        throw error;
+    }
+};
+
+export const updateNotification = async (api: AxiosInstance, orderId: string): Promise<NotificationData[]> => {
+    try {
+        const response = await api.put(`notification/${orderId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating notification:', error);
+        throw error;
+    }
+};
 
 const checkPermissionsAndRequest = async (): Promise<string | null> => {
     // if (!Device.isDevice) {
@@ -19,12 +73,12 @@ const checkPermissionsAndRequest = async (): Promise<string | null> => {
     // }
 
     // Check if we have permission
-    const {status: existingStatus} = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
     // If we don't have permission, ask for it
     if (existingStatus !== 'granted') {
-        const {status} = await Notifications.requestPermissionsAsync();
+        const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
     }
 
@@ -85,7 +139,7 @@ export const getPushToken = async (): Promise<string | null> => {
 
 // Check notification permissions
 export const checkPermissions = async (): Promise<NotificationPermissionStatus> => {
-    const {status} = await Notifications.getPermissionsAsync();
+    const { status } = await Notifications.getPermissionsAsync();
     return {
         granted: status === 'granted',
         status,
@@ -114,10 +168,7 @@ export const handleNotificationResponse = (response: Notifications.NotificationR
 
         // Navigate based on the notification data
         if (data.type === 'transaction' && data.transactionId) {
-            router.push({
-                pathname: "/(tabs)/transactions/[id]",
-                params: {id: data.transactionId}
-            });
+            router.push(`/payments/transaction/${data.transactionId}` as any);
         }
     } catch (error) {
         console.error('Error handling notification response:', error);
@@ -171,4 +222,22 @@ export const incrementBadgeCount = async (): Promise<void> => {
 
 export const resetBadgeCount = async (): Promise<void> => {
     await setBadgeCount(0);
+};
+
+export const confirmNotificationDelivery = async (
+    api: AxiosInstance,
+    notificationId: string,
+    deliveryData: {
+        deliveredAt: string;
+        deviceId: string;
+        platform: 'ios' | 'android';
+    }
+): Promise<void> => {
+    try {
+        await api.post(`notifications/${notificationId}/delivery`, deliveryData);
+        console.log('Delivery confirmed for notification:', notificationId);
+    } catch (error) {
+        console.error('Error confirming notification delivery:', error);
+        // Don't throw - delivery confirmation failures shouldn't break the app
+    }
 };

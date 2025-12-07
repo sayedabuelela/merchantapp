@@ -1,53 +1,37 @@
+import { ROUTES } from '@/src/core/navigation/routes';
+import { cn } from '@/src/core/utils/cn';
+import { GroupedRow } from '@/src/core/utils/groupData';
 import { useAuthStore } from '@/src/modules/auth/auth.store';
+import { NoActivitiesSmallIcon } from '@/src/shared/assets/svgs';
+import AnimatedInfoMsg from '@/src/shared/components/animated-messages/AnimatedInfoMsg';
 import FontText from '@/src/shared/components/FontText';
-import { useEffect, useState } from 'react';
+import StickyHeaderList from '@/src/shared/components/StickyHeaderList';
+import HeaderRow from '@/src/shared/components/StickyHeaderList/HeaderRow';
+import ActivitiesListEmpty from '@/src/shared/components/StickyHeaderList/list-empty/ActivitiesListEmpty';
+import { FlashList } from '@shopify/flash-list';
+import { useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import ActivityCard from '../components/ActivityCard';
-import AccountsModal from '../components/AccountsModal';
-import BalanceHeader from '../components/header/BalanceHeader';
-import SectionHeader from '../components/SectionHeader';
-import SettlementForecast from '../components/settlement-forecast/UpcomingBalanceSection';
-import useAccounts from '../viewmodels/useAccounts';
-import { useRecentBalanceActivities } from '../viewmodels/useActivitiesVM';
-import useStatistics from '../viewmodels/useStatistics';
-import { ROUTES } from '@/src/core/navigation/routes';
-import { NoActivitiesIcon, NoActivitiesSmallIcon } from '@/src/shared/assets/svgs';
-import { getInitialTab } from '../balance.utils';
-import { useLocalSearchParams } from 'expo-router';
-import { ActivityType } from '../balance.model';
-import ActivitiesTabs from '../components/ActivitiesTabs';
-import { cn } from '@/src/core/utils/cn';
-import StickyHeaderList from '@/src/shared/components/StickyHeaderList';
-import { useRef } from 'react';
-import { FlashList } from '@shopify/flash-list';
-import { GroupedRow } from '@/src/core/utils/groupData';
-import { Activity } from '../balance.model';
-import { FetchActivitiesParams } from '../balance.model';
-import { useMemo, useCallback } from 'react';
-import { useActivitiesVM } from '../viewmodels/useActivitiesVM';
-import AnimatedInfoMsg from '@/src/shared/components/animated-messages/AnimatedInfoMsg';
-import HeaderRow from '@/src/shared/components/StickyHeaderList/HeaderRow';
-import AccountsBtn from '../components/header/AccountsBtn';
-import ActivitiesListEmpty from '@/src/shared/components/StickyHeaderList/list-empty/ActivitiesListEmpty';
-import NotificationBell from '@/src/shared/components/NotificationBell';
 import { ArrowRightIcon } from 'react-native-heroicons/outline';
-import ActivitiesHeader from '../components/header/activities/ActivitiesHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Activity, ActivityType } from '../balance.model';
+import { getActivityInfoMessage, getInitialTab } from '../balance.utils';
+import AccountsModal from '../components/AccountsModal';
+import ActivitiesTabs from '../components/ActivitiesTabs';
+import ActivityCard from '../components/ActivityCard';
 import ActivityFilterModal from '../components/ActivityFilterModal';
-const INITIAL_FILTERS: FetchActivitiesParams = {
-    operation: undefined,
-    isReflected: undefined,
-    origin: undefined,
-    dateFrom: undefined,
-    dateTo: undefined,
-    creationDateFrom: undefined,
-    creationDateTo: undefined,
-}
+import ActivitiesHeader from '../components/header/activities/ActivitiesHeader';
+import BalanceHeader from '../components/header/BalanceHeader';
+import { useActivityFilters } from '../hooks/useActivityFilters';
+import useAccounts from '../viewmodels/useAccounts';
+import { useActivitiesVM, useRecentBalanceActivities } from '../viewmodels/useActivitiesVM';
+import useStatistics from '../viewmodels/useStatistics';
+import UpcomingBalanceSection from '../components/settlement-forecast/UpcomingBalanceSection';
+
 const BalancesScreen = () => {
     const { t } = useTranslation();
     const { user } = useAuthStore();
-    console.log('user : ', user);
     const { data: recentActivities } = useRecentBalanceActivities();
     const { accountStatistics: { data: accountStats }, transfersStatistics: { data: transfersStats } } = useStatistics();
     const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<Activity>>>>(null);
@@ -55,32 +39,15 @@ const BalancesScreen = () => {
     const [search, setSearchValue] = useState('');
     const params = useLocalSearchParams<{ tab?: string }>();
     const [type, setType] = useState<ActivityType>(getInitialTab(params.tab || ''));
-    const [filters, setFilters] = useState<FetchActivitiesParams>(INITIAL_FILTERS);
     const [showAccountsModal, setShowAccountsModal] = useState(false);
     const { accounts } = useAccounts();
+    // Use custom hook for filter management
+    const { filters, setFilters, hasActiveFilters, clearFilters } = useActivityFilters(type);
 
     // Scroll to top when tab changes
     useEffect(() => {
         listRef.current?.scrollToOffset({ offset: 0, animated: true });
     }, [type]);
-
-    // Update operation filter based on active tab
-    useEffect(() => {
-        setFilters(prev => ({
-            ...prev,
-            // For 'all' tab, remove operation filter (undefined)
-            // For specific tabs (payout/transfer), set operation to tab value
-            operation: type === 'all' ? undefined : type
-        }));
-    }, [type]);
-
-    const hasActiveFilters = useMemo(() => {
-        const filterKeysToIgnore = ['page', 'limit', 'search', 'operation', 'accountId'];
-        return Object.entries(filters).some(([key, value]) => {
-            if (filterKeysToIgnore.includes(key)) return false;
-            return value !== undefined && value !== '';
-        });
-    }, [filters]);
 
     // Fetch activities with filters
     const {
@@ -112,16 +79,14 @@ const BalancesScreen = () => {
     }, []);
 
     const handleClearFilters = useCallback(() => {
-        setFilters(INITIAL_FILTERS);
-    }, []);
+        clearFilters();
+    }, [clearFilters]);
 
     const handleSearchChange = useCallback((text: string) => {
         setSearchValue(text);
     }, []);
 
-    const payoutInfoMsg = type === 'payout' ? t('Scheduled automatic transfers of your earnings to your bank account.') : '';
-    const transferInfoMsg = type === 'transfer' ? t('On-demand transfers to bank accounts, cards, or mobile wallets.') : '';
-    const infoMsg = payoutInfoMsg || transferInfoMsg;
+    const infoMsg = getActivityInfoMessage(type, t);
     const RecentActivitiesEmpty = () => {
         return (
             <View className="items-center justify-center py-8">
@@ -138,20 +103,9 @@ const BalancesScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <View className="px-6 flex-row ">
-                {(accounts !== undefined && accounts?.length > 1) && (
-                    <AccountsBtn onPress={() => setShowAccountsModal(true)}
-                    //  activeAccount={activeAccount}
-                    />
-                )}
-            </View>
-            {/* <View className="flex-row justify-between items-center px-6 mt-2">
-                <FontText type="head" weight="bold" className="text-xl text-content-primary">
-                    {t('Balances')}
-                </FontText>
-                <NotificationBell notificationsCount={0} />
-            </View> */}
             <ActivitiesHeader
+                type={type}
+                notificationsCount={0}
                 className="mt-2"
                 onFilterPress={() => setIsFiltersOpen(!isFiltersOpen)}
                 onSubmitSearch={handleSearchChange}
@@ -160,6 +114,8 @@ const BalancesScreen = () => {
                 hasFilters={hasActiveFilters}
                 handleClearSearch={handleClearSearch}
                 searchValue={search}
+                accounts={accounts}
+                setShowAccountsModal={setShowAccountsModal}
             />
             <View className="">
                 <ActivitiesTabs value={type} onSelectType={setType} />
@@ -175,7 +131,7 @@ const BalancesScreen = () => {
                             showAccountsBtn={(accounts !== undefined && accounts?.length > 1)}
                         />
                         {accountStats?.upcomingValueDates && accountStats?.upcomingValueDates.length > 0 && (
-                            <SettlementForecast
+                            <UpcomingBalanceSection
                                 upcomingValueDates={accountStats?.upcomingValueDates}
                                 currency={t("EGP")}
                                 nextRoute={ROUTES.BALANCE.ACTIVITIES}

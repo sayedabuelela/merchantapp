@@ -28,8 +28,7 @@ export function useFilePicker() {
             }
 
             const result = await ImagePicker.launchImageLibraryAsync({
-                // mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                // mediaTypes: [ImagePicker.MediaType.Image],
+                mediaTypes: 'images',
                 allowsEditing: true,
                 quality: 0.8,
                 allowsMultipleSelection: false,
@@ -44,7 +43,7 @@ export function useFilePicker() {
                 const fileInfo: FileInfo = {
                     uri: asset.uri,
                     name: fileName,
-                    type: `image/${fileName.split('.').pop()}`,
+                    type: asset.mimeType || `image/${fileName.split('.').pop() || 'jpeg'}`,
                     size: asset.fileSize,
                 };
 
@@ -101,16 +100,26 @@ export function useFilePicker() {
             }
 
             const result = await ImagePicker.launchCameraAsync({
-                // mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                mediaTypes: 'images',
                 allowsEditing: true,
                 quality: 0.8,
             });
 
             // Process similar to pickImage
             if (!result.canceled && result.assets.length > 0) {
-                // ...process image
-                // setImage(result.assets[0]);
-                // return result.assets[0];
+                const asset = result.assets[0];
+                const fileNameParts = asset.uri.split('/');
+                const fileName = fileNameParts[fileNameParts.length - 1];
+
+                const fileInfo: FileInfo = {
+                    uri: asset.uri,
+                    name: fileName,
+                    type: asset.mimeType || `image/${fileName.split('.').pop() || 'jpeg'}`,
+                    size: asset.fileSize,
+                };
+
+                setImage(fileInfo);
+                return fileInfo;
             }
             return null;
         } catch (error) {

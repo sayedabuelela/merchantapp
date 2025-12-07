@@ -47,11 +47,11 @@ export const getAccountsList = async (
     params: AccountsListParams = {}
 ): Promise<AccountsListResponse> => {
     const { limit = 20, sortBy = '', sortType = -1, page = 1 } = params;
-    console.log('getAccountsList api', api.defaults.baseURL);
     try {
         const response = await api.get(`v2/account/overview/accounts-list`, {
             params: { limit, sortBy, sortType, page }
         });
+        console.log('getAccountsList api', response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching accounts list:", error);

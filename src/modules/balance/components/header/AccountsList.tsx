@@ -5,7 +5,6 @@ import FontText from "@/src/shared/components/FontText";
 import { FlatList, Pressable, View } from "react-native";
 import { Account } from "../../balance.model";
 import { currencyNumber } from "@/src/core/utils/number-fields";
-import { useBalanceContext } from "../../context/BalanceContext";
 import { useTranslation } from "react-i18next";
 
 

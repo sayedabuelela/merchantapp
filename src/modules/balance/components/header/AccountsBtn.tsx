@@ -3,12 +3,13 @@ import FontText from '@/src/shared/components/FontText'
 import { useTranslation } from 'react-i18next'
 import { Pressable } from 'react-native'
 import { ChevronDownIcon } from 'react-native-heroicons/outline'
-import { useBalanceContext } from '../../context/BalanceContext'
+import { useBalanceStore, selectActiveAccount } from '../../balance.store'
 import { cn } from '@/src/core/utils/cn'
 
 const AccountsBtn = ({ onPress, className }: { onPress: () => void, className?: string }) => {
     const { t } = useTranslation();
-    const { activeAccount } = useBalanceContext();
+    const activeAccount = useBalanceStore(selectActiveAccount);
+
     return (
         <Pressable onPress={onPress} className={cn('flex-row items-center rounded-full border border-[#F5F6F6] p-1 px-2', className)}>
             <AccountsIcon />
