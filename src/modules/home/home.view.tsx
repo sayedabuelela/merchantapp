@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native"
+import { Pressable, ScrollView, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useAuthStore } from "@/src/modules/auth/auth.store"
 import useStatistics from "../balance/viewmodels/useStatistics"
@@ -26,9 +26,15 @@ import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/F
 import FadeInUpView from "@/src/shared/components/wrappers/animated-wrappers/FadeInUpView"
 import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/ScaleView"
 import StaggerChildrenView from "@/src/shared/components/wrappers/animated-wrappers/StaggerChildrenView"
+import SectionHeader from "../balance/components/SectionHeader"
+import { useTranslation } from "react-i18next"
+import { ArrowRightIcon, ChevronDownIcon } from "react-native-heroicons/outline"
 
 const HomeScreen = () => {
+    const { t } = useTranslation();
+
     const { user } = useAuthStore();
+
     const { data: recentActivities } = useRecentBalanceActivities();
     const {
         accountStatistics: { data: accountStats },
@@ -100,6 +106,19 @@ const HomeScreen = () => {
                             <NotificationBell notificationsCount={notificationsCount || 0} />
                         </View>
                         <ServicesList qrCodeActionPress={handleAddPress} />
+                        <FadeInUpView delay={350} duration={600}>
+                            <View className="flex-row items-center justify-between mb-4">
+                                <FontText type="head" weight="bold" className="text-xl text-content-primary">
+                                    {t("Reports")}
+                                </FontText>
+                                <Pressable className="flex-row items-center" >
+                                    <FontText type="body" weight="regular" className="text-xs text-primary mr-2">
+                                        {t("Today")}
+                                    </FontText>
+                                    <ChevronDownIcon size={14} color="#001F5F" />
+                                </Pressable>
+                            </View>
+                        </FadeInUpView>
                         {(accounts !== undefined && accounts?.length > 1) && (
                             <AccountsBtn
                                 onPress={() => setShowAccountsModal(true)}

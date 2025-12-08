@@ -61,7 +61,7 @@ const LoginScreen = () => {
                         // style={{ marginBottom: 28 }}
                         />
                     </FadeInDownView>
-                    <FadeInUpView delay={150} duration={600}>
+                    <FadeInUpView className='w-full' delay={150} duration={600}>
                         <LoginForm
                             onSubmit={handleSubmit}
                             loading={isLoading}
