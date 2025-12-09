@@ -5,7 +5,7 @@ import FontText from "@/src/shared/components/FontText";
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBiometricViewModel } from "../biometric/biometric.viewmodel";
@@ -14,6 +14,7 @@ import { useLoginViewModel } from './login.viewmodel';
 import { DeveloperSettings } from '../../settings/components/DeveloperSettings';
 import { useNetworkStatus } from '@/src/core/hooks/useNetworkStatus';
 import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
+import LottieView from 'lottie-react-native';
 
 const LoginScreen = () => {
     const { t } = useTranslation();
@@ -55,7 +56,7 @@ const LoginScreen = () => {
                 showsHorizontalScrollIndicator={false}
             >
                 <View className="items-center px-6">
-                    <DeveloperSettings/>
+                    <DeveloperSettings />
                     <FadeInDownView delay={0} duration={600}>
                         <KashierLogo
                         // style={{ marginBottom: 28 }}
@@ -67,6 +68,7 @@ const LoginScreen = () => {
                             loading={isLoading}
                             error={networkError || error?.error || error?.message}
                         />
+                    
                     </FadeInUpView>
                     <FadeInUpView delay={300} duration={600}>
                         <View className="flex-row justify-center mt-8">

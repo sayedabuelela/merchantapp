@@ -356,5 +356,11 @@
   "Custom Range": "نطاق مخصص",
   "Date Filter": "تصفية التاريخ",
   "Select date range": "اختر نطاق التاريخ",
-  "Select Date Range": "اختر نطاق التاريخ"
+  "Select Date Range": "اختر نطاق التاريخ",
+  "Authenticating...": "جاري المصادقة...",
+  "Please wait while we verify your credentials": "يرجى الانتظار بينما نتحقق من بيانات الاعتماد الخاصة بك",
+  "Login successful": "تم تسجيل الدخول بنجاح",
+  "Authentication failed. Please try again.": "فشلت المصادقة. يرجى المحاولة مرة أخرى.",
+  "Invalid deep link. Missing required parameters.": "رابط غير صالح. معلمات مطلوبة مفقودة.",
+  "Failed to decrypt token. The link may be invalid or expired.": "فشل فك تشفير الرمز. قد يكون الرابط غير صالح أو منتهي الصلاحية."
 }

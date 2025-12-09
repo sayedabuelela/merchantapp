@@ -18,6 +18,7 @@ export const ROUTES = {
         RESET_OTP: "/(auth)/(reset-password)/reset-otp" as Route,
         RESET_EMAIL: "/(auth)/(reset-password)/reset-email" as Route,
     },
+    DEEP_LINK_HANDLER: "/deep-link-handler" as Route,
     REGISTER_SUCCESS: "/register-success" as Route,
     PROFILE: {
         PERSONAL_INFO: "/(profile)/personal-info" as Route,

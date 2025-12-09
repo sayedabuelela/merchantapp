@@ -1,5 +1,4 @@
-import { selectUser } from "../auth.store"
-import { useAuthStore } from "../auth.store"
+import { selectUser , useAuthStore } from "../auth.store"
 
 const useHasFeature = (feature: string) => {
     const user = useAuthStore(selectUser)

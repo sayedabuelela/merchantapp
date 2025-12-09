@@ -5,19 +5,19 @@ export interface AccountStatistics {
         availableBalance: number,
         totalBalance: number
     },
-    upcomingValueDates: Array<{
+    upcomingValueDates: {
         amount: number,
         date: string
-    }>
+    }[]
 }
 
 export interface TransfersStatistics {
     onGoingTransfersAmount: number,
-    recentTransfers: Array<{
+    recentTransfers: {
         amount: number,
         transfersCount: number,
         date: string
-    }>
+    }[]
 }
 export interface DashboardStatistics {
     _id: string | null;
@@ -163,14 +163,14 @@ export interface Transfer {
         transfersCount: number,
         webhookReconcile: string
     },
-    history?: Array<{
+    history?: {
         watchDogCron: boolean,
         _id: string,
         status: string,
         date: string,
         source: string,
         webhookReconcile: string
-    }>,
+    }[],
     apmTraceId: string,
     createdAt: string,
     updatedAt: string,

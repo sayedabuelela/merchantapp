@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import FontText from '@/src/shared/components/FontText';
 import Button from '@/src/shared/components/Buttons/Button';
 import { StatusBadge } from '../detail/StatusBadge';
-import { formatRelativeDate } from '@/src/core/utils/dateUtils';
-import { formatAMPM } from '@/src/core/utils/dateUtils';
+import { formatRelativeDate , formatAMPM } from '@/src/core/utils/dateUtils';
 import type { OrderDetailPayment } from '../../payments.model';
 
 interface VoidConfirmationProps {

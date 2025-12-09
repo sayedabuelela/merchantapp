@@ -2,11 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import FontText from '@/src/shared/components/FontText';
 import { SourceOfFunds } from '@/src/modules/payments/payments.model';
-import { MasterCardIcon } from '@/src/shared/assets/svgs';
-import { NBEIcon } from '@/src/shared/assets/svgs';
-import { VisaIcon } from '@/src/shared/assets/svgs';
-import { SouhoolaIcon } from '@/src/shared/assets/svgs';
-import { ValuIcon } from '@/src/shared/assets/svgs';
+import { MasterCardIcon , NBEIcon , VisaIcon , SouhoolaIcon , ValuIcon } from '@/src/shared/assets/svgs';
 
 interface ValuPaymentDetailsProps {
     sourceOfFunds: SourceOfFunds;

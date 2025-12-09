@@ -1,5 +1,5 @@
 import { KashierLogo } from "@/src/shared/assets/svgs";
-import { useRouter } from 'expo-router';
+import { useRouter , useLocalSearchParams } from 'expo-router';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView } from 'react-native';
@@ -7,7 +7,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import RegisterDataForm from "./components/RegisterDataForm";
 import { RegisterDataFormData } from "./register-data.model";
 import useRegister from "../register.viewmodel";
-import { useLocalSearchParams } from 'expo-router';
 import { ROUTES } from '@/src/core/navigation/routes';
 import { Mode } from "@/src/core/environment/environments";
 import { useEnvironmentStore } from "@/src/core/environment/environments.store";

@@ -1,6 +1,5 @@
-import { View } from "react-native"
+import { View , Pressable } from "react-native"
 import FontText from "@/src/shared/components/FontText"
-import { Pressable } from "react-native"
 import { ArrowRightIcon } from "react-native-heroicons/outline"
 import { Link, Route } from "expo-router"
 

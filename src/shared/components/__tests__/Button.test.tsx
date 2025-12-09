@@ -1,8 +1,8 @@
-jest.mock('@/src/shared/components/FontText');
-
 import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
 import Button from '../Buttons/Button';
+
+jest.mock('@/src/shared/components/FontText');
 
 describe('Button', () => {
   it('renders without crashing', () => {

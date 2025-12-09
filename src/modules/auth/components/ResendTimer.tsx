@@ -1,8 +1,7 @@
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity , View } from "react-native";
 import { useEffect, useState } from "react";
 import FontText from "@/src/shared/components/FontText";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
 
 type ResendTimerProps = {
     initialSeconds?: number;

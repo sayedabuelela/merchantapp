@@ -95,5 +95,11 @@
   "Custom Range": "Custom Range",
   "Date Filter": "Date Filter",
   "Select date range": "Select date range",
-  "Select Date Range": "Select Date Range"
+  "Select Date Range": "Select Date Range",
+  "Authenticating...": "Authenticating...",
+  "Please wait while we verify your credentials": "Please wait while we verify your credentials",
+  "Login successful": "Login successful",
+  "Authentication failed. Please try again.": "Authentication failed. Please try again.",
+  "Invalid deep link. Missing required parameters.": "Invalid deep link. Missing required parameters.",
+  "Failed to decrypt token. The link may be invalid or expired.": "Failed to decrypt token. The link may be invalid or expired."
 }

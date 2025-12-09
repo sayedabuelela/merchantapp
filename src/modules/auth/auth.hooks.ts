@@ -1,6 +1,5 @@
 import { ROUTES } from "@/src/core/navigation/routes";
-import { useSegments } from "expo-router";
-import { useRouter } from "expo-router";
+import { useSegments , useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useBiometricStore } from "./biometric/biometric.store";
 import { useAuthStore } from "./auth.store";

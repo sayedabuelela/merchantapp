@@ -5,8 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import FontText from '@/src/shared/components/FontText';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/src/core/utils/cn';
-import { useAuthStore } from '@/src/modules/auth/auth.store';
-import { selectUser } from '@/src/modules/auth/auth.store';
+import { useAuthStore , selectUser } from '@/src/modules/auth/auth.store';
 
 export const ModeToggle = () => {
     const { isLiveMode, toggleMode, mode } = useEnvironment()

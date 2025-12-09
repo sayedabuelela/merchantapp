@@ -1,10 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery , useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore, selectUpdateUser, selectUser, selectUpdateToken } from '@/src/modules/auth/auth.store';
 import { getMerchant } from '@/src/modules/auth/login/login.service';
 import { useApi } from '@/src/core/api/clients.hooks';
 import { AxiosInstance } from 'axios';
 import { User } from '@/src/modules/auth/auth.model';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/src/core/providers/ToastProvider';
 
 export const fetchAndSyncMerchant = async (api: AxiosInstance, updateUser: (user: Partial<User>) => void) => {
