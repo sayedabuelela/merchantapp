@@ -38,7 +38,7 @@ const RegisterPasswordScreen = () => {
                         }}
                     />
                 </FadeInDownView>
-                <FadeInUpView delay={150} duration={600}>
+                <FadeInUpView delay={150} duration={600} className="flex-1">
                     <PasswordForm onSubmit={onSubmit} />
                 </FadeInUpView>
             </ScrollView>

@@ -49,7 +49,7 @@ const RegisterDataScreen = () => {
                     />
                 </FadeInDownView>
 
-                <FadeInUpView delay={150} duration={600}>
+                <FadeInUpView delay={150} duration={600} className="flex-1">
                     <RegisterDataForm
                         onSubmit={onSubmit}
                         loading={isLoading}
