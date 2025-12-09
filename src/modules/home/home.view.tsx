@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/src/modules/auth/auth.store"
+import { selectUser, useAuthStore } from "@/src/modules/auth/auth.store"
 import { formatDateString } from "@/src/core/utils/dateUtils"
 import FontText from "@/src/shared/components/FontText"
 import NotificationBell from "@/src/shared/components/NotificationBell"
@@ -22,6 +22,7 @@ import CreatePaymentModal from "../payment-links/components/modals/CreatePayment
 import OrderCard from "../payments/components/orders-list/OrderCard"
 import { PaymentSession } from "../payments/payments.model"
 import { useOrdersVM } from "../payments/viewmodels/useOrdersVM"
+import { useNotificationsVM } from "../notifications/viewmodels/useNotificationsVM"
 import GreetingUser from "./components/GreetingUser"
 import HomeDateFilterModal from "./components/HomeDateFilterModal"
 import HomeListEmpty from "./components/HomeListEmpty"
@@ -34,7 +35,7 @@ import { getDateFilterDisplayText, getDateRangeForFilter } from "./utils/dateFil
 const HomeScreen = () => {
     const { t } = useTranslation();
 
-    const { user } = useAuthStore();
+    const user = useAuthStore(selectUser);
 
     const { data: recentActivities } = useRecentBalanceActivities();
     const {
@@ -42,7 +43,8 @@ const HomeScreen = () => {
         transfersStatistics: { data: transfersStats },
         dashboardStatistics: { data: dashboardStats }
     } = useStatistics();
-    const notificationsCount = recentActivities?.data?.length || 0;
+    const { unSeenCount } = useNotificationsVM();
+    const notificationsCount = unSeenCount;
     const userName = user?.userName || user?.fullName;
     const [showAccountsModal, setShowAccountsModal] = useState(false);
     const [isCreatePLModalVisible, setCreatePLModalVisible] = useState(false);

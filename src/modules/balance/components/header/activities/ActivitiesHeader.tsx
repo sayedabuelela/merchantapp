@@ -6,6 +6,7 @@ import { Account, ActivityType } from '../../../balance.model';
 import FontText from '@/src/shared/components/FontText';
 import { cn } from '@/src/core/utils/cn';
 import AccountsBtn from '../AccountsBtn';
+import { useNotificationsVM } from '@/src/modules/notifications/viewmodels/useNotificationsVM';
 
 interface Props {
     type: ActivityType;
@@ -38,6 +39,8 @@ const ActivitiesHeader = ({
     setShowAccountsModal
 }: Props) => {
     const { t } = useTranslation();
+    const { unSeenCount } = useNotificationsVM();
+    const unseenCount = unSeenCount;
 
     // Overview tab: Show title + notification bell only
     // if (type === 'overview') {
@@ -71,7 +74,7 @@ const ActivitiesHeader = ({
                     <FontText type="head" weight="bold" className="text-xl text-content-primary">
                         {t('Balances')}
                     </FontText>
-                    <NotificationBell notificationsCount={notificationsCount} />
+                    <NotificationBell notificationsCount={unseenCount} />
                 </View>
             ) : (
                 <ListHeader

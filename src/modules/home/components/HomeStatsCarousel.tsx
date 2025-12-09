@@ -4,6 +4,7 @@ import { MotiView } from 'moti'
 import BalanceStatsCard from '../../balance/components/header/BalanceStatsCard'
 import { AccountStatistics, FlattenedDashboardStatistics, TransfersStatistics } from '../../balance/balance.model'
 import { useTranslation } from 'react-i18next'
+import { HomeTabType } from '../home.model'
 
 const { width } = Dimensions.get('window')
 const CARD_PADDING = 24
@@ -13,7 +14,7 @@ interface HomeStatsCarouselProps {
     accountStats?: AccountStatistics
     transfersStats?: TransfersStatistics
     dashboardStats?: FlattenedDashboardStatistics
-    setHomeActiveTab: (tab: string) => void
+    setHomeActiveTab: (tab: HomeTabType) => void
 }
 
 const HomeStatsCarousel = ({ accountStats, transfersStats, dashboardStats, setHomeActiveTab }: HomeStatsCarouselProps) => {

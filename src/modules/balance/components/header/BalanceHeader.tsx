@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import AccountsBtn from "./AccountsBtn";
 import BalanceStatsCard from "./BalanceStatsCard";
+import { useNotificationsVM } from "@/src/modules/notifications/viewmodels/useNotificationsVM";
 interface Props {
     notificationsCount?: number;
     userName?: string;
@@ -17,6 +18,9 @@ interface Props {
 }
 const BalanceHeader = ({ notificationsCount, userName, balanceOverview, ongoingTransfers, onPressAccounts, showAccountsBtn }: Props) => {
     const { t } = useTranslation();
+    const { unSeenCount } = useNotificationsVM();
+    const unseenCount = unSeenCount;
+
     return (
         <View className="mb-8">
             {/* Header row */}

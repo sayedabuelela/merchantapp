@@ -21,6 +21,9 @@ export const useUpdateNotificationVM = () => {
             // Invalidate notifications query to refresh the list
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
 
+            // Invalidate unseen count query to update notification bell
+            queryClient.invalidateQueries({ queryKey: ['notifications-unseen-count'] });
+
             // Reset badge count
             await resetBadgeCount();
 
