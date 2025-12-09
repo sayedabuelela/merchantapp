@@ -13,9 +13,10 @@ interface HomeStatsCarouselProps {
     accountStats?: AccountStatistics
     transfersStats?: TransfersStatistics
     dashboardStats?: FlattenedDashboardStatistics
+    setHomeActiveTab: (tab: string) => void
 }
 
-const HomeStatsCarousel = ({ accountStats, transfersStats, dashboardStats }: HomeStatsCarouselProps) => {
+const HomeStatsCarousel = ({ accountStats, transfersStats, dashboardStats, setHomeActiveTab }: HomeStatsCarouselProps) => {
     const { t } = useTranslation();
     const [currentIndex, setCurrentIndex] = useState(0)
     const flatListRef = useRef<FlatList>(null)
@@ -24,6 +25,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, dashboardStats }: Hom
         const scrollPosition = event.nativeEvent.contentOffset.x
         const index = Math.round(scrollPosition / CARD_WIDTH)
         setCurrentIndex(index)
+        setHomeActiveTab(index === 0 ? 'all' : 'orders')
     }
 
     const cardsData = [

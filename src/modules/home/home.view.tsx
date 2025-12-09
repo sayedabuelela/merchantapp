@@ -159,6 +159,7 @@ const HomeScreen = () => {
                                 accountStats={accountStats}
                                 transfersStats={transfersStats}
                                 dashboardStats={dashboardStats}
+                                setHomeActiveTab={setActiveTab}
                             />
                         </View>
                     </ScaleFadeIn>
