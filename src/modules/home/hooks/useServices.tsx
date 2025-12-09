@@ -45,13 +45,13 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
         {
             title: t('Transfers'),
             description: t('Send money to others'),
-            href: (ROUTES.BALANCE.ACTIVITIES + '?tab=transfer') as Route,
+            href: (ROUTES.BALANCE.ROOT + '?tab=transfer') as Route,
             icon: <ArrowUpLeftIcon size={20} color="#001F5F" />
         },
         {
             title: t('Payouts'),
             description: t('Receive your funds'),
-            href: (ROUTES.BALANCE.ACTIVITIES + '?tab=payout') as Route,
+            href: (ROUTES.BALANCE.ROOT + '?tab=payout') as Route,
             icon: <BanknotesIcon size={20} color="#001F5F" />
         },
         {

@@ -350,5 +350,11 @@
   "Financial Institution": "المؤسسة المالية",
   "Origin": "المصدر",
   "Payment Origin": "مصدر الدفع",
-  "Is Reversed": "معكوسة"
+  "Is Reversed": "معكوسة",
+  "Last 7 Days": "آخر 7 أيام",
+  "Last 30 Days": "آخر 30 يومًا",
+  "Custom Range": "نطاق مخصص",
+  "Date Filter": "تصفية التاريخ",
+  "Select date range": "اختر نطاق التاريخ",
+  "Select Date Range": "اختر نطاق التاريخ"
 }

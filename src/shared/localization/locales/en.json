@@ -89,5 +89,11 @@
   "Financial Institution": "Financial Institution",
   "Origin": "Origin",
   "Payment Origin": "Payment Origin",
-  "Is Reversed": "Is Reversed"
+  "Is Reversed": "Is Reversed",
+  "Last 7 Days": "Last 7 Days",
+  "Last 30 Days": "Last 30 Days",
+  "Custom Range": "Custom Range",
+  "Date Filter": "Date Filter",
+  "Select date range": "Select date range",
+  "Select Date Range": "Select Date Range"
 }

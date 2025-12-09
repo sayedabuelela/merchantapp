@@ -27,7 +27,6 @@ export const getDashboardStatistics = async (
     api: AxiosInstance,
     params?: { startDate?: string; endDate?: string; currency?: string }
 ): Promise<DashboardStatisticsResponse> => {
-    console.log('getDashboardStatistics api', api.defaults.baseURL);
     try {
         const queryParams: Record<string, string> = {};
         if (params?.startDate) queryParams.startDate = params.startDate;

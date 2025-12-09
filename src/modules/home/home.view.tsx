@@ -1,34 +1,35 @@
-import { Pressable, ScrollView, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
 import { useAuthStore } from "@/src/modules/auth/auth.store"
-import useStatistics from "../balance/viewmodels/useStatistics"
-import NotificationBell from "@/src/shared/components/NotificationBell"
-import { useRecentBalanceActivities, useActivitiesVM } from "../balance/viewmodels/useActivitiesVM"
-import GreetingUser from "./components/GreetingUser"
-import HomeStatsCarousel from "./components/HomeStatsCarousel"
-import ServicesList from "./components/services-section/ServicesList"
-import React, { useState } from "react"
-import useAccounts from "../balance/viewmodels/useAccounts"
-import AccountsModal from "../balance/components/AccountsModal"
-import AccountsBtn from "../balance/components/header/AccountsBtn"
-import CreatePaymentModal from "../payment-links/components/modals/CreatePaymentModal"
-import HomeTabs from "./components/HomeTabs"
-import { HomeTabType } from "./home.model"
-import ActivityCard from "../balance/components/ActivityCard"
-import OrderCard from "../payments/components/orders-list/OrderCard"
-import { useOrdersVM } from "../payments/viewmodels/useOrdersVM"
-import { Activity } from "../balance/balance.model"
-import { PaymentSession } from "../payments/payments.model"
-import { Link } from "expo-router"
+import { formatDateString } from "@/src/core/utils/dateUtils"
 import FontText from "@/src/shared/components/FontText"
-import HomeListEmpty from "./components/HomeListEmpty"
+import NotificationBell from "@/src/shared/components/NotificationBell"
 import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView"
 import FadeInUpView from "@/src/shared/components/wrappers/animated-wrappers/FadeInUpView"
 import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/ScaleView"
 import StaggerChildrenView from "@/src/shared/components/wrappers/animated-wrappers/StaggerChildrenView"
-import SectionHeader from "../balance/components/SectionHeader"
+import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ArrowRightIcon, ChevronDownIcon } from "react-native-heroicons/outline"
+import { Pressable, ScrollView, View } from "react-native"
+import { ChevronDownIcon } from "react-native-heroicons/outline"
+import { SafeAreaView } from "react-native-safe-area-context"
+import { Activity } from "../balance/balance.model"
+import AccountsModal from "../balance/components/AccountsModal"
+import ActivityCard from "../balance/components/ActivityCard"
+import AccountsBtn from "../balance/components/header/AccountsBtn"
+import useAccounts from "../balance/viewmodels/useAccounts"
+import { useActivitiesVM, useRecentBalanceActivities } from "../balance/viewmodels/useActivitiesVM"
+import useStatistics from "../balance/viewmodels/useStatistics"
+import CreatePaymentModal from "../payment-links/components/modals/CreatePaymentModal"
+import OrderCard from "../payments/components/orders-list/OrderCard"
+import { PaymentSession } from "../payments/payments.model"
+import { useOrdersVM } from "../payments/viewmodels/useOrdersVM"
+import GreetingUser from "./components/GreetingUser"
+import HomeDateFilterModal from "./components/HomeDateFilterModal"
+import HomeListEmpty from "./components/HomeListEmpty"
+import HomeStatsCarousel from "./components/HomeStatsCarousel"
+import HomeTabs from "./components/HomeTabs"
+import ServicesList from "./components/services-section/ServicesList"
+import { HomeDateFilters, HomeTabType } from "./home.model"
+import { getDateFilterDisplayText, getDateRangeForFilter } from "./utils/dateFilterHelpers"
 
 const HomeScreen = () => {
     const { t } = useTranslation();
@@ -45,31 +46,52 @@ const HomeScreen = () => {
     const userName = user?.userName || user?.fullName;
     const [showAccountsModal, setShowAccountsModal] = useState(false);
     const [isCreatePLModalVisible, setCreatePLModalVisible] = useState(false);
+    const [isDateFilterVisible, setIsDateFilterVisible] = useState(false);
     const [activeTab, setActiveTab] = useState<HomeTabType>('all');
+
+    // Date filter state - default to 'today'
+    const todayRange = getDateRangeForFilter('today');
+    const [dateFilters, setDateFilters] = useState<HomeDateFilters>({
+        dateFrom: todayRange.dateFrom,
+        dateTo: todayRange.dateTo,
+        filterType: 'today'
+    });
 
     const handleAddPress = () => {
         setCreatePLModalVisible(!isCreatePLModalVisible);
+    };
+
+    const handleDateFilter = () => {
+        setIsDateFilterVisible(!isDateFilterVisible);
     };
     const { accounts } = useAccounts();
 
     // Fetch data based on active tab (limit to 5 items for home preview)
     const allActivitiesQuery = useActivitiesVM({
         limit: 5,
-        operation: undefined
+        operation: undefined,
+        creationDateFrom: dateFilters.dateFrom,
+        creationDateTo: dateFilters.dateTo
     });
 
     const payoutsQuery = useActivitiesVM({
         limit: 5,
-        operation: 'payout'
+        operation: 'payout',
+        creationDateFrom: dateFilters.dateFrom,
+        creationDateTo: dateFilters.dateTo
     });
 
     const transfersQuery = useActivitiesVM({
         limit: 5,
-        operation: 'transfer'
+        operation: 'transfer',
+        creationDateFrom: dateFilters.dateFrom,
+        creationDateTo: dateFilters.dateTo
     });
 
     const ordersQuery = useOrdersVM({
-        limit: 5
+        limit: 5,
+        dateFrom: dateFilters.dateFrom,
+        dateTo: dateFilters.dateTo
     });
 
     // Get the appropriate data based on active tab (limited to 5 items)
@@ -111,9 +133,14 @@ const HomeScreen = () => {
                                 <FontText type="head" weight="bold" className="text-xl text-content-primary">
                                     {t("Reports")}
                                 </FontText>
-                                <Pressable className="flex-row items-center" >
+                                <Pressable className="flex-row items-center" onPress={handleDateFilter}>
                                     <FontText type="body" weight="regular" className="text-xs text-primary mr-2">
-                                        {t("Today")}
+                                        {getDateFilterDisplayText(
+                                            dateFilters.filterType,
+                                            dateFilters.customFrom,
+                                            dateFilters.customTo,
+                                            t
+                                        )}
                                     </FontText>
                                     <ChevronDownIcon size={14} color="#001F5F" />
                                 </Pressable>
@@ -182,6 +209,12 @@ const HomeScreen = () => {
                 isVisible={isCreatePLModalVisible}
                 onClose={handleAddPress}
                 qrCode={true}
+            />
+            <HomeDateFilterModal
+                isVisible={isDateFilterVisible}
+                onClose={handleDateFilter}
+                filters={dateFilters}
+                setFilters={setDateFilters}
             />
         </SafeAreaView>
     )
