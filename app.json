@@ -14,13 +14,16 @@
       "infoPlist": {
         "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to use Face ID for secure login."
       },
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "associatedDomains": [
+        "applinks:portal.kashier.io"
+      ]
     },
     "android": {
       "package": "com.kashier.merchantapp",
       "googleServicesFile": "./google-services.json",
       "edgeToEdgeEnabled": true,
-       "softwareKeyboardLayoutMode": "resize",
+      "softwareKeyboardLayoutMode": "resize",
       "permissions": [
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.VIBRATE",
@@ -29,7 +32,37 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/shared/assets/images/app-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "portal.kashier.io",
+              "pathPrefix": "/en/login"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "portal.kashier.io",
+              "pathPrefix": "/ar/login"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",

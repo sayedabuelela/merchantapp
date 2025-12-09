@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.kashier.merchantapp",
+      "sha256_cert_fingerprints": [
+        "55:53:58:CB:92:9D:9B:B9:DE:DB:30:5F:50:71:15:2A:A8:FD:DC:B9:66:25:44:37:6A:B9:87:CD:E0:28:E9:12"
+      ]
+    }
+  }
+]

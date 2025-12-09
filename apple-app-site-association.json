@@ -1,0 +1,16 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "KFQ5TGCCN4.com.kashier.merchantapp",
+                "paths": [
+                    "/en/login",
+                    "/en/login/*",
+                    "/ar/login",
+                    "/ar/login/*"
+                ]
+            }
+        ]
+    }
+}
