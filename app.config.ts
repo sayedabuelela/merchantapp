@@ -1,0 +1,124 @@
+import { ExpoConfig, ConfigContext } from 'expo/config';
+
+export default ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
+  name: 'Kashier',
+  slug: 'kashier',
+  version: '1.0.0',
+  orientation: 'portrait',
+  icon: './src/shared/assets/images/app-icon.png',
+  scheme: 'kashier',
+  userInterfaceStyle: 'automatic',
+  newArchEnabled: true,
+  ios: {
+    supportsTablet: true,
+    bundleIdentifier: 'com.kashier.merchantapp',
+    infoPlist: {
+      NSFaceIDUsageDescription: 'Allow $(PRODUCT_NAME) to use Face ID for secure login.',
+    },
+    // Use EAS file env var with fallback to local file for development
+    googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST ?? './GoogleService-Info.plist',
+    associatedDomains: ['applinks:portal.kashier.io'],
+  },
+  android: {
+    package: 'com.kashier.merchantapp',
+    // Use EAS file env var with fallback to local file for development
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? './google-services.json',
+    edgeToEdgeEnabled: true,
+    softwareKeyboardLayoutMode: 'resize',
+    permissions: [
+      'android.permission.POST_NOTIFICATIONS',
+      'android.permission.VIBRATE',
+      'USE_BIOMETRIC',
+    ],
+    adaptiveIcon: {
+      foregroundImage: './src/shared/assets/images/app-icon.png',
+      backgroundColor: '#FFFFFF',
+    },
+    intentFilters: [
+      {
+        action: 'VIEW',
+        data: [
+          {
+            scheme: 'https',
+            host: 'portal.kashier.io',
+            pathPrefix: '/en/login',
+          },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
+      {
+        action: 'VIEW',
+        data: [
+          {
+            scheme: 'https',
+            host: 'portal.kashier.io',
+            pathPrefix: '/ar/login',
+          },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
+    ],
+  },
+  web: {
+    bundler: 'metro',
+    output: 'static',
+    favicon: './src/shared/assets/images/app-icon.png',
+  },
+  plugins: [
+    'expo-router',
+    [
+      'expo-splash-screen',
+      {
+        image: './src/shared/assets/images/splash-logo-full.png',
+        resizeMode: 'cover',
+        backgroundColor: '#001F5F',
+      },
+    ],
+    'expo-localization',
+    [
+      'expo-notifications',
+      {
+        icon: './src/shared/assets/images/app-icon.png',
+        color: '#ffffff',
+      },
+    ],
+    [
+      'expo-font',
+      {
+        fonts: [
+          './src/shared/assets/fonts/Cairo-Regular.ttf',
+          './src/shared/assets/fonts/Cairo-Medium.ttf',
+          './src/shared/assets/fonts/Cairo-SemiBold.ttf',
+          './src/shared/assets/fonts/Cairo-Bold.ttf',
+          './src/shared/assets/fonts/Outfit-Medium.ttf',
+          './src/shared/assets/fonts/Outfit-Regular.ttf',
+          './src/shared/assets/fonts/Outfit-Bold.ttf',
+          './src/shared/assets/fonts/Outfit-SemiBold.ttf',
+          './src/shared/assets/fonts/NotoNaskhArabic-Medium.ttf',
+          './src/shared/assets/fonts/NotoNaskhArabic-Regular.ttf',
+          './src/shared/assets/fonts/NotoNaskhArabic-Bold.ttf',
+          './src/shared/assets/fonts/NotoNaskhArabic-SemiBold.ttf',
+          './src/shared/assets/fonts/NotoSans-Medium.ttf',
+          './src/shared/assets/fonts/NotoSans-Regular.ttf',
+          './src/shared/assets/fonts/NotoSans-Bold.ttf',
+          './src/shared/assets/fonts/NotoSans-SemiBold.ttf',
+        ],
+      },
+    ],
+    'expo-secure-store',
+  ],
+  experiments: {
+    typedRoutes: true,
+    reactCompiler: true,
+  },
+  extra: {
+    router: {},
+    eas: {
+      projectId: 'd404b506-3538-4f98-8128-43573bc0a5be',
+    },
+    encryptionKey: process.env.ENCRYPTION_KEY,
+    encryptionIV: process.env.ENCRYPTION_IV,
+  },
+  owner: 'kashiers-organization',
+});

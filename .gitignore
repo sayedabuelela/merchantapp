@@ -104,6 +104,9 @@ DerivedData/
 project.xcworkspace
 **/.xcode.env.local
 
+# Firebase config files (use EAS file environment variables instead)
+GoogleService-Info.plist
+
 # ===================================================
 # 🔹 Android / Gradle Specific
 # ===================================================
@@ -115,6 +118,9 @@ android/app/src/main/res/xml/rn_dev_preferences.xml
 *.iml
 .idea/
 .kotlin/
+
+# Firebase config files (use EAS file environment variables instead)
+google-services.json
 
 # Android memory profiler files
 *.hprof
