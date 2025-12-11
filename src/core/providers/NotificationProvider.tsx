@@ -6,7 +6,6 @@ import {
     checkInitialNotification,
     configureAndroidNotificationChannel,
     handleNotificationResponse,
-    registerForPushNotificationsAsync,
     confirmNotificationDelivery,
     getDeviceInfo,
 } from '@/src/modules/notifications/notification.service';
@@ -23,7 +22,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     useEffect(() => {
         // Initial setup
         const setupNotifications = async () => {
-            await registerForPushNotificationsAsync();
+            // await registerForPushNotificationsAsync(api);
             await configureAndroidNotificationChannel();
         };
 
@@ -43,14 +42,14 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                 const notificationId = notification.request.content.data?._id as string | undefined;
 
                 if (notificationId && !confirmedNotifications.current.has(notificationId)) {
-                    // TODO: Uncomment when backend is ready
-                    // const { deviceId } = await getDeviceInfo();
-                    // await confirmNotificationDelivery(api, notificationId, {
-                    //     deliveredAt: new Date().toISOString(),
-                    //     deviceId,
-                    //     platform: Platform.OS as 'ios' | 'android',
-                    // });
-                    // confirmedNotifications.current.add(notificationId);
+                    const { deviceId } = await getDeviceInfo();
+                    await confirmNotificationDelivery(api, notificationId, {
+                        deliveredAt: new Date().toISOString(),
+                        deviceId,
+                        platform: Platform.OS as 'ios' | 'android',
+                    });
+                    confirmedNotifications.current.add(notificationId);
+                    console.log('✅ Delivery confirmed for notification:', notificationId);
                 }
             }
         );
@@ -66,21 +65,20 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                 if (presentedNotifications.length > 0) {
                     console.log(`Found ${presentedNotifications.length} notifications to confirm`);
 
-                    // TODO: Uncomment when backend is ready
-                    // const { deviceId } = await getDeviceInfo();
+                    const { deviceId } = await getDeviceInfo();
 
                     // Confirm delivery for each notification (skip already confirmed)
                     for (const notification of presentedNotifications) {
                         const notificationId = notification.request.content.data?._id as string | undefined;
 
                         if (notificationId && !confirmedNotifications.current.has(notificationId)) {
-                            // TODO: Uncomment when backend is ready
-                            // await confirmNotificationDelivery(api, notificationId, {
-                            //     deliveredAt: notification.date.toString(),
-                            //     deviceId,
-                            //     platform: Platform.OS as 'ios' | 'android',
-                            // });
-                            // confirmedNotifications.current.add(notificationId);
+                            await confirmNotificationDelivery(api, notificationId, {
+                                deliveredAt: notification.date.toString(),
+                                deviceId,
+                                platform: Platform.OS as 'ios' | 'android',
+                            });
+                            confirmedNotifications.current.add(notificationId);
+                            console.log('✅ Delivery confirmed for background notification:', notificationId);
                         }
                     }
 

@@ -75,6 +75,9 @@ yarn-error.*
 .env.local
 .env.*.local
 
+# Google Play service account
+google-play-service-account.json
+
 # ===================================================
 # 🔹 Xcode / iOS Specific
 # ===================================================

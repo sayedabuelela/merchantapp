@@ -107,26 +107,31 @@ const getPushTokenCore = async (): Promise<string | null> => {
     }
 };
 
-const sendTokenToBackend = async (token: string): Promise<void> => {
-    // Implement your API call here
+const sendTokenToBackend = async (token: string, api: AxiosInstance): Promise<void> => {
     try {
-        // Example API call:
-        // await apiClient.post('/users/push-token', { token });
-        console.log('Token sent to backend:', token);
+        const { deviceId, huawei } = await getDeviceInfo();
+        await api.post('/v2/identity/fcm-token', {
+            fcmToken: token,
+            deviceId,
+            huawei,
+        });
+        console.log('✅ Token registered with backend:', token);
     } catch (error) {
-        console.error('Failed to send token to backend:', error);
+        console.error('❌ Failed to register token with backend:', error);
+        throw error;
     }
 };
 
 // ======== PUBLIC API FUNCTIONS ========
 
 // Register for push notifications
-export const registerForPushNotificationsAsync = async (): Promise<string | null> => {
+export const registerForPushNotificationsAsync = async (
+    api: AxiosInstance
+): Promise<string | null> => {
     const token = await getPushTokenCore();
 
     if (token) {
-        // Save the token to your backend
-        // await sendTokenToBackend(token);
+        await sendTokenToBackend(token, api);
     }
 
     return token;
