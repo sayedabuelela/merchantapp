@@ -15,6 +15,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: 'com.kashier.merchantapp',
     infoPlist: {
       NSFaceIDUsageDescription: 'Allow $(PRODUCT_NAME) to use Face ID for secure login.',
+      ITSAppUsesNonExemptEncryption: false,
     },
     // Use EAS file env var with fallback to local file for development
     googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST ?? './GoogleService-Info.plist',
