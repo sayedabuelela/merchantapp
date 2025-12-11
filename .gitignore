@@ -104,8 +104,6 @@ DerivedData/
 project.xcworkspace
 **/.xcode.env.local
 
-GoogleService-Info.plist
-
 # ===================================================
 # 🔹 Android / Gradle Specific
 # ===================================================
@@ -118,7 +116,6 @@ android/app/src/main/res/xml/rn_dev_preferences.xml
 .idea/
 .kotlin/
 
-google-services.json
 # Android memory profiler files
 *.hprof
 
