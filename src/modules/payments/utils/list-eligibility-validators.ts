@@ -16,20 +16,22 @@ import type { PaymentSession } from '../payments.model';
 
 /**
  * Check if void is available for an order from list data
- * 
+ *
  * Simplified checks (detail screen has full validation):
- * - MPGS provider
+ * - Payment method is card
  * - Status is PAID/approved/success
  * - No refunds yet
+ * - Not already voided
  */
 export const isVoidEligibleFromList = (order: PaymentSession): boolean => {
     if (!order) return false;
 
-    const isMpgsProvider = order.provider?.toLowerCase() === 'mpgs';
+    const isCardMethod = order.method?.toLowerCase() === 'card';
     const isApprovedStatus = ['PAID', 'paid', 'approved', 'success'].includes(order.status);
     const noRefunds = order.refundedAmount === 0;
+    const isNotVoided = order.status.toLowerCase() !== 'voided';
 
-    return isMpgsProvider && isApprovedStatus && noRefunds;
+    return isCardMethod && isApprovedStatus && noRefunds && isNotVoided;
 };
 
 /**

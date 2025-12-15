@@ -63,8 +63,9 @@ const bankCutOffChecker = (
 /**
  * Determines if void operation is available for an order
  *
- * Void Requirements:
- * - MPGS provider only
+ * Void Requirements (for Card payments):
+ *
+ * For MPGS cards:
  * - Payment/authorize/capture transaction type
  * - Approved/success/paid/authorized status
  * - No refunds processed yet (totalRefundedAmount === 0)
@@ -72,6 +73,11 @@ const bankCutOffChecker = (
  * - RFS date is not zero (pcc.rfs_due_after !== 0)
  * - Within bank's void window
  * - Not an authorize-and-captured transaction
+ *
+ * For other card providers:
+ * - Approved/success/paid/authorized status
+ * - No refunds processed yet (totalRefundedAmount === 0)
+ * - Not already voided
  */
 export const isVoidAvailable = (order: OrderDetailPayment): boolean => {
   if (!order) return false;
@@ -84,19 +90,14 @@ export const isVoidAvailable = (order: OrderDetailPayment): boolean => {
     pcc,
     history,
     lastTransactionType,
+    method,
   } = order;
 
-  const transactionDate = new Date(createdAt);
-  if (isNaN(transactionDate.getTime())) {
-    return false;
-  }
+  // Check if payment method is card
+  const isCardMethod = normalizeString(method) === 'card';
+  if (!isCardMethod) return false;
 
-  const isMpgsProvider = normalizeString(provider) === 'mpgs';
-
-  const isPaymentType = normalizeString(lastTransactionType)
-    ? ['payment', 'pay', 'دفع', 'authorize', 'capture'].includes(normalizeString(lastTransactionType))
-    : false;
-
+  // Common checks for all card payments
   const isApprovedTransaction = [
     'approved',
     'success',
@@ -108,27 +109,48 @@ export const isVoidAvailable = (order: OrderDetailPayment): boolean => {
 
   const isAlreadyVoided = normalizeString(status) === 'voided';
 
-  const isRfsDateEqualZero = pcc?.rfs_due_after === 0;
+  // Basic validation - applies to all card payments
+  if (!isApprovedTransaction || !isTotalRefundAmountEqualZero || isAlreadyVoided) {
+    return false;
+  }
 
-  const isValidBankVoidWindow = bankCutOffChecker(
-    pcc?.financial_institution as BankName,
-    transactionDate
-  );
+  // MPGS-specific validation (stricter requirements)
+  const isMpgsProvider = normalizeString(provider) === 'mpgs';
 
-  const isAuthorizeAndCaptured =
-    normalizeString(lastTransactionType) === 'authorize' &&
-    history?.some(trx => normalizeString(trx.operation) === 'capture');
+  if (isMpgsProvider) {
+    const transactionDate = new Date(createdAt);
+    if (isNaN(transactionDate.getTime())) {
+      return false;
+    }
 
-  return (
-    isMpgsProvider &&
-    isPaymentType &&
-    isApprovedTransaction &&
-    isTotalRefundAmountEqualZero &&
-    !isAlreadyVoided &&
-    !isRfsDateEqualZero &&
-    isValidBankVoidWindow &&
-    !isAuthorizeAndCaptured
-  );
+    const isPaymentType = normalizeString(lastTransactionType)
+      ? ['payment', 'pay', 'دفع', 'authorize', 'capture'].includes(normalizeString(lastTransactionType))
+      : false;
+
+    const isRfsDateEqualZero = pcc?.rfs_due_after === 0;
+
+    // Bank void window check - only applies if we have a known financial institution
+    // If the bank is not in our known list, we allow void (default to true)
+    const bankName = pcc?.financial_institution as BankName | undefined;
+    const isKnownBank = bankName ? bankName in MPGS_VOID_WINDOWS : false;
+    const isValidBankVoidWindow = isKnownBank
+      ? bankCutOffChecker(bankName, transactionDate)
+      : true; // If unknown bank or no bank info, allow void
+
+    const isAuthorizeAndCaptured =
+      normalizeString(lastTransactionType) === 'authorize' &&
+      history?.some(trx => normalizeString(trx.operation) === 'capture');
+
+    return (
+      isPaymentType &&
+      !isRfsDateEqualZero &&
+      isValidBankVoidWindow &&
+      !isAuthorizeAndCaptured
+    );
+  }
+
+  // For non-MPGS card payments, basic validation is sufficient
+  return true;
 };
 
 /**
@@ -257,7 +279,21 @@ export const isCaptureAvailable = (order: OrderDetailPayment): boolean => {
 /**
  * Determines if void operation is available for a transaction
  *
- * Same requirements as order void but adapted for TransactionDetail structure
+ * Void Requirements (for Card payments):
+ *
+ * For MPGS cards:
+ * - Payment/authorize/capture transaction type
+ * - Approved/success/paid/authorized status
+ * - No refunds processed yet (totalRefundedAmount === 0)
+ * - Not already voided
+ * - RFS date is not zero (pcc.rfs_due_after !== 0)
+ * - Within bank's void window
+ * - Not an authorize-and-captured transaction
+ *
+ * For other card providers:
+ * - Approved/success/paid/authorized status
+ * - No refunds processed yet (totalRefundedAmount === 0)
+ * - Not already voided
  */
 export const isVoidAvailableForTransaction = (transaction: TransactionDetail): boolean => {
   if (!transaction) return false;
@@ -270,19 +306,14 @@ export const isVoidAvailableForTransaction = (transaction: TransactionDetail): b
     pcc,
     transactions,
     trxType,
+    method,
   } = transaction;
 
-  const transactionDate = new Date(date);
-  if (isNaN(transactionDate.getTime())) {
-    return false;
-  }
+  // Check if payment method is card
+  const isCardMethod = normalizeString(method) === 'card';
+  if (!isCardMethod) return false;
 
-  const isMpgsProvider = normalizeString(provider) === 'mpgs';
-
-  const isPaymentType = normalizeString(trxType)
-    ? ['payment', 'pay', 'دفع', 'authorize', 'capture'].includes(normalizeString(trxType))
-    : false;
-
+  // Common checks for all card payments
   const isApprovedTransaction = [
     'approved',
     'success',
@@ -294,27 +325,48 @@ export const isVoidAvailableForTransaction = (transaction: TransactionDetail): b
 
   const isAlreadyVoided = transaction.isVoided || normalizeString(status) === 'voided';
 
-  const isRfsDateEqualZero = pcc?.rfs_due_after === 0;
+  // Basic validation - applies to all card payments
+  if (!isApprovedTransaction || !isTotalRefundAmountEqualZero || isAlreadyVoided) {
+    return false;
+  }
 
-  const isValidBankVoidWindow = bankCutOffChecker(
-    pcc?.financial_institution as BankName,
-    transactionDate
-  );
+  // MPGS-specific validation (stricter requirements)
+  const isMpgsProvider = normalizeString(provider) === 'mpgs';
 
-  const isAuthorizeAndCaptured =
-    normalizeString(trxType) === 'authorize' &&
-    transactions?.some(trx => normalizeString(trx.operation) === 'capture');
+  if (isMpgsProvider) {
+    const transactionDate = new Date(date);
+    if (isNaN(transactionDate.getTime())) {
+      return false;
+    }
 
-  return (
-    isMpgsProvider &&
-    isPaymentType &&
-    isApprovedTransaction &&
-    isTotalRefundAmountEqualZero &&
-    !isAlreadyVoided &&
-    !isRfsDateEqualZero &&
-    isValidBankVoidWindow &&
-    !isAuthorizeAndCaptured
-  );
+    const isPaymentType = normalizeString(trxType)
+      ? ['payment', 'pay', 'دفع', 'authorize', 'capture'].includes(normalizeString(trxType))
+      : false;
+
+    const isRfsDateEqualZero = pcc?.rfs_due_after === 0;
+
+    // Bank void window check - only applies if we have a known financial institution
+    // If the bank is not in our known list, we allow void (default to true)
+    const bankName = pcc?.financial_institution as BankName | undefined;
+    const isKnownBank = bankName ? bankName in MPGS_VOID_WINDOWS : false;
+    const isValidBankVoidWindow = isKnownBank
+      ? bankCutOffChecker(bankName, transactionDate)
+      : true; // If unknown bank or no bank info, allow void
+
+    const isAuthorizeAndCaptured =
+      normalizeString(trxType) === 'authorize' &&
+      transactions?.some(trx => normalizeString(trx.operation) === 'capture');
+
+    return (
+      isPaymentType &&
+      !isRfsDateEqualZero &&
+      isValidBankVoidWindow &&
+      !isAuthorizeAndCaptured
+    );
+  }
+
+  // For non-MPGS card payments, basic validation is sufficient
+  return true;
 };
 
 /**
