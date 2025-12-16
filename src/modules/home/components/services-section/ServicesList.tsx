@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlatList, Pressable, View } from 'react-native'
+import { FlatList, I18nManager, Pressable, View } from 'react-native'
 import FontText from '@/src/shared/components/FontText'
 import ServiceCard from './ServiceCard'
 import { useTranslation } from 'react-i18next'
@@ -17,7 +17,7 @@ const ServicesList = ({ qrCodeActionPress }: { qrCodeActionPress: () => void }) 
                 <Link href="/services" asChild>
                     <Pressable className='flex-row items-center gap-2'>
                         <FontText type="body" weight="regular" className='text-primary text-xs'>{t('All Services')}</FontText>
-                        <ArrowRightIcon size={16} color="#001F5F" />
+                        <ArrowRightIcon size={16} color="#001F5F" style={{ transform: [{ rotate: I18nManager.isRTL ? '180deg' : '0deg' }] }} />
                     </Pressable>
                 </Link>
             </View>

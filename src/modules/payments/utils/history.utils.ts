@@ -32,8 +32,8 @@ export const getPhoneNumber = (item: OrderDetailHistoryItem): string | null => {
 /**
  * Gets user-friendly payment method name
  */
-export const getPaymentMethodName = (item: OrderDetailHistoryItem): string => {
-    if (item.method === 'valu') return 'Valu';
+export const getPaymentMethodName = (item: OrderDetailHistoryItem, t: (key: string, options?: Record<string, any>) => string): string => {
+    if (item.method === 'valu') return t('Valu');
 
     if (item.method === 'wallet') {
         const walletProviders: Record<string, string> = {
@@ -41,11 +41,15 @@ export const getPaymentMethodName = (item: OrderDetailHistoryItem): string => {
             orange: 'Orange Cash',
             etisalat: 'Etisalat Cash',
         };
-        return walletProviders[item.provider || ''] || 'Wallet';
+        return t(walletProviders[item.provider || ''] || 'Wallet');
     }
 
-    if (item.method === 'card') return 'Card';
-    if (item.method === 'cash') return 'Cash';
+    if (item.method === 'card') {
+        const cardBrand = item.sourceOfFunds?.cardBrand || 'Card';
+        const maskedCard = item.sourceOfFunds?.maskedCard || '';
+        return t('using {{cardBrand}} {{maskedCard}}', { cardBrand, maskedCard });
+    }
+    if (item.method === 'cash') return t(`using ${item.sourceOfFunds?.type || 'Cash'}`);
 
     return item.method || 'Payment';
 };
@@ -55,10 +59,10 @@ export const getPaymentMethodName = (item: OrderDetailHistoryItem): string => {
  */
 const getTransactionDescription = (
     item: OrderDetailHistoryItem,
-    t: (key: string) => string,
+    t: (key: string, options?: Record<string, any>) => string,
 ): string => {
     const phone = getPhoneNumber(item);
-    const paymentMethod = getPaymentMethodName(item);
+    const paymentMethod = getPaymentMethodName(item, t);
     const amount = item.amount ? `${item.amount} EGP` : '';
     const status = item.status.toUpperCase();
 
@@ -86,7 +90,7 @@ const getTransactionDescription = (
 
     // Handle SUCCESS operations
     const operationDescriptions: Record<string, string> = {
-        pay: t(`Successful payment with ${paymentMethod}`),
+        pay: t('Successful payment {{paymentMethod}}', { paymentMethod }),
         refund: t(`Successfully refunded ${amount} due to customer request. It may take a few days for the money to reach the customer`),
         verify_customer: phone
             ? t(`${paymentMethod} client was successfuly verified using ${phone}`)
@@ -103,7 +107,7 @@ const getTransactionDescription = (
         merchant_login: t(`${paymentMethod} service initiated successfully`),
     };
 
-    return operationDescriptions[item.operation || ''] || t('Transaction') + `: ${item.operation}`;
+    return operationDescriptions[item.operation || ''] || t(`Successful ${item.operation?.toLowerCase()} authentication attempt ${paymentMethod}`);
 };
 
 /**
@@ -111,7 +115,7 @@ const getTransactionDescription = (
  */
 const getStatusDescription = (
     item: OrderDetailHistoryItem,
-    t: (key: string) => string,
+    t: (key: string, options?: Record<string, any>) => string,
 ): string => {
     const status = item.status.toUpperCase();
 
@@ -131,6 +135,7 @@ const getStatusDescription = (
         FAILED: t('Payment failed'),
         EXPIRED: t('Session expired'),
         REFUNDED: t('Payment refunded'),
+        ABANDONED: t('This transaction was abandoned because the payment incomplete'),
     };
 
     return statusDescriptions[status] || t('Status updated to') + ` ${item.status}`;
@@ -141,7 +146,7 @@ const getStatusDescription = (
  */
 export const getHistoryDescription = (
     item: OrderDetailHistoryItem,
-    t: (key: string) => string,
+    t: (key: string, options?: Record<string, any>) => string,
 ): string => {
     // Transaction items (have operation and transactionId)
     if (item.operation && item.transactionId) {

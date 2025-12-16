@@ -2,7 +2,7 @@ import FontText from '@/src/shared/components/FontText';
 import { AnimatePresence, MotiView } from 'moti';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 import { FunnelIcon, MagnifyingGlassIcon } from 'react-native-heroicons/outline';
 import SearchInput from '@/src/modules/payment-links/components/SearchInput';
 import { cn } from '@/src/core/utils/cn';
@@ -40,7 +40,7 @@ const ListHeader = ({
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     return (
-        <View className={cn("px-6", className)}>
+        <View className={cn("px-6", Platform.OS === 'android' ? 'pt-4' : 'pt-0', className)}>
             <View className="flex-row justify-between items-center">
                 <FontText
                     type="head"

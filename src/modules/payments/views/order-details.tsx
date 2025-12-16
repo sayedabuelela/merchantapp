@@ -1,37 +1,38 @@
-import MainHeader from '@/src/shared/components/headers/MainHeader'
-import {useLocalSearchParams} from 'expo-router';
-import {useTranslation} from 'react-i18next';
-import {SafeAreaView} from 'react-native-safe-area-context'
-import {useOrderDetailVM} from '../viewmodels';
-import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
-import {ScrollView, View, NativeSyntheticEvent, NativeScrollEvent} from 'react-native';
-import {OrderSummaryCard,} from '../components/order-detail';
-import FailedToLoad from '@/src/shared/components/errors/FailedToLoad';
-import DetailsTab from "@/src/modules/payments/components/detail/details-tabs/DetailsTab";
-import SettlementTab from "@/src/modules/payments/components/detail/details-tabs/SettlementTab";
-import HistoryTab from "@/src/modules/payments/components/detail/details-tabs/HistoryTab";
-import DetailsTabs from "@/src/modules/payments/components/detail/DetailsTabs";
-import { OrderDetailsTabType } from '../payments.model';
-import { useState } from 'react';
-import Button from '@/src/shared/components/Buttons/Button';
-import { useOrderActionsVM } from '../viewmodels/useOrderActionsVM';
-import { isVoidAvailable, isRefundAvailable, isCaptureAvailable } from '../utils/action-validators';
-import VoidConfirmation from '../components/modals/VoidConfirmation';
-import RefundConfirmation from '../components/modals/RefundConfirmation';
-import CaptureConfirmation from '../components/modals/CaptureConfirmation';
-import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
 import { cn } from '@/src/core/utils/cn';
+import DetailsTab from "@/src/modules/payments/components/detail/details-tabs/DetailsTab";
+import HistoryTab from "@/src/modules/payments/components/detail/details-tabs/HistoryTab";
+import SettlementTab from "@/src/modules/payments/components/detail/details-tabs/SettlementTab";
+import DetailsTabs from "@/src/modules/payments/components/detail/DetailsTabs";
+import Button from '@/src/shared/components/Buttons/Button';
+import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
+import FailedToLoad from '@/src/shared/components/errors/FailedToLoad';
+import MainHeader from '@/src/shared/components/headers/MainHeader';
 import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
 import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
 import ScaleView from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
+import { useLocalSearchParams } from 'expo-router';
+import LottieView from 'lottie-react-native';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import CaptureConfirmation from '../components/modals/CaptureConfirmation';
+import RefundConfirmation from '../components/modals/RefundConfirmation';
+import VoidConfirmation from '../components/modals/VoidConfirmation';
+import { OrderSummaryCard, } from '../components/order-detail';
+import { OrderDetailsTabType } from '../payments.model';
+import { isCaptureAvailable, isRefundAvailable, isVoidAvailable } from '../utils/action-validators';
+import { useOrderDetailVM } from '../viewmodels';
+import { useOrderActionsVM } from '../viewmodels/useOrderActionsVM';
+import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
 
 const OrderDetailsScreen = () => {
-    const {_id} = useLocalSearchParams<{ _id: string }>();
-    const {t} = useTranslation();
-    const {order, isLoading, isError, error, refetch} = useOrderDetailVM(_id || '');
+    const { _id } = useLocalSearchParams<{ _id: string }>();
+    const { t } = useTranslation();
+    const { order, isLoading, isError, error, refetch } = useOrderDetailVM(_id || '');
     const [activeTab, setActiveTab] = useState<OrderDetailsTabType>('details');
     const [isTabsSticky, setIsTabsSticky] = useState(false);
     const [summaryHeight, setSummaryHeight] = useState(0);
@@ -139,31 +140,32 @@ const OrderDetailsScreen = () => {
     const handleCaptureCancel = () => {
         setShowCaptureModal(false);
     };
-
-    if (isError || !order) {
-        return (
-            <View className="flex-1 bg-white">
-                <MainHeader title={t('Order Details')}/>
-                <FailedToLoad refetch={refetch} title={t('Failed to load order')}
-                              message={error?.message || t('An error occurred while loading the order details')}/>
-            </View>
-        );
-    }
-
     if (isLoading) {
         return (
-            <View className="flex-1 bg-white">
-                <MainHeader title={t('Order Details')}/>
-                <SimpleLoader/>
-            </View>
+            <SafeAreaView className="flex-1 bg-white ">
+                <MainHeader title={t('Order Details')} />
+                <FadeInDownView className="justify-center items-center flex-1" delay={200} duration={500}>
+                    <SimpleLoader size={100} />
+                </FadeInDownView>
+            </SafeAreaView>
         );
     }
+    if (isError || !order) {
+        return (
+            <SafeAreaView className="flex-1 bg-white">
+                <MainHeader title={t('Order Details')} />
+                <FailedToLoad refetch={refetch} title={t('Failed to load order')}
+                    message={error?.message || t('An error occurred while loading the order details')} />
+            </SafeAreaView>
+        );
+    }
+
 
     return (
         <SafeAreaView className="flex-1 bg-white">
             <FadeInDownView delay={0} duration={600}>
                 <MainHeader title={t('Order Details')}
-                            className={cn( isTabsSticky ? "mb-0 border-0 pb-0" : "mb-6 border-b")}
+                    className={cn(isTabsSticky ? "mb-0 border-0 pb-0" : "mb-6 border-b")}
                 />
             </FadeInDownView>
             <View className="flex-1">
@@ -182,17 +184,17 @@ const OrderDetailsScreen = () => {
                                     setSummaryHeight(height);
                                 }}
                             >
-                                <OrderSummaryCard order={order}/>
+                                <OrderSummaryCard order={order} />
                             </View>
                         </ScaleView>
 
                         {/* Tabs - Normal position (hidden when sticky to prevent duplicate) */}
-                        <View style={{ opacity: isTabsSticky ? 0 : 1,}}>
+                        <View style={{ opacity: isTabsSticky ? 0 : 1, }}>
                             <ScaleView delay={300} duration={600}>
                                 <DetailsTabs
-                                value={activeTab}
-                                onSelectType={setActiveTab}
-                                className={cn(isTabsSticky ? "mt-0" : "my-4")}
+                                    value={activeTab}
+                                    onSelectType={setActiveTab}
+                                    className={cn(isTabsSticky ? "mt-0" : "my-4")}
                                 />
                             </ScaleView>
                         </View>

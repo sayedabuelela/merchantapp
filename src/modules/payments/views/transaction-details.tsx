@@ -143,9 +143,19 @@ const TransactionDetailsScreen = () => {
         setShowCaptureModal(false);
     };
 
+    if (isLoading) {
+        return (
+            <SafeAreaView className="flex-1 bg-white ">
+                <MainHeader title={t('Order Details')} />
+                <FadeInDownView className="justify-center items-center flex-1" delay={200} duration={500}>
+                    <SimpleLoader size={100} />
+                </FadeInDownView>
+            </SafeAreaView>
+        );
+    }
     if (isError || !transaction) {
         return (
-            <View className="flex-1 bg-white">
+            <SafeAreaView className="flex-1 bg-white">
                 <MainHeader title={t('Transaction Details')} />
                 <FaildToLoad
                     refetch={refetch}
@@ -155,19 +165,9 @@ const TransactionDetailsScreen = () => {
                         t('An error occurred while loading the transaction details')
                     }
                 />
-            </View>
+            </SafeAreaView>
         );
     }
-
-    if (isLoading) {
-        return (
-            <View className="flex-1 bg-white">
-                <MainHeader title={t('Transaction Details')} />
-                <SimpleLoader />
-            </View>
-        );
-    }
-
     return (
         <SafeAreaView className="flex-1 bg-white">
             <FadeInDownView delay={0} duration={600}>

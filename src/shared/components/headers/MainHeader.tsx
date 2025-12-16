@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router";
-import { Pressable, View } from "react-native";
+import { I18nManager, Platform, Pressable, View } from "react-native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import FontText from "../FontText";
 import { EllipsisVerticalIcon } from "react-native-heroicons/solid";
 import { cn } from "@/src/core/utils/cn";
-
+const isRTL = I18nManager.isRTL;
 interface Props {
     title: string;
     withBack?: boolean;
@@ -16,10 +16,10 @@ interface Props {
 const MainHeader = ({ title, withBack = true, actionBtn = false, onActionBtnPress, className }: Props) => {
     const { back } = useRouter();
     return (
-        <View className={cn("flex-row items-center justify-between px-6 pb-4 mb-6 border-b border-tertiary", className)}>
+        <View className={cn("flex-row items-center justify-between px-6 pb-4 mb-6 border-b border-tertiary", Platform.OS === 'android' ? 'pt-4' : 'pt-0', className)}>
             <View className="flex-row items-center">
                 {withBack && <Pressable onPress={back}>
-                    <ChevronLeftIcon size={24} color="#0F172A" />
+                    <ChevronLeftIcon size={24} color="#0F172A" style={isRTL ? { transform: [{ rotate: '180deg' }] } : {}} />
                 </Pressable>}
                 <FontText
                     type="head"

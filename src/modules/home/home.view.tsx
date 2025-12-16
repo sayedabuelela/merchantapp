@@ -8,7 +8,7 @@ import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/Scal
 import StaggerChildrenView from "@/src/shared/components/wrappers/animated-wrappers/StaggerChildrenView"
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Pressable, ScrollView, View } from "react-native"
+import { Platform, Pressable, ScrollView, View } from "react-native"
 import { ChevronDownIcon } from "react-native-heroicons/outline"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Activity } from "../balance/balance.model"
@@ -31,6 +31,7 @@ import HomeTabs from "./components/HomeTabs"
 import ServicesList from "./components/services-section/ServicesList"
 import { HomeDateFilters, HomeTabType } from "./home.model"
 import { getDateFilterDisplayText, getDateRangeForFilter } from "./utils/dateFilterHelpers"
+import { cn } from "@/src/core/utils/cn"
 
 const HomeScreen = () => {
     const { t } = useTranslation();
@@ -116,7 +117,7 @@ const HomeScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <View className="flex-1">
+            <View className={cn("flex-1 ", Platform.OS === 'android' ? 'pt-4' : 'pt-0')}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     stickyHeaderIndices={[2]}

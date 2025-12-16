@@ -56,7 +56,7 @@ const WalletSettlementDetails = ({ data }: Props) => {
                 )}
                 {data.fees && (
                     <SectionRowItem
-                        title={t('Fees')}
+                        title={t('Kashier Fees')}
                         value={formatAmount(data.fees)}
                     />
                 )}

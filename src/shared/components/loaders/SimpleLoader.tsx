@@ -2,7 +2,7 @@ import LottieView from "lottie-react-native";
 import React, { FC } from "react";
 import { View } from "react-native";
 
-const SimpleLoader: FC = () => {
+const SimpleLoader: FC<{ size?: number }> = ({ size = 24 }) => {
     return (
         <View className="flex-1 justify-center items-center">
             <LottieView
@@ -10,8 +10,8 @@ const SimpleLoader: FC = () => {
                 autoPlay
                 loop
                 style={{
-                    width: 24,
-                    height: 24,
+                    width: size,
+                    height: size,
                 }}
             />
         </View>

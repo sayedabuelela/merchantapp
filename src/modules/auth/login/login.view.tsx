@@ -5,7 +5,7 @@ import FontText from "@/src/shared/components/FontText";
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBiometricViewModel } from "../biometric/biometric.viewmodel";
@@ -54,6 +54,8 @@ const LoginScreen = () => {
                 className="flex-1"
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                // extraKeyboardSpace={Platform.OS === 'ios' ? 40 : 110}
             >
                 <View className="items-center px-6">
                     <DeveloperSettings />

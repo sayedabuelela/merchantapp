@@ -1,4 +1,4 @@
-import { CheckIcon, ShieldCheckIcon, XMarkIcon, BanknotesIcon, EnvelopeIcon } from "react-native-heroicons/outline";
+import { CheckIcon, ShieldCheckIcon, XMarkIcon, BanknotesIcon, EnvelopeIcon, ShoppingCartIcon } from "react-native-heroicons/outline";
 import {
     ContactSettlementIcon,
     ValuSettlementIcon,
@@ -36,6 +36,7 @@ export const ICONS = {
     BASATA: <BasataSettlementIcon />,
     SOUHOOLA: <SouhoolaSettlementIcon />,
     CONTACT: <ContactSettlementIcon />,
+    ABANDONED: <ShoppingCartIcon size={16} color={COLORS.ICON_WHITE} />,
 } as const;
 
 /**
@@ -97,9 +98,9 @@ export const getHistoryIcon = (item: OrderDetailHistoryItem): HistoryIconData =>
     }
 
     // 3. Handle FAILURE/FAILED status (for any operation)
-    if (status === 'FAILURE' || status === 'FAILED') {
+    if (status === 'FAILURE' || status === 'FAILED' || status === 'ABANDONED') {
         return {
-            icon: ICONS.FAILURE,
+            icon: status === 'ABANDONED' ? ICONS.ABANDONED : ICONS.FAILURE,
             backgroundColor: COLORS.FAILURE,
         };
     }

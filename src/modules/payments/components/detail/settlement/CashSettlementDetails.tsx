@@ -31,13 +31,13 @@ const CashSettlementDetails = ({ data }: Props) => {
                 )}
                 {data.fees && (
                     <SectionRowItem
-                        title={t('Fees')}
+                        title={t('Kashier Fees')}
                         value={formatAmount(data.fees)}
                     />
                 )}
                 {data.vat && (
                     <SectionRowItem
-                        title={t('VAT')}
+                        title={t('Fees After 14% VAT')}
                         value={formatAmount(data.vat)}
                     />
                 )}

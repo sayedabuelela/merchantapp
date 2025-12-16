@@ -209,7 +209,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
     if (!payment) {
         return null;
     }
-
+    console.log('PaymentActionsModal payment', payment);
     return (
         <Modal
             transparent

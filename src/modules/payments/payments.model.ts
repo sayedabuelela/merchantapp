@@ -1,5 +1,5 @@
 // Session Status Types
-export type SessionStatus = 'OPENED' | 'PAID' | 'EXPIRED' | 'FAILED' | 'REFUNDED'| 'VOIDED';
+export type SessionStatus = 'OPENED' | 'PAID' | 'EXPIRED' | 'FAILED' | 'REFUNDED' | 'VOIDED' | 'AUTHORIZED';
 
 // Payment Method Types
 export type PaymentMethod = 'cash' | 'card' | 'wallet' | string;
@@ -39,6 +39,17 @@ export interface PaymentSession {
     orderId?: string;
     provider?: string;
     targetTransactionId?: string;
+    // Fields needed for void/capture eligibility from list
+    lastTransactionType?: string;
+    paymentChannel?: string;
+    pcc?: {
+        rfs_due_after?: number;
+        financial_institution?: string;
+    };
+    history?: Array<{
+        operation?: string;
+        status?: string;
+    }>;
 }
 
 export interface Pagination {
