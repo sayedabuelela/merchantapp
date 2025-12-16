@@ -1,44 +1,37 @@
 import { User } from '../auth.model';
 
-// URL query parameters from deep link
+/**
+ * URL query parameters from deep link
+ * These are encrypted values passed from the web portal
+ */
 export interface DeepLinkParams {
-  accessToken: string; // Encrypted token (hex)
-  currentMerchantPayformanceId: string; // Encrypted merchant ID (hex)
-  refreshToken?: string; // Encrypted refresh token (ignored)
-  v2?: string; // Version flag
+  accessToken: string;
+  currentMerchantPayformanceId: string;
+  refreshToken?: string;
+  v2?: string;
 }
 
-// Response from POST /v2/identity/auth-by-token
-export interface AuthByTokenResponse {
-  body: {
-    accessToken: {
-      token: string;
-      expires: string;
-    };
-    refreshToken?: {
-      token: string;
-      expires: string;
-    };
-    isLive: boolean;
-  };
-  success: boolean;
-  message?: string;
-}
-
-// Response from GET /v2/identity/user (getMerchant)
-export interface GetMerchantResponse {
-  body: User; // Full user object
-  success: boolean;
-}
-
-// Combined result from mutation
+/**
+ * Result of successful deep link authentication
+ */
 export interface DeepLinkAuthResult {
-  realToken: string;
-  fullUserData: User;
+  token: string;
+  user: User;
   isLive: boolean;
 }
 
-// Error handling
+/**
+ * Deep link error codes for user-friendly error handling
+ */
+export type DeepLinkErrorCode =
+  | 'MISSING_PARAMS'
+  | 'DECRYPTION_FAILED'
+  | 'AUTH_FAILED'
+  | 'NETWORK_ERROR';
+
+/**
+ * Extended error type for deep link authentication
+ */
 export interface DeepLinkError extends Error {
-  code?: 'MISSING_PARAMS' | 'DECRYPTION_FAILED' | 'AUTH_FAILED' | 'NETWORK_ERROR';
+  code?: DeepLinkErrorCode;
 }

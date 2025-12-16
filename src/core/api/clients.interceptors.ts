@@ -8,11 +8,23 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const addAuthInterceptor = (instance: AxiosInstance): AxiosInstance => {
     instance.interceptors.request.use(config => {
-        const token = useAuthStore.getState().token;
-        // console.log('addAuthInterceptor token : ', token)
+        // Skip if Authorization header is already set in this request
+        // if (config.headers.Authorization) {
+        //     console.log('[Interceptor] Using existing Authorization header for:', config.url);
+        //     return config;
+        // }
+
+        const state = useAuthStore.getState();
+        console.log('state',state);
+        
+        const token = state.token;
+        const user = state.user;
+
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
-            // config.headers["authmerchantid"] = `${user?.merchantId}`
+            if (user?.merchantId) {
+                config.headers["authmerchantid"] = user.merchantId;
+            }
             // config.headers["client-type"] = `merchantApp`
         }
         return config
@@ -64,6 +76,7 @@ export const addErrorInterceptor = (instance: AxiosInstance): AxiosInstance => {
             }
 
             if (error.response?.status === 401 || error.response?.status === 403) {
+                console.log('[Interceptor] 401/403 Error:', error.config?.url);
                 const clearAuth = useAuthStore.getState().clearAuth;
                 clearAuth();
                 const hasBiometricEnabled = useBiometricStore.getState().isEnabled;
@@ -74,6 +87,7 @@ export const addErrorInterceptor = (instance: AxiosInstance): AxiosInstance => {
                     router.replace(ROUTES.AUTH.LOGIN);
                 }
                 return Promise.reject(error);
+                
             }
 
             if (error.response?.data) {

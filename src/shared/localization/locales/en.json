@@ -101,5 +101,11 @@
   "Login successful": "Login successful",
   "Authentication failed. Please try again.": "Authentication failed. Please try again.",
   "Invalid deep link. Missing required parameters.": "Invalid deep link. Missing required parameters.",
-  "Failed to decrypt token. The link may be invalid or expired.": "Failed to decrypt token. The link may be invalid or expired."
+  "Failed to decrypt token. The link may be invalid or expired.": "Failed to decrypt token. The link may be invalid or expired.",
+  "Capture": "Capture",
+  "Capture Transaction": "Capture Transaction",
+  "Are you sure you want to capture this authorized transaction?": "Are you sure you want to capture this authorized transaction?",
+  "Confirm capture": "Confirm capture",
+  "Transaction captured successfully": "Transaction captured successfully",
+  "Failed to capture transaction": "Failed to capture transaction"
 }

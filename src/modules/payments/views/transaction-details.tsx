@@ -15,9 +15,10 @@ import { TransactionDetailsTabType } from '../payments.model';
 import { useState } from 'react';
 import Button from '@/src/shared/components/Buttons/Button';
 import { useTransactionActionsVM } from '../viewmodels/useTransactionActionsVM';
-import { isVoidAvailableForTransaction, isRefundAvailableForTransaction } from '../utils/action-validators';
+import { isVoidAvailableForTransaction, isRefundAvailableForTransaction, isCaptureAvailableForTransaction } from '../utils/action-validators';
 import VoidConfirmationTransaction from '../components/modals/VoidConfirmationTransaction';
 import RefundConfirmationTransaction from '../components/modals/RefundConfirmationTransaction';
+import CaptureConfirmationTransaction from '../components/modals/CaptureConfirmationTransaction';
 import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
 import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
 import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
@@ -39,6 +40,7 @@ const TransactionDetailsScreen = () => {
     // Action modals state
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
+    const [showCaptureModal, setShowCaptureModal] = useState(false);
 
     // Actions viewmodel
     const {
@@ -46,12 +48,15 @@ const TransactionDetailsScreen = () => {
         isVoidingTransaction,
         refundTransaction: refundTransactionMutation,
         isRefundingTransaction,
+        captureTransaction: captureTransactionMutation,
+        isCapturingTransaction,
     } = useTransactionActionsVM(transactionId || '');
 
     // Determine button visibility
     const canVoid = transaction ? isVoidAvailableForTransaction(transaction) : false;
     const canRefund = transaction ? isRefundAvailableForTransaction(transaction) : false;
-    const showActionButtons = canVoid || canRefund;
+    const canCapture = transaction ? isCaptureAvailableForTransaction(transaction) : false;
+    const showActionButtons = canVoid || canRefund || canCapture;
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const scrollY = event.nativeEvent.contentOffset.y;
@@ -115,6 +120,27 @@ const TransactionDetailsScreen = () => {
 
     const handleRefundCancel = () => {
         setShowRefundModal(false);
+    };
+
+    // Capture handlers
+    const handleCapturePress = () => {
+        setShowCaptureModal(true);
+    };
+
+    const handleCaptureConfirm = () => {
+        if (!transaction || !transaction.order?.orderId) return;
+        captureTransactionMutation(
+            { orderId: transaction.order.orderId },
+            {
+                onSuccess: () => {
+                    setShowCaptureModal(false);
+                },
+            }
+        );
+    };
+
+    const handleCaptureCancel = () => {
+        setShowCaptureModal(false);
     };
 
     if (isError || !transaction) {
@@ -232,6 +258,15 @@ const TransactionDetailsScreen = () => {
                                     />
                                 </View>
                             )}
+                            {canCapture && (
+                                <View className="flex-1">
+                                    <Button
+                                        title={t('Capture')}
+                                        variant="primary"
+                                        onPress={handleCapturePress}
+                                    />
+                                </View>
+                            )}
                         </View>
                     </View>
                 )}
@@ -265,6 +300,22 @@ const TransactionDetailsScreen = () => {
                         onConfirm={handleRefundConfirm}
                         onCancel={handleRefundCancel}
                         isRefunding={isRefundingTransaction}
+                    />
+                </ConfirmationModal>
+            )}
+
+            {/* Capture Confirmation Modal */}
+            {transaction && (
+                <ConfirmationModal
+                    isVisible={showCaptureModal}
+                    onClose={handleCaptureCancel}
+                    title={t('Capture Transaction')}
+                >
+                    <CaptureConfirmationTransaction
+                        transaction={transaction}
+                        onConfirm={handleCaptureConfirm}
+                        onCancel={handleCaptureCancel}
+                        isCapturing={isCapturingTransaction}
                     />
                 </ConfirmationModal>
             )}

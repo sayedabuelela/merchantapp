@@ -2,7 +2,7 @@ import { useApi } from "@/src/core/api/clients.hooks";
 import { useGroupedData } from "@/src/core/hooks/useGroupedData";
 import { groupByDate } from "@/src/core/utils/groupData";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { selectUser, useAuthStore } from "../../auth/auth.store";
+import { selectUser, useAuthStore, selectIsAuthenticated } from "../../auth/auth.store";
 import useHasFeature from "../../auth/hooks/useHasFeature";
 import usePermissions from "../../auth/hooks/usePermissions";
 import { Activity, ActivitiesInfinityResponse, ActivitiesResponse, FetchActivitiesParams } from "../balance.model";
@@ -12,6 +12,7 @@ import { useBalanceStore, selectActiveAccountId } from "../balance.store";
 export const useActivitiesVM = (params?: FetchActivitiesParams) => {
     const { api } = useApi();
     const user = useAuthStore(selectUser);
+    const isAuthenticated = useAuthStore(selectIsAuthenticated);
     const { canViewBalance } = usePermissions(user?.actions!);
     const hasBalanceFeature = useHasFeature("multi accounts");
     const activeAccountId = useBalanceStore(selectActiveAccountId);
@@ -31,7 +32,7 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
             return page < totalPages ? page + 1 : undefined;
         },
         initialPageParam: 1,
-        enabled: !!(canViewBalance && hasBalanceFeature),
+        enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated),
         // keepPreviousData: true,
         staleTime: 5 * 60 * 1000, // 5 minutes
     });
@@ -71,6 +72,7 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
 export const useRecentBalanceActivities = () => {
     const { api } = useApi();
     const user = useAuthStore(selectUser);
+    const isAuthenticated = useAuthStore(selectIsAuthenticated);
     const { canViewBalance } = usePermissions(user?.actions!);
     const hasBalanceFeature = useHasFeature("multi accounts");
     const activeAccountId = useBalanceStore(selectActiveAccountId);
@@ -78,7 +80,7 @@ export const useRecentBalanceActivities = () => {
     return useQuery<ActivitiesResponse, Error, ActivitiesResponse>({
         queryKey: ["balanceActivities", activeAccountId, { limit: 3, page: 1 }],
         queryFn: () => getActivities(api, { limit: 3, page: 1, accountId: activeAccountId }),
-        enabled: !!(canViewBalance && hasBalanceFeature),
+        enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated),
         staleTime: 5 * 60 * 1000,
     });
 };

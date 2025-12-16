@@ -14,7 +14,7 @@ export const useEnvironmentStore = create<EnvironmentState>()(
     persist(
         (set) => ({
             environment: Environment.PRODUCTION,
-            mode: Mode.TEST,
+            mode: Mode.LIVE,
             setEnvironment: (environment) => set({environment}),
             setMode: (mode) => set({mode}),
         }),

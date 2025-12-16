@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Kashier',
   slug: 'kashier',
-  version: '1.0.0',
+  version: '1.6.3',
   orientation: 'portrait',
   icon: './src/shared/assets/images/app-icon.png',
   scheme: 'kashier',
@@ -39,6 +39,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     intentFilters: [
       {
         action: 'VIEW',
+        autoVerify: true,
         data: [
           {
             scheme: 'https',
@@ -50,6 +51,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
       {
         action: 'VIEW',
+        autoVerify: true,
         data: [
           {
             scheme: 'https',
@@ -59,6 +61,26 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         ],
         category: ['BROWSABLE', 'DEFAULT'],
       },
+      {
+        action: 'VIEW',
+        data: [
+          {
+            scheme: 'kashier',
+            host: 'en',
+            pathPrefix: '/login',
+          },
+          {
+            scheme: 'kashier',
+            host: 'ar',
+            pathPrefix: '/login',
+          },
+          {
+            scheme: 'kashier',
+            host: 'login',
+          },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      }
     ],
   },
   web: {

@@ -15,9 +15,10 @@ import { OrderDetailsTabType } from '../payments.model';
 import { useState } from 'react';
 import Button from '@/src/shared/components/Buttons/Button';
 import { useOrderActionsVM } from '../viewmodels/useOrderActionsVM';
-import { isVoidAvailable, isRefundAvailable } from '../utils/action-validators';
+import { isVoidAvailable, isRefundAvailable, isCaptureAvailable } from '../utils/action-validators';
 import VoidConfirmation from '../components/modals/VoidConfirmation';
 import RefundConfirmation from '../components/modals/RefundConfirmation';
+import CaptureConfirmation from '../components/modals/CaptureConfirmation';
 import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
 import { cn } from '@/src/core/utils/cn';
 import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
@@ -38,6 +39,7 @@ const OrderDetailsScreen = () => {
     // Action modals state
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
+    const [showCaptureModal, setShowCaptureModal] = useState(false);
 
     // Actions viewmodel
     const {
@@ -45,12 +47,15 @@ const OrderDetailsScreen = () => {
         isVoidingOrder,
         refundOrder: refundOrderMutation,
         isRefundingOrder,
+        captureOrder: captureOrderMutation,
+        isCapturingOrder,
     } = useOrderActionsVM(_id || '');
 
     // Determine button visibility
     const canVoid = order ? isVoidAvailable(order) : false;
     const canRefund = order ? isRefundAvailable(order) : false;
-    const showActionButtons = canVoid || canRefund;
+    const canCapture = order ? isCaptureAvailable(order) : false;
+    const showActionButtons = canVoid || canRefund || canCapture;
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const scrollY = event.nativeEvent.contentOffset.y;
@@ -112,6 +117,27 @@ const OrderDetailsScreen = () => {
 
     const handleRefundCancel = () => {
         setShowRefundModal(false);
+    };
+
+    // Capture handlers
+    const handleCapturePress = () => {
+        setShowCaptureModal(true);
+    };
+
+    const handleCaptureConfirm = () => {
+        if (!order) return;
+        captureOrderMutation(
+            { orderId: order.orderId },
+            {
+                onSuccess: () => {
+                    setShowCaptureModal(false);
+                },
+            }
+        );
+    };
+
+    const handleCaptureCancel = () => {
+        setShowCaptureModal(false);
     };
 
     if (isError || !order) {
@@ -224,6 +250,15 @@ const OrderDetailsScreen = () => {
                                     />
                                 </View>
                             )}
+                            {canCapture && (
+                                <View className="flex-1">
+                                    <Button
+                                        title={t('Capture')}
+                                        variant="primary"
+                                        onPress={handleCapturePress}
+                                    />
+                                </View>
+                            )}
                         </View>
                     </View>
                 )}
@@ -257,6 +292,22 @@ const OrderDetailsScreen = () => {
                         onConfirm={handleRefundConfirm}
                         onCancel={handleRefundCancel}
                         isRefunding={isRefundingOrder}
+                    />
+                </ConfirmationModal>
+            )}
+
+            {/* Capture Confirmation Modal */}
+            {order && (
+                <ConfirmationModal
+                    isVisible={showCaptureModal}
+                    onClose={handleCaptureCancel}
+                    title={t('Capture Transaction')}
+                >
+                    <CaptureConfirmation
+                        order={order}
+                        onConfirm={handleCaptureConfirm}
+                        onCancel={handleCaptureCancel}
+                        isCapturing={isCapturingOrder}
                     />
                 </ConfirmationModal>
             )}

@@ -362,5 +362,11 @@
   "Login successful": "تم تسجيل الدخول بنجاح",
   "Authentication failed. Please try again.": "فشلت المصادقة. يرجى المحاولة مرة أخرى.",
   "Invalid deep link. Missing required parameters.": "رابط غير صالح. معلمات مطلوبة مفقودة.",
-  "Failed to decrypt token. The link may be invalid or expired.": "فشل فك تشفير الرمز. قد يكون الرابط غير صالح أو منتهي الصلاحية."
+  "Failed to decrypt token. The link may be invalid or expired.": "فشل فك تشفير الرمز. قد يكون الرابط غير صالح أو منتهي الصلاحية.",
+  "Capture": "تحصيل",
+  "Capture Transaction": "تحصيل المعاملة",
+  "Are you sure you want to capture this authorized transaction?": "هل أنت متأكد أنك تريد تحصيل هذه المعاملة المعتمدة؟",
+  "Confirm capture": "تأكيد التحصيل",
+  "Transaction captured successfully": "تم تحصيل المعاملة بنجاح",
+  "Failed to capture transaction": "فشل تحصيل المعاملة"
 }

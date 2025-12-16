@@ -9,6 +9,17 @@ export const decryptToken = (encryptedHex: string): string => {
       throw new Error('Invalid encrypted data');
     }
 
+    // Validate encryption config
+    if (!ENCRYPTION_KEY || !ENCRYPTION_IV) {
+      console.error('[Crypto] Missing encryption config:', {
+        hasKey: !!ENCRYPTION_KEY,
+        hasIV: !!ENCRYPTION_IV,
+        keyLength: ENCRYPTION_KEY?.length,
+        ivLength: ENCRYPTION_IV?.length,
+      });
+      throw new Error('Missing encryption configuration (ENCRYPTION_KEY or ENCRYPTION_IV)');
+    }
+
     // Parse hex strings to WordArray
     const key = Hex.parse(ENCRYPTION_KEY);
     const iv = Hex.parse(ENCRYPTION_IV);

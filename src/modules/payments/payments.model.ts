@@ -511,3 +511,58 @@ export interface RefundOrderResponse {
     status: string;
     statusCode: number;
 }
+
+/**
+ * Request payload for capturing an authorized order
+ */
+export interface CaptureOrderRequest {
+    orderId: string;
+}
+
+/**
+ * Response structure for capture operation
+ */
+export interface CaptureOrderResponse {
+    response: {
+        apiOperation: string;
+        operation: string;
+        currency: string;
+        result: string;
+        status: string;
+        authorizationNumber?: string;
+        authentication?: any;
+        paymentMethod?: any;
+        metaData?: SharedMetaData;
+        origin?: any;
+        reconciliation?: any;
+        merchantId: string;
+        order: {
+            amount: number;
+            currency: string;
+            originalAmount: number;
+            callbackURL?: string;
+            systemOrderId: string;
+            reference: string;
+        };
+        amount: number;
+        totalRefundedAmount: number;
+        totalCapturedAmount: number;
+        totalAuthorizedAmount: number;
+        apiKeyId?: string;
+        method: string;
+        creationDate: string;
+        orderId: string;
+        provider: string;
+        merchantOrderId: string;
+        orderReference?: string;
+        paymentType?: string;
+        interactionSource?: string;
+        device?: any;
+        transactionId: string;
+        transactionResponseCode: string;
+        transactionResponseMessage: TransactionResponseMessage;
+    };
+    messages: TransactionResponseMessage;
+    status: string;
+    statusCode: number;
+}

@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { AnimatePresence, MotiView } from 'moti';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Modal, Pressable, TouchableWithoutFeedback, View } from 'react-native';
-import { Bars3BottomLeftIcon, ArrowPathIcon, XMarkIcon } from 'react-native-heroicons/outline';
+import { Bars3BottomLeftIcon, ArrowPathIcon, XMarkIcon, CheckCircleIcon } from 'react-native-heroicons/outline';
 
 import FontText from '@/src/shared/components/FontText';
 import ActionItem from './ActionItem';
@@ -15,8 +15,10 @@ import { usePaymentActionsModal } from '../../../hooks/usePaymentActionsModal';
 import ConfirmationModal from '@/src/shared/components/ConfirmationModal/ConfirmationModal';
 import VoidConfirmation from '../VoidConfirmation';
 import RefundConfirmation from '../RefundConfirmation';
+import CaptureConfirmation from '../CaptureConfirmation';
 import VoidConfirmationTransaction from '../VoidConfirmationTransaction';
 import RefundConfirmationTransaction from '../RefundConfirmationTransaction';
+import CaptureConfirmationTransaction from '../CaptureConfirmationTransaction';
 
 interface Props {
     isVisible: boolean;
@@ -35,20 +37,24 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
     const [isAnimating, setIsAnimating] = useState(false);
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
+    const [showCaptureModal, setShowCaptureModal] = useState(false);
 
     // Extract orderId from payment data
-    const orderId = type === 'order' 
-        ? (payment as PaymentSession).orderId 
+    const orderId = type === 'order'
+        ? (payment as PaymentSession).orderId
         : isTransaction(payment) ? payment.id : null;
 
     // Use payment actions hook for all eligibility and action handling
     const {
         canVoid,
         canRefund,
+        canCapture,
         voidAction,
         refundAction,
+        captureAction,
         isVoiding,
         isRefunding,
+        isCapturing,
         navigateToDetails,
         getRefundParams,
     } = usePaymentActionsModal({ payment, type, orderId });
@@ -122,6 +128,32 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
 
     const handleRefundCancel = useCallback(() => {
         setShowRefundModal(false);
+    }, []);
+
+    // Capture handlers
+    const handleCapturePress = useCallback(() => {
+        setShowCaptureModal(true);
+    }, []);
+
+    const handleCaptureConfirm = useCallback(() => {
+        if (!orderId) return;
+        captureAction(
+            { orderId },
+            {
+                onSuccess: () => {
+                    // Only close the confirmation modal
+                    // Do NOT close the main modal - let user dismiss it manually to prevent freeze
+                    setShowCaptureModal(false);
+                },
+                onError: () => {
+                    // Keep capture modal open on error so user can see message and retry
+                },
+            }
+        );
+    }, [orderId, captureAction]);
+
+    const handleCaptureCancel = useCallback(() => {
+        setShowCaptureModal(false);
     }, []);
 
     // Build display data with safety checks
@@ -267,6 +299,14 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                                             variant="danger"
                                         />
                                     )}
+                                    {canCapture && orderId && (
+                                        <ActionItem
+                                            icon={<CheckCircleIcon size={24} color="#001F5F" />}
+                                            title={t("Capture")}
+                                            onPress={handleCapturePress}
+                                            isLoading={isCapturing}
+                                        />
+                                    )}
                                 </View>
                             </MotiView>
                         </TouchableWithoutFeedback>
@@ -302,6 +342,19 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                             isRefunding={isRefunding}
                         />
                     </ConfirmationModal>
+
+                    <ConfirmationModal
+                        isVisible={showCaptureModal}
+                        onClose={handleCaptureCancel}
+                        title={t("Capture Transaction")}
+                    >
+                        <CaptureConfirmation
+                            order={orderForModal as any}
+                            onConfirm={handleCaptureConfirm}
+                            onCancel={handleCaptureCancel}
+                            isCapturing={isCapturing}
+                        />
+                    </ConfirmationModal>
                 </>
             )}
 
@@ -330,6 +383,19 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                             onConfirm={handleRefundConfirm}
                             onCancel={handleRefundCancel}
                             isRefunding={isRefunding}
+                        />
+                    </ConfirmationModal>
+
+                    <ConfirmationModal
+                        isVisible={showCaptureModal}
+                        onClose={handleCaptureCancel}
+                        title={t("Capture Transaction")}
+                    >
+                        <CaptureConfirmationTransaction
+                            transaction={transactionForModal as any}
+                            onConfirm={handleCaptureConfirm}
+                            onCancel={handleCaptureCancel}
+                            isCapturing={isCapturing}
                         />
                     </ConfirmationModal>
                 </>

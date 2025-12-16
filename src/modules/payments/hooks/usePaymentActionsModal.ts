@@ -1,6 +1,6 @@
 /**
  * Hook for Payment Actions Modal
- * 
+ *
  * Handles eligibility checks and action execution for both orders and transactions
  * from list views (which have limited data compared to detail screens)
  */
@@ -11,12 +11,12 @@ import type { PaymentSession, Transaction } from '../payments.model';
 import { useOrderActionsVM } from '../viewmodels/useOrderActionsVM';
 import { useTransactionActionsVM } from '../viewmodels/useTransactionActionsVM';
 import {
-    isVoidAvailableForTransaction,
-    isRefundAvailableForTransaction,
-} from '../utils/action-validators';
-import {
     isVoidEligibleFromList,
     isRefundEligibleFromList,
+    isCaptureEligibleFromList,
+    isVoidEligibleFromListTransaction,
+    isRefundEligibleFromListTransaction,
+    isCaptureEligibleFromListTransaction,
 } from '../utils/list-eligibility-validators';
 
 interface UsePaymentActionsModalParams {
@@ -39,27 +39,38 @@ export const usePaymentActionsModal = ({
     const transactionActions = useTransactionActionsVM(orderId || '');
 
     // Select appropriate actions based on type
-    const voidAction = type === 'order' 
-        ? orderActions.voidOrder 
+    const voidAction = type === 'order'
+        ? orderActions.voidOrder
         : transactionActions.voidTransaction;
     const refundAction = type === 'order'
         ? orderActions.refundOrder
         : transactionActions.refundTransaction;
+    const captureAction = type === 'order'
+        ? orderActions.captureOrder
+        : transactionActions.captureTransaction;
     const isVoiding = type === 'order'
         ? orderActions.isVoidingOrder
         : transactionActions.isVoidingTransaction;
     const isRefunding = type === 'order'
         ? orderActions.isRefundingOrder
         : transactionActions.isRefundingTransaction;
+    const isCapturing = type === 'order'
+        ? orderActions.isCapturingOrder
+        : transactionActions.isCapturingTransaction;
 
-    // Check eligibility
+    // Check eligibility using list-specific validators
+    // These validators use only fields available in list API responses
     const canVoid = type === 'order'
         ? isVoidEligibleFromList(payment as PaymentSession)
-        : isVoidAvailableForTransaction(mapTransactionForValidator(payment as Transaction));
+        : isVoidEligibleFromListTransaction(payment as Transaction);
 
     const canRefund = type === 'order'
         ? isRefundEligibleFromList(payment as PaymentSession)
-        : isRefundAvailableForTransaction(mapTransactionForValidator(payment as Transaction));
+        : isRefundEligibleFromListTransaction(payment as Transaction);
+
+    const canCapture = type === 'order'
+        ? isCaptureEligibleFromList(payment as PaymentSession)
+        : isCaptureEligibleFromListTransaction(payment as Transaction);
 
     // Navigation
     const navigateToDetails = useCallback(() => {
@@ -102,35 +113,14 @@ export const usePaymentActionsModal = ({
     return {
         canVoid,
         canRefund,
+        canCapture,
         voidAction,
         refundAction,
+        captureAction,
         isVoiding,
         isRefunding,
+        isCapturing,
         navigateToDetails,
         getRefundParams,
     };
 };
-
-/**
- * Map Transaction from list to TransactionDetail structure for validators
- */
-function mapTransactionForValidator(transaction: Transaction): any {
-    return {
-        ...transaction,
-        date: transaction.date || transaction.createdAt,
-        discount: null,
-        paymentChannel: transaction.channel || 'ECOMMERCE',
-        paymentStatus: transaction.status,
-        trxType: transaction.type || 'PAYMENT',
-        merchantOrderId: transaction.merchantOrderId || '',
-        origin: 'portal',
-        transactionResponseCode: transaction.transactionResponseCode || '',
-        transactionResponseMessage: transaction.transactionResponseMessage || { en: '', ar: '' },
-        isReversed: false,
-        pcc: {
-            rfs_due_after: undefined,
-            financial_institution: undefined,
-        },
-        transactions: transaction.transactions || [],
-    };
-}

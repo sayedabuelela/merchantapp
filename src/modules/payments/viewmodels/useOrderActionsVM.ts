@@ -9,8 +9,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useApi } from '@/src/core/api/clients.hooks';
 import { useToast } from '@/src/core/providers/ToastProvider';
 import { useTranslation } from 'react-i18next';
-import { voidOrder, refundOrder } from '../payments.services';
-import type { VoidOrderRequest, RefundOrderRequest } from '../payments.model';
+import { voidOrder, refundOrder, captureOrder } from '../payments.services';
+import type { VoidOrderRequest, RefundOrderRequest, CaptureOrderRequest } from '../payments.model';
 
 export const useOrderActionsVM = (sessionId: string) => {
     const { paymentApi } = useApi();
@@ -101,6 +101,44 @@ export const useOrderActionsVM = (sessionId: string) => {
         },
     });
 
+    /**
+     * Capture mutation
+     * Invalidates order detail and order list queries on success
+     */
+    const captureMutation = useMutation({
+        mutationFn: (request: CaptureOrderRequest) => captureOrder(paymentApi, request),
+        onSuccess: (data) => {
+            // Invalidate order detail query to refresh the screen
+            queryClient.invalidateQueries({ queryKey: ['payment-order-detail', sessionId] });
+
+            // Invalidate order list queries to update the list screen
+            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
+
+            // Show success toast
+            const message = i18n.language === 'ar'
+                ? data.messages.ar || 'تم تحصيل المعاملة بنجاح'
+                : data.messages.en || 'Transaction captured successfully';
+
+            showToast({
+                message,
+                type: 'success',
+                duration: 3000,
+            });
+        },
+        onError: (error: any) => {
+            // Show error toast
+            const errorMessage = i18n.language === 'ar'
+                ? error.response?.data?.messages?.ar || 'فشل تحصيل المعاملة'
+                : error.response?.data?.messages?.en || 'Failed to capture transaction';
+
+            showToast({
+                message: errorMessage,
+                type: 'danger',
+                duration: 4000,
+            });
+        },
+    });
+
     return {
         // Void operation
         voidOrder: voidMutation.mutate,
@@ -113,5 +151,11 @@ export const useOrderActionsVM = (sessionId: string) => {
         isRefundingOrder: refundMutation.isPending,
         refundError: refundMutation.error,
         refundData: refundMutation.data,
+
+        // Capture operation
+        captureOrder: captureMutation.mutate,
+        isCapturingOrder: captureMutation.isPending,
+        captureError: captureMutation.error,
+        captureData: captureMutation.data,
     };
 };

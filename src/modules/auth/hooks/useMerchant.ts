@@ -1,5 +1,5 @@
-import { useQuery , useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuthStore, selectUpdateUser, selectUser, selectUpdateToken } from '@/src/modules/auth/auth.store';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthStore, selectUpdateUser, selectUser, selectUpdateToken, selectIsAuthenticated } from '@/src/modules/auth/auth.store';
 import { getMerchant } from '@/src/modules/auth/login/login.service';
 import { useApi } from '@/src/core/api/clients.hooks';
 import { AxiosInstance } from 'axios';
@@ -25,13 +25,14 @@ export const useMerchant = () => {
     const { api } = useApi();
     const updateUser = useAuthStore(selectUpdateUser);
     const user = useAuthStore(selectUser);
+    const isAuthenticated = useAuthStore(selectIsAuthenticated);
 
     const merchantId = user?.merchantId;
 
     return useQuery({
         queryKey: ['merchantData', merchantId],
         queryFn: () => fetchAndSyncMerchant(api, updateUser),
-        enabled: !!merchantId,
+        enabled: !!merchantId && isAuthenticated,
         staleTime: 1000 * 60 * 24, // 24 hours
     });
 };

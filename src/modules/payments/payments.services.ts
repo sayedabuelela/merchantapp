@@ -11,7 +11,9 @@ import {
     VoidOrderRequest,
     VoidOrderResponse,
     RefundOrderRequest,
-    RefundOrderResponse
+    RefundOrderResponse,
+    CaptureOrderRequest,
+    CaptureOrderResponse
 } from './payments.model';
 
 /**
@@ -269,6 +271,30 @@ export const refundOrder = async (
     const response = await api.put<RefundOrderResponse>(
         `/v3/orders/${orderId}?api-version=2`,
         payload
+    );
+
+    return response.data;
+};
+
+/**
+ * Capture an authorized order
+ * Endpoint: PUT /v3/orders/{orderId}?api-version=2
+ * @param api - Axios instance from useApi hook
+ * @param request - Capture request parameters
+ * @returns Promise with capture operation response
+ */
+export const captureOrder = async (
+    api: AxiosInstance,
+    request: CaptureOrderRequest
+): Promise<CaptureOrderResponse> => {
+    const { orderId } = request;
+
+    const response = await api.put<CaptureOrderResponse>(
+        `/v3/orders/${orderId}?api-version=2`,
+        {
+            apiOperation: 'CAPTURE',
+            autoVoid: false,
+        }
     );
 
     return response.data;
