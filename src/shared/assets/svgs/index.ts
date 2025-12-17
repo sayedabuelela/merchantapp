@@ -50,3 +50,5 @@ export { default as SouhoolaSettlementIcon } from './files/settlement-types/souh
 export { default as RefundSettlementIcon } from './files/settlement-types/refund-icon.svg';
 export { default as POSIcon } from './files/banks/pos-icon.svg';
 export { default as PaymentsEmptyListIcon } from './files/payments/payments-empyt-list-icon.svg';
+export { default as POSServiceIcon } from './files/services/pos-service-icon.svg';
+

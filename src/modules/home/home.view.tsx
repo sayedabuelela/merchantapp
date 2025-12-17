@@ -32,7 +32,7 @@ import ServicesList from "./components/services-section/ServicesList"
 import { HomeDateFilters, HomeTabType } from "./home.model"
 import { getDateFilterDisplayText, getDateRangeForFilter } from "./utils/dateFilterHelpers"
 import { cn } from "@/src/core/utils/cn"
-
+import TransfersComingSoon from "./components/TransfersComingSoon"
 const HomeScreen = () => {
     const { t } = useTranslation();
 

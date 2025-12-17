@@ -2,6 +2,7 @@ import { NoActivitiesIcon } from "@/src/shared/assets/svgs";
 import EmptyDataList from "@/src/shared/components/empty-list/EmptyDataList";
 import { HomeTabType } from "../home.model";
 import { t } from "i18next";
+import TransfersComingSoon from "./TransfersComingSoon";
 
 const getEmptyStateContent = (activeTab: HomeTabType) => {
     switch (activeTab) {
@@ -37,11 +38,15 @@ const HomeListEmpty = ({ activeTab }: Props) => {
     const { title, description } = getEmptyStateContent(activeTab);
 
     return (
+        activeTab === 'transfers' ? (
+            <TransfersComingSoon />
+        ) : (
         <EmptyDataList
             icon={<NoActivitiesIcon />}
-            title={title}
-            description={description}
-        />
+                title={title}
+                description={description}
+            />
+        )
     );
 };
 

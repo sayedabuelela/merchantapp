@@ -3,6 +3,7 @@ import React from 'react'
 import { Pressable, View } from 'react-native'
 import FontText from '@/src/shared/components/FontText'
 import ScaleFadeIn from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
+import ComingSoonBadge from '@/src/shared/components/badges/ComingSoonBadge'
 
 interface ServiceCardProps {
     title: string;
@@ -10,12 +11,13 @@ interface ServiceCardProps {
     href?: Route;
     icon: React.ReactNode;
     onPress?: () => void;
+    comingSoon?: boolean;
 }
 
-const ServiceCard = ({ title, description, href, icon, onPress }: ServiceCardProps) => {
+const ServiceCard = ({ title, description, href, icon, onPress, comingSoon }: ServiceCardProps) => {
     const content = (
         <Pressable
-            className="flex-1 min-w-[160px] p-4 rounded border border-tertiary bg-white/10 "
+            className="flex-1 min-w-[160px] p-4 rounded border border-tertiary bg-white/10 overflow-hidden"
             onPress={onPress}
             style={{
                 shadowColor: '#fff',
@@ -25,6 +27,14 @@ const ServiceCard = ({ title, description, href, icon, onPress }: ServiceCardPro
                 elevation: 2, // For Android
             }}
         >
+            {comingSoon &&
+                <View className='absolute top-[15px] right-[-25px] rotate-[45deg]'>
+                    <ScaleFadeIn delay={400} duration={1000}>
+                        <ComingSoonBadge />
+                    </ScaleFadeIn>
+                </View>
+            }
+
             <ScaleFadeIn delay={300} duration={1000}>
                 {icon && (
                     <View className='w-7 h-7 rounded-full bg-[#F1F6FF] p-1 items-center justify-center mb-2'>

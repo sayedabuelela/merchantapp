@@ -78,6 +78,13 @@ export const ROUTES = {
     PAYMENTS: {
         ROOT: "/payments" as Route,
     },
+    // Service
+    SERVICE: {
+        NEW_TERMINAL: "/services/(pos)/new-terminal" as Route,
+        POS_DETAILS: "/services/(pos)/:posId" as Route,
+        POS_DEVICES: "/services/(pos)/devices" as Route,
+        TRANSFERS: "/services/transfers" as Route,
+    },
     // Balance
     BALANCE: {
         ROOT: "/balance" as Route,

@@ -12,7 +12,7 @@ const HomeTabs = ({ value, onSelectType }: Props) => {
 
     const tabs: Tab<HomeTabType>[] = [
         { label: t('All activities'), value: 'all' },
-        { label: t('Orders'), value: 'orders' },
+        { label: t('Payments'), value: 'orders' },
         { label: t('Payouts'), value: 'payouts' },
         { label: t('Transfers'), value: 'transfers' }
     ];

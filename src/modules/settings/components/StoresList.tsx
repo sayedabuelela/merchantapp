@@ -1,8 +1,7 @@
 import { cn } from '@/src/core/utils/cn'
 import { CheckBoxEmptyIcon, CheckBoxFilledIcon } from '@/src/shared/assets/svgs'
 import FontText from '@/src/shared/components/FontText'
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { Pressable, View } from 'react-native'
+import { ScrollView, Pressable, View } from 'react-native'
 import { BelongsTo } from '../../auth/auth.model'
 
 export interface StoreItemProps {
@@ -37,10 +36,7 @@ export const StoreItem = ({ merchantId, storeName, businessLogoUrl, onSelectStor
 
 const StoresList = ({ stores, activeStore, setActiveStore }: StoreListProps) => {
     return (
-        <BottomSheetScrollView
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 20 }}>
+        <>
             {stores?.map((store) => (
                 <StoreItem
                     key={store.merchantId}
@@ -51,7 +47,7 @@ const StoresList = ({ stores, activeStore, setActiveStore }: StoreListProps) => 
                     isActive={activeStore === store.merchantId}
                 />
             ))}
-        </BottomSheetScrollView>
+        </>
     )
 }
 

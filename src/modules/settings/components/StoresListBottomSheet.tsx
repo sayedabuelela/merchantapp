@@ -1,12 +1,12 @@
-import BottomSheetHeader from '@/src/shared/components/bottom-sheets/BottomSheetHeader';
 import Button from '@/src/shared/components/Buttons/Button';
-import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import GeneralModalHeader from '@/src/shared/components/GeneralModal/GeneralModalHeader';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BelongsTo } from '../../auth/auth.model';
-import { selectUser, useAuthStore } from '../../auth/auth.store';
+import { useAuthStore } from '../../auth/auth.store';
 import StoresList from './StoresList';
-import GeneralModalHeader from '@/src/shared/components/GeneralModal/GeneralModalHeader';
+import { View } from 'react-native';
 
 interface Props {
     onClose: () => void;
@@ -24,7 +24,7 @@ const StoresListBottomSheet = forwardRef<StoresListBottomSheetRef, Props>(
         const { t } = useTranslation();
         const currentMerchantId = useAuthStore((state) => state.user?.merchantId);
         const [activeStore, setActiveStore] = useState<string | undefined>(currentMerchantId);
-        const snapPoints = ['45%'];
+        const snapPoints = ['60%'];
 
         const storesBottomSheetRef = useRef<BottomSheet | null>(null);
 
@@ -43,39 +43,40 @@ const StoresListBottomSheet = forwardRef<StoresListBottomSheetRef, Props>(
         }, []);
 
         // const countryData = useMemo(() => countries ?? [], [countries]);
-        const renderBackdrop = (props) => (
+        const renderBackdrop = useCallback((props: BottomSheetBackdropProps) => (
             <BottomSheetBackdrop
                 {...props}
                 disappearsOnIndex={-1}
                 appearsOnIndex={0}
                 pressBehavior="none"
+                opacity={0.5}
+                style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
             />
-        );
+        ), []);
 
         return (
             <BottomSheet
                 ref={storesBottomSheetRef}
                 snapPoints={snapPoints}
                 index={-1}
-                // enablePanDownToClose={false}
-                // enableContentPanningGesture={false}
                 onClose={onClose}
                 animateOnMount
                 enableDynamicSizing={false}
-                backdropComponent={renderBackdrop}
-                enableContentPanningGesture={false}
+                enableContentPanningGesture={true}
+                enablePanDownToClose={false}
             >
-                <BottomSheetView className="flex-1 px-6 pt-2 h-full pb-8">
+                <BottomSheetView className="flex-1 px-6 pt-2">
                     <GeneralModalHeader
                         title={t('Select store')}
                         onClose={handleCloseBottomSheet}
                     />
-                    <StoresList
-                        stores={stores}
-                        // onSelectStore={onSelectStore}
-                        activeStore={activeStore}
-                        setActiveStore={setActiveStore}
-                    />
+                    <View style={{ flex: 1, minHeight: 0 }}>
+                        <StoresList
+                            stores={stores}
+                            activeStore={activeStore}
+                            setActiveStore={setActiveStore}
+                        />
+                    </View>
                     <Button
                         title={t('Select')}
                         onPress={() => {

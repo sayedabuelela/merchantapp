@@ -11,7 +11,8 @@ import { Modal, Pressable, TouchableOpacity, View } from 'react-native';
 import { BuildingStorefrontIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { ChevronDownIcon } from 'react-native-heroicons/solid';
 import PersonalInfoItem from './PersonalInfoItem';
-import StoresListBottomSheet, { StoresListBottomSheetRef } from './StoresListBottomSheet';
+import StoresListModal, { StoresListModalRef } from './StoresListModal';
+import { BlurView } from 'expo-blur';
 interface Props {
     isVisible: boolean;
     onClose: () => void;
@@ -26,6 +27,8 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
     const router = useRouter();
     const [showModal, setShowModal] = useState(isVisible);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+    const [isAnimatingStoresList, setIsAnimatingStoresList] = useState(false);
     // console.log("user : ", user);
     // const [selectedStore, setSelectedStore] = useState<StoreItemProps | null>(null);
     const { t } = useTranslation();
@@ -40,16 +43,20 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
         onClose();
         setIsAnimating(false);
     };
-    const storesListBottomSheetRef = useRef<StoresListBottomSheetRef>(null);
+    const storesListModalRef = useRef<StoresListModalRef>(null);
     const handleCloseBottomSheet = () => {
-        storesListBottomSheetRef.current?.close();
+        // storesListModalRef.current?.close();
+        // setIsBottomSheetOpen(false);
+        setIsAnimatingStoresList(false);
     };
+
     const handleExpandBottomSheet = () => {
-        storesListBottomSheetRef.current?.expand();
+        // storesListModalRef.current?.open();
+        setIsAnimatingStoresList(true);
     };
     const handleSelectStore = (merchantId: string) => {
-        storesListBottomSheetRef.current?.close();
-
+        // storesListModalRef.current?.close();
+        setIsAnimatingStoresList(false);
         switchMerchant(merchantId);
         router.replace(ROUTES.TABS.HOME);
         handleClose();
@@ -77,30 +84,36 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                             transition={{ type: 'timing', duration: 300 }}
                             className="absolute inset-0 bg-content-secondary/30"
                         >
-                            <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            <BlurView
+                                intensity={50}
+                                tint="dark"
+                                style={{ flex: 1 }}
+                            >
+
+                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            </BlurView>
                         </MotiView>
 
                         <MotiView
                             from={{ translateY: 550 }}
-                            animate={{ translateY: 0 }}
+                            animate={{
+                                translateY: isBottomSheetOpen ? 300 : 0
+                            }}
                             exit={{ translateY: 550 }}
                             transition={{
                                 type: 'timing',
                                 duration: 500,
                             }}
-                            className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md shadow-md h-[88%]"
+                            className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md shadow-md h-[80%]"
                         >
                             <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-6" />
 
                             <View className="flex-row justify-end items-center mb-6">
-                                {/* <FontText type="head" weight="bold" className="text-content-primary text-xl">
-                                        {t('Are you sure you want to log out?')}
-                                    </FontText> */}
                                 <TouchableOpacity
                                     onPress={handleClose}
-                                    className="items-center justify-center bg-feedback-error-bg w-7 h-7 rounded-full"
+                                    className="items-center justify-center bg-[#F1F6FF] w-7 h-7 rounded-full"
                                 >
-                                    <XMarkIcon size={18} color="#A50017" />
+                                    <XMarkIcon size={18} color="#0F172A" />
                                 </TouchableOpacity>
                             </View>
                             <View>
@@ -155,15 +168,16 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                                 </View> */}
                         </MotiView>
 
+                        <StoresListModal
+                            isVisible={isAnimatingStoresList} // or track separately
+                            onClose={handleCloseBottomSheet}
+                            onSelectStore={handleSelectStore}
+                            // isAnimatingStoresList={isAnimatingStoresList}
+                            stores={user?.belongsTo ?? []}
+                        />
                     </View>
                 )}
             </AnimatePresence>
-            <StoresListBottomSheet
-                onClose={handleCloseBottomSheet}
-                onSelectStore={handleSelectStore}
-                ref={storesListBottomSheetRef}
-                stores={user?.belongsTo ?? []}
-            />
             {/* </KeyboardAvoidingView> */}
         </Modal>
     );

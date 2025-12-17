@@ -11,9 +11,10 @@ interface Props {
     actionBtn?: boolean;
     onActionBtnPress?: () => void;
     className?: string;
+    titleClassName?: string;
 }
 
-const MainHeader = ({ title, withBack = true, actionBtn = false, onActionBtnPress, className }: Props) => {
+const MainHeader = ({ title, withBack = true, actionBtn = false, onActionBtnPress, className, titleClassName }: Props) => {
     const { back } = useRouter();
     return (
         <View className={cn("flex-row items-center justify-between px-6 pb-4 mb-6 border-b border-tertiary", Platform.OS === 'android' ? 'pt-4' : 'pt-0', className)}>
@@ -24,7 +25,7 @@ const MainHeader = ({ title, withBack = true, actionBtn = false, onActionBtnPres
                 <FontText
                     type="head"
                     weight="bold"
-                    className={cn("text-content-primary text-xl capitalize", withBack && "ml-4")}
+                    className={cn("text-content-primary text-xl capitalize min-w-24", withBack && "ml-4", titleClassName)}
                     numberOfLines={1}
                 >
                     {title}

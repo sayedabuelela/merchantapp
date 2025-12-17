@@ -17,6 +17,7 @@ export interface ServiceItem {
     href?: Route;
     icon: React.ReactNode;
     onPress?: () => void;
+    comingSoon?: boolean;
 }
 
 export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
@@ -31,22 +32,10 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
             icon: <QrCodeIcon size={20} color="#001F5F" />
         },
         {
-            title: t('POS'),
-            description: t('Request a new terminal'),
-            // href: '/service' as Route,
-            icon: <POSIcon />
-        },
-        {
             title: t('Payment links'),
             description: t('Request payments easily'),
             href: ROUTES.TABS.PAYMENT_LINKS as Route,
             icon: <LinkIcon size={20} color="#001F5F" />
-        },
-        {
-            title: t('Transfers'),
-            description: t('Send money to others'),
-            href: (ROUTES.BALANCE.ROOT + '?tab=transfer') as Route,
-            icon: <ArrowUpLeftIcon size={20} color="#001F5F" />
         },
         {
             title: t('Payouts'),
@@ -59,6 +48,20 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
             description: t('Track all of your transactions'),
             href: ROUTES.TABS.PAYMENTS as Route,
             icon: <ArrowsUpDownIcon size={20} color="#001F5F" />
+        },
+        {
+            title: t('POS'),
+            description: t('Request a new terminal'),
+            href: ROUTES.SERVICE.POS_DEVICES as Route,
+            icon: <POSIcon />,
+            comingSoon: true
+        },
+        {
+            title: t('Transfers'),
+            description: t('Send money to others'),
+            href: ROUTES.SERVICE.TRANSFERS as Route,
+            icon: <ArrowUpLeftIcon size={20} color="#001F5F" />,
+            comingSoon: true
         },
     ];
 };
