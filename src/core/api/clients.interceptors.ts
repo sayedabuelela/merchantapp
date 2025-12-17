@@ -15,7 +15,7 @@ export const addAuthInterceptor = (instance: AxiosInstance): AxiosInstance => {
         // }
 
         const state = useAuthStore.getState();
-        console.log('state',state);
+        // console.log('state',state);
         
         const token = state.token;
         const user = state.user;

@@ -77,8 +77,9 @@ export const useSwitchMerchantId = () => {
 
             // 4) Invalidate dependent queries (payment links, balances, etc.)
             queryClient.invalidateQueries({ queryKey: ['payment-links'] });
+            queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
+            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
             queryClient.invalidateQueries({ queryKey: ['merchantData'], exact: false }); // refetch merchantData if needed
-            queryClient.invalidateQueries({ queryKey: ['transactions'], exact: false }); // example
 
             // optional UX
             showToast?.({ message: 'Switched store successfully', type: 'info' });

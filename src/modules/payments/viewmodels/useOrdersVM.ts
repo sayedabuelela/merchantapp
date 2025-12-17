@@ -12,7 +12,7 @@ interface OrdersInfinityResponse {
 
 export const useOrdersVM = (params?: FetchSessionsParams) => {
     const { api } = useApi();
-
+    
     const ordersQuery = useInfiniteQuery<
         FetchSessionsResponse,
         Error,

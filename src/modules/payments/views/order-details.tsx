@@ -25,6 +25,7 @@ import { isCaptureAvailable, isRefundAvailable, isVoidAvailable } from '../utils
 import { useOrderDetailVM } from '../viewmodels';
 import { useOrderActionsVM } from '../viewmodels/useOrderActionsVM';
 import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
+import DetailsSkeleton from '../components/DetailsSkeleton';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -144,13 +145,13 @@ const OrderDetailsScreen = () => {
         return (
             <SafeAreaView className="flex-1 bg-white ">
                 <MainHeader title={t('Order Details')} />
-                <FadeInDownView className="justify-center items-center flex-1" delay={200} duration={500}>
-                    <SimpleLoader size={100} />
+                <FadeInDownView className="flex-1" delay={0} duration={500}>
+                    <DetailsSkeleton />
                 </FadeInDownView>
             </SafeAreaView>
         );
     }
-    if (isError || !order) {
+    if (isError && !isLoading) {
         return (
             <SafeAreaView className="flex-1 bg-white">
                 <MainHeader title={t('Order Details')} />

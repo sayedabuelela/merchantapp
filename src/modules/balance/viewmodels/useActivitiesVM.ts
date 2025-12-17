@@ -76,7 +76,12 @@ export const useRecentBalanceActivities = () => {
     const { canViewBalance } = usePermissions(user?.actions!);
     const hasBalanceFeature = useHasFeature("multi accounts");
     const activeAccountId = useBalanceStore(selectActiveAccountId);
-
+    console.log('useRecentBalanceActivities', {
+        activeAccountId: activeAccountId,
+        canViewBalance: canViewBalance,
+        hasBalanceFeature: hasBalanceFeature,
+        isAuthenticated: isAuthenticated,
+    });
     return useQuery<ActivitiesResponse, Error, ActivitiesResponse>({
         queryKey: ["balanceActivities", activeAccountId, { limit: 3, page: 1 }],
         queryFn: () => getActivities(api, { limit: 3, page: 1, accountId: activeAccountId }),

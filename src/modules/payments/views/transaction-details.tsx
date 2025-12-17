@@ -23,6 +23,7 @@ import ConfirmationModal from '@/src/shared/components/ConfirmationModal/Confirm
 import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
 import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
 import ScaleView from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
+import DetailsSkeleton from '../components/DetailsSkeleton';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -146,9 +147,9 @@ const TransactionDetailsScreen = () => {
     if (isLoading) {
         return (
             <SafeAreaView className="flex-1 bg-white ">
-                <MainHeader title={t('Order Details')} />
-                <FadeInDownView className="justify-center items-center flex-1" delay={200} duration={500}>
-                    <SimpleLoader size={100} />
+                <MainHeader title={t('Transaction Details')} />
+                <FadeInDownView className="flex-1" delay={0} duration={500}>
+                    <DetailsSkeleton />
                 </FadeInDownView>
             </SafeAreaView>
         );
