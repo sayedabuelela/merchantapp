@@ -37,15 +37,14 @@ export default function PaymentLinksTabs({ value, onSelectStatus, isListEmpty }:
                     <Pressable
                         key={tab.value}
                         onPress={() => onSelectStatus(tab.value)}
-                        className="mr-12 "
+                        className="mr-8"
                     >
                         <FontText
                             type="body"
                             weight="semi"
                             numberOfLines={1}
                             ellipsizeMode="tail"
-                            className={cn(`text-base ${isActive ? "text-primary" : "text-content-secondary"
-                                }`)}
+                            className={cn(`text-sm`, isActive ? "text-primary" : "text-[#6F7E7E]")}
                         >
                             {t(tab.label)}
                         </FontText>

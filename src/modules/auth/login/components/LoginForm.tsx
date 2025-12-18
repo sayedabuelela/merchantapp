@@ -32,7 +32,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // email: 'pisej21977@hazhab.com',
             // email: 'logare2532@frisbook.com',
             // email: 'saboelela@kashier.io',
-            // password: 'P@ssw0rdd',
+            // password: 'P@ssw0rd',
             // email: 'awageeh@kashier.io',
             // password: 'P@ssw0rd012',
             // email: 'kexoka8183@fixwap.com',
@@ -46,8 +46,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // production 
             // email: 'bayoumi.store@gmail.com',
             // password: 'Aa@12345',
-            email: 'pesyamao2@gmail.com',
-            password: 'SaraTest@010',
+            // email: 'pesyamao2@gmail.com',
+            // password: 'SaraTest@010',
             // email: 'aayman@kashier.io',
             // password: 'zAQ!@#$%^123456',
             // staging
@@ -59,6 +59,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'P@ssw0rd',
             // email: 'eabdallah@kashier.io',
             // password: 'Password500$$',
+            // email: 'tofoho1501@mucate.com',
+            // password: 'P@ssw0rd',
         },
     });
 

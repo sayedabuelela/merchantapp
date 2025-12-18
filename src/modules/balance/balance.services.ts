@@ -1,10 +1,13 @@
 import { AxiosInstance } from "axios";
-import { AccountStatistics, TransfersStatistics, AccountsListResponse, AccountsListParams, ActivitiesResponse, FetchActivitiesParams, ActivityDetailsResponse, TransferDetailsResponse, PaymentDetailsResponse, SettlementWindowParams, DashboardStatisticsResponse } from "./balance.model";
+import { AccountStatistics, TransfersStatistics, AccountsListResponse, AccountsListParams, ActivitiesResponse, FetchActivitiesParams, ActivityDetailsResponse, TransferDetailsResponse, PaymentDetailsResponse, SettlementWindowParams, DashboardStatisticsResponse, PaymentsStatistics, PayoutStatistics } from "./balance.model";
 
-export const getTransfersStatistics = async (api: AxiosInstance, accountId: string = 'all'): Promise<TransfersStatistics> => {
-    console.log('getTransfersStatistics api', api.defaults.baseURL);
+export const getTransfersStatistics = async (
+    api: AxiosInstance,
+    accountId: string = 'all',
+    params: { dateFrom?: string; dateTo?: string } = {}
+): Promise<TransfersStatistics> => {
     try {
-        const response = await api.get(`v2/transfers/overview/${accountId}`);
+        const response = await api.get(`v2/transfers/overview/${accountId}`, { params });
         return response.data;
     } catch (error) {
         console.error("Error fetching transfers statistics:", error);
@@ -13,12 +16,38 @@ export const getTransfersStatistics = async (api: AxiosInstance, accountId: stri
 };
 
 export const getAccountStatistics = async (api: AxiosInstance, accountId: string = 'all'): Promise<AccountStatistics> => {
-    console.log('getAccountStatistics api', api.defaults.baseURL);
     try {
         const response = await api.get(`v2/account/overview/${accountId}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching account statistics:", error);
+        throw error;
+    }
+};
+export const getPaymentsStatistics = async (
+    api: AxiosInstance,
+    accountId: string = 'all',
+    params: { dateFrom?: string; dateTo?: string } = {}
+): Promise<PaymentsStatistics> => {
+    try {
+        const response = await api.get(`v2/account/overview/payments/${accountId}`, { params });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching payments statistics:", error);
+        throw error;
+    }
+};
+export const getPayoutStatistics = async (
+    api: AxiosInstance,
+    accountId: string = 'all',
+    params: { dateFrom?: string; dateTo?: string } = {}
+): Promise<PayoutStatistics> => {
+    try {
+        const response = await api.get(`v2/account/overview/payouts/${accountId}`, { params });
+        console.log('getPayoutStatistics response', response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching payout statistics:", error);
         throw error;
     }
 };

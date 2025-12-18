@@ -3,7 +3,9 @@ import { Transaction } from "../payments/payments.model"
 export interface AccountStatistics {
     balanceOverview: {
         availableBalance: number,
-        totalBalance: number
+        lastPayoutAmount: number,
+        totalBalance: number,
+        upcomingPayouts: number,
     },
     upcomingValueDates: {
         amount: number,
@@ -13,11 +15,23 @@ export interface AccountStatistics {
 
 export interface TransfersStatistics {
     onGoingTransfersAmount: number,
+    totalTransfersCount: number,
+    totalTransfersAmount: number,
     recentTransfers: {
         amount: number,
         transfersCount: number,
         date: string
     }[]
+}
+export interface PaymentsStatistics {
+    amount: number,
+    count: number,
+    topMethod: string
+}
+export interface PayoutStatistics {
+    amount: number,
+    lastPayout: number,
+    upcomingPayouts: number,
 }
 export interface DashboardStatistics {
     _id: string | null;

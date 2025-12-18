@@ -25,7 +25,7 @@ export default function ListTabs<T = string>({ tabs, value, onSelectType, isList
         <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerClassName="gap-8 px-6"
+            contentContainerClassName="gap-6 px-6"
             className={cn("border-b border-tertiary mt-4 ", className)}>
             {!isListEmpty && tabs.map(tab => {
                 const isActive = tab.value === value;
@@ -39,7 +39,7 @@ export default function ListTabs<T = string>({ tabs, value, onSelectType, isList
                             weight="semi"
                             numberOfLines={1}
                             ellipsizeMode="tail"
-                            className={cn(`text-sm ${isActive ? "text-primary" : "text-[#6F7E7E]"}`)}
+                            className={cn(`text-sm`, isActive ? "text-primary" : "text-[#6F7E7E]")}
                         >
                             {t(tab.label)}
                         </FontText>

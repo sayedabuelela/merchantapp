@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Dimensions, FlatList, View, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { MotiView } from 'moti'
 import BalanceStatsCard from '../../balance/components/header/BalanceStatsCard'
-import { AccountStatistics, FlattenedDashboardStatistics, TransfersStatistics } from '../../balance/balance.model'
+import { AccountStatistics, PaymentsStatistics, PayoutStatistics, TransfersStatistics } from '../../balance/balance.model'
 import { useTranslation } from 'react-i18next'
 import { HomeTabType } from '../home.model'
 
@@ -13,61 +13,94 @@ const CARD_WIDTH = width - (CARD_PADDING * 2)
 interface HomeStatsCarouselProps {
     accountStats?: AccountStatistics
     transfersStats?: TransfersStatistics
-    dashboardStats?: FlattenedDashboardStatistics
+    paymentsStats?: PaymentsStatistics
+    payoutStats?: PayoutStatistics
     setHomeActiveTab: (tab: HomeTabType) => void
+    activeTab: HomeTabType
 }
-
-const HomeStatsCarousel = ({ accountStats, transfersStats, dashboardStats, setHomeActiveTab }: HomeStatsCarouselProps) => {
-    const { t } = useTranslation();
+type CardItem = {
+    id: 'balance-card' | 'payments-card' | 'payouts-card' | 'transfers-card'
+    tab: HomeTabType
+    mainBalance: { title: string; value: number; currency: string }
+    leftDetail: { title: string; value: number | string; currency: string }
+    rightDetail: { title: string; value: number | string; currency: string }
+}
+const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payoutStats, setHomeActiveTab, activeTab }: HomeStatsCarouselProps) => {
+    const { t } = useTranslation()
     const [currentIndex, setCurrentIndex] = useState(0)
-    const flatListRef = useRef<FlatList>(null)
 
-    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const scrollPosition = event.nativeEvent.contentOffset.x
-        const index = Math.round(scrollPosition / CARD_WIDTH)
-        setCurrentIndex(index)
-        setHomeActiveTab(index === 0 ? 'all' : 'orders')
-    }
-
-    const cardsData = [
+    const flatListRef = useRef<FlatList<CardItem>>(null)
+    const isProgrammaticScroll = useRef(false)
+    // const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    //     const scrollPosition = event.nativeEvent.contentOffset.x
+    //     const index = Math.round(scrollPosition / CARD_WIDTH)
+    //     setCurrentIndex(index)
+    //     setHomeActiveTab(Object.keys(CARD_IDS)[index] as HomeTabType)
+    // }
+    const cardsData: CardItem[] = useMemo(() => ([
         {
-            id: 'card-1',
-            mainBalance: {
-                title: t('Available Balance'),
-                value: accountStats?.balanceOverview?.availableBalance || 0,
-                currency: 'EGP'
-            },
-            leftDetail: {
-                title: t('Total Balance'),
-                value: accountStats?.balanceOverview?.totalBalance || 0,
-                currency: 'EGP'
-            },
-            rightDetail: {
-                title: t('Held funds'),
-                value: transfersStats?.onGoingTransfersAmount || 0,
-                currency: 'EGP'
-            }
+            id: 'balance-card',
+            tab: 'all',
+            mainBalance: { title: t('Available Balance'), value: accountStats?.balanceOverview?.availableBalance || 0, currency: 'EGP' },
+            leftDetail: { title: t('Last settlement'), value: accountStats?.balanceOverview?.lastPayoutAmount || 0, currency: 'EGP' },
+            rightDetail: { title: t('Upcoming settlement'), value: accountStats?.balanceOverview?.lastPayoutAmount || 0, currency: 'EGP' },
         },
         {
-            id: 'card-2',
-            mainBalance: {
-                title: t('Today\'s total payments'),
-                value: dashboardStats?.currentStatistic?.totalPaymentAmount || 0,
-                currency: 'EGP'
-            },
-            leftDetail: {
-                title: t('Transactions'),
-                value: dashboardStats?.currentStatistic?.totalTransactionsCount || 0,
-                currency: ''
-            },
-            rightDetail: {
-                title: t('Top Method'),
-                value: dashboardStats?.topMethod || '--',
-                currency: ''
-            }
-        }
-    ];
+            id: 'payments-card',
+            tab: 'orders',
+            mainBalance: { title: t('total payments'), value: paymentsStats?.amount || 0, currency: 'EGP' },
+            leftDetail: { title: t('Payments No.'), value: paymentsStats?.count || 0, currency: '' },
+            rightDetail: { title: t('Top Method'), value: paymentsStats?.topMethod || '--', currency: '' },
+        },
+        {
+            id: 'payouts-card',
+            tab: 'payouts',
+            mainBalance: { title: t('Payout'), value: payoutStats?.amount || 0, currency: 'EGP' },
+            leftDetail: { title: t('Last Payout'), value: payoutStats?.lastPayout || 0, currency: '' },
+            rightDetail: { title: t('Upcoming Payout'), value: payoutStats?.upcomingPayouts || 0, currency: '' },
+        },
+        {
+            id: 'transfers-card',
+            tab: 'transfers',
+            mainBalance: { title: t('total trasfers'), value: transfersStats?.totalTransfersAmount || 0, currency: 'EGP' },
+            leftDetail: { title: t('transfers no.'), value: transfersStats?.totalTransfersCount || 0, currency: '' },
+            rightDetail: { title: t('Transfers Vol.'), value: transfersStats?.totalTransfersAmount || 0, currency: '' },
+        },
+    ]), [t, accountStats, paymentsStats, payoutStats, transfersStats])
 
+    const tabToIndex = useMemo(() => {
+        return cardsData.reduce<Record<HomeTabType, number>>((acc, card, idx) => {
+            acc[card.tab] = idx
+            return acc
+        }, {} as Record<HomeTabType, number>)
+    }, [cardsData])
+
+    const scrollToCardIndex = useCallback((index: number) => {
+        const clamped = Math.max(0, Math.min(index, cardsData.length - 1))
+        isProgrammaticScroll.current = true
+        setCurrentIndex(clamped)
+        flatListRef.current?.scrollToIndex({ index: clamped, animated: true })
+    }, [cardsData.length])
+
+    // ✅ include deps; stable now because cardsData/tabToIndex are stable
+    useEffect(() => {
+        const nextIndex = tabToIndex[activeTab] ?? 0
+        if (nextIndex !== currentIndex) scrollToCardIndex(nextIndex)
+    }, [activeTab, tabToIndex, currentIndex, scrollToCardIndex])
+
+    const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const scrollX = event.nativeEvent.contentOffset.x
+        const index = Math.round(scrollX / CARD_WIDTH)
+
+        setCurrentIndex(index)
+
+        if (isProgrammaticScroll.current) {
+            isProgrammaticScroll.current = false
+            return
+        }
+
+        setHomeActiveTab(cardsData[index]?.tab ?? 'all')
+    }
     return (
         <View>
             {/* Carousel Container with Overflow Hidden */}
@@ -80,7 +113,9 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, dashboardStats, setHo
                     snapToInterval={CARD_WIDTH}
                     snapToAlignment="start"
                     decelerationRate="fast"
-                    onScroll={handleScroll}
+                    getItemLayout={(_, index) => ({ length: CARD_WIDTH, offset: CARD_WIDTH * index, index })}
+                    // onScroll={handleScroll}
+                    onMomentumScrollEnd={handleMomentumScrollEnd}
                     scrollEventThrottle={16}
                     renderItem={({ item }) => (
                         <View style={{ width: CARD_WIDTH }}>

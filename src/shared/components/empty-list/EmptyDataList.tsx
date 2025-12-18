@@ -46,7 +46,7 @@ const EmptyDataList: React.FC<EmptyDataListProps> = ({
                 {buttonLabel && onButtonPress && (
                     <TouchableOpacity
                         onPress={onButtonPress}
-                        className={cn(`flex-row items-center justify-center px-4 py-3 mt-6 rounded max-w-[200px]`, 
+                        className={cn(`flex-row items-center justify-center px-4 py-3 mt-6 rounded `, 
                                     buttonVariant === "primary"
                                 ? "bg-primary"
                                 : "border border-primary bg-white")}

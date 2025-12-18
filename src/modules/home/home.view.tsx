@@ -38,12 +38,6 @@ const HomeScreen = () => {
 
     const user = useAuthStore(selectUser);
 
-    const { data: recentActivities } = useRecentBalanceActivities();
-    const {
-        accountStatistics: { data: accountStats },
-        transfersStatistics: { data: transfersStats },
-        dashboardStatistics: { data: dashboardStats }
-    } = useStatistics();
     const { unSeenCount } = useNotificationsVM();
     const notificationsCount = unSeenCount;
     const userName = user?.userName || user?.fullName;
@@ -58,6 +52,17 @@ const HomeScreen = () => {
         dateFrom: todayRange.dateFrom,
         dateTo: todayRange.dateTo,
         filterType: 'today'
+    });
+
+    // const { data: recentActivities } = useRecentBalanceActivities();
+    const {
+        accountStatistics: { data: accountStats },
+        transfersStatistics: { data: transfersStats },
+        paymentsStatistics: { data: paymentsStats },
+        payoutStatistics: { data: payoutStats }
+    } = useStatistics({
+        dateFrom: dateFilters.dateFrom,
+        dateTo: dateFilters.dateTo,
     });
 
     const handleAddPress = () => {
@@ -161,8 +166,10 @@ const HomeScreen = () => {
                             <HomeStatsCarousel
                                 accountStats={accountStats}
                                 transfersStats={transfersStats}
-                                dashboardStats={dashboardStats}
+                                paymentsStats={paymentsStats}
+                                payoutStats={payoutStats}
                                 setHomeActiveTab={setActiveTab}
+                                activeTab={activeTab}
                             />
                         </View>
                     </ScaleFadeIn>

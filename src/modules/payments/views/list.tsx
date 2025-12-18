@@ -158,7 +158,7 @@ const PaymentsScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <FadeInDownView delay={0} duration={600}>
+            <FadeInDownView delay={0} duration={300}>
                 <PaymentsHeader
                     onFilterPress={() => setIsFiltersOpen(!isFiltersOpen)}
                     onSubmitSearch={handleSearchChange}

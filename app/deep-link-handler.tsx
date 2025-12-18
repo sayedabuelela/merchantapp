@@ -15,7 +15,7 @@ const parseDeepLinkParams = async (
   routerParams: Record<string, string | undefined>
 ): Promise<DeepLinkParams | null> => {
   const { accessToken, currentMerchantPayformanceId, refreshToken, v2 } = routerParams;
-
+  console.log('[DeepLinkHandler] Router params:', routerParams);
   // Try router params first (works in dev mode and most production cases)
   if (accessToken && currentMerchantPayformanceId) {
     return { accessToken, currentMerchantPayformanceId, refreshToken, v2 };
@@ -24,6 +24,7 @@ const parseDeepLinkParams = async (
   // For production builds, try initial URL as fallback
   try {
     const initialUrl = await Linking.getInitialURL();
+    console.log('[DeepLinkHandler] Initial URL:', initialUrl);
     if (!initialUrl || initialUrl.includes('expo-development-client')) {
       return null;
     }
@@ -84,7 +85,7 @@ export default function DeepLinkHandler() {
         refreshToken,
         v2,
       });
-
+      console.log('[DeepLinkHandler] Parsed params:', parsedParams);
       if (isValidParams(parsedParams)) {
         console.log('[DeepLinkHandler] Valid params:', {
           hasAccessToken: true,
