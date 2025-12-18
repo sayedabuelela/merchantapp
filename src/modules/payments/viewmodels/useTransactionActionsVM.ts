@@ -30,7 +30,7 @@ export const useTransactionActionsVM = (transactionId: string) => {
 
             // Invalidate transaction list queries to update the list screen
             queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
-
+            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
             // Show success toast
             const message = i18n.language === 'ar'
                 ? data.messages.ar || 'تم إلغاء المعاملة بنجاح'
@@ -75,6 +75,7 @@ export const useTransactionActionsVM = (transactionId: string) => {
 
             // Invalidate transaction list queries to update the list screen
             queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
+            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
 
             // Show success toast
             const message = i18n.language === 'ar'
@@ -113,7 +114,7 @@ export const useTransactionActionsVM = (transactionId: string) => {
 
             // Invalidate transaction list queries to update the list screen
             queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
-
+            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });    
             // Show success toast
             const message = i18n.language === 'ar'
                 ? data.messages.ar || 'تم تحصيل المعاملة بنجاح'
