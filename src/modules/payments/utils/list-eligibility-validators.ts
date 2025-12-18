@@ -164,7 +164,7 @@ export const isRefundEligibleFromList = (order: PaymentSession): boolean => {
     const normalizedStatus = order.status?.toLowerCase() || '';
 
     // Status must be paid/approved/success - NOT 'authorized' (those need capture first)
-    const isApprovedStatus = ['paid', 'approved', 'success'].includes(normalizedStatus);
+    const isApprovedStatus = ['paid', 'approved', 'success', 'partially refunded', 'partially_refunded'].includes(normalizedStatus);
     const hasRefundableAmount = order.refundedAmount < order.capturedAmount;
     const isNotCash = order.method?.toLowerCase() !== 'cash';
     // Explicitly exclude authorized orders - they need capture first before refund
@@ -303,7 +303,7 @@ export const isVoidEligibleFromListTransaction = (transaction: Transaction): boo
 export const isRefundEligibleFromListTransaction = (transaction: Transaction): boolean => {
     if (!transaction) return false;
 
-    const isApprovedStatus = ['approved', 'success', 'paid'].includes(
+    const isApprovedStatus = ['approved', 'success', 'paid', 'partially refunded', 'partially_refunded'].includes(
         transaction.status?.toLowerCase() || ''
     );
     const hasRefundableAmount = transaction.totalRefundedAmount < transaction.totalCapturedAmount;

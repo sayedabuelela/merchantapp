@@ -14,6 +14,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import 'react-native-reanimated';
 import "../global.css";
+if (__DEV__) {
+  require("../ReactotronConfig");
+}
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

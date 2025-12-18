@@ -229,7 +229,7 @@ export const isRefundAvailable = (order: OrderDetailPayment): boolean => {
   if (normalizedMethod === 'cash') return false;
 
   // Common status check
-  const isApprovedStatus = ['approved', 'success', 'paid'].includes(
+  const isApprovedStatus = ['approved', 'success', 'paid', 'partially refunded', 'partially_refunded'].includes(
     normalizeString(status)
   );
   if (!isApprovedStatus) return false;
@@ -476,7 +476,7 @@ export const isRefundAvailableForTransaction = (transaction: TransactionDetail):
   if (normalizedMethod === 'cash') return false;
 
   // Common status check
-  const isApprovedStatus = ['approved', 'success', 'paid'].includes(
+  const isApprovedStatus = ['approved', 'success', 'paid', 'partially refunded', 'partially_refunded'].includes(
     normalizeString(status)
   );
   if (!isApprovedStatus) return false;

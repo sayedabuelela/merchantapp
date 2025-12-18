@@ -1,5 +1,5 @@
 // Session Status Types
-export type SessionStatus = 'OPENED' | 'PAID' | 'EXPIRED' | 'FAILED' | 'REFUNDED' | 'VOIDED' | 'AUTHORIZED';
+export type SessionStatus = 'OPENED' | 'PAID' | 'EXPIRED' | 'FAILED' | 'REFUNDED' | 'VOIDED' | 'AUTHORIZED' | 'PARTIALLY_REFUNDED';
 
 // Payment Method Types
 export type PaymentMethod = 'cash' | 'card' | 'wallet' | string;

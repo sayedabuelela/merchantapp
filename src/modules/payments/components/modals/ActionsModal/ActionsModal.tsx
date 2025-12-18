@@ -88,9 +88,12 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
             { orderId },
             {
                 onSuccess: () => {
-                    // Only close the confirmation modal
-                    // Do NOT close the main modal - let user dismiss it manually to prevent freeze
+                    // Close confirmation modal
                     setShowVoidModal(false);
+                    // Close main modal after delay to prevent freeze during query invalidation/updates
+                    setTimeout(() => {
+                        handleClose();
+                    }, 500);
                 },
                 onError: (e) => {
                     console.log('handleVoidConfirm error', e);
@@ -116,9 +119,12 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
             getRefundParams(amount),
             {
                 onSuccess: () => {
-                    // Only close the confirmation modal
-                    // Do NOT close the main modal - let user dismiss it manually to prevent freeze
+                    // Close confirmation modal
                     setShowRefundModal(false);
+                    // Close main modal after delay to prevent freeze during query invalidation/updates
+                    setTimeout(() => {
+                        handleClose();
+                    }, 500);
                 },
                 onError: (e) => {
                     // Keep refund modal open on error so user can see message and retry
@@ -143,9 +149,12 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
             { orderId },
             {
                 onSuccess: () => {
-                    // Only close the confirmation modal
-                    // Do NOT close the main modal - let user dismiss it manually to prevent freeze
+                    // Close confirmation modal
                     setShowCaptureModal(false);
+                    // Close main modal after delay to prevent freeze during query invalidation/updates
+                    setTimeout(() => {
+                        handleClose();
+                    }, 500);
                 },
                 onError: (e) => {
                     // Keep capture modal open on error so user can see message and retry
@@ -207,7 +216,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
         totalCapturedAmount: (payment as Transaction).totalCapturedAmount || 0,
         totalRefundedAmount: (payment as Transaction).totalRefundedAmount || 0,
     } : null;
-console.log('status', status);
+    console.log('status', status);
     // Safety check: if no payment data, don't render
     if (!payment) {
         return null;
