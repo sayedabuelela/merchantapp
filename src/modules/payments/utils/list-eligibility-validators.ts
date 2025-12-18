@@ -89,6 +89,9 @@ export const isVoidEligibleFromList = (order: PaymentSession): boolean => {
         order.paymentParams?.interactionSource?.toLowerCase() === 'pos';
     if (isPosTransaction) return false;
 
+    // RULE: No void for Installment Orders (List)
+    if (order.installmentDetails) return false;
+
     // RULE: Only Card payments can be voided
     const isCardMethod = order.method?.toLowerCase() === 'card';
     if (!isCardMethod) return false;
@@ -113,11 +116,12 @@ export const isVoidEligibleFromList = (order: PaymentSession): boolean => {
 
     if (isMpgsProvider) {
         // If MPGS fields are not available, cannot validate - return false
-        if (order.lastTransactionType === undefined) return false;
-
-        const lastTrxType = order.lastTransactionType?.toLowerCase() || '';
-        const isPaymentType = ['payment', 'pay', 'دفع', 'authorize', 'capture'].includes(lastTrxType);
-        if (!isPaymentType) return false;
+        // Relaxed check: valid if lastTransactionType is missing OR matches allowed types
+        const lastTrxType = order.lastTransactionType?.toLowerCase();
+        if (lastTrxType) {
+            const isPaymentType = ['payment', 'pay', 'دفع', 'authorize', 'capture'].includes(lastTrxType);
+            if (!isPaymentType) return false;
+        }
 
         // RFS date check
         const isRfsDateEqualZero = order.pcc?.rfs_due_after === 0;
@@ -168,6 +172,9 @@ export const isRefundEligibleFromList = (order: PaymentSession): boolean => {
 
     // Exclude POS transactions - they need cardDataToken which is only in detail API
     const isPosTransaction = order.paymentParams?.interactionSource?.toLowerCase() === 'pos';
+
+    // RULE: No refund for Installment Orders (List)
+    if (order.installmentDetails) return false;
 
     return isApprovedStatus && hasRefundableAmount && isNotCash &&
         isNotAuthorized && !isPosTransaction;
@@ -223,11 +230,42 @@ export const isCaptureEligibleFromList = (order: PaymentSession): boolean => {
 export const isVoidEligibleFromListTransaction = (transaction: Transaction): boolean => {
     if (!transaction) return false;
 
-    // MPGS transactions require additional validation (trxType, pcc.rfs_due_after,
-    // bank void window) that is only available in the detail API.
-    // Hide void in modal for MPGS - users must go to detail screen.
+    // MPGS transactions logic relaxed to allow "Best Effort" validation from list
     const isMpgsProvider = transaction.provider?.toLowerCase() === 'mpgs';
-    if (isMpgsProvider) return false;
+
+    if (isMpgsProvider) {
+        // Use 'type' property as proxy for 'trxType' since trxType is missing in list
+        // List 'type' usually uppercase 'PAYMENT', detail 'trxType' usually lower 'payment'
+        const type = transaction.type?.toLowerCase();
+        const isPaymentType = ['payment', 'pay', 'دفع', 'authorize', 'capture'].includes(type || '');
+        if (!isPaymentType) return false;
+
+        // Note: pcc.rfs_due_after is missing / unreliable in list (often 0 in bank_rfs_due_after)
+        // We skip the Strict RFS check for list view to avoid blocking valid transactions
+        // Backend/Detail screen will enforce it strictly if needed.
+
+        // Bank void window check
+        // List API provides financial_institution in pcc
+        const bankName = transaction.pcc?.financial_institution as any;
+        const mpagVoidWindowsAny = MPGS_VOID_WINDOWS as any;
+        const isKnownBank = bankName ? !!mpagVoidWindowsAny[bankName] : false;
+
+        const transactionDate = new Date(transaction.date || transaction.createdAt);
+        const isValidVoidWindow = isKnownBank
+            ? bankCutOffChecker(bankName, transactionDate)
+            : isWithin24Hours(transaction.date || transaction.createdAt);
+
+        if (!isValidVoidWindow) return false;
+
+        // Check if authorize-and-captured (cannot void these)
+        // List usually has 'lastStatus' which can help
+        const isAuthorizeAndCaptured = transaction.lastStatus?.toLowerCase() === 'captured' &&
+            transaction.type?.toLowerCase() === 'authorize'; // Unlikely combo in list but good safety
+        if (isAuthorizeAndCaptured) return false;
+    }
+
+    // RULE: No void for Installment Transactions (List)
+    if (transaction.installment || transaction.paymentAgreement === 'installment') return false;
 
     const isCardMethod = transaction.method?.toLowerCase() === 'card';
     const isNotPos = transaction.channel?.toLowerCase() !== 'pos';
@@ -273,6 +311,9 @@ export const isRefundEligibleFromListTransaction = (transaction: Transaction): b
 
     // Exclude POS transactions - they need cardDataToken which may not be in list
     const isPosTransaction = transaction.channel?.toLowerCase() === 'pos';
+
+    // RULE: No refund for Installment Transactions (List)
+    if (transaction.installment || transaction.paymentAgreement === 'installment') return false;
 
     // Transaction type must not be REFUND (can't refund a refund transaction)
     const isNotRefundType = transaction.type?.toUpperCase() !== 'REFUND';

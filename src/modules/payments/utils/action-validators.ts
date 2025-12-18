@@ -99,7 +99,11 @@ export const isVoidAvailable = (order: OrderDetailPayment): boolean => {
     lastTransactionType,
     method,
     paymentChannel,
+    installmentDetails,
   } = order;
+
+  // RULE: No void for Installment Orders (Detail)
+  if (installmentDetails) return false;
 
   // RULE: No void for POS transactions
   const isPosTransaction = normalizeString(paymentChannel) === 'pos';
@@ -201,7 +205,11 @@ export const isRefundAvailable = (order: OrderDetailPayment): boolean => {
     capturedAmount,
     lastTransactionType,
     provider,
+    installmentDetails,
   } = order;
+
+  // RULE: No refund for Installment Orders (Detail)
+  if (installmentDetails) return false;
 
   const normalizedMethod = normalizeString(method);
   const normalizedProvider = normalizeString(provider);
@@ -339,7 +347,11 @@ export const isVoidAvailableForTransaction = (transaction: TransactionDetail): b
     trxType,
     method,
     paymentChannel,
+    installmentDetails,
   } = transaction;
+
+  // RULE: No void for Installment Transactions (Detail)
+  if (installmentDetails) return false;
 
   // RULE: No void for POS transactions
   const isPosTransaction = normalizeString(paymentChannel) === 'pos';
@@ -441,7 +453,11 @@ export const isRefundAvailableForTransaction = (transaction: TransactionDetail):
     totalCapturedAmount,
     trxType,
     provider,
+    installmentDetails,
   } = transaction;
+
+  // RULE: No refund for Installment Transactions (Detail)
+  if (installmentDetails) return false;
 
   const normalizedMethod = normalizeString(method);
   const normalizedProvider = normalizeString(provider);

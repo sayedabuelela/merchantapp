@@ -92,7 +92,8 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                     // Do NOT close the main modal - let user dismiss it manually to prevent freeze
                     setShowVoidModal(false);
                 },
-                onError: () => {
+                onError: (e) => {
+                    console.log('handleVoidConfirm error', e);
                     // Keep void modal open on error so user can see message and retry
                 },
             }
@@ -119,8 +120,9 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                     // Do NOT close the main modal - let user dismiss it manually to prevent freeze
                     setShowRefundModal(false);
                 },
-                onError: () => {
+                onError: (e) => {
                     // Keep refund modal open on error so user can see message and retry
+                    console.log('handleRefundConfirm error', e);
                 },
             }
         );
@@ -145,8 +147,9 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                     // Do NOT close the main modal - let user dismiss it manually to prevent freeze
                     setShowCaptureModal(false);
                 },
-                onError: () => {
+                onError: (e) => {
                     // Keep capture modal open on error so user can see message and retry
+                    console.log('handleCaptureConfirm error', e);
                 },
             }
         );
@@ -204,7 +207,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
         totalCapturedAmount: (payment as Transaction).totalCapturedAmount || 0,
         totalRefundedAmount: (payment as Transaction).totalRefundedAmount || 0,
     } : null;
-
+console.log('status', status);
     // Safety check: if no payment data, don't render
     if (!payment) {
         return null;
@@ -320,7 +323,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                     <ConfirmationModal
                         isVisible={showVoidModal}
                         onClose={handleVoidCancel}
-                        title={t("Void Transaction")}
+                        title={t("Void Order")}
                     >
                         <VoidConfirmation
                             order={orderForModal as any}

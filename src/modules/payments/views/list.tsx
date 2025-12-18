@@ -87,7 +87,8 @@ const PaymentsScreen = () => {
         ...transactionsFilters,
         search,
     });
-
+    console.log('transactionsQuery : ', transactionsQuery);
+    console.log('ordersQuery : ', ordersQuery);
     // Use the appropriate query based on active tab
     const activeQuery = isOrdersTab ? ordersQuery : transactionsQuery;
 

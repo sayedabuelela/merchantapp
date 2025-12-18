@@ -47,7 +47,7 @@ const LoginScreen = () => {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white pt-36">
+        <SafeAreaView className="flex-1 bg-white">
 
             <KeyboardAwareScrollView
                 bottomOffset={40}
@@ -55,9 +55,10 @@ const LoginScreen = () => {
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
+                contentContainerStyle={{ flexGrow: 1 }}
                 // extraKeyboardSpace={Platform.OS === 'ios' ? 40 : 110}
             >
-                <View className="items-center px-6">
+                <View className="flex-1 items-center justify-center px-6">
                     <DeveloperSettings />
                     <FadeInDownView delay={0} duration={600}>
                         <KashierLogo

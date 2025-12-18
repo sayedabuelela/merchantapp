@@ -50,6 +50,7 @@ export interface PaymentSession {
         operation?: string;
         status?: string;
     }>;
+    installmentDetails?: InstallmentDetails;
 }
 
 export interface Pagination {
@@ -92,11 +93,48 @@ export interface FetchSessionsParams {
     branchName?: string;
 }
 
+// Installment Interfaces
+export interface InstallmentBank {
+    nameEn: string;
+    nameAr: string;
+    abbreviation: string;
+}
+
+export interface InstallmentPlanName {
+    nameEn: string;
+    nameAr: string;
+}
+
+export interface InstallmentDetails {
+    FISystemId: string;
+    planName: InstallmentPlanName;
+    planFinancing: boolean;
+    installmentBank: InstallmentBank;
+    interestRate: number;
+    planDuration: number;
+
+    // optional – مش موجودة دايمًا
+    installmentAmountPerMonth?: string;
+    originalAmount?: string;
+    settlementAmount?: string;
+    authorizedAmount?: number;
+}
+
+export interface Installment {
+    originalAmount: number;
+    authorizationAmount: number;
+    IPlanId: string;
+    merchantPlanId: string;
+    planDuration: number;
+    planFinancing: boolean;
+    interestRate: number;
+}
+
 // Transaction Interfaces
 export type TransactionStatus = 'Approved' | 'Declined' | 'Pending' | 'Voided' | 'Cancelled' | string;
 export type TransactionType = 'PAYMENT' | 'REFUND' | 'REVERSAL' | string;
 export type TransactionLastStatus = 'CAPTURED' | 'AUTHORIZED' | 'REFUNDED' | 'VOIDED' | string;
-export type PaymentAgreement = 'regular' | 'recurring' | string;
+export type PaymentAgreement = string;
 
 // Shared interfaces between Order and Transaction
 
@@ -181,6 +219,9 @@ export interface SharedMetaData {
 
 export interface PCCOperations {
     operations: any[];
+    financial_institution?: string;
+    bank_rfs_due_after?: number;
+    account_id?: string;
 }
 
 export interface Transaction {
@@ -224,6 +265,8 @@ export interface Transaction {
     pcc: PCCOperations;
     transactions: any[];
     __v: number;
+    installment?: Installment;
+    installmentDetails?: InstallmentDetails;
 }
 
 export interface TransactionPagination {
@@ -333,6 +376,7 @@ export interface OrderDetailPayment {
     posTerminal?: OrderDetailPosTerminal;
     targetTransactionId?: string;
     history?: OrderDetailHistoryItem[];
+    installmentDetails?: InstallmentDetails;
 }
 
 export interface FetchOrderDetailResponse {
@@ -398,6 +442,7 @@ export interface TransactionDetail {
     sourceOfFunds?: SourceOfFunds;
     transactions?: RelatedTransaction[];
     originDetails?: TransactionDetailOriginDetails;
+    installmentDetails?: InstallmentDetails;
 }
 
 export interface FetchTransactionDetailResponse {

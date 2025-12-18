@@ -6,6 +6,7 @@ import Button from '@/src/shared/components/Buttons/Button';
 import { StatusBadge } from '../detail/StatusBadge';
 import { formatRelativeDate, formatAMPM } from '@/src/core/utils/dateUtils';
 import type { TransactionDetail } from '../../payments.model';
+import StatusBox from '@/src/modules/payment-links/components/StatusBox';
 
 interface CaptureConfirmationTransactionProps {
     transaction: TransactionDetail;
@@ -27,13 +28,12 @@ const CaptureConfirmationTransaction: FC<CaptureConfirmationTransactionProps> = 
             {/* Transaction Summary */}
             <View className="mb-6">
                 {/* Amount and Status */}
-                <View className="flex-row items-center justify-between mb-3">
-                    <FontText type="head" weight="bold" className="text-content-primary text-2xl">
+                <View className="flex-row items-center gap-x-2 mb-2">
+                    <FontText type="head" weight="bold" className="text-content-primary text-xl">
                         {transaction.amount} {transaction.currency}
                     </FontText>
-                    <StatusBadge status={transaction.status} type="transaction" />
+                    <StatusBox status={transaction.status} />
                 </View>
-
                 {/* Date and Time */}
                 <FontText type="body" weight="regular" className="text-content-secondary text-sm mb-1">
                     {formatRelativeDate(transaction.date, false)} {formatAMPM(transaction.date)}

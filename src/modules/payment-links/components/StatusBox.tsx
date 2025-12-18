@@ -3,9 +3,11 @@ import { View } from 'react-native';
 import { PaymentStatus } from '../payment-links.model';
 import { SessionStatus, TransactionStatus } from "@/src/modules/payments/payments.model";
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/src/core/utils/cn';
 
 const statusStyles: Record<string, { backgroundColor: string; color: string }> = {
     PAID: { backgroundColor: '#D1FFD3', color: '#1A541D' },
+    SUCCESS: { backgroundColor: '#D1FFD3', color: '#1A541D' },
     TRANSFERRED: { backgroundColor: '#D1FFD3', color: '#1A541D' },
     APPROVED: { backgroundColor: '#D1FFD3', color: '#1A541D' },
     OVERDUE: { backgroundColor: '#FFEAED', color: '#A50017' },
@@ -26,7 +28,7 @@ const statusStyles: Record<string, { backgroundColor: string; color: string }> =
     OPENED: { backgroundColor: "#f8f9f9", color: '#556767' },
 };
 
-export default function StatusBox({ status }: { status?: PaymentStatus | SessionStatus | TransactionStatus | string }) {
+export default function StatusBox({ status, className }: { status?: PaymentStatus | SessionStatus | TransactionStatus | string, className?: string }) {
     const { t } = useTranslation();
     if (!status) return null;
     const upperCaseStatus = status.toUpperCase();
@@ -34,7 +36,7 @@ export default function StatusBox({ status }: { status?: PaymentStatus | Session
 
     return (
         <View
-            className='px-1 py-0.5 rounded-sm self-start'
+            className={cn('px-1 py-0.5 rounded-sm ', className)}
             style={{ backgroundColor: style.backgroundColor }}
         >
             <FontText type="body" weight="regular"

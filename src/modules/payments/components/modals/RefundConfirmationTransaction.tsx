@@ -7,6 +7,8 @@ import { StatusBadge } from '../detail/StatusBadge';
 import { formatRelativeDate, formatAMPM } from '@/src/core/utils/dateUtils';
 import type { TransactionDetail } from '../../payments.model';
 import { cn } from '@/src/core/utils/cn';
+import Input from '@/src/shared/components/inputs/Input';
+import StatusBox from '@/src/modules/payment-links/components/StatusBox';
 
 interface RefundConfirmationTransactionProps {
     transaction: TransactionDetail;
@@ -71,11 +73,11 @@ const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
             {/* Transaction Summary */}
             <View className="mb-6">
                 {/* Amount and Status */}
-                <View className="flex-row items-center justify-between mb-3">
-                    <FontText type="head" weight="bold" className="text-content-primary text-2xl">
-                        {transaction.amount} {transaction.currency}
+                <View className="flex-row items-center gap-x-2 mb-2">
+                    <FontText type="head" weight="bold" className="text-content-primary text-xl">
+                    {transaction.amount} {transaction.currency}
                     </FontText>
-                    <StatusBadge status={transaction.status} type="transaction" />
+                    <StatusBox status={transaction.status} />
                 </View>
 
                 {/* Date and Time */}
@@ -112,7 +114,7 @@ const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
                     </FontText>
                 </View>
 
-                <View className={cn(
+                {/* <View className={cn(
                     'border rounded-lg px-4 py-3 bg-surface-primary',
                     error ? 'border-feedback-error' : 'border-stroke-divider'
                 )}>
@@ -125,7 +127,17 @@ const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
                         className="text-content-primary text-base"
                         editable={!isRefunding}
                     />
-                </View>
+                </View> */}
+                <Input
+                    value={refundAmount}
+                    onChangeText={setRefundAmount}
+                    keyboardType="decimal-pad"
+                    placeholder={t('Enter amount')}
+                    placeholderTextColor="#94A3B8"
+                    className="text-content-primary text-base"
+                    error={!!error}
+                    editable={!isRefunding}
+                />
 
                 {error && (
                     <FontText type="body" weight="regular" className="text-feedback-error text-xs mt-1">

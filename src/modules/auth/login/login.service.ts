@@ -8,11 +8,11 @@ export const authenticate = async (api: AxiosInstance, credentials: LoginFormDat
     const { deviceId, huawei } = await getDeviceInfo();
     const loginRequest: LoginRequest = {
         ...credentials,
-        fcmData: {
-            deviceId,
-            fcmToken,
-            huawei,
-        }
+        // fcmData: {
+        //     deviceId,
+        //     fcmToken,
+        //     huawei,
+        // }
     };
 
     const response = await api.post<AuthResponse>('/v2/identity/authenticate', loginRequest);

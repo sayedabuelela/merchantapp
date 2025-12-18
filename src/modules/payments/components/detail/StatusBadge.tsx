@@ -19,7 +19,7 @@ export const StatusBadge = ({ status, type = 'order' }: StatusBadgeProps) => {
         if (type === 'order') {
             switch (upperStatus) {
                 case 'PAID':
-                    return { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700' };
+                    return { bg: 'bg-[#D1FFD3]', text: 'text-[#1A541D]' };
                 case 'OPENED':
                 case 'PENDING':
                     return { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700' };
@@ -58,8 +58,8 @@ export const StatusBadge = ({ status, type = 'order' }: StatusBadgeProps) => {
     const styles = getStatusStyles();
 
     return (
-        <View className={cn('px-3 py-1.5 rounded-full border', styles.bg, styles.border)}>
-            <FontText weight="medium" className={cn('text-xs', styles.text)}>
+        <View className={cn('px-2 py-0.5 rounded-sm', styles.bg)}>
+            <FontText type="body" weight="regular" className={cn('text-xs text-center', styles.text)}>
                 {status}
             </FontText>
         </View>

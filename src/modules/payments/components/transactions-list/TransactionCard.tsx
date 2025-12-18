@@ -10,14 +10,15 @@ import StatusBox from "@/src/modules/payment-links/components/StatusBox";
 import { Transaction } from "@/src/modules/payments/payments.model";
 import { PhoneIcon } from "react-native-heroicons/mini";
 import { formatAMPM } from "@/src/core/utils/dateUtils";
+import IconBox from "@/src/shared/components/wrappers/IconBox"
 
-const IconBox = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <View className="w-4 h-4 p-0.5 rounded-full bg-tertiary items-center justify-center">
-            {children}
-        </View>
-    )
-}
+// const IconBox = ({ children }: { children: React.ReactNode }) => {
+//     return (
+//         <View className="w-4 h-4 p-0.5 rounded-full bg-tertiary items-center justify-center">
+//             {children}
+//         </View>
+//     )
+// }
 
 interface TransactionCardProps {
     transaction: Transaction;
@@ -51,7 +52,7 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
             onOpenActions(transaction);
         }
     };
-
+    console.log('status : ', status);
     return (
         <Link href={`/payments/transaction/${transactionId}`} asChild>
             <Pressable
@@ -60,9 +61,9 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
             >
                 <View className="flex-row items-center justify-between mb-1">
                     <View className="flex-row items-center gap-x-2">
-                        <IconBox>
+                        <IconBox className={cn(isApproved ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
                             {isApproved ? (
-                                <ArrowSmallDownIcon size={10} color={'#4AAB4E'} />
+                                <ArrowSmallDownIcon size={10} color={'#1A541D'} />
                             ) : (
                                 <ArrowSmallUpIcon size={10} color={'#A50017'} />
                             )}

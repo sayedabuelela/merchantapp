@@ -42,7 +42,7 @@ const OrderDetailsScreen = () => {
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
     const [showCaptureModal, setShowCaptureModal] = useState(false);
-
+    console.log('order : ', order);
     // Actions viewmodel
     const {
         voidOrder,
@@ -201,11 +201,13 @@ const OrderDetailsScreen = () => {
                         </View>
 
                         {/* Tab Content */}
-                        <FadeInUpView key={activeTab} delay={400} duration={400}>
-                            {activeTab === 'details' && <DetailsTab order={order} />}
-                            {activeTab === 'settlement' && <SettlementTab order={order} />}
-                            {activeTab === 'history' && <HistoryTab order={order} />}
-                        </FadeInUpView>
+                        {order && (
+                            <FadeInUpView key={activeTab} delay={400} duration={400}>
+                                {activeTab === 'details' && <DetailsTab order={order} />}
+                                {activeTab === 'settlement' && <SettlementTab order={order} />}
+                                {activeTab === 'history' && <HistoryTab order={order} />}
+                            </FadeInUpView>
+                        )}
 
                         {/* Extra padding at bottom to prevent content from being hidden by action buttons */}
                         <View className={showActionButtons ? "h-24" : "h-6"} />
@@ -295,6 +297,7 @@ const OrderDetailsScreen = () => {
                         onConfirm={handleRefundConfirm}
                         onCancel={handleRefundCancel}
                         isRefunding={isRefundingOrder}
+
                     />
                 </ConfirmationModal>
             )}

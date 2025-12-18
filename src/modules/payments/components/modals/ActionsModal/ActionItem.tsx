@@ -16,8 +16,8 @@ const ActionItem = ({ title, icon, onPress, isLoading, variant = 'default' }: Pr
         <Pressable
             onPress={onPress}
             className={cn(
-                "flex-row items-center gap-x-2 border border-[#D9E5FF] rounded p-4",
-                (variant === 'danger') && 'border-stroke-feedback-danger bg-feedback-error-bg'
+                "flex-row items-center gap-x-2 border border-[#D9E5FF] rounded h-14 p-4",
+                (variant === 'danger') && 'border-stroke-feedback-danger bg-feedback-error-bg/50'
             )}
             disabled={isLoading}
         >

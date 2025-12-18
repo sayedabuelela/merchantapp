@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
-import { View } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import FontText from '@/src/shared/components/FontText';
+import { formatAMPM, formatRelativeDate } from '@/src/core/utils/dateUtils';
+import StatusBox from '@/src/modules/payment-links/components/StatusBox';
 import Button from '@/src/shared/components/Buttons/Button';
-import { StatusBadge } from '../detail/StatusBadge';
-import { formatRelativeDate, formatAMPM } from '@/src/core/utils/dateUtils';
+import FontText from '@/src/shared/components/FontText';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 import type { OrderDetailPayment } from '../../payments.model';
 
 interface CaptureConfirmationProps {
@@ -27,11 +27,11 @@ const CaptureConfirmation: FC<CaptureConfirmationProps> = ({
             {/* Payment Summary */}
             <View className="mb-6">
                 {/* Amount and Status */}
-                <View className="flex-row items-center justify-between mb-3">
-                    <FontText type="head" weight="bold" className="text-content-primary text-2xl">
+                <View className="flex-row items-center gap-x-2 mb-2">
+                    <FontText type="head" weight="bold" className="text-content-primary text-xl">
                         {order.amount} {order.currency}
                     </FontText>
-                    <StatusBadge status={order.status} type="order" />
+                    <StatusBox status={order.status} />
                 </View>
 
                 {/* Date and Time */}

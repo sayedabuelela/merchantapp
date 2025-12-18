@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Modal, Pressable, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Modal, Pressable, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
-import { KeyboardController } from 'react-native-keyboard-controller';
+import { KeyboardAvoidingView, KeyboardController } from 'react-native-keyboard-controller';
 import { XMarkIcon } from 'react-native-heroicons/outline';
 import FontText from '../FontText';
 import GeneralModalHeader from '../GeneralModal/GeneralModalHeader';
@@ -25,6 +25,8 @@ const ConfirmationModal = ({ isVisible, onClose, title, children }: Confirmation
         if (isVisible) {
             setShowModal(true);
             setIsAnimating(true);
+        } else {
+            setIsAnimating(false);
         }
     }, [isVisible]);
 
@@ -41,7 +43,7 @@ const ConfirmationModal = ({ isVisible, onClose, title, children }: Confirmation
             onRequestClose={handleClose}
             statusBarTranslucent
         >
-            <KeyboardAvoidingView behavior="padding" className="flex-1">
+            <KeyboardAvoidingView behavior='padding' className="flex-1">
                 <AnimatePresence onExitComplete={() => {
                     setShowModal(false);
                     setIsAnimating(false);
@@ -66,12 +68,12 @@ const ConfirmationModal = ({ isVisible, onClose, title, children }: Confirmation
                                     animate={{ translateY: 0 }}
                                     exit={{ translateY: 550 }}
                                     transition={{ type: 'timing', duration: 500 }}
-                                    className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md shadow-md shadow-black"
+                                    className="bg-white w-full rounded-t-3xl pt-4 pb-4 px-6 elevation-md shadow-md shadow-black"
                                 >
                                     {/* Drag Handle */}
                                     <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-6" />
 
-                                    <View className="flex-row justify-between items-center mb-6">
+                                    {/* <View className="flex-row justify-between items-center mb-6">
                                         <FontText type="head" weight="bold" className="text-content-hint text-xl">
                                             {title}
                                         </FontText>
@@ -81,7 +83,7 @@ const ConfirmationModal = ({ isVisible, onClose, title, children }: Confirmation
                                         >
                                             <XMarkIcon size={18} color="#0F172A" />
                                         </TouchableOpacity>
-                                    </View>
+                                    </View> */}
 
                                     {/* Modal Content */}
                                     {children}
