@@ -6,13 +6,14 @@ interface Props<T extends string> {
     value: T;
     onSelectType: (val: T) => void;
     className?: string;
+    contentContainerClassName?: string;
 }
 
 /**
  * Generic tabs component for detail screens (orders and transactions)
  * Supports both OrderDetailsTabType and TransactionDetailsTabType
  */
-export default function DetailsTabs<T extends string>({ value, onSelectType, className }: Props<T>) {
+export default function DetailsTabs<T extends string>({ value, onSelectType, className, contentContainerClassName }: Props<T>) {
     const { t } = useTranslation();
 
     const TABS: Tab<T>[] = [
@@ -27,6 +28,7 @@ export default function DetailsTabs<T extends string>({ value, onSelectType, cla
             value={value}
             onSelectType={onSelectType}
             className={cn("my-4", className)}
+            contentContainerClassName={contentContainerClassName}
         />
     );
 }

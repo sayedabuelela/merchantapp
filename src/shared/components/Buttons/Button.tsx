@@ -2,7 +2,7 @@ import { cn } from "@/src/core/utils/cn";
 import FontText from "@/src/shared/components/FontText";
 import LottieView from "lottie-react-native";
 import React, { forwardRef } from 'react';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 interface ButtonProps extends TouchableOpacityProps {
     title: string;
@@ -13,6 +13,7 @@ interface ButtonProps extends TouchableOpacityProps {
     className?: string;
     titleClasses?: string;
     fontWeight?: 'regular' | 'semi' | 'bold';
+    icon?: React.ReactNode;
 }
 
 const Button = forwardRef(({
@@ -25,6 +26,7 @@ const Button = forwardRef(({
     fullWidth = false,
     className = '',
     titleClasses = '',
+    icon,
     ...props
 }: ButtonProps, ref: React.Ref<typeof TouchableOpacity>) => {
 
@@ -57,7 +59,7 @@ const Button = forwardRef(({
     const stateClasses = (isLoading || disabled) ? "bg-surface-disabled border-0" : "";
     const stateClassesText = (isLoading || disabled) ? "text-content-secondary/40" : "";
 
-    const buttonClasses = cn(`h-[48px]`,baseClasses, sizeClasses[size], (isLoading || disabled) ? stateClasses : variantClasses[variant], className, fullWidthClasses);
+    const buttonClasses = cn(`h-[48px]`, baseClasses, sizeClasses[size], (isLoading || disabled) ? stateClasses : variantClasses[variant], fullWidthClasses, className);
     const baseTitleClasses = `${(isLoading || disabled) ? stateClassesText : textClasses[variant]}`;
 
     return (
@@ -80,11 +82,20 @@ const Button = forwardRef(({
                     }}
                 />
             ) : (
-                <FontText type='body' weight={fontWeight}
-                    className={`self-center text-base ${baseTitleClasses} ${titleClasses}`}>
-                    {title}
-                </FontText>
-            )}
+                <>
+                    {icon && (
+                        <View className="flex-row items-center">
+                            {icon}
+                        </View>
+                    )}
+                    <FontText type='body' weight={fontWeight}
+                        className={`self-center text-base ${baseTitleClasses} ${titleClasses}`}>
+                        {title}
+                    </FontText>
+                </>
+            )
+            }
+
 
         </TouchableOpacity>
     );

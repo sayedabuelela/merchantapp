@@ -24,6 +24,8 @@ import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/F
 import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
 import ScaleView from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
 import DetailsSkeleton from '../components/DetailsSkeleton';
+import { ArrowUturnLeftIcon, XMarkIcon } from 'react-native-heroicons/outline';
+import { cn } from '@/src/core/utils/cn';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -172,7 +174,9 @@ const TransactionDetailsScreen = () => {
     return (
         <SafeAreaView className="flex-1 bg-white">
             <FadeInDownView delay={0} duration={600}>
-                <MainHeader title={t('Transaction Details')} />
+                <MainHeader title={t('Transaction Details')}
+                    className={cn(isTabsSticky ? "mb-0 border-0 pb-0" : "mb-0 border-b")}
+                />
             </FadeInDownView>
             <View className="flex-1">
                 <ScrollView
@@ -200,6 +204,7 @@ const TransactionDetailsScreen = () => {
                                 <DetailsTabs
                                     value={activeTab}
                                     onSelectType={setActiveTab}
+                                    contentContainerClassName={cn(isTabsSticky ? 'px-6' : 'px-0')}
                                 />
                             </FadeInUpView>
                         </View>
@@ -214,7 +219,7 @@ const TransactionDetailsScreen = () => {
                         </FadeInUpView>
 
                         {/* Extra padding at bottom to prevent content from being hidden by action buttons */}
-                        <View className={showActionButtons ? "h-24" : "h-6"} />
+                        <View className={showActionButtons ? "h-20" : "h-6"} />
                     </View>
                 </ScrollView>
 
@@ -224,29 +229,30 @@ const TransactionDetailsScreen = () => {
                         className="absolute top-0 left-0 right-0 px-4 bg-white"
                         style={{
                             zIndex: 10,
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.1,
-                            shadowRadius: 3,
-                            elevation: 3,
+                            // shadowColor: '#000',
+                            // shadowOffset: { width: 0, height: 2 },
+                            // shadowOpacity: 0.1,
+                            // shadowRadius: 3,
+                            // elevation: 3,
                         }}
                     >
-                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} />
+                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} className='mb-0' contentContainerClassName={cn(isTabsSticky ? 'px-6' : 'px-0')} />
                     </View>
                 )}
 
                 {/* Fixed Bottom Action Buttons */}
                 {showActionButtons && (
-                    <View className="px-4 pb-4 pt-3 border-t border-stroke-divider bg-white">
+                    <View className="p-4 border-t border-stroke-divider bg-white">
                         <View className="flex-row gap-x-3">
                             {canVoid && (
                                 <View className="flex-1">
                                     <Button
                                         title={t('Void')}
-                                        variant="outline"
+                                        variant="danger"
                                         onPress={handleVoidPress}
-                                        className="border-feedback-error"
-                                        titleClasses="text-feedback-error"
+                                        className="bg-feedback-error flex-row items-center justify-center gap-x-2 h-10"
+                                        titleClasses="text-white text-sm"
+                                        icon={<XMarkIcon size={20} color="white" />}
                                     />
                                 </View>
                             )}
@@ -254,8 +260,11 @@ const TransactionDetailsScreen = () => {
                                 <View className="flex-1">
                                     <Button
                                         title={t('Refund')}
-                                        variant="danger"
+                                        variant="outline"
+                                        className="border-feedback-error flex-row items-center justify-center gap-x-2 h-10"
+                                        titleClasses="text-feedback-error text-sm"
                                         onPress={handleRefundPress}
+                                        icon={<ArrowUturnLeftIcon size={20} color="#D32F2F" />}
                                     />
                                 </View>
                             )}

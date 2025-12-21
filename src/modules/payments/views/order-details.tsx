@@ -26,6 +26,7 @@ import { useOrderDetailVM } from '../viewmodels';
 import { useOrderActionsVM } from '../viewmodels/useOrderActionsVM';
 import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
 import DetailsSkeleton from '../components/DetailsSkeleton';
+import { ArrowUturnDownIcon, ArrowUturnLeftIcon, XMarkIcon } from 'react-native-heroicons/outline';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -166,7 +167,7 @@ const OrderDetailsScreen = () => {
         <SafeAreaView className="flex-1 bg-white">
             <FadeInDownView delay={0} duration={600}>
                 <MainHeader title={t('Order Details')}
-                    className={cn(isTabsSticky ? "mb-0 border-0 pb-0" : "mb-6 border-b")}
+                    className={cn(isTabsSticky ? "mb-0 border-0 pb-0" : "mb-0 border-b")}
                 />
             </FadeInDownView>
             <View className="flex-1">
@@ -187,7 +188,7 @@ const OrderDetailsScreen = () => {
                             >
                                 {order && <OrderSummaryCard order={order} />}
                             </View>
-                        </ScaleView>    
+                        </ScaleView>
 
                         {/* Tabs - Normal position (hidden when sticky to prevent duplicate) */}
                         <View style={{ opacity: isTabsSticky ? 0 : 1, }}>
@@ -195,7 +196,7 @@ const OrderDetailsScreen = () => {
                                 <DetailsTabs
                                     value={activeTab}
                                     onSelectType={setActiveTab}
-                                    className={cn(isTabsSticky ? "mt-0" : "my-4")}
+                                    contentContainerClassName={cn(isTabsSticky ? 'px-6' : 'px-0')}
                                 />
                             </ScaleView>
                         </View>
@@ -210,7 +211,7 @@ const OrderDetailsScreen = () => {
                         )}
 
                         {/* Extra padding at bottom to prevent content from being hidden by action buttons */}
-                        <View className={showActionButtons ? "h-24" : "h-6"} />
+                        <View className={showActionButtons ? "h-20" : "h-6"} />
                     </View>
                 </ScrollView>
 
@@ -227,22 +228,28 @@ const OrderDetailsScreen = () => {
                             // elevation: 3
                         }}
                     >
-                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} />
+                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} className='mb-0' contentContainerClassName={cn(isTabsSticky ? 'px-6' : 'px-0')} />
                     </View>
                 )}
 
                 {/* Fixed Bottom Action Buttons */}
                 {showActionButtons && (
-                    <View className="px-4 pb-4 pt-3 border-t border-stroke-divider bg-white">
+                    //      <BlurView 
+                    //      intensity={100} 
+                    //      tint="light"
+                    //      className="absolute bottom-0 left-0 right-0 px-4 py-4 border-t border-stroke-divider"
+                    //  >
+                    <View className="p-4 border-t border-stroke-divider bg-white">
                         <View className="flex-row gap-x-3">
                             {canVoid && (
                                 <View className="flex-1">
                                     <Button
                                         title={t('Void')}
-                                        variant="outline"
+                                        variant="danger"
                                         onPress={handleVoidPress}
-                                        className="border-feedback-error"
-                                        titleClasses="text-feedback-error"
+                                        className="bg-feedback-error flex-row items-center justify-center gap-x-2 h-10"
+                                        titleClasses="text-white text-sm"
+                                        icon={<XMarkIcon size={20} color="white" />}
                                     />
                                 </View>
                             )}
@@ -250,8 +257,11 @@ const OrderDetailsScreen = () => {
                                 <View className="flex-1">
                                     <Button
                                         title={t('Refund')}
-                                        variant="danger"
+                                        variant="outline"
+                                        className="border-feedback-error flex-row items-center justify-center gap-x-2 h-10"
+                                        titleClasses="text-feedback-error text-sm"
                                         onPress={handleRefundPress}
+                                        icon={<ArrowUturnLeftIcon size={20} color="#D32F2F" />}
                                     />
                                 </View>
                             )}

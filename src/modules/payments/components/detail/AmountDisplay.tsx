@@ -32,7 +32,7 @@ export const AmountDisplay = ({
     // Handle both order statuses (PAID) and transaction statuses (SUCCESS, APPROVED)
     const isPaid = status === 'PAID' || status === 'SUCCESS' || status === 'APPROVED';
     return (
-        <View className={cn('gap-y-0.5 mb-4 ', className)}>
+        <View className={cn('gap-y-0.5 mb-4 mt-6', className)}>
             <View className="flex-row items-center gap-x-2">
                 <FontText type="head" weight="bold"
                     className={cn("text-content-primary text-xl")}>

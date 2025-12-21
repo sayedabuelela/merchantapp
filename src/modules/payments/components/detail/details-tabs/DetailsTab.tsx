@@ -4,6 +4,8 @@ import DetailsSection from "@/src/shared/components/details-screens/DetailsSecti
 import { useTranslation } from "react-i18next";
 import SectionRowItem from "@/src/shared/components/details-screens/SectionRowItem";
 import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils";
+import AccordionItem from "@/src/modules/onboarding/data/components/AccordionItem";
+import DetailsAccordionItem from "@/src/modules/onboarding/data/components/DetailsAccordionItem";
 
 interface Props {
     order: OrderDetailPayment;
@@ -22,7 +24,7 @@ const DetailsTab = ({ order }: Props) => {
     );
 
     return (
-        <View>
+        <View className='mt-4'>
             <DetailsSection title={t('Recent transaction')}>
                 <SectionRowItem
                     valueClassName="capitalize mr-[1px]"
@@ -66,7 +68,9 @@ const DetailsTab = ({ order }: Props) => {
             )}
 
             {hasMoreData && (
-                <DetailsSection title={t('More data')} className="mt-4">
+                <DetailsAccordionItem
+                    title={t('More data')}
+                >
                     <SectionRowItem
                         title={t('Kashier origin type')}
                         value={order.metaData?.kashierOriginType}
@@ -79,7 +83,7 @@ const DetailsTab = ({ order }: Props) => {
                         title={t('Kashier payment UI version')}
                         value={order.metaData?.['kashier payment UI version']}
                     />
-                </DetailsSection>
+                </DetailsAccordionItem>
             )}
         </View>
     )

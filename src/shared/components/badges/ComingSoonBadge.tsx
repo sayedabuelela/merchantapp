@@ -9,7 +9,7 @@ const ComingSoonBadge = ({ className }: { className?: string }) => {
     const { t } = useTranslation()
     return (
     <View className={cn("w-24 h-6 items-center justify-center border border-[#FFD8C4] bg-[#FFF5F0]", className)}>
-            <FontText weight="semi" className={cn("text-[#FF9D6C] uppercase text-center", isRTL ? 'text-[14px]' : 'text-[10px]')} type="body">
+            <FontText weight="semi" className={cn("text-[#FF9D6C] uppercase text-center", isRTL ? 'text-[14px]' : 'text-[8px]')} type="body">
                 {t('Coming Soon')}
             </FontText>
         </View>

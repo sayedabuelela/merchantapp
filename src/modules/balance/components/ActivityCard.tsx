@@ -7,14 +7,15 @@ import { ArrowSmallDownIcon, ArrowSmallUpIcon } from "react-native-heroicons/out
 import { useTranslation } from "react-i18next"
 import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils"
 import { cn } from "@/src/core/utils/cn"
+import IconBox from "@/src/shared/components/wrappers/IconBox"
 
-const IconBox = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <View className="w-4 h-4 p-0.5 rounded-full bg-tertiary items-center justify-center">
-            {children}
-        </View>
-    )
-}
+// const IconBox = ({ children }: { children: React.ReactNode }) => {
+//     return (
+//         <View className="w-4 h-4  rounded-full bg-tertiary items-center justify-center">
+//             {children}
+//         </View>
+//     )
+// }
 
 const ActivityCard = ({
     _id,
@@ -51,7 +52,7 @@ const ActivityCard = ({
             <Pressable className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1">
                 <View className="flex-row items-center justify-between mb-1">
                     <View className="flex-row items-center gap-x-2">
-                        <IconBox>
+                        <IconBox className="bg-tertiary">
                             {isInOperation ? (
                                 <ArrowSmallDownIcon size={10} color={'#4AAB4E'} />
                             ) : (

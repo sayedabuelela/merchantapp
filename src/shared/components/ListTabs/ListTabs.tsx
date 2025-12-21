@@ -16,16 +16,17 @@ interface Props<T = string> {
     onSelectType: (val: T) => void;
     isListEmpty?: boolean;
     className?: string;
+    contentContainerClassName?: string;
 }
 
-export default function ListTabs<T = string>({ tabs, value, onSelectType, isListEmpty, className }: Props<T>) {
+export default function ListTabs<T = string>({ tabs, value, onSelectType, isListEmpty, className, contentContainerClassName }: Props<T>) {
     const { t } = useTranslation();
 
     return (
         <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerClassName="gap-6 px-6"
+            contentContainerClassName={cn("gap-6 px-6", contentContainerClassName)}
             className={cn("border-b border-tertiary mt-4 ", className)}>
             {!isListEmpty && tabs.map(tab => {
                 const isActive = tab.value === value;
