@@ -99,7 +99,7 @@ const getPushTokenCore = async (): Promise<string | null> => {
         }
 
         const token = await Notifications.getDevicePushTokenAsync();
-        // console.log('Push token:', token.data);
+        console.log('Push token:', token.data);
         return token.data;
     } catch (error) {
         console.error('Error getting push token:', error);

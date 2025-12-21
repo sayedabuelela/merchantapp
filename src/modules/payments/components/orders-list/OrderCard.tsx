@@ -54,7 +54,7 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                         )}
                     </View>
                     <FontText type="body" weight="bold"
-                        className={cn("text-content-primary text-sm leading-5")}>
+                        className={cn("text-content-primary text-sm")}>
                         {currencyNumber(paymentParams.amount)} {t(paymentParams.currency)}
                     </FontText>
                 </View>

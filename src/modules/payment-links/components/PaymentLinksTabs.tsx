@@ -5,15 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView } from "react-native";
 import { PaymentStatus } from "../payment-links.model";
 
-const TABS = [
-    { label: "All", value: "" },
-    { label: "Paid", value: "paid" },
-    { label: "Unpaid", value: "unpaid" },
-    { label: "Overdue", value: "overdue" },
-    { label: "Expired", value: "expired" },
-    { label: "Awaiting approval", value: "awaiting_approval" },
-    { label: "Rejected", value: "rejected" },
-];
+
 
 interface Props {
     value: PaymentStatus | string;
@@ -23,12 +15,21 @@ interface Props {
 
 export default function PaymentLinksTabs({ value, onSelectStatus, isListEmpty }: Props) {
     const { t } = useTranslation();
+    const TABS = [
+        { label: t("All") , value: "" },
+        { label: t("Paid"), value: "paid" },
+        { label: t("Unpaid"), value: "unpaid" },
+        { label: t("Overdue"), value: "overdue" },
+        { label: t("Expired"), value: "expired" },
+        { label: t("Awaiting approval"), value: "awaiting_approval" },
+        { label: t("Rejected"), value: "rejected" },
+    ];
     return (
         <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            className="border-b border-stroke-divider px-6 mt-4"
-            contentContainerStyle={{ alignItems: "center" }}
+            className="border-b border-stroke-divider  mt-4"
+            contentContainerClassName="px-6 align-center"
             style={{ flexGrow: 0 }}
         >
             {!isListEmpty && TABS.map(tab => {

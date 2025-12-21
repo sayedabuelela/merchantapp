@@ -9,10 +9,10 @@ const UpcomingBalanceItem = ({ amount, date }: { amount: number; date: string })
     const { t } = useTranslation();
     return (
         <View className='border border-stroke-main p-4 rounded w-[200px] mr-3'>
-            <FontText type="body" weight="bold" className="text-base text-content-primary">
+            <FontText type="body" weight="bold" className="text-base text-content-primary self-start">
                 {currencyNumber(amount)} {t('EGP')}
             </FontText>
-            <FontText type="body" weight="regular" className="text-xs text-content-secondary mt-1">
+            <FontText type="body" weight="regular" className="text-xs text-content-secondary mt-1 self-start">
                 {formatRelativeDate(date)}
             </FontText>
         </View>

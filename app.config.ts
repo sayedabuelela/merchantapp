@@ -93,9 +93,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        image: './src/shared/assets/images/splash-logo-full.png',
-        resizeMode: 'cover',
+        image: './src/shared/assets/images/splash.png',
+        resizeMode: 'native',
         backgroundColor: '#001F5F',
+        imageWidth: 200,
+        imageHeight: 200,
       },
     ],
     'expo-localization',

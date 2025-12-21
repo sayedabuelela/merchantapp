@@ -1,7 +1,7 @@
 import * as Localization from "expo-localization";
 import { I18nManager } from "react-native";
 import { translateTextHandler } from "./helpers";
-
+const isRTL = I18nManager.isRTL;
 export const formatDateString = (date: Date): string => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -29,8 +29,8 @@ export const formatDateRange = (from: Date | undefined, to: Date | undefined, t:
 
 
 export const formatRelativeDate = (dateInput: Date | string | number, year: boolean = true, isShort: boolean = false): string => {
-    const locale = Localization.getLocales()[0].languageTag || "en-US";
-    const isRTL = I18nManager.isRTL;
+    // const locale = Localization.getLocales()[0].languageTag || "en-US";
+    const locale = isRTL ? "ar-EG" : "en-US";
 
     const date = new Date(dateInput);
     const today = new Date();
@@ -59,7 +59,8 @@ export const formatRelativeDate = (dateInput: Date | string | number, year: bool
 }
 
 export const formatTime = (dateInput: Date | string | number): string => {
-    const locale = Localization.getLocales()[0].languageTag || "en-US";
+
+    const locale = isRTL ? "ar-EG" : "en-US";
 
     const date = new Date(dateInput);
 
@@ -96,11 +97,11 @@ const getOrdinalSuffix = (day: number) => {
 };
 
 
-export const formatDateByLocale = (date: Date, locale: "en" | "ar" = "en") => {
+export const formatDateByLocale = (date: Date) => {
     const day = date.getDate();
-    const suffix = locale === "en" ? getOrdinalSuffix(day) : "";
+    const suffix = isRTL ? "" : getOrdinalSuffix(day);
 
-    return date.toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US", {
+    return date.toLocaleDateString(isRTL ? "ar-EG" : "en-US", {
         month: "long",
     }) + ` ${day}${suffix}, ${date.getFullYear()}`;
 };

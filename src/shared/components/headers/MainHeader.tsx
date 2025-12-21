@@ -17,9 +17,10 @@ interface Props {
 const MainHeader = ({ title, withBack = true, actionBtn = false, onActionBtnPress, className, titleClassName }: Props) => {
     const { back } = useRouter();
     return (
-        <View className={cn("flex-row items-center justify-between px-6 pb-4 mb-6 border-b border-tertiary", Platform.OS === 'android' ? 'pt-4' : 'pt-0', className)}>
+        <View className={cn("flex-row items-center justify-between pl-4 pr-6 pb-4 mb-6 border-b border-tertiary", Platform.OS === 'android' ? 'pt-4' : 'pt-0', className)}>
             <View className="flex-row items-center">
-                {withBack && <Pressable onPress={back}>
+                {withBack && <Pressable
+                    onPress={back}>
                     <ChevronLeftIcon size={24} color="#0F172A" style={isRTL ? { transform: [{ rotate: '180deg' }] } : {}} />
                 </Pressable>}
                 <FontText

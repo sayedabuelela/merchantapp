@@ -13,6 +13,7 @@ export const LANGUAGES = {
 };
 
 const LANGUAGE_STORAGE_KEY = 'lang';
+const RTL_STATE_KEY = 'rtl_state';
 
 i18n
     .use(initReactI18next)
@@ -47,6 +48,7 @@ export const getDeviceLanguage = (): string => {
 export const initializeLanguage = async (): Promise<void> => {
     try {
         const storedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
+        const storedRTLState = await AsyncStorage.getItem(RTL_STATE_KEY);
 
         let languageToUse;
         if (storedLanguage) {
@@ -54,6 +56,12 @@ export const initializeLanguage = async (): Promise<void> => {
         } else {
             languageToUse = getDeviceLanguage();
             await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, languageToUse);
+        }
+
+        // Initialize RTL state if not set (first launch)
+        if (storedRTLState === null) {
+            const isRTL = languageToUse === LANGUAGES.ARABIC;
+            await AsyncStorage.setItem(RTL_STATE_KEY, String(isRTL));
         }
 
         await changeLanguage(languageToUse);
@@ -66,14 +74,23 @@ export const initializeLanguage = async (): Promise<void> => {
 
 export const changeLanguage = async (language: string): Promise<void> => {
     try {
-        I18nManager.allowRTL(true);
-        await i18n.changeLanguage(language);
-
         const isRTL = language === LANGUAGES.ARABIC;
 
-        if (I18nManager.isRTL !== isRTL) {
-            I18nManager.forceRTL(isRTL);
+        // Set RTL permissions based on target language
+        // allowRTL(false) prevents Android system RTL from overriding app layout
+        I18nManager.allowRTL(isRTL);
+        I18nManager.forceRTL(isRTL);
 
+        await i18n.changeLanguage(language);
+
+        // Get the stored RTL state to avoid infinite restart loop on Android
+        // I18nManager.isRTL may not immediately reflect the new state after restart
+        const storedRTLState = await AsyncStorage.getItem(RTL_STATE_KEY);
+        const currentStoredRTL = storedRTLState === 'true';
+
+        if (currentStoredRTL !== isRTL) {
+            // Save the new RTL state BEFORE restarting
+            await AsyncStorage.setItem(RTL_STATE_KEY, String(isRTL));
             await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, language);
 
             await Updates.reloadAsync();

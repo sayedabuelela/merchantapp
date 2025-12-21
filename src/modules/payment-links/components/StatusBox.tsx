@@ -33,7 +33,6 @@ export default function StatusBox({ status, className }: { status?: PaymentStatu
     if (!status) return null;
     const upperCaseStatus = status.toUpperCase();
     const style = statusStyles[upperCaseStatus] || { backgroundColor: '#F5F6F6', color: '#556767' };
-
     return (
         <View
             className={cn('px-1 py-0.5 rounded-sm ', className)}

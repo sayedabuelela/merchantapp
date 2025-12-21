@@ -52,7 +52,7 @@ const AccountsList = ({ accounts, setActiveAccount, activeAccount }: Props) => {
     };
 
     return (
-        <View className="max-h-[180px]">
+        <View className="flex-1">
             <FlatList
                 data={accounts}
                 showsVerticalScrollIndicator={false}

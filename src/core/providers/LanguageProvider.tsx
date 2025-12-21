@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useRef, useCallback, useMemo} from 'react';
 import i18n, {changeLanguage, initializeLanguage, LANGUAGES} from '@/src/shared/localization/i18n';
-import {I18nManager} from 'react-native';
 import {LanguageContext} from '@/src/core/contexts/LanguageContext';
 
 const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
@@ -28,7 +27,7 @@ const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({children}) =
         await changeLanguage(language);
         setCurrentLanguage(language);
         setIsRTL(language === LANGUAGES.ARABIC);
-        I18nManager.forceRTL(language === LANGUAGES.ARABIC);
+        // RTL is now handled in changeLanguage() before reload
     }, []);
 
     const contextValue = useMemo(() => ({

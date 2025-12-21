@@ -77,7 +77,7 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                         )}
                     </View>
                     <FontText type="body" weight="bold"
-                        className={cn("text-content-primary text-sm leading-5")}>
+                        className={cn("text-content-primary text-sm")}>
                         {currencyNumber(amount)} {t(currency)}
                     </FontText>
                 </View>

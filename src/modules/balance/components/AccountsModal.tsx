@@ -71,7 +71,7 @@ const AccountsModal = ({ isVisible, onClose, accounts }: Props) => {
                                     animate={{ translateY: 0 }}
                                     exit={{ translateY: 550 }}
                                     transition={{ type: 'timing', duration: 500 }}
-                                    className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md shadow-sm"
+                                    className="bg-white w-full rounded-t-3xl pt-4 pb-12 px-6 elevation-md min-h-[59%] shadow-sm justify-between"
                                 >
                                     <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-8" />
 
@@ -81,7 +81,7 @@ const AccountsModal = ({ isVisible, onClose, accounts }: Props) => {
                                     />
 
                                     {/* Amount Range */}
-                                    <View className="">
+                                    <View className="flex-1">
                                         <AccountsList
                                             accounts={accounts}
                                             setActiveAccount={setAccount}

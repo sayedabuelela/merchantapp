@@ -64,7 +64,7 @@ const ActivityCard = ({
 
                     </View>
                     <FontText type="body" weight="bold"
-                        className={cn("text-content-primary text-base leading-5 ml-1"
+                        className={cn("text-content-primary text-base ml-1"
                             // ,isInOperation && "text-success"
                         )}>
 

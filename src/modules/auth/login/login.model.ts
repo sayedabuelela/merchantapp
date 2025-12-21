@@ -8,7 +8,7 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 export interface LoginRequest {
     email: string;
     password: string;
-    fcmData: FCMData;
+    fcmData?: FCMData;
     biometricEnabled?: boolean;
 }
 

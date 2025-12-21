@@ -1,9 +1,10 @@
 import { Link, Route } from 'expo-router';
 import React from 'react'
-import { Pressable, View } from 'react-native'
+import { Pressable, View, I18nManager } from 'react-native'
 import FontText from '@/src/shared/components/FontText'
 import ScaleFadeIn from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
 import ComingSoonBadge from '@/src/shared/components/badges/ComingSoonBadge'
+import { cn } from '@/src/core/utils/cn';
 
 interface ServiceCardProps {
     title: string;
@@ -13,11 +14,12 @@ interface ServiceCardProps {
     onPress?: () => void;
     comingSoon?: boolean;
 }
-
+const isRTL = I18nManager.isRTL;
 const ServiceCard = ({ title, description, href, icon, onPress, comingSoon }: ServiceCardProps) => {
+
     const content = (
         <Pressable
-            className="flex-1 min-w-[160px] p-4 rounded border border-tertiary bg-white/10 overflow-hidden"
+            className="flex-1 min-w-[160px] pl-4 py-4 rounded border border-tertiary bg-white/10 overflow-hidden"
             onPress={onPress}
             style={{
                 shadowColor: '#fff',
@@ -28,7 +30,7 @@ const ServiceCard = ({ title, description, href, icon, onPress, comingSoon }: Se
             }}
         >
             {comingSoon &&
-                <View className='absolute top-[15px] right-[-25px] rotate-[45deg]'>
+                <View className={cn('absolute top-[15px] right-[-25px]', isRTL ? 'rotate-[-45deg]' : 'rotate-[45deg]')}>
                     <ScaleFadeIn delay={400} duration={1000}>
                         <ComingSoonBadge />
                     </ScaleFadeIn>

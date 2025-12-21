@@ -181,7 +181,7 @@ const TransactionDetailsScreen = () => {
                     onScroll={handleScroll}
                     scrollEventThrottle={16}
                 >
-                    <View className="px-4">
+                    <View className="px-6">
                         {/* Transaction Summary Card - Measure height */}
                         <ScaleView delay={150} duration={600}>
                             <View

@@ -176,7 +176,7 @@ const OrderDetailsScreen = () => {
                     onScroll={handleScroll}
                     scrollEventThrottle={16}
                 >
-                    <View className="px-4">
+                    <View className="px-6">
                         {/* Order Summary Card - Measure height */}
                         <ScaleView delay={150} duration={600}>
                             <View
@@ -185,9 +185,9 @@ const OrderDetailsScreen = () => {
                                     setSummaryHeight(height);
                                 }}
                             >
-                                <OrderSummaryCard order={order} />
+                                {order && <OrderSummaryCard order={order} />}
                             </View>
-                        </ScaleView>
+                        </ScaleView>    
 
                         {/* Tabs - Normal position (hidden when sticky to prevent duplicate) */}
                         <View style={{ opacity: isTabsSticky ? 0 : 1, }}>

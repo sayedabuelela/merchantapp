@@ -9,6 +9,7 @@ import { EllipsisVerticalIcon, QrCodeIcon, ShoppingBagIcon, UserIcon } from 'rea
 import { PaymentLink } from '../payment-links.model'
 import StatusBox from './StatusBox'
 import DeliveryStatusBox from './DeliveryStatusBox'
+import { cn } from '@/src/core/utils/cn'
 
 interface Props {
     paymentLink: PaymentLink;
@@ -25,31 +26,38 @@ const PaymentLinkCard = ({
     // console.log("lastShareStatus : ", lastShareStatus);
     return (
         <Link href={`/payment-links/${paymentLinkId}`} asChild>
-            <Pressable className='border-[1.5px] rounded border-tertiary p-4 mb-2  gap-y-2' 
-            onLongPress={onOpen} 
+            <Pressable className='border-[1.5px] rounded border-tertiary p-4 mb-2  gap-y-2'
+                onLongPress={onOpen}
             >
                 <View className='flex-row items-center justify-between'>
                     <View className='flex-row items-center'>
                         <StatusBox status={paymentStatus} />
-                        <FontText type="body" weight="regular" className="text-light-gray text-xs ml-[6px]">{paymentLinkId}</FontText>
+                        <FontText type="body" weight="regular"
+                            className="text-content-secondary text-[10px] uppercase ml-2">
+                            {paymentLinkId}</FontText>
                     </View>
-                    <View className='flex-row items-center'>
-                          <FontText type="body" weight="bold" className="text-content-primary text-base leading-5 mr-1">
-                                {currencyNumber(totalAmount)} {currency}
-                            </FontText>
-                        {/* <Pressable onPress={onOpen}>
+                    <FontText type="body" weight="bold"
+                        className={cn("text-content-primary text-sm")}>
+                        {currencyNumber(totalAmount)} {currency}
+                    </FontText>
+                    {/* <View className='flex-row items-center'> */}
+                    {/* <Pressable onPress={onOpen}>
                             <EllipsisVerticalIcon size={19} color="#001F5F" />
                         </Pressable> */}
-                    </View>
+                    {/* </View> */}
                 </View>
                 <View className='flex-row items-start'>
                     <UserIcon size={18} color="#556767" style={{ marginTop: 3 }} />
                     <View className='flex-1 ml-1'>
                         <View className='flex-row items-center justify-between'>
-                            <FontText type="body" weight="semi" className="text-content-secondary text-sm self-start">
+                        <FontText type="body" weight="regular"
+                            className="text-content-primary text-xs capitalize self-start mt-0.5">
                                 {customerName}
                             </FontText>
-                          
+                            {/* <FontText type="body" weight="semi" className="text-content-secondary text-sm self-start">
+                                {customerName}
+                            </FontText> */}
+
                         </View>
                         {dueDate && (
                             <FontText type="body" weight="regular" className="text-light-gray text-xs self-start mt-0.5">

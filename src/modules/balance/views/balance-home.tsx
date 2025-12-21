@@ -12,7 +12,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, View } from 'react-native';
+import { I18nManager, Pressable, ScrollView, View } from 'react-native';
 import { ArrowRightIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Activity, ActivityType } from '../balance.model';
@@ -166,7 +166,7 @@ const BalancesScreen = () => {
                                         <FontText type="body" weight="regular" className="text-xs text-primary mr-2">
                                             {t("All activities")}
                                         </FontText>
-                                        <ArrowRightIcon size={16} color="#001F5F" />
+                                        <ArrowRightIcon size={16} color="#001F5F" style={{ transform: [{ rotate: I18nManager.isRTL ? '180deg' : '0deg' }] }} />
                                     </Pressable>
                                 </View>
                             </FadeInUpView>

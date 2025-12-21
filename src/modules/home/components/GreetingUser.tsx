@@ -13,7 +13,7 @@ const GreetingUser = ({ userName }: { userName: string }) => {
             <FontText type="head" weight="bold" className="text-2xl text-content-primary capitalize">
                 {userName}!
             </FontText>
-            <FontText type="body" weight="regular" className="text-xs text-content-secondary mt-0.5">
+            <FontText type="body" weight="regular" className="text-xs text-content-secondary mt-0.5 self-start">
                 {formatDateByLocale(new Date())}
             </FontText>
         </View>
