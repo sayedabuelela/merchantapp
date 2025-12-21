@@ -493,5 +493,16 @@
   "Overdue":"منتهي الصلاحية",
   "Expired":"منتهي الصلاحية",
   "Awaiting approval":"في انتظار الموافقة",
-  "Rejected":"مرفوض"
+  "Rejected":"مرفوض",
+  "proccedPaid": "دفع ",
+  "paymentRequest.notification": "طلب السداد",
+  "paymentPage.notification": "صفحة دفع",
+  "invoice.notification": "فاتورة",
+  "Invoice.notification": "فاتورة",
+  "paymentRequest": "طلب السداد",
+  "paymentRequest.trx": "طلبات السداد",
+  "Invoice.trx": "الفواتير",
+  "Your customer": "العميل",
+  "paymentLink": "رابط الدفع",
+  "forpaymentLink": "لرابط الدفع",
 }

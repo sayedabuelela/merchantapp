@@ -1,3 +1,12 @@
 {
- 
+    "proccedPaid": "paid",
+    "invoices.nostatus": "You did not have any {{paymentStatus}} invoices or payment requests.",
+    "payment.nostatus": "You don't have any {{paymentStatus}} payment requests.",
+    "paymentRequest.notification": "Payment Request",
+    "invoice.notification": "Invoice",
+    "paymentRequest.trx": "Payment Requests",
+    "Invoice.trx": "Invoices",
+    "paymentPage": "Payment Page",
+    "paymentLink": "Payment Link",
+    "for paymentLink": "For Payment Link",
 }

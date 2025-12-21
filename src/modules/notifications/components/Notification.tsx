@@ -30,6 +30,7 @@ const Notification = ({ _id,
             router.push(`/payments/order/${data.orderId}` as any)
         }
     }
+    console.log("data?.paymentType : ", data?.paymentType);
     return (
         <TouchableOpacity
             onPress={handlePress}
@@ -58,7 +59,7 @@ const Notification = ({ _id,
                 <FontText
                     type="body"
                     weight="bold"
-                    className="text-content-primary mx-[1px] text-sm"
+                    className="text-content-primary mx-0.5 text-sm"
                 >
                     {data?.amount} {t(data?.currency)}{" "}
                 </FontText>
@@ -68,10 +69,11 @@ const Notification = ({ _id,
                     weight="regular"
                     className="text-content-primary capitalize text-sm"
                 >
-                    {t("for")} {isRTL ? "" : ""}
-                    {data?.paymentType !== "paymentRequest"
+                    {/* {t("for")}  */}
+                    {t(`${isRTL ? "for" : "for "}${data?.paymentType}`)}
+                    {/* {data?.paymentType !== "paymentRequest"
                         ? t(`${data?.paymentType}`)
-                        : t(`${data?.paymentType}.notification`)}
+                        : t(`${data?.paymentType}.notification`)} */}
                 </FontText>
 
                 <FontText
