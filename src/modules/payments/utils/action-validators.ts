@@ -240,8 +240,8 @@ export const isRefundAvailable = (order: OrderDetailPayment): boolean => {
 
   // Transaction type validation
   const isValidTransactionType =
-    normalizeString(lastTransactionType) !== 'authorize' &&
-    normalizeString(lastTransactionType) !== 'refund';
+    normalizeString(lastTransactionType) !== 'authorize';
+  // && normalizeString(lastTransactionType) !== 'refund';
   if (!isValidTransactionType) return false;
 
   // POS-specific rules

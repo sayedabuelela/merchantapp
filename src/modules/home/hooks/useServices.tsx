@@ -10,7 +10,8 @@ import {
     QrCodeIcon
 } from 'react-native-heroicons/outline';
 import { POSIcon } from '@/src/shared/assets/svgs';
-
+import { useEnvironmentStore, selectMode } from '@/src/core/environment/environments.store'
+import { Mode } from '@/src/core/environment/environments';
 export interface ServiceItem {
     title: string;
     description: string;
@@ -22,7 +23,7 @@ export interface ServiceItem {
 
 export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
     const { t } = useTranslation();
-
+    const mode = useEnvironmentStore(selectMode)
     return [
         {
             title: t('QR code payments'),
@@ -40,7 +41,7 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
         {
             title: t('Payouts'),
             description: t('Receive your funds'),
-            href: (ROUTES.BALANCE.ROOT + '?tab=payout') as Route,
+            href: mode === Mode.LIVE ? (ROUTES.BALANCE.ROOT + '?tab=payout') as Route : '' as Route,
             icon: <BanknotesIcon size={20} color="#001F5F" />
         },
         {

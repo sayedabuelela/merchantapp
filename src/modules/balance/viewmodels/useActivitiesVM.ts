@@ -8,6 +8,8 @@ import usePermissions from "../../auth/hooks/usePermissions";
 import { Activity, ActivitiesInfinityResponse, ActivitiesResponse, FetchActivitiesParams } from "../balance.model";
 import { getActivities } from "../balance.services";
 import { useBalanceStore, selectActiveAccountId } from "../balance.store";
+import { useEnvironmentStore, selectMode } from "@/src/core/environment/environments.store";
+import { Mode } from "@/src/core/environment/environments";
 
 export const useActivitiesVM = (params?: FetchActivitiesParams) => {
     const { api } = useApi();
@@ -16,7 +18,8 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
     const { canViewBalance } = usePermissions(user?.actions!);
     const hasBalanceFeature = useHasFeature("multi accounts");
     const activeAccountId = useBalanceStore(selectActiveAccountId);
-
+    const mode = useEnvironmentStore(selectMode);
+    console.log('mode : ', mode);
     const activitiesQuery = useInfiniteQuery<
         ActivitiesResponse,
         Error,
@@ -32,11 +35,12 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
             return page < totalPages ? page + 1 : undefined;
         },
         initialPageParam: 1,
-        enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated),
+        enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated && mode === Mode.LIVE),
         // keepPreviousData: true,
         staleTime: 5 * 60 * 1000, // 5 minutes
     });
-
+    // console.log('activitiesQuery : ', activitiesQuery.data?.pages);
+    console.log('mode === Mode.LIVE : ', !!(mode === Mode.LIVE));
     const allItems = activitiesQuery.data?.pages.flatMap((p) => p.data) ?? [];
 
     // Determine grouping based on filter params
@@ -76,6 +80,7 @@ export const useRecentBalanceActivities = () => {
     const { canViewBalance } = usePermissions(user?.actions!);
     const hasBalanceFeature = useHasFeature("multi accounts");
     const activeAccountId = useBalanceStore(selectActiveAccountId);
+    const mode = useEnvironmentStore(selectMode);
     console.log('useRecentBalanceActivities', {
         activeAccountId: activeAccountId,
         canViewBalance: canViewBalance,
@@ -85,7 +90,7 @@ export const useRecentBalanceActivities = () => {
     return useQuery<ActivitiesResponse, Error, ActivitiesResponse>({
         queryKey: ["balanceActivities", activeAccountId, { limit: 3, page: 1 }],
         queryFn: () => getActivities(api, { limit: 3, page: 1, accountId: activeAccountId }),
-        enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated),
+        enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated && mode === Mode.LIVE),
         staleTime: 5 * 60 * 1000,
     });
 };

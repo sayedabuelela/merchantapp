@@ -9,9 +9,9 @@ export const isCardPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
     return !!(sourceOfFunds.maskedCard || sourceOfFunds.cardBrand || sourceOfFunds.issuer);
 };
 
-export const isValuPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+export const isBnPlPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
     if (!sourceOfFunds) return false;
-    return sourceOfFunds.type === 'VALU' || !!sourceOfFunds.payerInfo;
+    return sourceOfFunds.type === 'VALU' ||sourceOfFunds.type === 'Aman' ||sourceOfFunds.type === 'Sohoola' || !!sourceOfFunds.payerInfo;
 };
 
 export const isWalletPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
@@ -24,12 +24,12 @@ export const isCashPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
     return sourceOfFunds.type === 'Cash';
 };
 
-export type PaymentType = 'card' | 'valu' | 'wallet' | 'cash' | 'unknown';
+export type PaymentType = 'card' | 'valu' |'aman' | 'sohoola' | 'wallet' | 'cash' | 'unknown';
 
 export const getPaymentType = (sourceOfFunds?: SourceOfFunds): PaymentType => {
     if (!sourceOfFunds) return 'unknown';
 
-    if (isValuPayment(sourceOfFunds)) return 'valu';
+    if (isBnPlPayment(sourceOfFunds)) return 'valu';
     if (isCashPayment(sourceOfFunds)) return 'cash';
     if (isWalletPayment(sourceOfFunds)) return 'wallet';
     if (isCardPayment(sourceOfFunds)) return 'card';

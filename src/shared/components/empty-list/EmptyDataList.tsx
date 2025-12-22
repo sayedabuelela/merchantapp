@@ -11,7 +11,8 @@ type EmptyDataListProps = {
     buttonLabel?: string
     onButtonPress?: () => void
     buttonVariant?: "primary" | "outline"
-    buttonIconType?: "plus" | "xicon"
+    buttonIconType?: "plus" | "xicon",
+    containerClassName?: string
 }
 
 const EmptyDataList: React.FC<EmptyDataListProps> = ({
@@ -21,10 +22,11 @@ const EmptyDataList: React.FC<EmptyDataListProps> = ({
     buttonLabel,
     onButtonPress,
     buttonVariant = "primary",
-    buttonIconType
+    buttonIconType,
+    containerClassName
 }) => {
     return (
-        <View className="items-center self-center mt-12">
+        <View className={cn("items-center self-center mt-12", containerClassName)}>
             {icon}
             <View className="items-center mt-6">
                 <FontText

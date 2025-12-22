@@ -19,7 +19,7 @@ export const OrderSummaryCard = ({order}: OrderSummaryCardProps) => {
                 status={order.status}
                 orderId={order.orderId}
             />
-            <PaymentMethodDetails sourceOfFunds={order.sourceOfFunds} paymentChannel={order.paymentChannel} />
+            <PaymentMethodDetails sourceOfFunds={order.sourceOfFunds} method={order.method} paymentChannel={order.paymentChannel} />
             <DetailsSection className="mt-4">
                 <SectionItem title={t("Merchant order ID")} value={order.merchantOrderId}/>
                 <SectionItem title={t("Network order ID")} value={order.orderId}/>

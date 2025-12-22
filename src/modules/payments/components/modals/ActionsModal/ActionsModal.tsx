@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { AnimatePresence, MotiView } from 'moti';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Modal, Pressable, TouchableWithoutFeedback, View } from 'react-native';
-import { Bars3BottomLeftIcon, ArrowPathIcon, XMarkIcon, CheckCircleIcon } from 'react-native-heroicons/outline';
+import { Bars3BottomLeftIcon, ArrowPathIcon, XMarkIcon, CheckCircleIcon, ArrowUturnLeftIcon } from 'react-native-heroicons/outline';
 
 import FontText from '@/src/shared/components/FontText';
 import ActionItem from './ActionItem';
@@ -304,7 +304,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                                     )}
                                     {canRefund && orderId && (
                                         <ActionItem
-                                            icon={<ArrowPathIcon size={24} color="#D32F2F" />}
+                                            icon={<ArrowUturnLeftIcon size={24} color="#D32F2F" />}
                                             title={t("Refund")}
                                             onPress={handleRefundPress}
                                             isLoading={isRefunding}

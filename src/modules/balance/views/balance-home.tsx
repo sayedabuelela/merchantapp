@@ -12,7 +12,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { I18nManager, Pressable, ScrollView, View } from 'react-native';
+import { I18nManager, Pressable, RefreshControl, ScrollView, View } from 'react-native';
 import { ArrowRightIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Activity, ActivityType } from '../balance.model';
@@ -33,12 +33,13 @@ import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/Fad
 import ScaleView from '@/src/shared/components/wrappers/animated-wrappers/ScaleView';
 import StaggerChildrenView from '@/src/shared/components/wrappers/animated-wrappers/StaggerChildrenView';
 import AnimatedListItem from '@/src/shared/components/wrappers/animated-wrappers/AnimatedListItem';
+import PaymentLinkCardSkeleton from '../../payment-links/components/PaymentLinkCardSkeleton';
 
 const BalancesScreen = () => {
     const { t } = useTranslation();
     const { user } = useAuthStore();
-    const { data: recentActivities } = useRecentBalanceActivities();
-    const { accountStatistics: { data: accountStats }, transfersStatistics: { data: transfersStats } } = useStatistics();
+    const recentActivities = useRecentBalanceActivities();
+    const { accountStatistics: accountStats, transfersStatistics: transfersStats } = useStatistics();
     const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<Activity>>>>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [search, setSearchValue] = useState('');
@@ -48,7 +49,6 @@ const BalancesScreen = () => {
     const { accounts } = useAccounts();
     // Use custom hook for filter management
     const { filters, setFilters, hasActiveFilters, clearFilters } = useActivityFilters(type);
-
     // Scroll to top when tab changes
     useEffect(() => {
         listRef.current?.scrollToOffset({ offset: 0, animated: true });
@@ -62,6 +62,8 @@ const BalancesScreen = () => {
         isFetchingNextPage,
         hasNextPage,
         fetchNextPage,
+        isRefetching,
+        refetch
     } = useActivitiesVM({ ...filters, search });
 
     // console.log('listData', listData);
@@ -102,7 +104,7 @@ const BalancesScreen = () => {
     const infoMsg = getActivityInfoMessage(type, t);
     const RecentActivitiesEmpty = () => {
         return (
-            <View className="items-center justify-center py-8">
+            <View className="items-center justify-center pt-6 pb-8">
                 <NoActivitiesSmallIcon />
                 <FontText type="body" weight="bold" className="text-content-primary text-base text-center mt-4">
                     {t('No balance activities yet!')}
@@ -135,22 +137,42 @@ const BalancesScreen = () => {
             <FadeInUpView delay={200} duration={600}>
                 <ActivitiesTabs value={type} onSelectType={setType} />
             </FadeInUpView>
-            <ScrollView showsVerticalScrollIndicator={false} >
-                {type === 'overview' ? (
+            {isLoading ? (
+                <View className={cn("flex-1 px-6 mt-6")}>
+                    <PaymentLinkCardSkeleton />
+                </View>
+            ) : type === 'overview' ? (
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={
+                                accountStats.isRefetching ||
+                                transfersStats.isRefetching ||
+                                recentActivities.isRefetching
+                            }
+                            onRefresh={() => {
+                                accountStats.refetch();
+                                transfersStats.refetch();
+                                recentActivities.refetch();
+                            }}
+                        />
+                    }
+                >
                     <View className="px-6 mt-6">
                         <ScaleView delay={150} duration={600}>
                             <BalanceHeader
                                 userName={user?.fullName || user?.userName}
-                                balanceOverview={accountStats?.balanceOverview}
-                                ongoingTransfers={transfersStats?.onGoingTransfersAmount}
+                                balanceOverview={accountStats.data?.balanceOverview}
+                                ongoingTransfers={transfersStats.data?.onGoingTransfersAmount}
                                 onPressAccounts={() => setShowAccountsModal(true)}
                                 showAccountsBtn={(accounts !== undefined && accounts?.length > 1)}
                             />
                         </ScaleView>
-                        {accountStats?.upcomingValueDates && accountStats?.upcomingValueDates.length > 0 && (
+                        {accountStats.data?.upcomingValueDates && accountStats.data.upcomingValueDates.length > 0 && (
                             <FadeInUpView delay={300} duration={600}>
                                 <UpcomingBalanceSection
-                                    upcomingValueDates={accountStats?.upcomingValueDates}
+                                    upcomingValueDates={accountStats.data.upcomingValueDates}
                                     currency={t("EGP")}
                                     nextRoute={ROUTES.BALANCE.ACTIVITIES}
                                 />
@@ -170,14 +192,14 @@ const BalancesScreen = () => {
                                     </Pressable>
                                 </View>
                             </FadeInUpView>
-                            {recentActivities?.data && recentActivities.data.length > 0 ? (
+                            {recentActivities.data?.data && recentActivities.data.data.length > 0 ? (
                                 <StaggerChildrenView
                                     delay={400}
                                     staggerDelay={80}
                                     animationType="fadeInUp"
                                     duration={500}
                                 >
-                                    {recentActivities.data.map((item) => (
+                                    {recentActivities.data.data.map((item) => (
                                         <ActivityCard
                                             key={item._id}
                                             {...item}
@@ -187,35 +209,37 @@ const BalancesScreen = () => {
                                 </StaggerChildrenView>
                             ) : (<RecentActivitiesEmpty />)}
                         </View>
-                    </View>) : (
-                    <View className={cn("flex-1 px-6 ")}>
-                        <StickyHeaderList
-                            ref={listRef}
-                            listData={listData}
-                            stickyHeaderIndices={stickyHeaderIndices}
-                            fetchNextPage={fetchNextPage}
-                            hasNextPage={hasNextPage}
-                            isFetchingNextPage={isFetchingNextPage}
-                            renderItem={renderItem}
-                            ListHeaderComponent={
-                                <View className="">
-                                    {type !== 'all' && <AnimatedInfoMsg infoMsg={infoMsg} />}
-                                </View>
-                            }
-                            ListEmptyComponent={
-                                <ActivitiesListEmpty
-                                    search={search}
-                                    type={type}
-                                    hasFilters={hasActiveFilters}
-                                    handleClearSearch={handleClearSearch}
-                                    handleClearFilters={handleClearFilters}
-                                />
-                            }
-                        />
                     </View>
-                )}
-
-            </ScrollView>
+                </ScrollView>
+            ) : (
+                <View className={cn("flex-1 px-6")}>
+                    <StickyHeaderList
+                        ref={listRef}
+                        listData={listData}
+                        stickyHeaderIndices={stickyHeaderIndices}
+                        fetchNextPage={fetchNextPage}
+                        hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
+                        renderItem={renderItem}
+                        refreshing={isRefetching}
+                        onRefresh={refetch}
+                        ListHeaderComponent={
+                            <View className="">
+                                {type !== 'all' && <AnimatedInfoMsg infoMsg={infoMsg} />}
+                            </View>
+                        }
+                        ListEmptyComponent={
+                            <ActivitiesListEmpty
+                                search={search}
+                                type={type}
+                                hasFilters={hasActiveFilters}
+                                handleClearSearch={handleClearSearch}
+                                handleClearFilters={handleClearFilters}
+                            />
+                        }
+                    />
+                </View>
+            )}
             {accounts !== undefined && (
                 <AccountsModal
                     isVisible={showAccountsModal}

@@ -7,6 +7,8 @@ import usePermissions from "../../auth/hooks/usePermissions"
 import useHasFeature from "../../auth/hooks/useHasFeature";
 import { useBalanceStore, selectSetActiveAccount, selectActiveAccount } from "../balance.store"
 import { useEffect } from "react"
+import { useEnvironmentStore, selectMode } from "@/src/core/environment/environments.store"
+import { Mode } from "@/src/core/environment/environments"
 
 const useAccounts = (params?: AccountsListParams) => {
     const { api } = useApi()
@@ -16,7 +18,7 @@ const useAccounts = (params?: AccountsListParams) => {
     const hasBalanceFeature = useHasFeature("multi accounts");
     const setActiveAccount = useBalanceStore(selectSetActiveAccount);
     const currentActiveAccount = useBalanceStore(selectActiveAccount);
-
+    const mode = useEnvironmentStore(selectMode);
     console.log('canViewBalance : ', canViewBalance);
     console.log('hasBalanceFeature : ', hasBalanceFeature);
 
@@ -25,7 +27,7 @@ const useAccounts = (params?: AccountsListParams) => {
         queryFn: () => getAccountsList(api, params),
         select: (response) => response.data,
         staleTime: 5 * 60 * 1000, // 5 minutes
-        enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated),
+        enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated && mode === Mode.LIVE),
     })
 
     // Set active account to 'all' when accounts are loaded and has data

@@ -5,7 +5,8 @@ import BalanceStatsCard from '../../balance/components/header/BalanceStatsCard'
 import { AccountStatistics, PaymentsStatistics, PayoutStatistics, TransfersStatistics } from '../../balance/balance.model'
 import { useTranslation } from 'react-i18next'
 import { HomeTabType } from '../home.model'
-
+import { Mode } from '@/src/core/environment/environments'
+import { useEnvironmentStore, selectMode } from '@/src/core/environment/environments.store' 
 const { width } = Dimensions.get('window')
 const CARD_PADDING = 24
 const CARD_WIDTH = width - (CARD_PADDING * 2)
@@ -28,7 +29,7 @@ type CardItem = {
 const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payoutStats, setHomeActiveTab, activeTab }: HomeStatsCarouselProps) => {
     const { t } = useTranslation()
     const [currentIndex, setCurrentIndex] = useState(0)
-
+    const mode = useEnvironmentStore(selectMode)
     const flatListRef = useRef<FlatList<CardItem>>(null)
     const isProgrammaticScroll = useRef(false)
     // const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -37,13 +38,14 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
     //     setCurrentIndex(index)
     //     setHomeActiveTab(Object.keys(CARD_IDS)[index] as HomeTabType)
     // }
+    // console.log('mode : ', accountStats?.balanceOverview?.availableBalance);
     const cardsData: CardItem[] = useMemo(() => ([
         {
             id: 'balance-card',
             tab: 'all',
-            mainBalance: { title: t('Available Balance'), value: accountStats?.balanceOverview?.availableBalance || 0, currency: 'EGP' },
-            leftDetail: { title: t('Last settlement'), value: accountStats?.balanceOverview?.lastPayoutAmount || 0, currency: 'EGP' },
-            rightDetail: { title: t('Upcoming settlement'), value: accountStats?.balanceOverview?.lastPayoutAmount || 0, currency: 'EGP' },
+            mainBalance: { title: t('Available Balance'), value: mode === Mode.LIVE ? accountStats?.balanceOverview?.availableBalance || 0 : 0, currency: 'EGP' },
+            leftDetail: { title: t('Last settlement'), value: mode === Mode.LIVE ? accountStats?.balanceOverview?.lastPayoutAmount || 0 : 0, currency: 'EGP' },
+            rightDetail: { title: t('Upcoming settlement'), value: mode === Mode.LIVE ? accountStats?.balanceOverview?.lastPayoutAmount || 0 : 0, currency: 'EGP' },
         },
         {
             id: 'payments-card',
@@ -66,7 +68,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
             leftDetail: { title: t('transfers no.'), value: transfersStats?.totalTransfersCount || 0, currency: '' },
             rightDetail: { title: t('Transfers Vol.'), value: transfersStats?.totalTransfersAmount || 0, currency: '' },
         },
-    ]), [t, accountStats, paymentsStats, payoutStats, transfersStats])
+    ]), [t, accountStats, paymentsStats, payoutStats, transfersStats, mode])
 
     const tabToIndex = useMemo(() => {
         return cardsData.reduce<Record<HomeTabType, number>>((acc, card, idx) => {

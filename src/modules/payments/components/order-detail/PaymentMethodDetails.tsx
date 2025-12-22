@@ -1,16 +1,17 @@
 import { SourceOfFunds } from '@/src/modules/payments/payments.model';
 import {
     isCardPayment,
-    isValuPayment,
+    isBnPlPayment,
     isWalletPayment,
     isCashPayment,
 } from '@/src/modules/payments/payments.utils';
 import { CardPaymentDetails } from './CardPaymentDetails';
-import { ValuPaymentDetails } from './ValuPaymentDetails';
 import { WalletPaymentDetails } from './WalletPaymentDetails';
 import { CashPaymentDetails } from './CashPaymentDetails';
+import { BnPlPaymentDetails } from './BnPlPaymentDetails';
 
 interface PaymentMethodDetailsProps {
+    method: string;
     sourceOfFunds?: SourceOfFunds;
     paymentChannel?: string;
 }
@@ -19,14 +20,14 @@ interface PaymentMethodDetailsProps {
  * Smart wrapper component that renders the appropriate payment details
  * based on the payment type (Card, VALU, Wallet, Cash)
  */
-export const PaymentMethodDetails = ({ sourceOfFunds, paymentChannel }: PaymentMethodDetailsProps) => {
-    console.log('sourceOfFunds',sourceOfFunds);
-    
+export const PaymentMethodDetails = ({ method, sourceOfFunds, paymentChannel }: PaymentMethodDetailsProps) => {
+    console.log('sourceOfFunds', sourceOfFunds);
+
     if (!sourceOfFunds) return null;
 
     // Determine payment type and render appropriate component
-    if (isValuPayment(sourceOfFunds)) {
-        return <ValuPaymentDetails sourceOfFunds={sourceOfFunds} paymentChannel={paymentChannel} />;
+    if (isBnPlPayment(sourceOfFunds)) {
+        return <BnPlPaymentDetails method={method} sourceOfFunds={sourceOfFunds} paymentChannel={paymentChannel} />;
     }
 
     if (isCashPayment(sourceOfFunds)) {

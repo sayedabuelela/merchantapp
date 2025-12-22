@@ -37,11 +37,11 @@ const ActivityCard = ({
     const { t } = useTranslation();
 
     // OUT operations: money going out (down arrow, red)
-    const outOperations = ['payout', 'transfer', 'refund', 'deduct'];
+    const outOperations = ['payout', 'transfer', 'refund', 'deduct','topup','topup (+ve)'];
 
     // IN operations: money coming in (up arrow, green)
-    const inOperations = ['topup', 'adjustment', 'rate adjustment', 'opening balance', 'refund cancel', 'settlement', 'release','payment'];
-
+    const inOperations = [ 'adjustment', 'rate adjustment', 'opening balance', 'refund cancel', 'settlement', 'release', 'payment'];
+    const isTopupAdjustment = operation.toLowerCase() === 'topup (+ve)' || operation.toLowerCase() === 'topup' || operation.toLowerCase() === 'adjustment';
     const isOutOperation = outOperations.includes(operation.toLowerCase());
     const isInOperation = inOperations.includes(operation.toLowerCase());
     // out is arrow up 
@@ -56,7 +56,7 @@ const ActivityCard = ({
                             {isInOperation ? (
                                 <ArrowSmallDownIcon size={10} color={'#4AAB4E'} />
                             ) : (
-                                <ArrowSmallUpIcon size={10} color={'#A50017'} />
+                                <ArrowSmallUpIcon size={10} color={isTopupAdjustment ? '#4AAB4E' : '#A50017'} />
                             )}
                         </IconBox>
                         <FontText type="body" weight="regular" className="text-content-secondary text-xs capitalize">

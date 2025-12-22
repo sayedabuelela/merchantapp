@@ -81,7 +81,8 @@ const PaymentLinksScreen = () => {
         hasNextPage,
         isFetchingNextPage,
         listData,
-        refetch
+        refetch,
+        isRefetching
     } = usePaymentLinksVM({
         search,
         paymentStatus,
@@ -170,6 +171,8 @@ const PaymentLinksScreen = () => {
                         handleShowCreatePLModal={handleToggleCreateNew}
                         // handleOpenActions={handleOpenActions}
                         renderItem={renderItem}
+                        refreshing={isRefetching}
+                        onRefresh={refetch}
                         ListEmptyComponent={
                             <PaymentLinksListEmpty
                                 search={search}

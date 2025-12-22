@@ -192,6 +192,8 @@ const PaymentsScreen = () => {
                             hasNextPage={hasNextPage}
                             isFetchingNextPage={isFetchingNextPage}
                             renderItem={renderItem}
+                            refreshing={activeQuery.isRefetching}
+                            onRefresh={activeQuery.refetch}
                             ListEmptyComponent={
                                 <PaymentsListEmpty
                                     currentTab={isOrdersTab ? 'sessions' : 'transactions'}

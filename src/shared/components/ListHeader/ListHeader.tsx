@@ -38,7 +38,7 @@ const ListHeader = ({
 }: Props) => {
     const { t } = useTranslation();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-
+    console.log('hasFilters : ', hasFilters);
     return (
         <View className={cn("px-6", Platform.OS === 'android' ? 'pt-4' : 'pt-0', className)}>
             <View className="flex-row justify-between items-center">
@@ -50,7 +50,7 @@ const ListHeader = ({
                     {title}
                 </FontText>
                 <View className='flex-row gap-x-4'>
-                    {!isListEmpty && <>
+                    {(!isListEmpty || hasFilters) && <>
                         <Pressable onPress={() => setIsSearchOpen(!isSearchOpen)}>
                             <MagnifyingGlassIcon size={24} color="#001F5F" fill={isSearchOpen ? '#001F5F' : '#fff'} />
                         </Pressable>

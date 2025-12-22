@@ -2,10 +2,11 @@ import { OrderDetailPayment } from "@/src/modules/payments/payments.model"
 import {
     isValuPayment,
     isWalletPayment,
-    isCashPayment
+    isCashPayment,
+    isBnPlPayment
 } from "@/src/modules/payments/payments.utils"
 import {
-    ValuSettlementDetails,
+    BnPlSettlementDetails,
     WalletSettlementDetails,
     CashSettlementDetails,
     adaptOrderData
@@ -24,8 +25,8 @@ const SettlementTab = ({ order }: Props) => {
     const settlementData = adaptOrderData(order);
 
     // VALU payments (installments)
-    if (isValuPayment(sourceOfFunds)) {
-        return <ValuSettlementDetails data={settlementData} />;
+    if (isBnPlPayment(sourceOfFunds)) {
+        return <BnPlSettlementDetails data={settlementData} />;
     }
 
     // Wallet payments (Vodafone Cash, Orange Cash, etc.)

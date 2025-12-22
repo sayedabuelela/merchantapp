@@ -52,13 +52,15 @@ export const useActivityFilters = (type: ActivityType) => {
 
     // Check if any filters are active (excluding default filter keys)
     const hasActiveFilters = useMemo(() => {
-        const filterKeysToIgnore = ['page', 'limit', 'search', 'operation', 'accountId', 'isReflected'];
+        // const filterKeysToIgnore = ['page', 'limit', 'search', 'operation', 'accountId', 'isReflected'];
+        const filterKeysToIgnore = ['page', 'limit', 'search', 'accountId','isReflected'];
         return Object.entries(filters).some(([key, value]) => {
             if (filterKeysToIgnore.includes(key)) return false;
             return value !== undefined && value !== '';
         });
     }, [filters]);
-
+    console.log('hasActiveFilters : ', hasActiveFilters);
+    console.log('filters : ', filters);
     const clearFilters = () => {
         setFilters(INITIAL_FILTERS);
     };

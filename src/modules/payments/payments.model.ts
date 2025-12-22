@@ -156,6 +156,8 @@ export interface ValuPayerInfo {
     ToUAmount?: string | null;
     financedAmount?: number;
     adminFees?: string | null;
+    cardNumber?: string;
+    transactionId?: string;
 }
 
 // Source of Funds - supports multiple payment types
@@ -354,7 +356,7 @@ export interface OrderDetailPayment {
     merchantOrderId: string;
     amount: number;
     currency: string;
-    method?: string;
+    method: string;
     pcc: OrderDetailPCC;
     provider?: string;
     acquirer?: string | null;

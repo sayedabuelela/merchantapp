@@ -12,10 +12,12 @@ interface Props<T> {
     ListEmptyComponent?: React.ReactElement;
     ListHeaderComponent?: React.ReactElement;
     renderItem: (info: ListRenderItemInfo<GroupedRow<T>>) => React.ReactElement;
+    refreshing?: boolean;
+    onRefresh?: () => void;
 }
 
 function StickyHeaderListComponent<T extends Record<string, any>>(
-    { listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, ListHeaderComponent, renderItem }: Props<T>,
+    { listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, ListHeaderComponent, renderItem, refreshing, onRefresh }: Props<T>,
     ref: React.Ref<FlashList<GroupedRow<T>>>
 ) {
     return (
@@ -35,6 +37,8 @@ function StickyHeaderListComponent<T extends Record<string, any>>(
             }}
             ListEmptyComponent={ListEmptyComponent}
             ListHeaderComponent={ListHeaderComponent}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
         />
     )
 }

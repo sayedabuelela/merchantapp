@@ -25,6 +25,7 @@ export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardPr
                 orderId={transaction.transactionId}
             />
             <PaymentMethodDetails
+                method={transaction.method}
                 sourceOfFunds={transaction.sourceOfFunds}
                 paymentChannel={transaction.paymentChannel}
             />

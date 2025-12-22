@@ -2,7 +2,8 @@ import React from 'react'
 import { Pressable, View } from 'react-native'
 import BalanceHeaderItem from './BalanceHeaderItem'
 import { useRouter, useSegments } from 'expo-router'
-
+import { useEnvironmentStore, selectMode } from '@/src/core/environment/environments.store'
+import { Mode } from '@/src/core/environment/environments'
 interface BalanceStatsCardProps {
     mainBalance: {
         title: string
@@ -22,13 +23,13 @@ interface BalanceStatsCardProps {
 }
 
 const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail }: BalanceStatsCardProps) => {
-    
+    const mode = useEnvironmentStore(selectMode);
     const router = useRouter();
     const segments = useSegments();
     const current = segments[segments.length - 1];
 
     const handleNavigateToBalance = () => {
-        if (current !== 'balance') {
+        if (current !== 'balance' && mode === Mode.LIVE) {
             router.push('/balance');
         }
     }

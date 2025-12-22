@@ -13,7 +13,7 @@ interface EnvironmentState {
 export const useEnvironmentStore = create<EnvironmentState>()(
     persist(
         (set) => ({
-            environment: Environment.PRODUCTION,
+            environment: Environment.STAGING,
             mode: Mode.LIVE,
             setEnvironment: (environment) => set({environment}),
             setMode: (mode) => set({mode}),
@@ -30,3 +30,4 @@ export const useEnvironmentStore = create<EnvironmentState>()(
 )
 // export const selectSetMode = useEnvironmentStore(s => s.setMode)
 export const selectSetMode = (state: EnvironmentState) => state.setMode;
+export const selectMode = (state: EnvironmentState) => state.mode;

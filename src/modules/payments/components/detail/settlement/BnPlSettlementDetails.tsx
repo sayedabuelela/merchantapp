@@ -9,7 +9,7 @@ interface Props {
     data: SettlementData;
 }
 
-const ValuSettlementDetails = ({ data }: Props) => {
+const BnPlSettlementDetails = ({ data }: Props) => {
     const { t } = useTranslation();
 
     // Access VALU payment info from sourceOfFunds
@@ -81,4 +81,4 @@ const ValuSettlementDetails = ({ data }: Props) => {
     );
 };
 
-export default ValuSettlementDetails;
+export default BnPlSettlementDetails;

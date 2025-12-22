@@ -42,6 +42,7 @@ const HomeListEmpty = ({ activeTab }: Props) => {
             <TransfersComingSoon />
         ) : (
         <EmptyDataList
+            containerClassName="mt-4"
             icon={<NoActivitiesIcon />}
                 title={title}
                 description={description}
