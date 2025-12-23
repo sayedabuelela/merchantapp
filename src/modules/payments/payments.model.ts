@@ -648,3 +648,38 @@ export interface CaptureOrderResponse {
     status: string;
     statusCode: number;
 }
+
+// ============================================================================
+// Contact BNPL OTP Refund Interfaces
+// ============================================================================
+
+/**
+ * Request payload for requesting OTP for Contact BNPL refund
+ */
+export interface ContactOtpRefundRequest {
+    orderId: string;
+}
+
+/**
+ * Response structure for OTP request operation
+ */
+export interface ContactOtpRefundResponse {
+    status: 'SUCCESS' | 'FAILED';
+    statusCode: number;
+    messages?: TransactionResponseMessage;
+}
+
+/**
+ * Request payload for Contact BNPL refund with OTP
+ */
+export interface ContactRefundWithOtpRequest {
+    orderId: string;
+    otp: string;
+    amount?: number; // Only for partial refund
+}
+
+/**
+ * Response structure for Contact refund with OTP
+ * Reuses RefundOrderResponse structure as the response format is the same
+ */
+export type ContactRefundWithOtpResponse = RefundOrderResponse;

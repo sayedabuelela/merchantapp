@@ -9,8 +9,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useApi } from '@/src/core/api/clients.hooks';
 import { useToast } from '@/src/core/providers/ToastProvider';
 import { useTranslation } from 'react-i18next';
-import { voidOrder, refundOrder, captureOrder } from '../payments.services';
-import type { VoidOrderRequest, RefundOrderRequest, CaptureOrderRequest } from '../payments.model';
+import { voidOrder, refundOrder, captureOrder, requestContactRefundOtp, refundContactWithOtp } from '../payments.services';
+import type { VoidOrderRequest, RefundOrderRequest, CaptureOrderRequest, ContactOtpRefundRequest, ContactRefundWithOtpRequest } from '../payments.model';
 
 export const useOrderActionsVM = (sessionId: string) => {
     const { paymentApi } = useApi();
@@ -138,6 +138,80 @@ export const useOrderActionsVM = (sessionId: string) => {
         },
     });
 
+    /**
+     * Request Contact OTP mutation
+     * Step 1 of Contact BNPL refund - requests OTP to be sent to customer
+     */
+    const requestContactOtpMutation = useMutation({
+        mutationFn: (request: ContactOtpRefundRequest) =>
+            requestContactRefundOtp(paymentApi, request),
+        onSuccess: () => {
+            const message = i18n.language === 'ar'
+                ? 'تم إرسال رمز التحقق بنجاح'
+                : 'OTP sent successfully';
+
+            showToast({
+                message,
+                type: 'success',
+                duration: 3000,
+            });
+        },
+        onError: (error: any) => {
+            const errorMessage = i18n.language === 'ar'
+                ? error.response?.data?.messages?.ar || 'فشل إرسال رمز التحقق'
+                : error.response?.data?.messages?.en || 'Failed to send OTP';
+
+            showToast({
+                message: errorMessage,
+                type: 'danger',
+                duration: 4000,
+            });
+        },
+    });
+
+    /**
+     * Contact refund with OTP mutation
+     * Step 2 of Contact BNPL refund - submits refund with OTP
+     */
+    const refundContactWithOtpMutation = useMutation({
+        mutationFn: (request: ContactRefundWithOtpRequest) =>
+            refundContactWithOtp(paymentApi, request),
+        onSuccess: (data) => {
+            // Invalidate order detail query to refresh the screen
+            queryClient.invalidateQueries({ queryKey: ['payment-order-detail', sessionId] });
+            // Invalidate order list queries to update the list screen
+            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
+            queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
+
+            const message = i18n.language === 'ar'
+                ? data.messages?.ar || 'تم استرداد المبلغ بنجاح'
+                : data.messages?.en || 'Refund processed successfully';
+
+            showToast({
+                message,
+                type: 'success',
+                duration: 3000,
+            });
+        },
+        onError: (error: any) => {
+            let errorMessage = i18n.language === 'ar'
+                ? error.response?.data?.messages?.ar || 'فشل استرداد المبلغ'
+                : error.response?.data?.messages?.en || 'Failed to process refund';
+
+            if (error.response?.data?.statusCode === 400) {
+                errorMessage = i18n.language === 'ar'
+                    ? 'رمز التحقق غير صحيح أو منتهي الصلاحية'
+                    : 'Invalid or expired OTP';
+            }
+
+            showToast({
+                message: errorMessage,
+                type: 'danger',
+                duration: 4000,
+            });
+        },
+    });
+
     return {
         // Void operation
         voidOrder: voidMutation.mutate,
@@ -156,5 +230,14 @@ export const useOrderActionsVM = (sessionId: string) => {
         isCapturingOrder: captureMutation.isPending,
         captureError: captureMutation.error,
         captureData: captureMutation.data,
+
+        // Contact BNPL OTP operations
+        requestContactOtp: requestContactOtpMutation.mutate,
+        requestContactOtpAsync: requestContactOtpMutation.mutateAsync,
+        isRequestingContactOtp: requestContactOtpMutation.isPending,
+
+        refundContactWithOtp: refundContactWithOtpMutation.mutate,
+        refundContactWithOtpAsync: refundContactWithOtpMutation.mutateAsync,
+        isRefundingContactWithOtp: refundContactWithOtpMutation.isPending,
     };
 };

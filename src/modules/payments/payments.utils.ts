@@ -47,15 +47,30 @@ export const isCashPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
     return sourceOfFunds.type?.toLowerCase() === 'cash';
 };
 
-export type PaymentType = 'card' | 'valu' | 'aman' | 'souhoola' | 'wallet' | 'cash' | 'unknown';
-
+export type PaymentType = 'card' | 'valu' | 'aman' | 'souhoola' |'contact' | 'wallet' | 'cash' | 'unknown';
+export type BnPlPaymentType = 'valu' | 'aman' | 'souhoola' |'contact';
 export const getPaymentType = (sourceOfFunds?: SourceOfFunds): PaymentType => {
     if (!sourceOfFunds) return 'unknown';
 
-    if (isBnPlPayment(sourceOfFunds)) return 'valu';
+    if (isBnPlPayment(sourceOfFunds)) return sourceOfFunds.type?.toLowerCase() as BnPlPaymentType;
     if (isCashPayment(sourceOfFunds)) return 'cash';
     if (isWalletPayment(sourceOfFunds)) return 'wallet';
     if (isCardPayment(sourceOfFunds)) return 'card';
 
     return 'unknown';
+};
+
+/**
+ * Checks if payment is specifically a Contact BNPL payment
+ * Used to determine if OTP refund flow is required
+ */
+export const isContactBnplPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    if (!sourceOfFunds) return false;
+
+    // Check type field (case-insensitive)
+    if (sourceOfFunds.type) {
+        return sourceOfFunds.type.trim().toLowerCase() === 'contact';
+    }
+
+    return false;
 };

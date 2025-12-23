@@ -13,7 +13,11 @@ import {
     RefundOrderRequest,
     RefundOrderResponse,
     CaptureOrderRequest,
-    CaptureOrderResponse
+    CaptureOrderResponse,
+    ContactOtpRefundRequest,
+    ContactOtpRefundResponse,
+    ContactRefundWithOtpRequest,
+    ContactRefundWithOtpResponse,
 } from './payments.model';
 
 /**
@@ -295,6 +299,83 @@ export const captureOrder = async (
             apiOperation: 'CAPTURE',
             autoVoid: false,
         }
+    );
+
+    return response.data;
+};
+
+// ============================================================================
+// Contact BNPL OTP Refund Services
+// ============================================================================
+
+/**
+ * Request OTP for Contact BNPL refund
+ * Endpoint: PUT /v3/orders/{orderId}?api-version=2
+ *
+ * This is Step 1 of the Contact BNPL refund flow.
+ * The OTP will be sent to the customer's registered mobile number.
+ *
+ * @param api - Axios instance from useApi hook
+ * @param request - OTP request parameters
+ * @returns Promise with OTP request response
+ */
+export const requestContactRefundOtp = async (
+    api: AxiosInstance,
+    request: ContactOtpRefundRequest
+): Promise<ContactOtpRefundResponse> => {
+    const { orderId } = request;
+
+    const response = await api.put<ContactOtpRefundResponse>(
+        `/v3/orders/${orderId}?api-version=2`,
+        {
+            apiOperation: 'OTP_REFUND',
+        }
+    );
+
+    return response.data;
+};
+
+/**
+ * Submit Contact BNPL refund with OTP
+ * Endpoint: PUT /v3/orders/{orderId}?api-version=2
+ *
+ * This is Step 2 of the Contact BNPL refund flow.
+ * Requires the OTP received by the customer in Step 1.
+ *
+ * For full refund: omit the amount field
+ * For partial refund: include the amount field
+ *
+ * @param api - Axios instance from useApi hook
+ * @param request - Refund request parameters with OTP
+ * @returns Promise with refund operation response
+ */
+export const refundContactWithOtp = async (
+    api: AxiosInstance,
+    request: ContactRefundWithOtpRequest
+): Promise<ContactRefundWithOtpResponse> => {
+    const { orderId, otp, amount } = request;
+
+    // Build payload
+    const payload: Record<string, any> = {
+        apiOperation: 'REFUND',
+        paymentMethod: {
+            type: 'CONTACT',
+            contact: {
+                otp,
+            },
+        },
+    };
+
+    // Add transaction amount only for partial refunds
+    if (amount !== undefined && amount > 0) {
+        payload.transaction = {
+            amount,
+        };
+    }
+
+    const response = await api.put<ContactRefundWithOtpResponse>(
+        `/v3/orders/${orderId}?api-version=2`,
+        payload
     );
 
     return response.data;

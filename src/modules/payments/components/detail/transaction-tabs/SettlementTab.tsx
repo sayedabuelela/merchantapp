@@ -1,12 +1,10 @@
 import { TransactionDetail } from '@/src/modules/payments/payments.model';
 import {
-    isValuPayment,
     isWalletPayment,
     isCashPayment,
     isBnPlPayment,
 } from '@/src/modules/payments/payments.utils';
 import {
-    ValuSettlementDetails,
     WalletSettlementDetails,
     CashSettlementDetails,
     adaptTransactionData,
