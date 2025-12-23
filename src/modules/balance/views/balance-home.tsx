@@ -172,9 +172,9 @@ const BalancesScreen = () => {
                         {accountStats.data?.upcomingValueDates && accountStats.data.upcomingValueDates.length > 0 && (
                             <FadeInUpView delay={300} duration={600}>
                                 <UpcomingBalanceSection
+                                    setType={() => setType('payout')}
                                     upcomingValueDates={accountStats.data.upcomingValueDates}
                                     currency={t("EGP")}
-                                    nextRoute={ROUTES.BALANCE.ACTIVITIES}
                                 />
                             </FadeInUpView>
                         )}

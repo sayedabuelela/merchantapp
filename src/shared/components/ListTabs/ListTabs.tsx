@@ -27,7 +27,7 @@ export default function ListTabs<T = string>({ tabs, value, onSelectType, isList
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerClassName={cn("gap-6 px-6", contentContainerClassName)}
-            className={cn("border-b border-tertiary mt-4 ", className)}>
+            className={cn("border-b border-tertiary mt-4", className)}>
             {!isListEmpty && tabs.map(tab => {
                 const isActive = tab.value === value;
                 return (

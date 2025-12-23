@@ -137,9 +137,8 @@ export type TransactionLastStatus = 'CAPTURED' | 'AUTHORIZED' | 'REFUNDED' | 'VO
 export type PaymentAgreement = string;
 
 // Shared interfaces between Order and Transaction
-
-// VALU Payment Info
-export interface ValuPayerInfo {
+export interface PayerInfo {
+    // VALU Payment fields
     mobileNumber?: string;
     productPrice?: string;
     customerName?: string | null;
@@ -147,18 +146,44 @@ export interface ValuPayerInfo {
     address?: string | null;
     firstEmiDueDate?: string;
     lastInstallmentDate?: string;
-    loanNumber?: string;
+    loanNumber?: string | number;
     emi?: number;
     valuTransactionId?: string;
     tenure?: number;
-    downPayment?: string | null;
+    downPayment?: string | number | null;
     CashbackAmount?: string | null;
     ToUAmount?: string | null;
     financedAmount?: number;
-    adminFees?: string | null;
+    adminFees?: string | number | null;
     cardNumber?: string;
-    transactionId?: string;
+    transactionId?: string | number;
+    phoneNumber?: string;
+    mobile?: string;
+    invoiceNo?: string;
+
+    // Contact Payment fields
+    adminFeesValue?: string;
+    approved?: string;
+    categoryId?: string | number | null;
+    installmentValue?: number;
+    itemId?: string | number | null;
+    items?: any | null;
+    nationalId?: string;
+    otp?: string;
+    subCategories?: any | null;
+    subCategoryId?: string | number | null;
+
+    // Souhoola Payment fields
+    clientID?: number;
+    loanAmount?: number;
+    merchantName?: string;
+    totalDue?: number;
 }
+
+// Keep the old interfaces for backward compatibility if needed, or remove them
+export type ValuPayerInfo = PayerInfo;
+export type ContactPayerInfo = PayerInfo;
+export type SouhoolaPayerInfo = PayerInfo;
 
 // Source of Funds - supports multiple payment types
 export interface SourceOfFunds {
@@ -176,8 +201,8 @@ export interface SourceOfFunds {
     issuer?: string;
     agreement?: string | null;
 
-    // VALU Payment fields
-    payerInfo?: ValuPayerInfo;
+    // Payment fields - now uses unified PayerInfo
+    payerInfo?: PayerInfo;
 
     // Wallet Payment fields
     payerAccount?: string;
@@ -186,10 +211,9 @@ export interface SourceOfFunds {
     paidThrough?: string;
     walletStrategy?: string;
 
-    // Type discriminator (VALU, Cash, etc.)
+    // Type discriminator (VALU, Cash, Contact, Souhoola, etc.)
     type?: string;
 }
-
 export interface TransactionResponseMessage {
     en: string;
     ar: string;

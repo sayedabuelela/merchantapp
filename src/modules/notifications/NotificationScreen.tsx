@@ -61,7 +61,7 @@ const NotificationScreen = () => {
         )
     }
 
-    if (error) {
+    if (error && notifications.length === 0) {
         return (
             <SafeAreaView className="flex-1 bg-white">
                 <MainHeader title={t('Notifications')} />
@@ -79,7 +79,7 @@ const NotificationScreen = () => {
                 data={notifications}
                 renderItem={renderItem}
                 keyExtractor={(item) => item._id}
-                contentContainerClassName="px-6 pt-4"
+                contentContainerClassName="px-6"
                 ListEmptyComponent={renderEmpty}
                 ListFooterComponent={renderFooter}
                 onEndReached={handleLoadMore}

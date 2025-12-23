@@ -87,8 +87,6 @@ const PaymentsScreen = () => {
         ...transactionsFilters,
         search,
     });
-    console.log('transactionsQuery : ', transactionsQuery);
-    console.log('ordersQuery : ', ordersQuery);
     // Use the appropriate query based on active tab
     const activeQuery = isOrdersTab ? ordersQuery : transactionsQuery;
 
@@ -156,7 +154,6 @@ const PaymentsScreen = () => {
             setTransactionsFilters(INITIAL_TRANSACTIONS_FILTERS);
         }
     }, [isOrdersTab]);
-
     return (
         <SafeAreaView className="flex-1 bg-white">
             <FadeInDownView delay={0} duration={300}>
@@ -181,6 +178,7 @@ const PaymentsScreen = () => {
                             value={status}
                             onSelectType={setStatus}
                             isListEmpty={isListEmpty}
+                            contentContainerClassName="mx-auto"
                         />
                     </ScaleFadeIn>
                     <View className={cn("flex-1 px-6")}>

@@ -9,15 +9,17 @@ interface Props {
     value: string;
     onSelectType: (val: string) => void;
     isListEmpty?: boolean;
+    contentContainerClassName?: string;
 }
 
-export default function PaymentsTabs({value, onSelectType, isListEmpty}: Props) {
+export default function PaymentsTabs({value, onSelectType, isListEmpty, contentContainerClassName}: Props) {
     return (
         <ListTabs
             tabs={TABS}
             value={value}
             onSelectType={onSelectType}
             isListEmpty={isListEmpty}
+            contentContainerClassName={contentContainerClassName}
         />
     );
 }

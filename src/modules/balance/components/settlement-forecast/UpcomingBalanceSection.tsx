@@ -1,16 +1,20 @@
 import { Route } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { FlatList, View } from "react-native";
+import { FlatList, I18nManager, Pressable, View } from "react-native";
 import SectionHeader from "../SectionHeader";
 import SettlementForecastItem from "./UpcomingBalanceItem";
+import FontText from "@/src/shared/components/__mocks__/FontText";
+import { ArrowRightIcon } from "react-native-heroicons/outline";
+import { ActivityType } from "../../balance.model";
 
 interface Props {
     upcomingValueDates: { amount: number; date: string }[];
     currency: string;
-    nextRoute: Route;
+    // nextRoute: Route;
+    setType: () => void;
 }
 
-const UpcomingBalanceSection = ({ upcomingValueDates, currency, nextRoute }: Props) => {
+const UpcomingBalanceSection = ({ upcomingValueDates, currency, setType }: Props) => {
 
     const { t } = useTranslation();
 
@@ -19,7 +23,7 @@ const UpcomingBalanceSection = ({ upcomingValueDates, currency, nextRoute }: Pro
             <SectionHeader
                 title={t('Upcoming balance')}
                 nextRouteTitle={t('Payouts')}
-                nextRoute={nextRoute}
+                onPressNextRoute={setType}
             />
             <FlatList
                 data={upcomingValueDates}

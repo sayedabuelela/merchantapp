@@ -3,12 +3,14 @@ import {
     isValuPayment,
     isWalletPayment,
     isCashPayment,
+    isBnPlPayment,
 } from '@/src/modules/payments/payments.utils';
 import {
     ValuSettlementDetails,
     WalletSettlementDetails,
     CashSettlementDetails,
-    adaptTransactionData
+    adaptTransactionData,
+    BnPlSettlementDetails
 } from '@/src/modules/payments/components/detail/settlement';
 
 interface Props {
@@ -24,8 +26,8 @@ const SettlementTab = ({ transaction }: Props) => {
     const settlementData = adaptTransactionData(transaction);
 
     // VALU payments (installments)
-    if (isValuPayment(sourceOfFunds)) {
-        return <ValuSettlementDetails data={settlementData} />;
+    if (isBnPlPayment(sourceOfFunds)) {
+        return <BnPlSettlementDetails data={settlementData} />;
     }
 
     // Wallet payments (Vodafone Cash, Orange Cash, etc.)

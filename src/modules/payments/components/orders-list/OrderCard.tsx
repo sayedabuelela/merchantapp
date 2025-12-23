@@ -74,9 +74,11 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                 <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                     {formatAMPM(createdAt)}
                 </FontText>
-                <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                    {paymentParams.order}
-                </FontText>
+                <View className="flex-row items-center">
+                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                        {paymentParams.order}
+                    </FontText>
+                </View>
                 {/* <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
                     <View className="flex-row items-center gap-x-4">
                         <View className="flex-row items-center gap-x-1">

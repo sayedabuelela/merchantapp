@@ -29,7 +29,7 @@ const BnPlSettlementDetails = ({ data }: Props) => {
                 />
                 <SectionRowItem
                     title={t('Loan Number')}
-                    value={formatText(payerInfo.loanNumber)}
+                    value={formatText(payerInfo.loanNumber?.toString())}
                 />
                 <SectionRowItem
                     valueClassName="capitalize"
