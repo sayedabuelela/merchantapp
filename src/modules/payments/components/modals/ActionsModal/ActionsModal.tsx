@@ -327,7 +327,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                                         title={t("Details")}
                                         onPress={handleNavigateDetails}
                                     />
-                                    {canRefundTransactions &&canVoid && orderId && (
+                                    {canRefundTransactions && canVoid && orderId && (
                                         <ActionItem
                                             icon={<XMarkIcon size={24} color="#D32F2F" />}
                                             title={t("Void")}
@@ -347,10 +347,11 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                                     )}
                                     {canRefundTransactions && canCapture && orderId && (
                                         <ActionItem
-                                            icon={<CheckCircleIcon size={24} color="#001F5F" />}
+                                            icon={<CheckCircleIcon size={24} color="#D32F2F" />}
                                             title={t("Capture")}
                                             onPress={handleCapturePress}
                                             isLoading={isCapturing}
+                                            variant="danger"
                                         />
                                     )}
                                 </View>

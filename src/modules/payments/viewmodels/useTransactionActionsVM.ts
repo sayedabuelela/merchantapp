@@ -5,12 +5,13 @@
  * Provides loading states, error handling, and cache invalidation.
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useApi } from '@/src/core/api/clients.hooks';
 import { useToast } from '@/src/core/providers/ToastProvider';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { voidOrder, refundOrder, captureOrder, requestContactRefundOtp, refundContactWithOtp } from '../payments.services';
-import type { VoidOrderRequest, RefundOrderRequest, CaptureOrderRequest, ContactOtpRefundRequest, ContactRefundWithOtpRequest } from '../payments.model';
+import { toast } from 'sonner-native';
+import type { CaptureOrderRequest, ContactOtpRefundRequest, ContactRefundWithOtpRequest, RefundOrderRequest, VoidOrderRequest } from '../payments.model';
+import { captureOrder, refundContactWithOtp, refundOrder, requestContactRefundOtp, voidOrder } from '../payments.services';
 
 export const useTransactionActionsVM = (transactionId: string) => {
     const { paymentApi } = useApi();
@@ -32,14 +33,16 @@ export const useTransactionActionsVM = (transactionId: string) => {
             queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
             queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
             // Show success toast
+            const title = i18n.language === 'ar'
+                ? 'نجاح الإلغاء'
+                : 'Successful Void';
             const message = i18n.language === 'ar'
                 ? data.messages.ar || 'تم إلغاء المعاملة بنجاح'
                 : data.messages.en || 'Transaction voided successfully';
 
-            showToast({
-                message,
-                type: 'success',
-                duration: 3000,
+            toast.success(title, {
+                style: { backgroundColor: '#F3FFF4' },
+                description: message,
             });
         },
         onError: (error: any) => {
@@ -54,11 +57,12 @@ export const useTransactionActionsVM = (transactionId: string) => {
                     ? 'هذه المعاملة غير مؤهلة للإلغاء. يرجى استخدام خيار الاسترداد بدلاً من ذلك.'
                     : 'This transaction is not eligible for void. Please use the refund option instead.';
             }
-
-            showToast({
-                message: errorMessage,
-                type: 'danger',
-                duration: 4000,
+            const title = i18n.language === 'ar'
+                ? 'فشل الإلغاء'
+                : 'Failed Void';
+            toast.error(title, {
+                style: { backgroundColor: '#FFEAED' },
+                description: errorMessage,
             });
         },
     });
@@ -81,23 +85,24 @@ export const useTransactionActionsVM = (transactionId: string) => {
             const message = i18n.language === 'ar'
                 ? data.messages.ar || 'تم استرداد المبلغ بنجاح'
                 : data.messages.en || 'Refund processed successfully';
-
-            showToast({
-                message,
-                type: 'success',
-                duration: 3000,
+            const title = i18n.language === 'ar'
+                ? 'نجاح الاسترداد'
+                : 'Successful Refund';
+            toast.success(title, {
+                style: { backgroundColor: '#F3FFF4' },
+                description: message,
             });
         },
         onError: (error: any) => {
-            // Show error toast
             const errorMessage = i18n.language === 'ar'
                 ? error.response?.data?.messages?.ar || 'فشل استرداد المبلغ'
                 : error.response?.data?.messages?.en || 'Failed to process refund';
-
-            showToast({
-                message: errorMessage,
-                type: 'danger',
-                duration: 4000,
+            const title = i18n.language === 'ar'
+                ? 'فشل الاسترداد'
+                : 'Failed Refund';
+            toast.error(title, {
+                style: { backgroundColor: '#FFEAED' },
+                description: errorMessage,
             });
         },
     });
@@ -114,29 +119,54 @@ export const useTransactionActionsVM = (transactionId: string) => {
 
             // Invalidate transaction list queries to update the list screen
             queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
-            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });    
+            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
             // Show success toast
+            if (data.status === 'FAILURE') {
+                const title = i18n.language === 'ar'
+                    ? 'فشل التحصيل'
+                    : 'Failed Capture';
+                const errorMessage = i18n.language === 'ar'
+                    ? data.messages.ar || 'فشل تحصيل المعاملة'
+                    : data.messages.en || 'Failed to capture transaction';
+                toast.error(title, {
+                    style: { backgroundColor: '#FFEAED' },
+                    description: errorMessage,
+                });
+                return;
+            }
             const message = i18n.language === 'ar'
                 ? data.messages.ar || 'تم تحصيل المعاملة بنجاح'
                 : data.messages.en || 'Transaction captured successfully';
-
-            showToast({
-                message,
-                type: 'success',
-                duration: 3000,
+            const title = i18n.language === 'ar'
+                ? 'نجاح التحصيل'
+                : 'Successful Capture';
+            toast.success(title, {
+                style: { backgroundColor: '#F3FFF4' },
+                description: message,
             });
+            // showToast({
+            //     message,
+            //     type: 'success',
+            //     duration: 3000,
+            // });
         },
         onError: (error: any) => {
             // Show error toast
             const errorMessage = i18n.language === 'ar'
                 ? error.response?.data?.messages?.ar || 'فشل تحصيل المعاملة'
                 : error.response?.data?.messages?.en || 'Failed to capture transaction';
-
-            showToast({
-                message: errorMessage,
-                type: 'danger',
-                duration: 4000,
+            const title = i18n.language === 'ar'
+                ? 'فشل التحصيل'
+                : 'Failed Capture';
+            toast.error(title, {
+                style: { backgroundColor: '#FFEAED' },
+                description: errorMessage,
             });
+            // showToast({
+            //     message: errorMessage,
+            //     type: 'danger',
+            //     duration: 4000,
+            // });
         },
     });
 
@@ -151,22 +181,24 @@ export const useTransactionActionsVM = (transactionId: string) => {
             const message = i18n.language === 'ar'
                 ? 'تم إرسال رمز التحقق بنجاح'
                 : 'OTP sent successfully';
-
-            showToast({
-                message,
-                type: 'success',
-                duration: 3000,
+            const title = i18n.language === 'ar'
+                ? 'نجاح الإرسال'
+                : 'Successful OTP Send';
+            toast.success(title, {
+                style: { backgroundColor: '#F3FFF4' },
+                description: message,
             });
         },
         onError: (error: any) => {
             const errorMessage = i18n.language === 'ar'
                 ? error.response?.data?.messages?.ar || 'فشل إرسال رمز التحقق'
                 : error.response?.data?.messages?.en || 'Failed to send OTP';
-
-            showToast({
-                message: errorMessage,
-                type: 'danger',
-                duration: 4000,
+            const title = i18n.language === 'ar'
+                ? 'فشل الإرسال'
+                : 'Failed OTP Send';
+            toast.error(title, {
+                style: { backgroundColor: '#FFEAED' },
+                description: errorMessage,
             });
         },
     });
@@ -188,11 +220,12 @@ export const useTransactionActionsVM = (transactionId: string) => {
             const message = i18n.language === 'ar'
                 ? data.messages?.ar || 'تم استرداد المبلغ بنجاح'
                 : data.messages?.en || 'Refund processed successfully';
-
-            showToast({
-                message,
-                type: 'success',
-                duration: 3000,
+            const title = i18n.language === 'ar'
+                ? 'نجاح الاسترداد'
+                : 'Successful Refund';
+            toast.success(title, {
+                style: { backgroundColor: '#F3FFF4' },
+                description: message,
             });
         },
         onError: (error: any) => {
@@ -205,12 +238,18 @@ export const useTransactionActionsVM = (transactionId: string) => {
                     ? 'رمز التحقق غير صحيح أو منتهي الصلاحية'
                     : 'Invalid or expired OTP';
             }
-
-            showToast({
-                message: errorMessage,
-                type: 'danger',
-                duration: 4000,
+            const title = i18n.language === 'ar'
+                ? 'فشل الاسترداد'
+                : 'Failed Refund';
+            toast.error(title, {
+                style: { backgroundColor: '#FFEAED' },
+                description: errorMessage,
             });
+            // showToast({
+            //     message: errorMessage,
+            //     type: 'danger',
+            //     duration: 4000,
+            // });
         },
     });
 

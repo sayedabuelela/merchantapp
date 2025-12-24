@@ -1,5 +1,5 @@
 import FontText from "@/src/shared/components/FontText";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { cn } from "@/src/core/utils/cn";
 import { currencyNumber } from "@/src/core/utils/number-fields";
 
@@ -23,7 +23,7 @@ const BalanceHeaderItem = ({
     return (
         <View className="items-center justify-center">
             <FontText
-                type="body" weight="regular" className="text-xs text-content-secondary uppercase mb-0.5">
+                type="body" weight="regular" className={cn("text-content-secondary uppercase mb-0.5", Platform.OS === 'ios' ? 'text-xs' : 'text-[12px]')}>
                 {title}
             </FontText>
             <FontText

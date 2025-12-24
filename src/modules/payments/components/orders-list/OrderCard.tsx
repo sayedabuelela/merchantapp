@@ -42,7 +42,7 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                                 {isPaid ? (
                                     <ArrowSmallDownIcon size={10} color={'#1A541D'} />
                                 ) : (
-                                    <ArrowSmallUpIcon size={10} color={'#A50017'} />
+                                <ArrowSmallUpIcon size={10} color={'#A50017'} />
                                 )}
                             </IconBox>
                             <StatusBox status={status} />

@@ -1,5 +1,5 @@
 import { GroupedRow } from '@/src/core/utils/groupData';
-import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
+import { FlashList, FlashListRef, ListRenderItemInfo } from "@shopify/flash-list";
 import React, { forwardRef } from "react";
 
 interface Props<T> {
@@ -14,11 +14,13 @@ interface Props<T> {
     renderItem: (info: ListRenderItemInfo<GroupedRow<T>>) => React.ReactElement;
     refreshing?: boolean;
     onRefresh?: () => void;
+    onEndReachedThreshold?: number;
+    ListFooterComponent?: React.ReactElement;
 }
 
 function StickyHeaderListComponent<T extends Record<string, any>>(
-    { listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, ListHeaderComponent, renderItem, refreshing, onRefresh }: Props<T>,
-    ref: React.Ref<FlashList<GroupedRow<T>>>
+    { listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, ListHeaderComponent, renderItem, refreshing, onRefresh, onEndReachedThreshold, ListFooterComponent }: Props<T>,
+    ref: React.Ref<FlashListRef<GroupedRow<T>>>
 ) {
     return (
         <FlashList
@@ -35,8 +37,10 @@ function StickyHeaderListComponent<T extends Record<string, any>>(
             onEndReached={() => {
                 if (hasNextPage && !isFetchingNextPage) fetchNextPage();
             }}
+            onEndReachedThreshold={onEndReachedThreshold ?? 0.5}
             ListEmptyComponent={ListEmptyComponent}
             ListHeaderComponent={ListHeaderComponent}
+            ListFooterComponent={ListFooterComponent}
             refreshing={refreshing}
             onRefresh={onRefresh}
         />
@@ -44,7 +48,7 @@ function StickyHeaderListComponent<T extends Record<string, any>>(
 }
 
 const StickyHeaderList = forwardRef(StickyHeaderListComponent) as <T extends Record<string, any>>(
-    props: Props<T> & { ref?: React.Ref<FlashList<GroupedRow<T>>> }
+    props: Props<T> & { ref?: React.Ref<FlashListRef<GroupedRow<T>>> }
 ) => React.ReactElement;
 
 export default StickyHeaderList;

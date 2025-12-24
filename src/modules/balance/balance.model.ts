@@ -199,9 +199,9 @@ export interface Transfer {
 }
 export interface ActivitiesPagination {
     page: number;
+    pages: number;
     limit: number;
     total: number;
-    totalPages: number;
 }
 
 export interface ActivitiesResponse {

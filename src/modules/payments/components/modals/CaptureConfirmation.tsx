@@ -63,7 +63,7 @@ const CaptureConfirmation: FC<CaptureConfirmationProps> = ({
                     disabled={isCapturing}
                     isLoading={isCapturing}
                     title={t('Confirm capture')}
-                    variant="primary"
+                    variant="danger"
                     onPress={onConfirm}
                 />
                 <Button

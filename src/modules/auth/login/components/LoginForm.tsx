@@ -2,8 +2,8 @@ import { ROUTES } from '@/src/core/navigation/routes';
 import { LoginFormData } from "@/src/modules/auth/login/login.model";
 import { loginSchema } from '@/src/modules/auth/login/login.scheme';
 import { AlertIcon } from "@/src/shared/assets/svgs";
-import Button from "@/src/shared/components/Buttons/Button";
 import AnimatedError from '@/src/shared/components/animated-messages/AnimatedError';
+import Button from "@/src/shared/components/Buttons/Button";
 import FontText from "@/src/shared/components/FontText";
 import Input from '@/src/shared/components/inputs/Input';
 import { COMMON_STYLES } from "@/src/shared/styles/main";
@@ -51,8 +51,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // email: 'aayman@kashier.io',
             // password: 'zAQ!@#$%^123456',
             // staging
-            email: 'duaa.bst@gmail.com',
-            password: 'AsmaaTest110@',
+            // email: 'duaa.bst@gmail.com',
+            // password: 'AsmaaTest110@',
             // email: 'jglgm9d29g@jkotypc.com',
             // password: 'Password500$$',
             // email: 'vawoyal409@fandoe.com',

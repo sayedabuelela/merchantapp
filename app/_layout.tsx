@@ -66,6 +66,7 @@ function AppContent() {
           <Stack.Screen name="(profile)" />
         </Stack.Protected>
       </Stack>
+      <Toaster />
     </GestureHandlerRootView>
   );
 }
@@ -79,6 +80,7 @@ export default function RootLayout() {
               <KeyboardProvider>
                 <StatusBar style="dark" backgroundColor='#ffffff' />
                 <AppContent />
+
               </KeyboardProvider>
             </ToastProvider>
           </NotificationProvider>

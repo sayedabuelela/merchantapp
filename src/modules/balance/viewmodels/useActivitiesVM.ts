@@ -31,8 +31,8 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
         queryFn: ({ pageParam = 1 }) =>
             getActivities(api, { ...params, page: pageParam, accountId: activeAccountId }),
         getNextPageParam: (lastPage) => {
-            const { page, totalPages } = lastPage.pagination;
-            return page < totalPages ? page + 1 : undefined;
+            const { page, pages } = lastPage.pagination;
+            return page < pages ? page + 1 : undefined;
         },
         initialPageParam: 1,
         enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated && mode === Mode.LIVE),
