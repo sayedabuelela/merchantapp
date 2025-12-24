@@ -17,7 +17,7 @@ export const OrderSummaryCard = ({order}: OrderSummaryCardProps) => {
                 amount={order.amount}
                 currency={order.currency}
                 status={order.status}
-                orderId={order.orderId}
+                merchantOrderId={order.merchantOrderId}
             />
             <PaymentMethodDetails sourceOfFunds={order.sourceOfFunds} method={order.method} paymentChannel={order.paymentChannel} />
             <DetailsSection className="mt-4">

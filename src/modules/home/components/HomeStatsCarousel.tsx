@@ -38,18 +38,18 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
     //     setCurrentIndex(index)
     //     setHomeActiveTab(Object.keys(CARD_IDS)[index] as HomeTabType)
     // }
-    // console.log('mode : ', accountStats?.balanceOverview?.availableBalance);
+    console.log('mode : ', accountStats?.balanceOverview);
     const cardsData: CardItem[] = useMemo(() => ([
         {
             id: 'balance-card',
             tab: 'all',
             mainBalance: { title: t('Available Balance'), value: mode === Mode.LIVE ? accountStats?.balanceOverview?.availableBalance || 0 : 0, currency: 'EGP' },
             leftDetail: { title: t('Last settlement'), value: mode === Mode.LIVE ? accountStats?.balanceOverview?.lastPayoutAmount || 0 : 0, currency: 'EGP' },
-            rightDetail: { title: t('Upcoming settlement'), value: mode === Mode.LIVE ? accountStats?.balanceOverview?.lastPayoutAmount || 0 : 0, currency: 'EGP' },
+            rightDetail: { title: t('Upcoming settlement'), value: mode === Mode.LIVE ? accountStats?.balanceOverview?.upcomingPayouts || 0 : 0, currency: 'EGP' },
         },
         {
             id: 'payments-card',
-            tab: 'orders',
+        tab: 'orders',
             mainBalance: { title: t('total payments'), value: paymentsStats?.amount || 0, currency: 'EGP' },
             leftDetail: { title: t('Payments No.'), value: paymentsStats?.count || 0, currency: '' },
             rightDetail: { title: t('Top Method'), value: paymentsStats?.topMethod || '--', currency: '' },

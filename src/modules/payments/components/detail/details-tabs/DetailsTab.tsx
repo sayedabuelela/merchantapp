@@ -4,19 +4,73 @@ import DetailsSection from "@/src/shared/components/details-screens/DetailsSecti
 import { useTranslation } from "react-i18next";
 import SectionRowItem from "@/src/shared/components/details-screens/SectionRowItem";
 import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils";
-import AccordionItem from "@/src/modules/onboarding/data/components/AccordionItem";
 import DetailsAccordionItem from "@/src/modules/onboarding/data/components/DetailsAccordionItem";
 
 interface Props {
     order: OrderDetailPayment;
 }
 
+/**
+ * Normalized customer information interface
+ */
+interface NormalizedCustomerInfo {
+    id?: string;
+    name?: string;
+    email?: string;
+    phone?: string;
+    reference?: string;
+}
+
+/**
+ * Merges customer data from multiple sources (order.customer and order.metaData.kashierOriginDetails)
+ * into a single normalized object. Prioritizes order.customer when both sources exist.
+ *
+ * @param order - The order detail payment object
+ * @returns Normalized customer info or undefined if no customer data exists
+ */
+const getMergedCustomerInfo = (order: OrderDetailPayment): NormalizedCustomerInfo | undefined => {
+    const directCustomer = order.customer;
+    const originDetails = order.metaData?.kashierOriginDetails;
+
+    // Return undefined if neither source has data
+    if (!directCustomer && !originDetails) {
+        return undefined;
+    }
+
+    // Build full name from available fields
+    const buildFullName = (): string | undefined => {
+        // Priority 1: Use name if available
+        if (directCustomer?.name) return directCustomer.name;
+        if (originDetails?.customerName) return originDetails.customerName;
+        if (originDetails?.name) return originDetails.name;
+
+        // Priority 2: Build from firstName + lastName
+        if (directCustomer?.firstName || directCustomer?.lastName) {
+            return [directCustomer.firstName, directCustomer.lastName]
+                .filter(Boolean)
+                .join(' ')
+                .trim() || undefined;
+        }
+
+        return undefined;
+    };
+
+    // Merge both sources, with directCustomer taking priority
+    return {
+        id: directCustomer?.id || directCustomer?.reference || originDetails?.id,
+        name: buildFullName(),
+        email: directCustomer?.email || originDetails?.customerEmail,
+        phone: directCustomer?.Phone || directCustomer?.mobilePhone || originDetails?.customerPhone,
+        reference: directCustomer?.reference || originDetails?.id,
+    };
+};
+
 const DetailsTab = ({ order }: Props) => {
     const { t } = useTranslation();
 
     // Safe access to nested properties
     const latestHistoryStatus = order.history?.[0]?.status;
-    const customerInfo = order.metaData?.kashierOriginDetails;
+    const customerInfo = getMergedCustomerInfo(order);
     const hasMoreData = !!(
         order.metaData?.kashierOriginType ||
         order.metaData?.termsAndConditions?.ip ||
@@ -50,15 +104,15 @@ const DetailsTab = ({ order }: Props) => {
                 <DetailsSection className="mt-4">
                     <SectionRowItem
                         title={t('Customer name')}
-                        value={customerInfo.customerName}
+                        value={customerInfo.name}
                     />
                     <SectionRowItem
                         title={t('Phone')}
-                        value={customerInfo.customerPhone}
+                        value={customerInfo.phone}
                     />
                     <SectionRowItem
                         title={t('Email')}
-                        value={customerInfo.customerEmail}
+                        value={customerInfo.email}
                     />
                     <SectionRowItem
                         title={t('Ref ID')}

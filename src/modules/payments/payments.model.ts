@@ -403,6 +403,17 @@ export interface OrderDetailPayment {
     targetTransactionId?: string;
     history?: OrderDetailHistoryItem[];
     installmentDetails?: InstallmentDetails;
+    customer?: {
+        reference?: string; // shopper reference (mandatory for pay with token)
+        id?: string;
+        firstName?: string;
+        lastName?: string;
+        name?: string;
+        email?: string;
+        mobilePhone?: string;
+        Phone?: string;
+        nationalId?: string;
+    }
 }
 
 export interface FetchOrderDetailResponse {
@@ -469,6 +480,17 @@ export interface TransactionDetail {
     transactions?: RelatedTransaction[];
     originDetails?: TransactionDetailOriginDetails;
     installmentDetails?: InstallmentDetails;
+    customer?: {
+        reference?: string; // shopper reference (mandatory for pay with token)
+        id?: string;
+        firstName?: string;
+        lastName?: string;
+        name?: string;
+        email?: string;
+        mobilePhone?: string;
+        Phone?: string;
+        nationalId?: string;
+    }
 }
 
 export interface FetchTransactionDetailResponse {

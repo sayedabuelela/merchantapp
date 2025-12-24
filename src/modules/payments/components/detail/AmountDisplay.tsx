@@ -11,7 +11,7 @@ import { ArrowSmallDownIcon, ArrowSmallUpIcon } from 'react-native-heroicons/out
 interface AmountDisplayProps {
     amount: number;
     currency: string;
-    orderId: string;
+    merchantOrderId: string;
     status: SessionStatus | string;
     className?: string;
 }
@@ -23,7 +23,7 @@ export const AmountDisplay = ({
     amount,
     currency,
     status,
-    orderId,
+    merchantOrderId,
     className,
 }: AmountDisplayProps) => {
 
@@ -49,8 +49,8 @@ export const AmountDisplay = ({
                     <StatusBox status={status} />
                 </View>
             </View>
-            {orderId && orderId !== "NA" && (<FontText type="body" weight="regular" className="text-content-secondary text-sm self-start">
-                {orderId}
+            {merchantOrderId && merchantOrderId !== "NA" && (<FontText type="body" weight="regular" className="text-content-secondary text-sm self-start">
+                {merchantOrderId}
             </FontText>)}
         </View>
     );
