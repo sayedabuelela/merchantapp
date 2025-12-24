@@ -310,6 +310,7 @@ const TransactionDetailsScreen = () => {
                         onConfirm={handleRefundConfirm}
                         onCancel={handleRefundCancel}
                         isRefunding={isRefundingTransaction}
+                        transactionId={transactionId || ''}
                     />
                 </ConfirmationModal>
             )}

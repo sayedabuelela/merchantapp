@@ -24,6 +24,7 @@ const ActivityCard = ({
     amount,
     createdAt,
     accountName,
+    currency,
     fromBalance
 }: {
     _id: string;
@@ -32,6 +33,7 @@ const ActivityCard = ({
     amount: number;
     createdAt: string;
     accountName: string;
+    currency: string;
     fromBalance?: boolean;
 }) => {
     const { t } = useTranslation();
@@ -46,6 +48,8 @@ const ActivityCard = ({
     const isInOperation = inOperations.includes(operation.toLowerCase());
     // out is arrow up 
     // in is arrow down
+    
+    
     return (
         <Link
             href={`/balance/${_id}`} asChild>
@@ -70,7 +74,7 @@ const ActivityCard = ({
                         )}>
 
                         {/* {isInOperation && "+"} */}
-                        {currencyNumber(amount)} {t('EGP')}
+                        {currencyNumber(amount)} {t(currency || 'EGP')}
                     </FontText>
                 </View>
                 <FontText type="body" weight="regular" className="text-content-primary text-xs">
@@ -80,7 +84,7 @@ const ActivityCard = ({
                     {t('To')} {'Account Name'}
                 </FontText> */}
                 <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                    {operation === "payout" && `${formatRelativeDate(createdAt)} - `}{formatAMPM(createdAt)}
+                    {(operation === "payout" || fromBalance) && `${formatRelativeDate(createdAt) !=='Today' ? formatRelativeDate(createdAt) + ' - ' : '' }`}{formatAMPM(createdAt)}
                 </FontText>
             </Pressable>
         </Link>

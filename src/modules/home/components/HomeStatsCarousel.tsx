@@ -64,7 +64,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
         {
             id: 'transfers-card',
             tab: 'transfers',
-            mainBalance: { title: t('total trasfers'), value: transfersStats?.totalTransfersAmount || 0, currency: 'EGP' },
+            mainBalance: { title: t('total transfers'), value: transfersStats?.totalTransfersAmount || 0, currency: 'EGP' },
             leftDetail: { title: t('transfers no.'), value: transfersStats?.totalTransfersCount || 0, currency: '' },
             rightDetail: { title: t('Transfers Vol.'), value: transfersStats?.totalTransfersAmount || 0, currency: '' },
         },

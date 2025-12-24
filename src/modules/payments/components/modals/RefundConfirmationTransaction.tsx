@@ -9,12 +9,15 @@ import type { TransactionDetail } from '../../payments.model';
 import { cn } from '@/src/core/utils/cn';
 import Input from '@/src/shared/components/inputs/Input';
 import StatusBox from '@/src/modules/payment-links/components/StatusBox';
+import { OtpInput } from '@/src/modules/auth/components/OtpInput';
+import { useTransactionActionsVM } from '../../viewmodels/useTransactionActionsVM';
 
 interface RefundConfirmationTransactionProps {
     transaction: TransactionDetail;
     onConfirm: (amount: number) => void;
     onCancel: () => void;
     isRefunding: boolean;
+    transactionId: string;
 }
 
 const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
@@ -22,12 +25,23 @@ const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
     onConfirm,
     onCancel,
     isRefunding,
+    transactionId,
 }) => {
     const { t } = useTranslation();
+    const [contactOtpContent, setContactOtpContent] = useState(false);
+    const [otpValue, setOtpValue] = useState('');
+
+    // Get OTP functions from viewmodel
+    const {
+        requestContactOtpAsync,
+        isRequestingContactOtp,
+        refundContactWithOtpAsync,
+        isRefundingContactWithOtp,
+    } = useTransactionActionsVM(transactionId);
 
     // Calculate max refundable amount
     const maxRefundableAmount = transaction.totalCapturedAmount - transaction.totalRefundedAmount;
-
+    console.log('transaction method : ', transaction.method);
     // State for refund amount (default to full refund)
     const [refundAmount, setRefundAmount] = useState<string>(maxRefundableAmount.toString());
     const [error, setError] = useState<string | null>(null);
@@ -59,19 +73,65 @@ const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
         setError(null);
     }, [refundAmount, maxRefundableAmount, t]);
 
-    const handleConfirm = () => {
+    const isMethodContact = transaction.method?.toLowerCase() === 'contact';
+    
+    const handleConfirm = async () => {
         const amount = parseFloat(refundAmount);
         if (!error && !isNaN(amount) && amount > 0 && amount <= maxRefundableAmount) {
-            onConfirm(amount);
+            if (isMethodContact && transaction.order?.orderId) {
+                // Step 1: Request OTP for contact refund
+                try {
+                    await requestContactOtpAsync({ orderId: transaction.order.orderId });
+                    setContactOtpContent(true);
+                } catch (error) {
+                    // Error toast is handled in viewmodel
+                    console.error('Failed to request OTP:', error);
+                }
+            } else {
+                onConfirm(amount);
+            }
         }
     };
 
-    const isConfirmDisabled = !!error || isRefunding || !refundAmount;
+    const handleOtpComplete = async (code: string) => {
+        setOtpValue(code);
+        const amount = parseFloat(refundAmount);
+        if (!error && !isNaN(amount) && amount > 0 && amount <= maxRefundableAmount && transaction.order?.orderId) {
+            try {
+                // Step 2: Refund with OTP
+                // Only include amount for partial refunds
+                await refundContactWithOtpAsync({
+                    orderId: transaction.order.orderId,
+                    otp: code,
+                    amount: amount < maxRefundableAmount ? amount : undefined,
+                });
+                // Success - modal will be closed by parent component
+                onCancel(); // Close modal on success
+            } catch (error) {
+                // Error toast is handled in viewmodel
+                console.error('Failed to refund with OTP:', error);
+                // Reset OTP on error to allow retry
+                setOtpValue('');
+            }
+        }
+    };
+
+    const handleOtpChange = (value: string) => {
+        setOtpValue(value);
+    };
+
+    const isConfirmDisabled = 
+        !!error || 
+        isRefunding || 
+        !refundAmount ||
+        (contactOtpContent && (!otpValue || otpValue.length !== 5)) ||
+        isRequestingContactOtp ||
+        isRefundingContactWithOtp;
 
     return (
         <View>
             {/* Transaction Summary */}
-            <View className="mb-6">
+            <View className="mb-4">
                 {/* Amount and Status */}
                 <View className="flex-row items-center gap-x-2 mb-2">
                     <FontText type="head" weight="bold" className="text-content-primary text-xl">
@@ -104,63 +164,73 @@ const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
             </FontText>
 
             {/* Refund Amount Input */}
-            <View className="mb-6">
-                <View className="flex-row items-center justify-between mb-2">
-                    <FontText type="body" weight="medium" className="text-content-primary text-sm">
-                        {t('Refund Amount')}
+            {contactOtpContent ? (
+                <View className="mb-6">
+                    <FontText type="body" weight="regular" className="text-content-secondary text-sm mb-2">
+                        {t('Please enter the OTP sent to your phone')}
                     </FontText>
-                    <FontText type="body" weight="regular" className="text-content-tertiary text-xs">
-                        {t('Max')}: {maxRefundableAmount} {transaction.currency}
-                    </FontText>
+                    <OtpInput
+                        length={5}
+                        value={otpValue}
+                        onChange={handleOtpChange}
+                        onComplete={handleOtpComplete}
+                        autoFocus={true}
+                        disabled={isRefundingContactWithOtp}
+                    />
+                    {error && (
+                        <FontText type="body" weight="regular" className="text-feedback-error text-xs mt-1">
+                            {error}
+                        </FontText>
+                    )}
                 </View>
-
-                {/* <View className={cn(
-                    'border rounded-lg px-4 py-3 bg-surface-primary',
-                    error ? 'border-feedback-error' : 'border-stroke-divider'
-                )}>
-                    <TextInput
+            ) : (
+                <View className="mb-6">
+                    <View className="flex-row items-center justify-between mb-2">
+                        <FontText type="body" weight="medium" className="text-content-primary text-sm">
+                            {t('Refund Amount')}
+                        </FontText>
+                        <FontText type="body" weight="regular" className="text-content-tertiary text-xs">
+                            {t('Max')}: {maxRefundableAmount} {transaction.currency}
+                        </FontText>
+                    </View>
+                    <Input
                         value={refundAmount}
                         onChangeText={setRefundAmount}
                         keyboardType="decimal-pad"
                         placeholder={t('Enter amount')}
                         placeholderTextColor="#94A3B8"
                         className="text-content-primary text-base"
+                        error={!!error}
                         editable={!isRefunding}
                     />
-                </View> */}
-                <Input
-                    value={refundAmount}
-                    onChangeText={setRefundAmount}
-                    keyboardType="decimal-pad"
-                    placeholder={t('Enter amount')}
-                    placeholderTextColor="#94A3B8"
-                    className="text-content-primary text-base"
-                    error={!!error}
-                    editable={!isRefunding}
-                />
 
-                {error && (
-                    <FontText type="body" weight="regular" className="text-feedback-error text-xs mt-1">
-                        {error}
-                    </FontText>
-                )}
-            </View>
+                    {error && (
+                        <FontText type="body" weight="regular" className="text-feedback-error text-xs mt-1">
+                            {error}
+                        </FontText>
+                    )}
+                </View>
+            )}
 
             {/* Action Buttons */}
             <View className="gap-y-4">
                 <Button
                     disabled={isConfirmDisabled}
-                    isLoading={isRefunding}
-                    title={t('Confirm refund')}
+                    isLoading={isRefunding || isRequestingContactOtp || isRefundingContactWithOtp}
+                    title={contactOtpContent ? t('Confirm Refund') : t('Confirm refund')}
                     variant="danger"
-                    onPress={handleConfirm}
+                    onPress={contactOtpContent ? () => handleOtpComplete(otpValue) : handleConfirm}
                 />
                 <Button
                     className="border-0"
                     title={t('Cancel')}
                     variant="outline"
-                    onPress={onCancel}
-                    disabled={isRefunding}
+                    onPress={() => {
+                        setContactOtpContent(false);
+                        setOtpValue('');
+                        onCancel();
+                    }}
+                    disabled={isRefunding || isRequestingContactOtp || isRefundingContactWithOtp}
                 />
             </View>
         </View>

@@ -5,7 +5,7 @@ import { selectAuthInitialize, selectIsAuthenticated, useAuthStore } from '@/src
 import { useBiometricViewModel } from '@/src/modules/auth/biometric/biometric.viewmodel';
 import '@/src/shared/localization/i18n';
 // import { useReactQueryDevTools } from '@dev-plugins/react-query';
-import { ToastProvider } from '@/src/core/providers/ToastProvider';
+// import { ToastProvider } from '@/src/core/providers/ToastProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Notifications from 'expo-notifications';
 import { Stack } from 'expo-router';
@@ -13,7 +13,9 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import 'react-native-reanimated';
+import { Toaster } from 'sonner-native';
 import "../global.css";
+import { ToastProvider } from '@/src/core/providers/ToastProvider';
 if (__DEV__) {
   require("../ReactotronConfig");
 }

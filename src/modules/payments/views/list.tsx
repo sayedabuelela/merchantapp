@@ -119,7 +119,7 @@ const PaymentsScreen = () => {
 
         // Calculate the actual item index (excluding headers)
         const itemsBefore = listData.slice(0, index).filter(i => i.type !== 'header').length;
-
+        
         if (isOrdersTab) {
             return (
                 <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>

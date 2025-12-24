@@ -11,6 +11,7 @@ import { storeCredentials } from "../biometric/biometric.utils";
 import { fetchAndSyncMerchant } from "../hooks/useMerchant";
 import { LoginError, LoginFormData } from './login.model';
 import { authenticate } from "./login.service";
+// import { toast } from "sonner-native";
 
 export const useLoginViewModel = () => {
     const { api } = useApi();
@@ -34,6 +35,7 @@ export const useLoginViewModel = () => {
             await storeCredentials(credentials);
             if (data.twoFactorAuth) {
                 showToast?.({ message: t('Two factor authentication required'), type: 'info' });
+                // toast.info(t('Two factor authentication required'));
                 router.push({
                     pathname: `/(auth)/(login)/login-twofactor-auth`,
                     params: credentials,

@@ -27,7 +27,7 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
         (string | FetchActivitiesParams | undefined)[],
         number
     >({
-        queryKey: ["balance-activities", activeAccountId, params],
+        queryKey: ["balance-activities", activeAccountId, params,mode],
         queryFn: ({ pageParam = 1 }) =>
             getActivities(api, { ...params, page: pageParam, accountId: activeAccountId }),
         getNextPageParam: (lastPage) => {
@@ -88,7 +88,7 @@ export const useRecentBalanceActivities = () => {
         isAuthenticated: isAuthenticated,
     });
     return useQuery<ActivitiesResponse, Error, ActivitiesResponse>({
-        queryKey: ["balanceActivities", activeAccountId, { limit: 3, page: 1 }],
+        queryKey: ["balanceActivities", activeAccountId, { limit: 3, page: 1 },mode],
         queryFn: () => getActivities(api, { limit: 3, page: 1, accountId: activeAccountId }),
         enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated && mode === Mode.LIVE),
         staleTime: 5 * 60 * 1000,

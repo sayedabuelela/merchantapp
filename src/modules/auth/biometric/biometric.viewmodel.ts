@@ -13,6 +13,7 @@ import { authenticate } from "../login/login.service";
 import { biometricAuthenticate, checkDeviceBiometric } from './biometric.service';
 import { selectIsInitialized, selectSetEnabled, selectSetInitialized, useBiometricStore } from './biometric.store';
 import { getCredentials } from "./biometric.utils";
+import { toast } from "sonner-native";
 
 type BiometricViewModel = {
     isBiometricAvailable: boolean;
@@ -115,6 +116,7 @@ export const useBiometricViewModel = (): BiometricViewModel => {
             if (data.twoFactorAuth) {
                 const credentials = await getCredentials();
                 showToast?.({ message: t('Two factor authentication required'), type: 'info' });
+                // toast.info(t('Two factor authentication required'));
                 if (credentials) {
                     router.push({
                         pathname: `/(auth)/(login)/login-twofactor-auth`,

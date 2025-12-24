@@ -98,6 +98,10 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                 onError: (e) => {
                     console.log('handleVoidConfirm error', e);
                     // Keep void modal open on error so user can see message and retry
+                    setShowVoidModal(false);
+                    setTimeout(() => {
+                        handleClose();
+                    }, 500);
                 },
             }
         );
@@ -129,6 +133,10 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                 onError: (e) => {
                     // Keep refund modal open on error so user can see message and retry
                     console.log('handleRefundConfirm error', e);
+                    setShowRefundModal(false);
+                    setTimeout(() => {
+                        handleClose();
+                    }, 500);
                 },
             }
         );
@@ -136,7 +144,10 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
 
     const handleRefundCancel = useCallback(() => {
         setShowRefundModal(false);
-    }, []);
+        setTimeout(() => {
+            handleClose();
+        }, 500);
+    }, [handleClose]);
 
     // Capture handlers
     const handleCapturePress = useCallback(() => {
@@ -159,6 +170,10 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                 onError: (e) => {
                     // Keep capture modal open on error so user can see message and retry
                     console.log('handleCaptureConfirm error', e);
+                    setShowCaptureModal(false);
+                    setTimeout(() => {
+                        handleClose();
+                    }, 500);
                 },
             }
         );
@@ -204,6 +219,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
         targetTransactionId: (payment as PaymentSession).targetTransactionId,
         capturedAmount: (payment as PaymentSession).capturedAmount || 0,
         refundedAmount: (payment as PaymentSession).refundedAmount || 0,
+        method: (payment as PaymentSession).method || '',
     } : null;
 
     const transactionForModal = type === 'transaction' ? {
@@ -215,6 +231,10 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
         merchantOrderId: (payment as Transaction).merchantOrderId || '',
         totalCapturedAmount: (payment as Transaction).totalCapturedAmount || 0,
         totalRefundedAmount: (payment as Transaction).totalRefundedAmount || 0,
+        method: (payment as Transaction).method || '',
+        order: {
+            orderId: (payment as Transaction).id || '',
+        },
     } : null;
     console.log('status', status);
     // Safety check: if no payment data, don't render
@@ -352,6 +372,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                             onConfirm={handleRefundConfirm}
                             onCancel={handleRefundCancel}
                             isRefunding={isRefunding}
+                            orderId={orderId || ''}
                         />
                     </ConfirmationModal>
 
@@ -395,6 +416,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                             onConfirm={handleRefundConfirm}
                             onCancel={handleRefundCancel}
                             isRefunding={isRefunding}
+                            transactionId={(payment as Transaction).transactionId || (payment as Transaction).id || ''}
                         />
                     </ConfirmationModal>
 

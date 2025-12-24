@@ -5,6 +5,7 @@ import { useApi } from '@/src/core/api/clients.hooks';
 import { AxiosInstance } from 'axios';
 import { User } from '@/src/modules/auth/auth.model';
 import { useToast } from '@/src/core/providers/ToastProvider';
+// import { toast } from 'sonner-native';
 
 export const fetchAndSyncMerchant = async (api: AxiosInstance, updateUser: (user: Partial<User>) => void) => {
     const data = await getMerchant(api);
@@ -83,10 +84,12 @@ export const useSwitchMerchantId = () => {
 
             // optional UX
             showToast?.({ message: 'Switched store successfully', type: 'info' });
+            // toast.info('Switched store successfully');
         },
         onError: (err) => {
             console.error('Switch merchant failed:', err);
             showToast?.({ message: 'Failed to switch store', type: 'danger' });
+            // toast.error('Failed to switch store');
         }
     });
 

@@ -307,7 +307,7 @@ const OrderDetailsScreen = () => {
                         onConfirm={handleRefundConfirm}
                         onCancel={handleRefundCancel}
                         isRefunding={isRefundingOrder}
-
+                        orderId={_id || ''}
                     />
                 </ConfirmationModal>
             )}

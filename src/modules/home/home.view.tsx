@@ -1,28 +1,29 @@
+import { cn } from "@/src/core/utils/cn"
 import { selectUser, useAuthStore } from "@/src/modules/auth/auth.store"
-import { formatDateString } from "@/src/core/utils/dateUtils"
 import FontText from "@/src/shared/components/FontText"
 import NotificationBell from "@/src/shared/components/NotificationBell"
 import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView"
 import FadeInUpView from "@/src/shared/components/wrappers/animated-wrappers/FadeInUpView"
 import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/ScaleView"
 import StaggerChildrenView from "@/src/shared/components/wrappers/animated-wrappers/StaggerChildrenView"
+import { PressableScale } from 'pressto'
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Platform, Pressable, ScrollView, View } from "react-native"
-import { ChevronDownIcon } from "react-native-heroicons/outline"
+import { I18nManager, Platform, Pressable, ScrollView, StyleSheet, View } from "react-native"
+import { ArrowRightIcon, ChevronDownIcon } from "react-native-heroicons/outline"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Activity } from "../balance/balance.model"
 import AccountsModal from "../balance/components/AccountsModal"
 import ActivityCard from "../balance/components/ActivityCard"
 import AccountsBtn from "../balance/components/header/AccountsBtn"
 import useAccounts from "../balance/viewmodels/useAccounts"
-import { useActivitiesVM, useRecentBalanceActivities } from "../balance/viewmodels/useActivitiesVM"
+import { useActivitiesVM } from "../balance/viewmodels/useActivitiesVM"
 import useStatistics from "../balance/viewmodels/useStatistics"
+import { useNotificationsVM } from "../notifications/viewmodels/useNotificationsVM"
 import CreatePaymentModal from "../payment-links/components/modals/CreatePaymentModal"
 import OrderCard from "../payments/components/orders-list/OrderCard"
 import { PaymentSession } from "../payments/payments.model"
 import { useOrdersVM } from "../payments/viewmodels/useOrdersVM"
-import { useNotificationsVM } from "../notifications/viewmodels/useNotificationsVM"
 import GreetingUser from "./components/GreetingUser"
 import HomeDateFilterModal from "./components/HomeDateFilterModal"
 import HomeListEmpty from "./components/HomeListEmpty"
@@ -31,8 +32,8 @@ import HomeTabs from "./components/HomeTabs"
 import ServicesList from "./components/services-section/ServicesList"
 import { HomeDateFilters, HomeTabType } from "./home.model"
 import { getDateFilterDisplayText, getDateRangeForFilter } from "./utils/dateFilterHelpers"
-import { cn } from "@/src/core/utils/cn"
-import TransfersComingSoon from "./components/TransfersComingSoon"
+import { Link, Route } from "expo-router"
+import { ROUTES } from "@/src/core/navigation/routes"
 const HomeScreen = () => {
     const { t } = useTranslation();
 
@@ -119,7 +120,36 @@ const HomeScreen = () => {
     };
 
     const listData = getListData();
+    const getRouteForTab = (tab: HomeTabType): Route => {
+        switch (tab) {
+            case 'all':
+                return "/balance" as Route;
+            case 'payouts':
+                return (ROUTES.BALANCE.ROOT + '?tab=payout') as Route;
+            case 'transfers':
+                return (ROUTES.BALANCE.ROOT + '?tab=transfers') as Route;
+            case 'orders':
+                return ROUTES.TABS.PAYMENTS as Route;
+            default:
+                return "/balance" as Route;
+        }
+    };
 
+    // Helper function to get button text based on active tab
+    const getButtonTextForTab = (tab: HomeTabType): string => {
+        switch (tab) {
+            case 'all':
+                return t("Go to balance");
+            case 'payouts':
+                return t("Go to payouts");
+            case 'transfers':
+                return t("Go to transfers");
+            case 'orders':
+                return t("Go to orders");
+            default:
+                return t("Go to balance");
+        }
+    };
     return (
         <SafeAreaView className="flex-1 bg-white">
             <View className={cn("flex-1 ", Platform.OS === 'android' ? 'pt-4' : 'pt-0')}>
@@ -182,26 +212,35 @@ const HomeScreen = () => {
                     </Link> */}
                     {/* List */}
                     {listData.length > 0 ? (
-                        <StaggerChildrenView
-                            className="px-6 mt-4 pb-6"
-                            delay={300}
-                            staggerDelay={100}
-                            animationType="fadeInUp"
-                            duration={600}
-                        >
-                            {activeTab === 'orders' ? (
-                                listData.map((item) => {
-                                    const payment = item as PaymentSession;
-                                    return <OrderCard key={payment._id} payment={payment} />;
-                                })
-                            ) : (
-                                listData.map((item) => {
-                                    const activity = item as Activity;
-                                    return <ActivityCard key={activity._id} {...activity} fromBalance={activeTab === 'all'}
-                                    />;
-                                })
-                            )}
-                        </StaggerChildrenView>
+                        <>
+                            <StaggerChildrenView
+                                className="px-6 mt-4 pb-4"
+                                delay={300}
+                                staggerDelay={100}
+                                animationType="fadeInUp"
+                                duration={600}
+                            >
+                                {activeTab === 'orders' ? (
+                                    listData.map((item) => {
+                                        const payment = item as PaymentSession;
+                                        return <OrderCard key={payment._id} payment={payment} />;
+                                    })
+                                ) : (
+                                    listData.map((item) => {
+                                        const activity = item as Activity;
+                                        return <ActivityCard key={activity._id} {...activity} fromBalance={activeTab === 'all'} />;
+                                    })
+                                )}
+                            </StaggerChildrenView>
+                            <Link href={getRouteForTab(activeTab)} asChild>
+                                <PressableScale style={styles.goToBtn}>
+                                    <FontText type="body" weight="semi" className="text-sm text-primary">
+                                        {getButtonTextForTab(activeTab)}
+                                    </FontText>
+                                    <ArrowRightIcon size={16} color="#001F5F" style={{ transform: [{ rotate: I18nManager.isRTL ? '180deg' : '0deg' }] }} />
+                                </PressableScale>
+                            </Link>
+                        </>
                     ) : (
                         <FadeInDownView className="px-6 mt-4 pb-6" delay={300} duration={600}>
                             <HomeListEmpty activeTab={activeTab} />
@@ -231,4 +270,18 @@ const HomeScreen = () => {
     )
 }
 
+const styles = StyleSheet.create({
+    goToBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        borderWidth: 1,
+        borderColor: '#001F5F',
+        borderRadius: 4,
+        height: 46,
+        marginHorizontal: 24,
+        marginBottom: 24,
+    }
+});
 export default HomeScreen
