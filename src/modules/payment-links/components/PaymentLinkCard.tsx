@@ -11,6 +11,8 @@ import StatusBox from './StatusBox'
 import DeliveryStatusBox from './DeliveryStatusBox'
 import { cn } from '@/src/core/utils/cn'
 import { PressableScale } from 'pressto'
+import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store'
+import usePermissions from '@/src/modules/auth/hooks/usePermissions'
 
 interface Props {
     paymentLink: PaymentLink;
@@ -23,13 +25,39 @@ const PaymentLinkCard = ({
 }: Props) => {
     const { t } = useTranslation();
     const { customerName, paymentLinkId, dueDate, paymentType, state, paymentStatus, needApproval, isChecker, createdByUserId, totalAmount, currency, invoiceReferenceId, invoiceItems, lastShareStatus } = paymentLink;
-    const onOpen = useCallback(() => onOpenActions(paymentLink), [onOpenActions, paymentLink]);
-    // console.log("lastShareStatus : ", lastShareStatus);
-    return (
-        <Link href={`/payment-links/${paymentLinkId}`} asChild>
-            <PressableScale
-                onLongPress={onOpen}
-            >
+
+    // Permission checks
+    const user = useAuthStore(selectUser);
+    const {
+        canViewPaymentLinkDetails,
+        canEditPaymentLink,
+        canDeletePaymentLink,
+        canCancelPaymentLink
+    } = usePermissions(
+        user?.actions || {},
+        user?.merchantId,
+        createdByUserId
+    );
+
+    // Check if user has ANY action permissions (for ActionsModal)
+    const hasAnyActionPermission =
+        canEditPaymentLink ||
+        canDeletePaymentLink ||
+        canCancelPaymentLink ||
+        canViewPaymentLinkDetails;
+
+    // Only allow long press if there are available actions
+    const handleLongPress = useCallback(() => {
+        if (hasAnyActionPermission) {
+            onOpenActions(paymentLink);
+        }
+    }, [hasAnyActionPermission, onOpenActions, paymentLink]);
+
+    // Card content
+    const cardContent = (
+        <PressableScale
+            onLongPress={handleLongPress}
+        >
                 <View className='border-[1.5px] rounded border-tertiary p-4 mb-2  gap-y-2'
                 // onLongPress={onOpen}
                 >
@@ -149,8 +177,18 @@ const PaymentLinkCard = ({
                 </Pressable> */}
                 </View>
             </PressableScale>
+    );
+
+    // Only wrap with Link if user can view details
+    if (!canViewPaymentLinkDetails) {
+        return cardContent;
+    }
+
+    return (
+        <Link href={`/payment-links/${paymentLinkId}`} asChild>
+            {cardContent}
         </Link>
-    )
+    );
 }
 
 export default memo(PaymentLinkCard);

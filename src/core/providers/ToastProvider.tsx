@@ -78,11 +78,9 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <ToastContext.Provider value={{ showToast }}>
-            {children}
-
             {toast && (
                 <Animated.View
-                    className="absolute bottom-8 left-4 right-4 z-50"
+                    className="absolute top-16 left-4 right-4 z-50"
                     style={{
                         opacity: fadeAnim,
                         transform: [{ translateY }],
@@ -105,6 +103,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                     </TouchableOpacity>
                 </Animated.View>
             )}
+            {children}
         </ToastContext.Provider>
     );
 };

@@ -85,7 +85,7 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                             className="absolute inset-0 bg-content-secondary/30"
                         >
                             <BlurView
-                                intensity={50}
+                                intensity={30}
                                 tint="dark"
                                 style={{ flex: 1 }}
                             >

@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { PlusIcon } from 'react-native-heroicons/outline';
 import ListHeader from '@/src/shared/components/ListHeader/ListHeader';
+import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store';
+import usePermissions from '@/src/modules/auth/hooks/usePermissions';
 
 interface Props {
     onPlusPress: () => void;
@@ -15,6 +17,8 @@ interface Props {
 
 const PaymentLinksHeader = ({ onPlusPress, onFilterPress, onSubmitSearch, isFilterOpen, isListEmpty, hasFilters, handleClearSearch, searchValue }: Props) => {
     const { t } = useTranslation();
+    const user = useAuthStore(selectUser);
+    const { canCreatePaymentLinks } = usePermissions(user?.actions || {});
 
     return (
         <ListHeader
@@ -26,10 +30,10 @@ const PaymentLinksHeader = ({ onPlusPress, onFilterPress, onSubmitSearch, isFilt
             hasFilters={hasFilters}
             handleClearSearch={handleClearSearch}
             searchValue={searchValue}
-            actionButton={{
+            actionButton={canCreatePaymentLinks ? {
                 icon: <PlusIcon size={24} color="#001F5F" />,
                 onPress: onPlusPress
-            }}
+            } : undefined}
         />
     )
 }

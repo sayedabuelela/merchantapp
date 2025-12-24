@@ -6,28 +6,56 @@ import { I18nManager } from "react-native";
 import { CHECKOUT_URL } from "@/src/core/environment/environments";
 import { useEnvironment } from "@/src/core/environment/useEnvironment.hook";
 import { AxiosInstance } from "axios";
+import { selectUser, useAuthStore } from "@/src/modules/auth/auth.store";
+import usePermissions from "@/src/modules/auth/hooks/usePermissions";
 
-const usePaymentLinkActionsVM = () => {
+const usePaymentLinkActionsVM = (createdByUserId?: string) => {
     const { api, paymentApi } = useApi();
     const queryClient = useQueryClient();
-    const { isLiveMode } = useEnvironment()
+    const { isLiveMode } = useEnvironment();
+
+    // Get permissions
+    const user = useAuthStore(selectUser);
+    const {
+        canDeletePaymentLink,
+        canCancelPaymentLink,
+        canEditPaymentLink
+    } = usePermissions(
+        user?.actions || {},
+        user?.merchantId,
+        createdByUserId
+    );
     const deleteMutation = useMutation({
-        mutationFn: (paymentLinkId: string) => deletePaymentLink(api, paymentLinkId),
+        mutationFn: async (paymentLinkId: string) => {
+            if (!canDeletePaymentLink) {
+                throw new Error('Unauthorized: You do not have permission to delete this payment link');
+            }
+            return deletePaymentLink(api, paymentLinkId);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["payment-links"] });
         }
     });
 
     const cancelMutation = useMutation({
-        mutationFn: (paymentLinkId: string) => cancelPaymentLink(api, paymentLinkId),
+        mutationFn: async (paymentLinkId: string) => {
+            if (!canCancelPaymentLink) {
+                throw new Error('Unauthorized: You do not have permission to cancel this payment link');
+            }
+            return cancelPaymentLink(api, paymentLinkId);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["payment-links"] });
         }
     });
 
     const markAsPaidMutation = useMutation({
-        mutationFn: (params: MarkAsPaidParams) =>
-            markAsPaid(paymentApi, params),
+        mutationFn: async (params: MarkAsPaidParams) => {
+            if (!canEditPaymentLink) {
+                throw new Error('Unauthorized: You do not have permission to mark this payment link as paid');
+            }
+            return markAsPaid(paymentApi, params);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["payment-links"] });
         }

@@ -22,6 +22,7 @@ import CaptureConfirmationTransaction from '../CaptureConfirmationTransaction';
 import usePermissions from '@/src/modules/auth/hooks/usePermissions';
 import { useAuthStore } from '@/src/modules/auth/auth.store';
 import { selectUser } from '@/src/modules/auth/auth.store';
+import { BlurView } from 'expo-blur';
 
 interface Props {
     isVisible: boolean;
@@ -273,7 +274,14 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                             }}
                             className="absolute inset-0 bg-content-secondary/30"
                         >
-                            <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            <BlurView
+                                intensity={20}
+                                tint="dark"
+                                style={{ flex: 1 }}
+                            >
+
+                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            </BlurView>
                         </MotiView>
 
                         <TouchableWithoutFeedback>

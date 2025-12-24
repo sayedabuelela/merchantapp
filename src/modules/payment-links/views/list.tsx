@@ -90,11 +90,11 @@ const PaymentLinksScreen = () => {
     });
 
     // Refetch data when screen comes into focus
-    useFocusEffect(
-        useCallback(() => {
-            refetch();
-        }, [refetch])
-    );
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         refetch();
+    //     }, [refetch])
+    // );
 
     const isListEmpty = useMemo(() =>
         listData.length === 0 && !isLoading && !search && !paymentStatus && !hasActiveFilters,

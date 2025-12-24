@@ -20,6 +20,7 @@ import usePermissions from '@/src/modules/auth/hooks/usePermissions';
 import { ICountry } from '@/src/shared/hooks/useCountries';
 import { PaymentLink } from '../../../payment-links.model';
 import usePaymentLinkActionsVM from '../../../viewmodels/usePaymentLinkActionsVM';
+import { BlurView } from 'expo-blur';
 
 type Mode = "actions" | "share" | "delete" | "reject" | "markAsPaid";
 
@@ -118,9 +119,9 @@ const useActionDescriptors = (
     } = paymentLink;
 
     const {
-        canEditPaymentRequests,
-        canViewPaymentRequestDetails,
-        canDeletePaymentRequests,
+        canEditPaymentLink,
+        canViewPaymentLinkDetails,
+        canDeletePaymentLink,
     } = permissions;
 
     const {
@@ -137,7 +138,7 @@ const useActionDescriptors = (
     return useMemo(() => {
         // Early returns for special cases
         if (needApproval) {
-            if (canViewPaymentRequestDetails && !isPaymentLinkDetails) {
+            if (canViewPaymentLinkDetails && !isPaymentLinkDetails) {
                 return [{
                     key: 'details',
                     title: t("Details"),
@@ -149,7 +150,7 @@ const useActionDescriptors = (
         }
 
         if (paymentStatus === "rejected") {
-            if (canDeletePaymentRequests && canDeleteStatus) {
+            if (canDeletePaymentLink && canDeleteStatus) {
                 return [{
                     key: 'delete',
                     title: t("Delete"),
@@ -181,7 +182,7 @@ const useActionDescriptors = (
 
         // Build normal actions
         const items: ActionDescriptor[] = [];
-        if (canViewPaymentRequestDetails && !isPaymentLinkDetails) {
+        if (canViewPaymentLinkDetails && !isPaymentLinkDetails) {
             items.push({
                 key: 'details',
                 title: t("Details"),
@@ -190,7 +191,7 @@ const useActionDescriptors = (
             });
         }
 
-        if (canEditPaymentRequests && approvedStatus) {
+        if (canEditPaymentLink && approvedStatus) {
             items.push({
                 key: 'edit',
                 title: t("Edit"),
@@ -206,7 +207,7 @@ const useActionDescriptors = (
             });
         }
 
-        if (canViewPaymentRequestDetails && approvedStatus) {
+        if (canViewPaymentLinkDetails && approvedStatus) {
             items.push({
                 key: 'share',
                 title: t("Share"),
@@ -215,7 +216,7 @@ const useActionDescriptors = (
             });
         }
 
-        if (canDeletePaymentRequests && canDeleteStatus) {
+        if (canDeletePaymentLink && canDeleteStatus) {
             items.push({
                 key: 'delete',
                 title: t("Delete"),
@@ -231,9 +232,9 @@ const useActionDescriptors = (
         paymentStatus,
         isChecker,
         state,
-        canViewPaymentRequestDetails,
-        canEditPaymentRequests,
-        canDeletePaymentRequests,
+        canViewPaymentLinkDetails,
+        canEditPaymentLink,
+        canDeletePaymentLink,
         approvedStatus,
         canDeleteStatus,
         isPaymentLinkDetails
@@ -250,7 +251,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
     const [mode, setMode] = useState<Mode>("actions");
     const [rejectReason, setRejectReason] = useState<string>("");
     const [isQrCodeModalVisible, setIsQrCodeModalVisible] = useState(false);
-    const { generateSherableUrl } = usePaymentLinkActionsVM();
+    const { generateSherableUrl } = usePaymentLinkActionsVM(paymentLink.createdByUserId);
 
     // Refs and hooks
 
@@ -260,7 +261,7 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
     const {
         deleteMutation: { isPending: isDeleting, mutateAsync: deletePaymentLink },
         markAsPaidMutation: { isPending: isMarkingAsPaid, mutateAsync: markAsPaid }
-    } = usePaymentLinkActionsVM();
+    } = usePaymentLinkActionsVM(paymentLink.createdByUserId);
 
     const user = useAuthStore(selectUser);
     const permissions = usePermissions(
@@ -408,7 +409,14 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
                                 }}
                                 className="absolute inset-0 bg-content-secondary/30"
                             >
-                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                <BlurView
+                                    intensity={20}
+                                    tint="dark"
+                                    style={{ flex: 1 }}
+                                >
+                                    <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                </BlurView>
+                                {/* <Pressable style={{ flex: 1 }} onPress={handleClose} /> */}
                             </MotiView>
 
                             <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>

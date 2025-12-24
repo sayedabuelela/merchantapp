@@ -10,7 +10,7 @@ import MainHeader from "@/src/shared/components/headers/MainHeader";
 import Input from "@/src/shared/components/inputs/Input";
 import TimeSelector from "@/src/shared/components/inputs/TimeSelector";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -24,6 +24,9 @@ import { usePaymentLinkStore } from "../paymentLink.store";
 import usePaymentLinkVM from "../viewmodels/usePaymentLinkVM";
 import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView";
 import FadeInUpView from "@/src/shared/components/wrappers/animated-wrappers/FadeInUpView";
+import { selectUser, useAuthStore } from "@/src/modules/auth/auth.store";
+import usePermissions from "@/src/modules/auth/hooks/usePermissions";
+import { ROUTES } from "@/src/core/navigation/routes";
 
 const CreateNewPaymentLinkStep2Screen = () => {
     const { t } = useTranslation();
@@ -41,6 +44,24 @@ const CreateNewPaymentLinkStep2Screen = () => {
     } = usePaymentLinkVM(paymentLinkId);
     console.log('Step2 paymentLinkId', paymentLinkId);
     // console.log('Step2 isEditMode', isEditMode);
+
+    // Permission checks
+    const user = useAuthStore(selectUser);
+    const permissions = usePermissions(
+        user?.actions || {},
+        user?.merchantId,
+        paymentLink?.createdByUserId
+    );
+
+    // Create mode: check canCreatePaymentLinks
+    if (!isEditMode && !permissions.canCreatePaymentLinks) {
+        return <Redirect href={ROUTES.TABS.PAYMENT_LINKS} />;
+    }
+
+    // Edit mode: check canEditPaymentLink (with ownership)
+    if (isEditMode && paymentLink && !permissions.canEditPaymentLink) {
+        return <Redirect href={ROUTES.TABS.PAYMENT_LINKS} />;
+    }
 
     const {
         control,

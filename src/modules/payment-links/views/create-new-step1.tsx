@@ -1,6 +1,6 @@
 import AnimatedError from '@/src/shared/components/animated-messages/AnimatedError';
 import MainHeader from '@/src/shared/components/headers/MainHeader';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { Redirect, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -10,6 +10,9 @@ import { usePaymentLinkStore } from '../paymentLink.store';
 import usePaymentLinkVM from '../viewmodels/usePaymentLinkVM';
 import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
 import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
+import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store';
+import usePermissions from '@/src/modules/auth/hooks/usePermissions';
+import { ROUTES } from '@/src/core/navigation/routes';
 
 const CreateNewPaymentLinkStep1Screen = () => {
     const { t } = useTranslation();
@@ -33,6 +36,25 @@ const CreateNewPaymentLinkStep1Screen = () => {
         submitPaymentLink
     } = usePaymentLinkVM(paymentLinkId);
     const { clearFormData, setQrCode } = usePaymentLinkStore();
+
+    // Permission checks
+    const user = useAuthStore(selectUser);
+    const permissions = usePermissions(
+        user?.actions || {},
+        user?.merchantId,
+        paymentLink?.createdByUserId
+    );
+
+    // Create mode: check canCreatePaymentLinks
+    if (!isEditMode && !permissions.canCreatePaymentLinks) {
+        return <Redirect href={ROUTES.TABS.PAYMENT_LINKS} />;
+    }
+
+    // Edit mode: check canEditPaymentLink (with ownership)
+    if (isEditMode && paymentLink && !permissions.canEditPaymentLink) {
+        return <Redirect href={ROUTES.TABS.PAYMENT_LINKS} />;
+    }
+
     useFocusEffect(
         useCallback(() => {
             if (!isEditMode) {

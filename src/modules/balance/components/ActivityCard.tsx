@@ -79,7 +79,7 @@ const ActivityCard = ({
     return (
         <Link
             href={`/balance/${_id}`} asChild>
-            <PressableScale >
+            <PressableScale>
                 <View className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1">
                     <View className="flex-row items-center justify-between mb-1">
                         <View className="flex-row items-center gap-x-2">

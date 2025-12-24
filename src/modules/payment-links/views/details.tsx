@@ -5,7 +5,7 @@ import FontText from '@/src/shared/components/FontText';
 import MainHeader from '@/src/shared/components/headers/MainHeader';
 import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
 import useCountries from '@/src/shared/hooks/useCountries';
-import { useLocalSearchParams } from 'expo-router';
+import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
@@ -21,6 +21,9 @@ import StatusBox from '../components/StatusBox';
 import usePaymentLinkVM from '../viewmodels/usePaymentLinkVM';
 import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
 import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
+import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store';
+import usePermissions from '@/src/modules/auth/hooks/usePermissions';
+import { ROUTES } from '@/src/core/navigation/routes';
 
 export default function PaymentLinkDetailsScreen() {
     const { paymentLinkId } = useLocalSearchParams<{ paymentLinkId?: string }>();
@@ -28,11 +31,34 @@ export default function PaymentLinkDetailsScreen() {
     const [actionsVisible, setActionsVisible] = useState(false);
     const { countries } = useCountries();
     const { paymentLink, isLoadingPaymentLink } = usePaymentLinkVM(paymentLinkId);
+
+    // Permission checks
+    const user = useAuthStore(selectUser);
+    const permissions = usePermissions(
+        user?.actions || {},
+        user?.merchantId,
+        paymentLink?.createdByUserId
+    );
+    console.log('permissions : ', permissions);
+    // Redirect if user doesn't have permission to view details
+    // if (paymentLink && !permissions.canViewPaymentLinkDetails) {
+    //     return <Redirect href={ROUTES.TABS.PAYMENT_LINKS} />;
+    // }
+
     const actionBtnStatus = useMemo(() => {
+        // Check permissions first
+        const hasAnyActionPermission =
+            permissions.canEditPaymentLink ||
+            permissions.canDeletePaymentLink ||
+            permissions.canViewPaymentLinkDetails;
+
+        if (!hasAnyActionPermission) return false;
+
+        // Then check status
         const approvedStatus = paymentLink?.state !== "cancelled" && paymentLink?.paymentStatus !== "paid" && paymentLink?.paymentStatus !== "expired";
         const canDeleteStatus = paymentLink?.state !== "cancelled" && paymentLink?.paymentStatus !== "paid";
         return approvedStatus || canDeleteStatus;
-    }, [paymentLink?.state, paymentLink?.paymentStatus]);
+    }, [paymentLink?.state, paymentLink?.paymentStatus, permissions]);
 
     const handleCloseActions = useCallback(() => {
         setActionsVisible(false);
