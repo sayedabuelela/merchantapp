@@ -10,6 +10,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   scheme: 'kashier',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
+  updates: {
+    url: 'https://u.expo.dev/d404b506-3538-4f98-8128-43573bc0a5be',
+  },
+  runtimeVersion: {
+    policy: 'appVersion',
+  },
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.kashier.merchantapp',

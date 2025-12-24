@@ -104,7 +104,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
     // Status options (different per tab)
     const orderStatusOptions = [
         { label: t('All'), value: null as string | null },
-        { label: t('CREATE'), value: 'CREATE' },
+        { label: t('CREATE'), value: 'CREATED' },
         { label: t('OPENED'), value: 'OPENED' },
         { label: t('PENDING'), value: 'PENDING' },
         { label: t('PAID'), value: 'PAID' },
@@ -346,8 +346,8 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                         options={isOrdersTab ? orderStatusOptions : transactionStatusOptions}
                                         selected={status}
                                         onChange={setStatus}
-                                        label={t('Order Status')}
-                                        placeholder={t('Order Status')}
+                                        label={t(isOrdersTab ? 'Order Status' : 'Status')}
+                                        placeholder={t(isOrdersTab ? 'Order Status' : 'Status')}
                                         dropdownKey="status"
                                         variant="filter"
                                     />

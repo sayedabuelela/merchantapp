@@ -54,6 +54,8 @@ const ActivityCard = ({
         'topup',
         'topup (+ve)',
         'release',
+        'release (+ve)',
+        'cashback (+ve)',
         'settlement',
         'opening balance',
         'refund cancel',
@@ -75,6 +77,7 @@ const ActivityCard = ({
 
     const isOutOperation = outOperations.includes(operation.toLowerCase());
     const isInOperation = inOperations.includes(operation.toLowerCase());
+    console.log('operation.toLowerCase()', operation.toLowerCase());
 
     return (
         <Link
