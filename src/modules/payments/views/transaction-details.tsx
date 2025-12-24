@@ -26,6 +26,8 @@ import ScaleView from '@/src/shared/components/wrappers/animated-wrappers/ScaleV
 import DetailsSkeleton from '../components/DetailsSkeleton';
 import { ArrowUturnLeftIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { cn } from '@/src/core/utils/cn';
+import { selectUser, useAuthStore } from '../../auth/auth.store';
+import usePermissions from '../../auth/hooks/usePermissions';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -44,7 +46,8 @@ const TransactionDetailsScreen = () => {
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
     const [showCaptureModal, setShowCaptureModal] = useState(false);
-
+    const user = useAuthStore(selectUser);
+    const { canRefundTransactions } = usePermissions(user?.actions || {});
     // Actions viewmodel
     const {
         voidTransaction,
@@ -241,7 +244,7 @@ const TransactionDetailsScreen = () => {
                 )}
 
                 {/* Fixed Bottom Action Buttons */}
-                {showActionButtons && (
+                {canRefundTransactions && showActionButtons && (
                     <View className="p-4 border-t border-stroke-divider bg-white">
                         <View className="flex-row gap-x-3">
                             {canVoid && (

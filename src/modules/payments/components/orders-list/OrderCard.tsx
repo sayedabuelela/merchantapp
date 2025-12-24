@@ -12,6 +12,7 @@ import { PaymentSession } from "@/src/modules/payments/payments.model";
 import { PhoneIcon } from "react-native-heroicons/mini";
 import { logJSON } from "@/src/core/utils/logger"
 import IconBox from "@/src/shared/components/wrappers/IconBox"
+import { PressableScale } from "pressto"
 
 
 interface OrderCardProps {
@@ -33,53 +34,52 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
 
     return (
         <Link href={`/payments/${_id}`} asChild>
-            <Pressable
-                className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1"
-                onLongPress={handleLongPress}>
-                <View className="flex-row items-center justify-between mb-1">
-                    <View className="flex-row items-center gap-x-2">
-                        <IconBox className={cn(isPaid ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
-                            {isPaid ? (
-                                <ArrowSmallDownIcon size={10} color={'#1A541D'} />
-                            ) : (
-                                <ArrowSmallUpIcon size={10} color={'#A50017'} />
+            <PressableScale onLongPress={handleLongPress}>
+                <View className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1">
+                    <View className="flex-row items-center justify-between mb-1">
+                        <View className="flex-row items-center gap-x-2">
+                            <IconBox className={cn(isPaid ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
+                                {isPaid ? (
+                                    <ArrowSmallDownIcon size={10} color={'#1A541D'} />
+                                ) : (
+                                    <ArrowSmallUpIcon size={10} color={'#A50017'} />
+                                )}
+                            </IconBox>
+                            <StatusBox status={status} />
+                            {targetTransactionId && (
+                                <FontText type="body" weight="regular"
+                                    className="text-content-secondary text-[10px] uppercase">
+                                    {targetTransactionId}
+                                </FontText>
                             )}
-                        </IconBox>
-                        <StatusBox status={status} />
-                        {targetTransactionId && (
-                            <FontText type="body" weight="regular"
-                                className="text-content-secondary text-[10px] uppercase">
-                                {targetTransactionId}
-                            </FontText>
-                        )}
-                    </View>
-                    <FontText type="body" weight="bold"
-                        className={cn("text-content-primary text-sm")}>
-                        {currencyNumber(paymentParams.amount)} {t(paymentParams.currency)}
-                    </FontText>
-                </View>
-                {/* method and channel */}
-                {method && (
-                    <FontText type="body" weight="regular" className="text-content-primary text-xs ">
-                        <FontText type="body" weight="regular"
-                            className="text-content-primary text-xs capitalize">
-                            {method}
+                        </View>
+                        <FontText type="body" weight="bold"
+                            className={cn("text-content-primary text-sm")}>
+                            {currencyNumber(paymentParams.amount)} {t(paymentParams.currency)}
                         </FontText>
-                        {' - '}{(paymentParams.interactionSource === 'ECOMMERCE' || paymentParams.interactionSource === undefined) ? 'Online' : paymentParams.interactionSource}
-                    </FontText>
-                )}
-                {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
+                    </View>
+                    {/* method and channel */}
+                    {method && (
+                        <FontText type="body" weight="regular" className="text-content-primary text-xs ">
+                            <FontText type="body" weight="regular"
+                                className="text-content-primary text-xs capitalize">
+                                {method}
+                            </FontText>
+                            {' - '}{(paymentParams.interactionSource === 'ECOMMERCE' || paymentParams.interactionSource === undefined) ? 'Online' : paymentParams.interactionSource}
+                        </FontText>
+                    )}
+                    {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                     {t('To')} {'Account Name'}
                 </FontText> */}
-                <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                    {formatAMPM(createdAt)}
-                </FontText>
-                <View className="flex-row items-center">
-                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
-                        {paymentParams.order}
+                    <FontText type="body" weight="regular" className="text-content-secondary text-xs">
+                        {formatAMPM(createdAt)}
                     </FontText>
-                </View>
-                {/* <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
+                    <View className="flex-row items-center">
+                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                            {paymentParams.order}
+                        </FontText>
+                    </View>
+                    {/* <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
                     <View className="flex-row items-center gap-x-4">
                         <View className="flex-row items-center gap-x-1">
                             <UserIcon size={10} color="#556767" />
@@ -101,7 +101,8 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                         </FontText>
                     </View>
                 </View> */}
-            </Pressable>
+                </View>
+            </PressableScale>
         </Link>
     )
 }

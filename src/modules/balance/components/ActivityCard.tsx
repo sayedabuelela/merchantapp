@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils"
 import { cn } from "@/src/core/utils/cn"
 import IconBox from "@/src/shared/components/wrappers/IconBox"
+import { PressableScale } from "pressto"
 
 // const IconBox = ({ children }: { children: React.ReactNode }) => {
 //     return (
@@ -39,54 +40,81 @@ const ActivityCard = ({
     const { t } = useTranslation();
 
     // OUT operations: money going out (down arrow, red)
-    const outOperations = ['payout', 'transfer', 'refund', 'deduct','topup','topup (+ve)'];
+    // const outOperations = ['payout', 'transfer', 'refund', 'deduct', 'topup', 'topup (+ve)'];
 
-    // IN operations: money coming in (up arrow, green)
-    const inOperations = [ 'adjustment', 'rate adjustment', 'opening balance', 'refund cancel', 'settlement', 'release', 'payment'];
-    const isTopupAdjustment = operation.toLowerCase() === 'topup (+ve)' || operation.toLowerCase() === 'topup' || operation.toLowerCase() === 'adjustment';
-    const isOutOperation = outOperations.includes(operation.toLowerCase());
-    const isInOperation = inOperations.includes(operation.toLowerCase());
+    // // IN operations: money coming in (up arrow, green)
+    // const inOperations = ['adjustment', 'rate adjustment', 'opening balance', 'refund cancel', 'settlement', 'release', 'payment'];
+    // const isTopupAdjustment = operation.toLowerCase() === 'topup (+ve)' || operation.toLowerCase() === 'topup' || operation.toLowerCase() === 'adjustment';
+    // const isOutOperation = outOperations.includes(operation.toLowerCase());
+    // const isInOperation = inOperations.includes(operation.toLowerCase());
     // out is arrow up 
     // in is arrow down
-    
-    
+
+    const inOperations = [
+        'topup',
+        'topup (+ve)',
+        'release',
+        'settlement',
+        'opening balance',
+        'refund cancel',
+        'cancel transfer',
+        'adjustment',
+        'payment'
+    ];
+
+    // OUT operations: money going out (down arrow, red)
+    // Payout, Transfer, Refund, Deduct, Hold, Rate adjustment
+    const outOperations = [
+        'payout',
+        'transfer',
+        'refund',
+        'deduct',
+        'hold',
+        'rate adjustment'
+    ];
+
+    const isOutOperation = outOperations.includes(operation.toLowerCase());
+    const isInOperation = inOperations.includes(operation.toLowerCase());
+
     return (
         <Link
             href={`/balance/${_id}`} asChild>
-            <Pressable className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1">
-                <View className="flex-row items-center justify-between mb-1">
-                    <View className="flex-row items-center gap-x-2">
-                        <IconBox className="bg-tertiary">
-                            {isInOperation ? (
-                                <ArrowSmallDownIcon size={10} color={'#4AAB4E'} />
-                            ) : (
-                                <ArrowSmallUpIcon size={10} color={isTopupAdjustment ? '#4AAB4E' : '#A50017'} />
-                            )}
-                        </IconBox>
-                        <FontText type="body" weight="regular" className="text-content-secondary text-xs capitalize">
-                            {t(operation)}
+            <PressableScale >
+                <View className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1">
+                    <View className="flex-row items-center justify-between mb-1">
+                        <View className="flex-row items-center gap-x-2">
+                            <IconBox className="bg-tertiary">
+                                {isInOperation ? (
+                                    <ArrowSmallUpIcon size={10} color={'#4AAB4E'} />
+                                ) : (
+                                    <ArrowSmallDownIcon size={10} color={'#A50017'} />
+                                )}
+                            </IconBox>
+                            <FontText type="body" weight="regular" className="text-content-secondary text-xs capitalize">
+                                {t(operation)}
+                            </FontText>
+
+                        </View>
+                        <FontText type="body" weight="bold"
+                            className={cn("text-content-primary text-base ml-1"
+                                // ,isInOperation && "text-success"
+                            )}>
+
+                            {/* {isInOperation && "+"} */}
+                            {currencyNumber(amount)} {t(currency || 'EGP')}
                         </FontText>
-
                     </View>
-                    <FontText type="body" weight="bold"
-                        className={cn("text-content-primary text-base ml-1"
-                            // ,isInOperation && "text-success"
-                        )}>
-
-                        {/* {isInOperation && "+"} */}
-                        {currencyNumber(amount)} {t(currency || 'EGP')}
+                    <FontText type="body" weight="regular" className="text-content-primary text-xs">
+                        {accountName}
                     </FontText>
-                </View>
-                <FontText type="body" weight="regular" className="text-content-primary text-xs">
-                    {accountName}
-                </FontText>
-                {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
+                    {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                     {t('To')} {'Account Name'}
                 </FontText> */}
-                <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                    {(operation === "payout" || fromBalance) && `${formatRelativeDate(createdAt) !=='Today' ? formatRelativeDate(createdAt) + ' - ' : '' }`}{formatAMPM(createdAt)}
-                </FontText>
-            </Pressable>
+                    <FontText type="body" weight="regular" className="text-content-secondary text-xs">
+                        {(operation === "payout" || fromBalance) && `${formatRelativeDate(createdAt) !== 'Today' ? formatRelativeDate(createdAt) + ' - ' : ''}`}{formatAMPM(createdAt)}
+                    </FontText>
+                </View>
+            </PressableScale>
         </Link>
     )
 }

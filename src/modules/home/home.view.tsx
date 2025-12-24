@@ -145,7 +145,7 @@ const HomeScreen = () => {
             case 'transfers':
                 return t("Go to transfers");
             case 'orders':
-                return t("Go to orders");
+                return t("Go to payments");
             default:
                 return t("Go to balance");
         }
@@ -234,7 +234,7 @@ const HomeScreen = () => {
                             </StaggerChildrenView>
                             <Link href={getRouteForTab(activeTab)} asChild>
                                 <PressableScale style={styles.goToBtn}>
-                                    <FontText type="body" weight="semi" className="text-sm text-primary">
+                                    <FontText type="body" weight="semi" className="text-sm text-primary capitalize">
                                         {getButtonTextForTab(activeTab)}
                                     </FontText>
                                     <ArrowRightIcon size={16} color="#001F5F" style={{ transform: [{ rotate: I18nManager.isRTL ? '180deg' : '0deg' }] }} />

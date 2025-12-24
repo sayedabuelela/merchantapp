@@ -11,6 +11,7 @@ import { Transaction } from "@/src/modules/payments/payments.model";
 import { PhoneIcon } from "react-native-heroicons/mini";
 import { formatAMPM } from "@/src/core/utils/dateUtils";
 import IconBox from "@/src/shared/components/wrappers/IconBox"
+import { PressableScale } from "pressto"
 
 // const IconBox = ({ children }: { children: React.ReactNode }) => {
 //     return (
@@ -60,64 +61,62 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
     console.log('status : ', status);
     return (
         <Link href={`/payments/transaction/${transactionId}`} asChild>
-            <Pressable
-                className="border-[1.5px] rounded border-tertiary p-4 mb-2 "
-                onLongPress={handleLongPress}
-            >
-                <View className="flex-row items-center justify-between mb-2">
-                    <View className="flex-row items-center gap-x-2">
-                        <IconBox className={cn(
-                            (isPayment && isApproved)
-                                ? 'bg-[#D1FFD3] border border-[#AEFFB2]'
-                                : 'bg-[#FFEAED] border border-[#FEE4E7]'
-                        )}>
-                            {(isPayment && isApproved) ? (
-                                <ArrowSmallDownIcon size={10} color={'#1A541D'} />
-                            ) : (
-                                <ArrowSmallUpIcon size={10} color={'#A50017'} />
-                            )}
-                        </IconBox>
+            <PressableScale onLongPress={handleLongPress}>
+                <View className="border-[1.5px] rounded border-tertiary p-4 mb-2 ">
+                    <View className="flex-row items-center justify-between mb-2">
+                        <View className="flex-row items-center gap-x-2">
+                            <IconBox className={cn(
+                                (isPayment && isApproved)
+                                    ? 'bg-[#D1FFD3] border border-[#AEFFB2]'
+                                    : 'bg-[#FFEAED] border border-[#FEE4E7]'
+                            )}>
+                                {(isPayment && isApproved) ? (
+                                    <ArrowSmallDownIcon size={10} color={'#1A541D'} />
+                                ) : (
+                                    <ArrowSmallUpIcon size={10} color={'#A50017'} />
+                                )}
+                            </IconBox>
 
-                        <FontText type="body" weight="regular"
-                            className="text-content-secondary text-xs capitalize">
-                            {type}
+                            <FontText type="body" weight="regular"
+                                className="text-content-secondary text-xs capitalize">
+                                {type}
+                            </FontText>
+
+                        </View>
+                        <FontText type="body" weight="bold"
+                            className={cn("text-content-primary text-sm")}>
+                            {currencyNumber(amount)} {t(currency)}
                         </FontText>
-
                     </View>
-                    <FontText type="body" weight="bold"
-                        className={cn("text-content-primary text-sm")}>
-                        {currencyNumber(amount)} {t(currency)}
-                    </FontText>
-                </View>
-                {/* method and channel */}
-                <View className="flex-row items-center justify-between">
-                    {method && (
-                        <FontText type="body" weight="regular"
-                            className="text-content-primary text-xs capitalize">
-                            {method} - {channel}
-                        </FontText>
-                    )}
-                    <StatusBox status={status} />
-                </View>
-                {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
+                    {/* method and channel */}
+                    <View className="flex-row items-center justify-between">
+                        {method && (
+                            <FontText type="body" weight="regular"
+                                className="text-content-primary text-xs capitalize">
+                                {method} - {channel}
+                            </FontText>
+                        )}
+                        <StatusBox status={status} />
+                    </View>
+                    {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                     {t('To')} {'Account Name'}
                 </FontText> */}
-                <FontText type="body" weight="regular" className="text-content-secondary text-xs mb-2 mt-1">
-                    {/* {type} .  */}
-                    {formatAMPM(createdAt)}
-                </FontText>
-                <View className="flex-row items-center">
-                    {transactionId && (
-                        <FontText type="body" weight="regular"
-                            className="text-content-secondary text-[10px] uppercase mr-1 bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
-                            {transactionId}
-                        </FontText>
-                    )}
-                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
-                        {merchantOrderId}
+                    <FontText type="body" weight="regular" className="text-content-secondary text-xs mb-2 mt-1">
+                        {/* {type} .  */}
+                        {formatAMPM(createdAt)}
                     </FontText>
-                </View>
-                {/* <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
+                    <View className="flex-row items-center">
+                        {transactionId && (
+                            <FontText type="body" weight="regular"
+                                className="text-content-secondary text-[10px] uppercase mr-1 bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                                {transactionId}
+                            </FontText>
+                        )}
+                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                            {merchantOrderId}
+                        </FontText>
+                    </View>
+                    {/* <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
                     <View className="flex-row items-center gap-x-4">
                         <View className="flex-row items-center gap-x-1">
                             <UserIcon size={10} color="#556767"/>
@@ -139,7 +138,8 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                         </FontText>
                     </View>
                 </View> */}
-            </Pressable>
+                </View>
+            </PressableScale>
         </Link>
     )
 }

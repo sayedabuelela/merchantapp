@@ -113,12 +113,12 @@ const usePermissions = (roles: IActions, merchantId = '', creatorId = '') => {
         return {
 
             // Payment Requests Permissions
-            canViewPaymentRequests: canViewModule(roles, EMainActions.PAYMENT_REQUESTS),
-            canCreatePaymentRequests: checkRules('', roles, EMainActions.PAYMENT_REQUESTS, ["create_pr"]),
-            canViewPaymentRequestDetails: checkRules(merchantId, roles, EMainActions.PAYMENT_REQUESTS, ["view_share_pr"], creatorId),
-            canEditPaymentRequests: checkRules(merchantId, roles, EMainActions.PAYMENT_REQUESTS, ["edit_pr"], creatorId),
-            canDeletePaymentRequests: checkRules(merchantId, roles, EMainActions.PAYMENT_REQUESTS, ["delete_pr"], creatorId),
-            canCancelPaymentRequests: checkRules(merchantId, roles, EMainActions.PAYMENT_REQUESTS, ["cancel_pr"], creatorId),
+            canViewPaymentLinks: canViewModule(roles, EMainActions.PAYMENT_REQUESTS),
+            canCreatePaymentLinks: checkRules('', roles, EMainActions.PAYMENT_REQUESTS, ["create_pr"]),
+            canViewPaymentLinkDetails: checkRules(merchantId, roles, EMainActions.PAYMENT_REQUESTS, ["view_share_pr"], creatorId),
+            canEditPaymentLink: checkRules(merchantId, roles, EMainActions.PAYMENT_REQUESTS, ["edit_pr"], creatorId),
+            canDeletePaymentLink: checkRules(merchantId, roles, EMainActions.PAYMENT_REQUESTS, ["delete_pr"], creatorId),
+            canCancelPaymentLink: checkRules(merchantId, roles, EMainActions.PAYMENT_REQUESTS, ["cancel_pr"], creatorId),
 
             // Transactions Permissions
             canViewTransactions: checkRules('', roles, EMainActions.TRANSACTION, ["view_tr"]),

@@ -18,11 +18,12 @@ export const createDateObject = (date: Date) => ({
 });
 
 export const formatDateRange = (from: Date | undefined, to: Date | undefined, t: any): string => {
+    const locale = isRTL ? "ar-EG" : "en-US";
     if (from && to) {
-        return `${from.toLocaleDateString()} - ${to.toLocaleDateString()}`;
+        return `${from.toLocaleDateString(locale)} - ${to.toLocaleDateString(locale)}`;
     }
     if (from) {
-        return from.toLocaleDateString();
+        return from.toLocaleDateString(locale);
     }
     return t('Select a date range...');
 };
@@ -98,10 +99,11 @@ const getOrdinalSuffix = (day: number) => {
 
 
 export const formatDateByLocale = (date: Date) => {
+    const locale = isRTL ? "ar-EG" : "en-US";
     const day = date.getDate();
     const suffix = isRTL ? "" : getOrdinalSuffix(day);
 
-    return date.toLocaleDateString(isRTL ? "ar-EG" : "en-US", {
+    return date.toLocaleDateString(locale, {
         month: "long",
     }) + ` ${day}${suffix}, ${date.getFullYear()}`;
 };

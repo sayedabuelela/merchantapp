@@ -27,6 +27,8 @@ import { useOrderActionsVM } from '../viewmodels/useOrderActionsVM';
 import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
 import DetailsSkeleton from '../components/DetailsSkeleton';
 import { ArrowUturnDownIcon, ArrowUturnLeftIcon, XMarkIcon } from 'react-native-heroicons/outline';
+import usePermissions from '../../auth/hooks/usePermissions';
+import { selectUser, useAuthStore } from '../../auth/auth.store';
 
 // Sticky tab threshold offset
 const STICKY_TAB_OFFSET = 10;
@@ -38,7 +40,8 @@ const OrderDetailsScreen = () => {
     const [activeTab, setActiveTab] = useState<OrderDetailsTabType>('details');
     const [isTabsSticky, setIsTabsSticky] = useState(false);
     const [summaryHeight, setSummaryHeight] = useState(0);
-
+    const user = useAuthStore(selectUser);
+    const { canRefundTransactions } = usePermissions(user?.actions || {});
     // Action modals state
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
@@ -233,12 +236,13 @@ const OrderDetailsScreen = () => {
                 )}
 
                 {/* Fixed Bottom Action Buttons */}
-                {showActionButtons && (
+                {canRefundTransactions && showActionButtons && (
                     //      <BlurView 
                     //      intensity={100} 
                     //      tint="light"
                     //      className="absolute bottom-0 left-0 right-0 px-4 py-4 border-t border-stroke-divider"
                     //  >
+                 
                     <View className="p-4 border-t border-stroke-divider bg-white">
                         <View className="flex-row gap-x-3">
                             {canVoid && (

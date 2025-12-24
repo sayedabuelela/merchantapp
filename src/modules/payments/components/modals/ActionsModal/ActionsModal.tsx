@@ -19,6 +19,9 @@ import CaptureConfirmation from '../CaptureConfirmation';
 import VoidConfirmationTransaction from '../VoidConfirmationTransaction';
 import RefundConfirmationTransaction from '../RefundConfirmationTransaction';
 import CaptureConfirmationTransaction from '../CaptureConfirmationTransaction';
+import usePermissions from '@/src/modules/auth/hooks/usePermissions';
+import { useAuthStore } from '@/src/modules/auth/auth.store';
+import { selectUser } from '@/src/modules/auth/auth.store';
 
 interface Props {
     isVisible: boolean;
@@ -38,7 +41,10 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
     const [showCaptureModal, setShowCaptureModal] = useState(false);
-
+    const user = useAuthStore(selectUser);
+    const currentMerchantId = user?.merchantId;
+    const { canRefundTransactions } = usePermissions(user?.actions || {});
+    console.log('canRefundTransactions', canRefundTransactions);
     // Extract orderId from payment data
     const orderId = type === 'order'
         ? (payment as PaymentSession).orderId
@@ -313,7 +319,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                                         title={t("Details")}
                                         onPress={handleNavigateDetails}
                                     />
-                                    {canVoid && orderId && (
+                                    {canRefundTransactions &&canVoid && orderId && (
                                         <ActionItem
                                             icon={<XMarkIcon size={24} color="#D32F2F" />}
                                             title={t("Void")}
@@ -322,7 +328,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                                             variant="danger"
                                         />
                                     )}
-                                    {canRefund && orderId && (
+                                    {canRefundTransactions && canRefund && orderId && (
                                         <ActionItem
                                             icon={<ArrowUturnLeftIcon size={24} color="#D32F2F" />}
                                             title={t("Refund")}
@@ -331,7 +337,7 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                                             variant="danger"
                                         />
                                     )}
-                                    {canCapture && orderId && (
+                                    {canRefundTransactions && canCapture && orderId && (
                                         <ActionItem
                                             icon={<CheckCircleIcon size={24} color="#001F5F" />}
                                             title={t("Capture")}
