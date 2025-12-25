@@ -279,7 +279,6 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                                 tint="dark"
                                 style={{ flex: 1 }}
                             >
-
                                 <Pressable style={{ flex: 1 }} onPress={handleClose} />
                             </BlurView>
                         </MotiView>

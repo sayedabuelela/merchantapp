@@ -41,7 +41,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 : data.messages.en || 'Transaction voided successfully';
 
             toast.success(title, {
-                style: { backgroundColor: '#F3FFF4' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#F3FFF4',
+                    borderWidth: 0
+                },
                 description: message,
             });
         },
@@ -61,7 +65,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 ? 'فشل الإلغاء'
                 : 'Failed Void';
             toast.error(title, {
-                style: { backgroundColor: '#FFEAED' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#FFEAED',
+                    borderWidth: 0
+                },
                 description: errorMessage,
             });
         },
@@ -89,7 +97,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 ? 'نجاح الاسترداد'
                 : 'Successful Refund';
             toast.success(title, {
-                style: { backgroundColor: '#F3FFF4' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#F3FFF4',
+                    borderWidth: 0
+                },
                 description: message,
             });
         },
@@ -101,7 +113,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 ? 'فشل الاسترداد'
                 : 'Failed Refund';
             toast.error(title, {
-                style: { backgroundColor: '#FFEAED' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#FFEAED',
+                    borderWidth: 0
+                },
                 description: errorMessage,
             });
         },
@@ -141,7 +157,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 ? 'نجاح التحصيل'
                 : 'Successful Capture';
             toast.success(title, {
-                style: { backgroundColor: '#F3FFF4' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#F3FFF4',
+                    borderWidth: 0
+                },
                 description: message,
             });
             // showToast({
@@ -159,7 +179,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 ? 'فشل التحصيل'
                 : 'Failed Capture';
             toast.error(title, {
-                style: { backgroundColor: '#FFEAED' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#FFEAED',
+                    borderWidth: 0
+                },
                 description: errorMessage,
             });
             // showToast({
@@ -185,7 +209,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 ? 'نجاح الإرسال'
                 : 'Successful OTP Send';
             toast.success(title, {
-                style: { backgroundColor: '#F3FFF4' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#F3FFF4',
+                    borderWidth: 0
+                },
                 description: message,
             });
         },
@@ -197,7 +225,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 ? 'فشل الإرسال'
                 : 'Failed OTP Send';
             toast.error(title, {
-                style: { backgroundColor: '#FFEAED' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#FFEAED',
+                    borderWidth: 0
+                },
                 description: errorMessage,
             });
         },
@@ -224,7 +256,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 ? 'نجاح الاسترداد'
                 : 'Successful Refund';
             toast.success(title, {
-                style: { backgroundColor: '#F3FFF4' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#F3FFF4',
+                    borderWidth: 0
+                },
                 description: message,
             });
         },
@@ -242,7 +278,11 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 ? 'فشل الاسترداد'
                 : 'Failed Refund';
             toast.error(title, {
-                style: { backgroundColor: '#FFEAED' },
+                richColors: true,
+                style: {
+                    // backgroundColor: '#FFEAED',
+                    borderWidth: 0
+                },
                 description: errorMessage,
             });
             // showToast({

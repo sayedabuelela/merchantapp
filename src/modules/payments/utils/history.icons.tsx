@@ -5,7 +5,11 @@ import {
     AmanSettlementIcon,
     BasataSettlementIcon,
     SouhoolaSettlementIcon,
-    RefundSettlementIcon
+    RefundSettlementIcon,
+    ContactHistoryIcon,
+    ValuHistoryIcon,
+    AmanHistoryIcon,
+    SouhoolaHistoryIcon
 } from "@/src/shared/assets/svgs";
 import { OrderDetailHistoryItem, RelatedTransaction } from "@/src/modules/payments/payments.model";
 
@@ -31,11 +35,11 @@ export const ICONS = {
     ENVELOPE: <EnvelopeIcon size={16} color={COLORS.ICON_GRAY} />,
     BANKNOTES: <BanknotesIcon size={16} color={COLORS.ICON_GRAY} />,
     REFUND: <RefundSettlementIcon />,
-    VALU: <ValuSettlementIcon />,
-    AMAN: <AmanSettlementIcon />,
+    VALU: <ValuHistoryIcon />,
+    AMAN: <AmanHistoryIcon />,
     BASATA: <BasataSettlementIcon />,
-    SOUHOOLA: <SouhoolaSettlementIcon />,
-    CONTACT: <ContactSettlementIcon />,
+    SOUHOOLA: <SouhoolaHistoryIcon />,
+    CONTACT: <ContactHistoryIcon />,
     ABANDONED: <ShoppingCartIcon size={16} color={COLORS.ICON_WHITE} />,
 } as const;
 
@@ -74,7 +78,9 @@ const PAYMENT_METHOD_ICONS: Record<string, HistoryIconData> = {
 const getPaymentMethodIcon = (item: OrderDetailHistoryItem): HistoryIconData | null => {
     const method = item.method?.toLowerCase();
     const provider = item.provider?.toLowerCase();
-
+    console.log('method : ',method);
+    console.log('provider : ',provider);
+    
     return PAYMENT_METHOD_ICONS[method || ''] || PAYMENT_METHOD_ICONS[provider || ''] || null;
 };
 

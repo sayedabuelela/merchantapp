@@ -15,6 +15,7 @@ import DateRangePickerBottomSheet, { DateRangePickerRef } from "../../../../../s
 import { DateRangeSelector } from "../../../../../shared/components/bottom-sheets/date-range/DateRangeSelector";
 import { FetchPaymentLinksParams } from "../../../payment-links.model";
 import GeneralModalHeader from "@/src/shared/components/GeneralModal/GeneralModalHeader";
+import { BlurView } from "expo-blur";
 
 interface FiltersModalProps {
   isVisible: boolean;
@@ -141,7 +142,13 @@ const FiltersModal = ({ isVisible, onClose, filters, setFilters }: FiltersModalP
                 transition={{ type: 'timing', duration: 300 }}
                 className="absolute inset-0 bg-content-secondary/30"
               >
-                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                <BlurView
+                  intensity={30}
+                  tint="dark"
+                  style={{ flex: 1 }}
+                >
+                  <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                </BlurView>
               </MotiView>
 
               <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>
@@ -174,7 +181,7 @@ const FiltersModal = ({ isVisible, onClose, filters, setFilters }: FiltersModalP
 
                   {/* Amount Range */}
                   <View className="mb-6">
-                    <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label,'text-content-secondary')}>
+                    <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label, 'text-content-secondary')}>
                       {t('Amount')}
                     </FontText>
                     <View className="flex-row items-center justify-between">

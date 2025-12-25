@@ -69,7 +69,7 @@ const PaymentsScreen = () => {
     }, [status]);
 
     const hasActiveFilters = useMemo(() => {
-        const filterKeysToIgnore = ['page', 'limit', 'search', 'sortType', 'sortBy'];
+        const filterKeysToIgnore = ['page', 'limit', 'search', 'q', 'sortType', 'sortBy'];
         return Object.entries(activeFilters).some(([key, value]) => {
             if (filterKeysToIgnore.includes(key)) return false;
             return value !== undefined && value !== '';
@@ -79,7 +79,7 @@ const PaymentsScreen = () => {
     // Fetch Orders (Sessions)
     const ordersQuery = useOrdersVM({
         ...ordersFilters,
-        search,
+        q: search,
     });
 
     // Fetch Transactions
@@ -119,7 +119,7 @@ const PaymentsScreen = () => {
 
         // Calculate the actual item index (excluding headers)
         const itemsBefore = listData.slice(0, index).filter(i => i.type !== 'header').length;
-        
+
         if (isOrdersTab) {
             return (
                 <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>

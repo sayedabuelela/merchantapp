@@ -16,6 +16,7 @@ import 'react-native-reanimated';
 import { Toaster } from 'sonner-native';
 import "../global.css";
 import { ToastProvider } from '@/src/core/providers/ToastProvider';
+import { Dimensions } from 'react-native';
 if (__DEV__) {
   require("../ReactotronConfig");
 }
@@ -80,7 +81,6 @@ export default function RootLayout() {
               <KeyboardProvider>
                 <StatusBar style="dark" backgroundColor='#ffffff' />
                 <AppContent />
-
               </KeyboardProvider>
             </ToastProvider>
           </NotificationProvider>

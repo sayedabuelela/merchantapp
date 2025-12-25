@@ -15,7 +15,7 @@ const HistoryCard = ({ historyItem }: HistoryCardProps) => {
     const description = getHistoryDescription(historyItem, t);
     const formattedDate = formatHistoryDate(historyItem.date);
     const { icon, backgroundColor } = getHistoryIcon(historyItem);
-
+    console.log('icon : ', icon);
     // Build the header with date and optional transaction ID
     const header = historyItem.transactionId
         ? `${formattedDate} • ${historyItem.transactionId}`

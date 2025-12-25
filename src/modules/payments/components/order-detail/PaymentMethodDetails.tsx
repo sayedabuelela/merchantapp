@@ -21,7 +21,6 @@ interface PaymentMethodDetailsProps {
  * based on the payment type (Card, VALU, Wallet, Cash)
  */
 export const PaymentMethodDetails = ({ method, sourceOfFunds, paymentChannel }: PaymentMethodDetailsProps) => {
-    console.log('sourceOfFunds', sourceOfFunds);
 
     if (!sourceOfFunds) return null;
 

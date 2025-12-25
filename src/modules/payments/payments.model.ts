@@ -85,7 +85,7 @@ export interface FetchSessionsParams {
     dateTo?: string; // ISO date string (YYYY-MM-DD)
     sortType?: SortType;
     channel?: Channel;
-    search?: string;
+    q?: string;
     filterStatus?: boolean;
     status?: SessionStatus;
     method?: string;

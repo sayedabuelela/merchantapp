@@ -22,6 +22,7 @@ import {
 import { useApi } from "@/src/core/api/clients.hooks";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBranches, fetchDiscounts } from "../payments.services";
+import { BlurView } from "expo-blur";
 
 interface PaymentFilterModalProps {
     isVisible: boolean;
@@ -301,7 +302,13 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                             transition={{ type: 'timing', duration: 300 }}
                             className="absolute inset-0 bg-content-secondary/30"
                         >
-                            <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            <BlurView
+                                intensity={30}
+                                tint="dark"
+                                style={{ flex: 1 }}
+                            >
+                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            </BlurView>
                         </MotiView>
 
                         <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>

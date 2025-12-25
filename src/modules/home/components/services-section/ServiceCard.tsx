@@ -30,7 +30,7 @@ const ServiceCard = ({ title, description, href, icon, onPress, comingSoon }: Se
             }}
         >
             {comingSoon &&
-                <View className={cn('absolute top-[15px] right-[-25px]', isRTL ? 'rotate-[-45deg]' : 'rotate-[45deg]')}>
+                <View className={cn('absolute top-[17px] right-[-28px]', isRTL ? 'rotate-[-45deg]' : 'rotate-[45deg]')}>
                     <ScaleFadeIn delay={400} duration={1000}>
                         <ComingSoonBadge />
                     </ScaleFadeIn>

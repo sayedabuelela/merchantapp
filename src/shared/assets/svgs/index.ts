@@ -51,4 +51,7 @@ export { default as RefundSettlementIcon } from './files/settlement-types/refund
 export { default as POSIcon } from './files/banks/pos-icon.svg';
 export { default as PaymentsEmptyListIcon } from './files/payments/payments-empyt-list-icon.svg';
 export { default as POSServiceIcon } from './files/services/pos-service-icon.svg';
-
+export { default as ContactHistoryIcon } from './files/history-icons/contact-history-icon.svg';
+export { default as ValuHistoryIcon } from './files/history-icons/valu-history-icon.svg';
+export { default as AmanHistoryIcon } from './files/history-icons/aman-history-icon.svg';
+export { default as SouhoolaHistoryIcon } from './files/history-icons/souhoola-history-icon.svg';

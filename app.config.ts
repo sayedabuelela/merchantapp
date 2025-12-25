@@ -95,6 +95,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: './src/shared/assets/images/app-icon.png',
   },
   plugins: [
+    [
+      "expo-web-browser"
+    ],
     'expo-router',
     [
       'expo-splash-screen',

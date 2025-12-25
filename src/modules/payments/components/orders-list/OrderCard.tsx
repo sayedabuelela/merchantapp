@@ -35,46 +35,46 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
     return (
         <Link href={`/payments/${_id}`} asChild>
             <PressableScale onLongPress={handleLongPress}>
-                <View className="border-[1.5px] rounded border-tertiary p-4 mb-2 gap-y-1">
+                <View className="border-[1.5px] rounded border-tertiary p-4 mb-2 ">
                     <View className="flex-row items-center justify-between mb-1">
-                        <View className="flex-row items-center gap-x-2">
+                        {/* <View className="flex-row items-center gap-x-2">
                             <IconBox className={cn(isPaid ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
                                 {isPaid ? (
                                     <ArrowSmallDownIcon size={10} color={'#1A541D'} />
                                 ) : (
-                                <ArrowSmallUpIcon size={10} color={'#A50017'} />
+                                    <ArrowSmallUpIcon size={10} color={'#A50017'} />
                                 )}
                             </IconBox>
-                            <StatusBox status={status} />
-                            {targetTransactionId && (
+                        </View> */}
+                        {method && (
+                            <FontText type="body" weight="regular" className="text-content-primary text-xs ">
                                 <FontText type="body" weight="regular"
-                                    className="text-content-secondary text-[10px] uppercase">
-                                    {targetTransactionId}
+                                    className="text-content-primary text-xs capitalize">
+                                    {method}
                                 </FontText>
-                            )}
-                        </View>
+                                {' - '}{(paymentParams.interactionSource === 'ECOMMERCE' || paymentParams.interactionSource === undefined) ? 'Online' : paymentParams.interactionSource}
+                            </FontText>
+                        )}
                         <FontText type="body" weight="bold"
-                            className={cn("text-content-primary text-sm")}>
+                            className={cn("text-content-primary text-sm", !method && 'ml-auto')}>
                             {currencyNumber(paymentParams.amount)} {t(paymentParams.currency)}
                         </FontText>
                     </View>
-                    {/* method and channel */}
-                    {method && (
-                        <FontText type="body" weight="regular" className="text-content-primary text-xs ">
-                            <FontText type="body" weight="regular"
-                                className="text-content-primary text-xs capitalize">
-                                {method}
-                            </FontText>
-                            {' - '}{(paymentParams.interactionSource === 'ECOMMERCE' || paymentParams.interactionSource === undefined) ? 'Online' : paymentParams.interactionSource}
+                    <View className="flex-row items-center justify-between">
+                        <FontText type="body" weight="regular" className="text-content-secondary text-xs">
+                            {formatAMPM(createdAt)}
                         </FontText>
-                    )}
-                    {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                    {t('To')} {'Account Name'}
-                </FontText> */}
-                    <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                        {formatAMPM(createdAt)}
-                    </FontText>
-                    <View className="flex-row items-center">
+                        <StatusBox status={status} />
+                    </View>
+
+                    <View className="flex-row items-center gap-x-1 mt-2">
+                        {targetTransactionId && (
+                            <FontText type="body" weight="regular"
+                                className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary"
+                            >
+                                {targetTransactionId}
+                            </FontText>
+                        )}
                         <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
                             {paymentParams.order}
                         </FontText>

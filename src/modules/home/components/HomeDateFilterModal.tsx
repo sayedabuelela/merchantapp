@@ -12,6 +12,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { KeyboardController } from "react-native-keyboard-controller";
 import { DateFilterType, HomeDateFilters } from "../home.model";
 import { getDateRangeForFilter } from "../utils/dateFilterHelpers";
+import { BlurView } from "expo-blur";
 
 interface HomeDateFilterModalProps {
     isVisible: boolean;
@@ -135,7 +136,13 @@ const HomeDateFilterModal = ({ isVisible, onClose, filters, setFilters }: HomeDa
                             transition={{ type: 'timing', duration: 300 }}
                             className="absolute inset-0 bg-content-secondary/30"
                         >
-                            <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            <BlurView
+                                intensity={30}
+                                tint="dark"
+                                style={{ flex: 1 }}
+                            >
+                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            </BlurView>
                         </MotiView>
 
                         <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>

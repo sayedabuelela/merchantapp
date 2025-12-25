@@ -38,7 +38,7 @@ export const fetchPaymentSessions = async (
         dateTo,
         sortType = -1,
         channel = 'all',
-        search,
+        q,
         filterStatus,
         status,
         method,
@@ -55,7 +55,7 @@ export const fetchPaymentSessions = async (
 
     if (dateFrom) queryParams.dateFrom = dateFrom;
     if (dateTo) queryParams.dateTo = dateTo;
-    if (search) queryParams.search = search;
+    if (q) queryParams.q = q;
     if (filterStatus !== undefined) queryParams.filterStatus = filterStatus;
     if (status) queryParams.status = status;
     if (method) queryParams.method = method;

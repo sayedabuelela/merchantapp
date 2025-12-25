@@ -71,8 +71,10 @@ const ActivityCard = ({
         'transfer',
         'refund',
         'deduct',
+        'deduct (-ve)',
         'hold',
-        'rate adjustment'
+        'rate adjustment',
+        'rate adjustment (-ve)'
     ];
 
     const isOutOperation = outOperations.includes(operation.toLowerCase());

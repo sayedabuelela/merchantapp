@@ -1,73 +1,73 @@
 import { cn } from "@/src/core/utils/cn";
 import { FontType, FontWeight, getFontClass } from "@/src/core/utils/fonts";
-import React from 'react';
-import { Text, TextProps } from 'react-native';
-
+import React, { useMemo } from 'react';
+import { Text, TextProps, StyleProp, TextStyle } from 'react-native';
+import { Dimensions } from 'react-native';
 
 interface FontTextProps extends TextProps {
     type?: FontType;
     weight?: FontWeight;
     className?: string;
     children: React.ReactNode;
+    style?: StyleProp<TextStyle>;
 }
+const FONT_SIZE_MAP: Record<string, number> = {
+    'text-xxs': 10,
+    'text-xs': 12,
+    'text-sm': 14,
+    'text-base': 16,
+    'text-lg': 18,
+    'text-xl': 20,
+    'text-2xl': 24,
+    'text-3xl': 30,
+    'text-4xl': 36,
+};
 
-// Tailwind font size mapping (in points)
-// const FONT_SIZE_MAP: Record<string, number> = {
-//     'text-xs': 12,
-//     'text-sm': 14,
-//     'text-base': 16,
-//     'text-lg': 18,
-//     'text-xl': 20,
-//     'text-2xl': 24,
-//     'text-3xl': 30,
-//     'text-4xl': 36,
-//     'text-5xl': 48,
-//     'text-6xl': 60,
-//     'text-xxs': 10,
-// };
+const getResponsiveScale = (): number => {
+    const { width } = Dimensions.get('window');
 
-// /**
-//  * Extracts font size class from className string
-//  */
-// const extractFontSizeFromClassName = (className?: string): number | null => {
-//     if (!className) return null;
+    if (width <= 380) return 1.0;      // Small phones - no scaling
+    if (width <= 400) return 1.05;     // Medium phones - slight scaling
+    if (width <= 430) return 1.1;      // iPhone Pro Max - 10% larger
+    return 1.125;                       // Extra large devices
+};
 
-//     // Check for font size classes in className
-//     for (const [sizeClass, fontSize] of Object.entries(FONT_SIZE_MAP)) {
-//         // Match whole word to avoid matching "text-xs" in "text-xs-something"
-//         const regex = new RegExp(`\\b${sizeClass}\\b`);
-//         if (regex.test(className)) {
-//             return fontSize;
-//         }
-//     }
+const RESPONSIVE_SCALE = getResponsiveScale();
+const extractAndScaleFontSize = (className?: string): number | undefined => {
+    if (!className) return undefined;
 
-//     return null;
-// };
+    for (const [sizeClass, baseFontSize] of Object.entries(FONT_SIZE_MAP)) {
+        const regex = new RegExp(`\\b${sizeClass}\\b`);
+        if (regex.test(className)) {
+            return Math.round(baseFontSize * RESPONSIVE_SCALE);
+        }
+    }
 
+    return undefined;
+};
 const FontText = ({
     type = 'body',
     weight = 'regular',
     className,
     children,
+    style,
     ...rest
 }: FontTextProps) => {
-    // Extract and scale fontSize from className
-    // const scaledFontSize = useMemo(() => {
-    //     const baseFontSize = extractFontSizeFromClassName(className);
-    //     if (baseFontSize) {
-    //         return normalizeFontSize(baseFontSize);
-    //     }
-    //     return undefined;
-    // }, [className]);
+    const scaledFontSize = useMemo(
+        () => extractAndScaleFontSize(className),
+        [className]
+    );
 
-    // // Apply scaled fontSize via style prop (overrides className fontSize)
-    // const textStyle = scaledFontSize
-    //     ? { fontSize: scaledFontSize }
-    //     : undefined;
+    const mergedStyle = useMemo(
+        () => (scaledFontSize ? [{ fontSize: scaledFontSize }, style] : style),
+        [scaledFontSize, style]
+    );
     return (
         <Text
             className={cn(getFontClass(type, weight), className)}
-            {...rest}>
+            style={mergedStyle}
+            {...rest}
+        >
             {children}
         </Text>
     );

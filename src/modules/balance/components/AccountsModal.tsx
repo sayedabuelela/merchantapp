@@ -8,6 +8,7 @@ import { KeyboardController } from 'react-native-keyboard-controller';
 import AccountsList from './header/AccountsList';
 import { Account } from '../balance.model';
 import { useBalanceStore, selectActiveAccount, selectSetActiveAccount } from '../balance.store';
+import { BlurView } from 'expo-blur';
 
 interface Props {
     isVisible: boolean;
@@ -62,7 +63,13 @@ const AccountsModal = ({ isVisible, onClose, accounts }: Props) => {
                                 transition={{ type: 'timing', duration: 300 }}
                                 className="absolute inset-0 bg-content-secondary/30"
                             >
-                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                <BlurView
+                                    intensity={15}
+                                    tint="dark"
+                                    style={{ flex: 1 }}
+                                >
+                                    <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                </BlurView>
                             </MotiView>
 
                             <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>

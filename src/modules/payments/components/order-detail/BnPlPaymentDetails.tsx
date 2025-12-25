@@ -64,10 +64,9 @@ const getMethodIcon = (method: PaymentMethod) => {
 export const BnPlPaymentDetails = ({ method, sourceOfFunds, paymentChannel }: BnPlPaymentDetailsProps) => {
     const { t } = useTranslation();
     const payerInfo = sourceOfFunds.payerInfo;
-    console.log('sourceOfFunds : ', sourceOfFunds);
     if (!payerInfo) return null;
     // Normalize method to lowercase for consistent comparison
-    const normalizedMethod = method.toLowerCase() as PaymentMethod;
+    const normalizedMethod = method?.toLowerCase() as PaymentMethod;
 
     const referenceNumber = getReferenceNumber(normalizedMethod, payerInfo);
     const phoneNumber = getPhoneNumber(normalizedMethod, payerInfo);
