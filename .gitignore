@@ -129,7 +129,8 @@ google-services.json
 
 # Android memory profiler files
 *.hprof
-
+# APK files
+*.apk
 # ===================================================
 # 🔹 Buck (Build System)
 # ===================================================
