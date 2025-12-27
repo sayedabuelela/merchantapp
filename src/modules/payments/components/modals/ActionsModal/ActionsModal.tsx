@@ -275,9 +275,10 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
                             className="absolute inset-0 bg-content-secondary/30"
                         >
                             <BlurView
-                                intensity={20}
+                                intensity={15}
                                 tint="dark"
                                 style={{ flex: 1 }}
+                                experimentalBlurMethod="dimezisBlurView"
                             >
                                 <Pressable style={{ flex: 1 }} onPress={handleClose} />
                             </BlurView>

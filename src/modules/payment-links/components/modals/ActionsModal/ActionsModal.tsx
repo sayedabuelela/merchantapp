@@ -416,7 +416,6 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
                                 >
                                     <Pressable style={{ flex: 1 }} onPress={handleClose} />
                                 </BlurView>
-                                {/* <Pressable style={{ flex: 1 }} onPress={handleClose} /> */}
                             </MotiView>
 
                             <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>

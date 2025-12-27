@@ -5,6 +5,7 @@ import { KeyboardAvoidingView, KeyboardController } from 'react-native-keyboard-
 import { XMarkIcon } from 'react-native-heroicons/outline';
 import FontText from '../FontText';
 import GeneralModalHeader from '../GeneralModal/GeneralModalHeader';
+import { BlurView } from 'expo-blur';
 
 interface ConfirmationModalProps {
     isVisible: boolean;
@@ -58,7 +59,14 @@ const ConfirmationModal = ({ isVisible, onClose, title, children }: Confirmation
                                 transition={{ type: 'timing', duration: 300 }}
                                 className="absolute inset-0 bg-content-secondary/30"
                             >
-                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                <BlurView
+                                    intensity={15}
+                                    tint="dark"
+                                    style={{ flex: 1 }}
+                                    experimentalBlurMethod="dimezisBlurView"
+                                >
+                                    <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                </BlurView>
                             </MotiView>
 
                             {/* Modal Content */}

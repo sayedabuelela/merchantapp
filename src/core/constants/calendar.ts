@@ -13,6 +13,12 @@ export const CALENDAR_THEME = {
     textDayHeaderFontSize: 15,
     textSectionTitleDisabledColor: "#001F5F",
     arrowColor: "#254177",
+    todayTextColor: "#001F5F",
+    todayBackgroundColor: "#E8F0FE",
+    // selectedTextColor: "#fffff",
+    todaySelectedTextColor: "#254177",
+    todaySelectedBackgroundColor: "#254177",
+    // selectedBackgroundColor: "#E8F0FE",
 };
 export const ARABIC_LOCALE = {
     monthNames: [

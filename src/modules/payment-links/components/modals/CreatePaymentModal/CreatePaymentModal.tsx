@@ -8,6 +8,7 @@ import { Modal, Pressable, TouchableOpacity, View } from 'react-native';
 import { XMarkIcon } from 'react-native-heroicons/outline';
 import PaymentLinkOptionItem from './PaymentLinkOptionItem';
 import GeneralModalHeader from '@/src/shared/components/GeneralModal/GeneralModalHeader';
+import { BlurView } from 'expo-blur';
 interface CreatePaymentModalProps {
     isVisible: boolean;
     onClose: () => void;
@@ -49,7 +50,14 @@ const CreatePaymentModal = ({ isVisible, onClose, qrCode }: CreatePaymentModalPr
                             transition={{ duration: 300 }}
                             className="absolute inset-0 bg-content-secondary/30"
                         >
-                            <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            <BlurView
+                                intensity={15}
+                                tint="dark"
+                                style={{ flex: 1 }}
+                                experimentalBlurMethod="dimezisBlurView"
+                            >
+                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            </BlurView>
                         </MotiView>
 
                         <MotiView
@@ -95,7 +103,7 @@ const CreatePaymentModal = ({ isVisible, onClose, qrCode }: CreatePaymentModalPr
                             <Link
                                 href={{
                                     pathname: "/payment-links/create-step1",
-                                    params: { paymentType: selectedOption, qrCode },
+                                    params: { paymentType: selectedOption, qrCode: qrCode ? 'true' : 'false' },
                                 }}
                                 asChild disabled={selectedOption === ''}>
                                 <Button title={t('New payment link')} disabled={selectedOption === ''} onPress={handleClose} className="mt-8" />

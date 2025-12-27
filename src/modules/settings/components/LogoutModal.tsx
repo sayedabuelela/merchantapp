@@ -1,5 +1,6 @@
 import Button from '@/src/shared/components/Buttons/Button';
 import FontText from '@/src/shared/components/FontText';
+import { BlurView } from 'expo-blur';
 import { t } from 'i18next';
 import { AnimatePresence, MotiView } from 'moti';
 import React, { useEffect, useState } from 'react';
@@ -49,7 +50,14 @@ const LogoutModal = ({ isVisible, onClose, onLogout }: Props) => {
                                 transition={{ type: 'timing', duration: 300 }}
                                 className="absolute inset-0 bg-content-secondary/30"
                             >
-                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                <BlurView
+                                    intensity={15}
+                                    tint="dark"
+                                    style={{ flex: 1 }}
+                                    experimentalBlurMethod="dimezisBlurView"
+                                >
+                                    <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                </BlurView>
                             </MotiView>
 
                             <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>

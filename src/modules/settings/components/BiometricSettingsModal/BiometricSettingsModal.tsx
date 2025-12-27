@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, View } from 'react-native';
 import BiometricHeader from './BiometricHeader';
 import { selectIsEnabled, useBiometricStore } from '@/src/modules/auth/biometric/biometric.store';
+import { BlurView } from 'expo-blur';
 
 interface Props {
     isVisible: boolean;
@@ -43,7 +44,7 @@ const BiometricSettingsModal = ({ isVisible, onClose, handleEnableBiometric, han
         handleDisableBiometric();
         handleClose();
     }
-console.log('isBiometricEnabled : ', isBiometricEnabled);
+    console.log('isBiometricEnabled : ', isBiometricEnabled);
     return (
         <Modal
             transparent
@@ -66,7 +67,14 @@ console.log('isBiometricEnabled : ', isBiometricEnabled);
                             transition={{ type: 'timing', duration: 300 }}
                             className="absolute inset-0 bg-content-secondary/30"
                         >
-                            <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            <BlurView
+                                intensity={15}
+                                tint="dark"
+                                style={{ flex: 1 }}
+                                experimentalBlurMethod="dimezisBlurView"
+                            >
+                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                            </BlurView>
                         </MotiView>
 
                         <MotiView

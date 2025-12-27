@@ -61,6 +61,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
     const [transactionType, setTransactionType] = useState<string | null | undefined>(null);
     const [discount, setDiscount] = useState<string | null | undefined>(null);
     const [posBranch, setPosBranch] = useState<string | null | undefined>(null);
+    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
     const paymentDateRef = useRef<DateRangePickerRef>(null);
 
@@ -270,6 +271,15 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
         }
     }, [isOrdersTab, setFilters]);
 
+    const handleOpenPaymentDatePicker = useCallback(() => {
+        setIsDatePickerOpen(true);
+        paymentDateRef.current?.expand();
+    }, []);
+
+    const handleDatePickerClose = useCallback(() => {
+        setIsDatePickerOpen(false);
+    }, []);
+
     const isDisabled = !paymentDate?.from && !paymentDate?.to &&
         (channel === null || channel === undefined) &&
         (status === null || status === undefined) &&
@@ -303,9 +313,10 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                             className="absolute inset-0 bg-content-secondary/30"
                         >
                             <BlurView
-                                intensity={30}
+                                intensity={15}
                                 tint="dark"
                                 style={{ flex: 1 }}
+                                experimentalBlurMethod="dimezisBlurView"
                             >
                                 <Pressable style={{ flex: 1 }} onPress={handleClose} />
                             </BlurView>
@@ -344,89 +355,93 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                         label={t('Payment date')}
                                         from={paymentDate?.from}
                                         to={paymentDate?.to}
-                                        onPress={() => paymentDateRef.current?.expand()}
+                                        onPress={handleOpenPaymentDatePicker}
                                         t={t}
                                         className="mb-3"
                                     />
-                                    {/* Status Dropdown */}
-                                    <DropDownUI
-                                        options={isOrdersTab ? orderStatusOptions : transactionStatusOptions}
-                                        selected={status}
-                                        onChange={setStatus}
-                                        label={t(isOrdersTab ? 'Order Status' : 'Status')}
-                                        placeholder={t(isOrdersTab ? 'Order Status' : 'Status')}
-                                        dropdownKey="status"
-                                        variant="filter"
-                                    />
 
-                                    {/* Payment Method Dropdown */}
-                                    <DropDownUI
-                                        options={paymentMethodOptions}
-                                        selected={method}
-                                        onChange={setMethod}
-                                        label={t('Payment method')}
-                                        placeholder={t('Payment method')}
-                                        dropdownKey="method"
-                                        variant="filter"
-                                    />
-                                    {/* Channel Dropdown */}
-                                    <DropDownUI
-                                        options={channelOptions}
-                                        selected={channel}
-                                        onChange={setChannel}
-                                        label={t('Channel')}
-                                        placeholder={t('Channel')}
-                                        dropdownKey="channel"
-                                        variant="filter"
-                                    />
-                                    {/* Branches Dropdown (Shared) */}
-                                    <DropDownUI
-                                        options={branchOptions}
-                                        selected={isOrdersTab ? branchName : posBranch}
-                                        onChange={isOrdersTab ? setBranchName : setPosBranch}
-                                        label={t('Branch')}
-                                        placeholder={t('Branch')}
-                                        dropdownKey="branch"
-                                        variant="filter"
-                                    />
-
-                                    {/* Orders Only Filters */}
-                                    {isOrdersTab && (
+                                    {/* Dropdowns - disabled when date picker is open (Android fix) */}
+                                    <View pointerEvents={isDatePickerOpen ? 'none' : 'auto'}>
+                                        {/* Status Dropdown */}
                                         <DropDownUI
-                                            options={paymentSourceOptions}
-                                            selected={origin}
-                                            onChange={setOrigin}
-                                            label={t('Payment source')}
-                                            placeholder={t('Payment source')}
-                                            dropdownKey="paymentSource"
+                                            options={isOrdersTab ? orderStatusOptions : transactionStatusOptions}
+                                            selected={status}
+                                            onChange={setStatus}
+                                            label={t(isOrdersTab ? 'Order Status' : 'Status')}
+                                            placeholder={t(isOrdersTab ? 'Order Status' : 'Status')}
+                                            dropdownKey="status"
                                             variant="filter"
                                         />
-                                    )}
 
-                                    {/* Transactions Only Filters */}
-                                    {isTransactionsTab && (
-                                        <>
+                                        {/* Payment Method Dropdown */}
+                                        <DropDownUI
+                                            options={paymentMethodOptions}
+                                            selected={method}
+                                            onChange={setMethod}
+                                            label={t('Payment method')}
+                                            placeholder={t('Payment method')}
+                                            dropdownKey="method"
+                                            variant="filter"
+                                        />
+                                        {/* Channel Dropdown */}
+                                        <DropDownUI
+                                            options={channelOptions}
+                                            selected={channel}
+                                            onChange={setChannel}
+                                            label={t('Channel')}
+                                            placeholder={t('Channel')}
+                                            dropdownKey="channel"
+                                            variant="filter"
+                                        />
+                                        {/* Branches Dropdown (Shared) */}
+                                        <DropDownUI
+                                            options={branchOptions}
+                                            selected={isOrdersTab ? branchName : posBranch}
+                                            onChange={isOrdersTab ? setBranchName : setPosBranch}
+                                            label={t('Branch')}
+                                            placeholder={t('Branch')}
+                                            dropdownKey="branch"
+                                            variant="filter"
+                                        />
+
+                                        {/* Orders Only Filters */}
+                                        {isOrdersTab && (
                                             <DropDownUI
-                                                options={transactionTypeOptions}
-                                                selected={transactionType}
-                                                onChange={setTransactionType}
-                                                label={t('Transaction type')}
-                                                placeholder={t('Transaction type')}
-                                                dropdownKey="transactionType"
+                                                options={paymentSourceOptions}
+                                                selected={origin}
+                                                onChange={setOrigin}
+                                                label={t('Payment source')}
+                                                placeholder={t('Payment source')}
+                                                dropdownKey="paymentSource"
                                                 variant="filter"
                                             />
+                                        )}
 
-                                            <DropDownUI
-                                                options={discountOptions}
-                                                selected={discount}
-                                                onChange={setDiscount}
-                                                label={t('Discount')}
-                                                placeholder={t('Discount')}
-                                                dropdownKey="discount"
-                                                variant="filter"
-                                            />
-                                        </>
-                                    )}
+                                        {/* Transactions Only Filters */}
+                                        {isTransactionsTab && (
+                                            <>
+                                                <DropDownUI
+                                                    options={transactionTypeOptions}
+                                                    selected={transactionType}
+                                                    onChange={setTransactionType}
+                                                    label={t('Transaction type')}
+                                                    placeholder={t('Transaction type')}
+                                                    dropdownKey="transactionType"
+                                                    variant="filter"
+                                                />
+
+                                                <DropDownUI
+                                                    options={discountOptions}
+                                                    selected={discount}
+                                                    onChange={setDiscount}
+                                                    label={t('Discount')}
+                                                    placeholder={t('Discount')}
+                                                    dropdownKey="discount"
+                                                    variant="filter"
+                                                />
+                                            </>
+                                        )}
+                                    </View>
                                 </ScrollView>
 
                                 {/* Action Buttons */}
@@ -453,6 +468,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                             type="paymentDate"
                             savedRange={paymentDate}
                             onDateRangeSelected={(range) => setPaymentDate(range)}
+                            onClose={handleDatePickerClose}
                         />
                     </View>
                 )}

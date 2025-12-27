@@ -39,6 +39,7 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
     const [operation, setOperation] = useState<string | null | undefined>(null);
     const [isReflected, setIsReflected] = useState<boolean | null | undefined>(null);
     const [origin, setOrigin] = useState<string | null | undefined>(null);
+    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
     const valueDateRef = useRef<DateRangePickerRef>(null);
     const entryDateRef = useRef<DateRangePickerRef>(null);
 
@@ -139,6 +140,20 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
         }));
     }, [currentTab, setFilters]);
 
+    const handleOpenEntryDatePicker = useCallback(() => {
+        setIsDatePickerOpen(true);
+        entryDateRef.current?.expand();
+    }, []);
+
+    const handleOpenValueDatePicker = useCallback(() => {
+        setIsDatePickerOpen(true);
+        valueDateRef.current?.expand();
+    }, []);
+
+    const handleDatePickerClose = useCallback(() => {
+        setIsDatePickerOpen(false);
+    }, []);
+
 
     // Button is disabled if no actual filters are selected (null = "All" selected, not a real filter)
     // When activity type dropdown is hidden (payout/transfer tabs), ignore operation in validation
@@ -172,6 +187,7 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
                             <BlurView
                                 intensity={15}
                                 tint="dark"
+                                   experimentalBlurMethod="dimezisBlurView"
                                 style={{ flex: 1 }}
                             >
                                 <Pressable style={{ flex: 1 }} onPress={handleClose} />
@@ -219,7 +235,7 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
                                     label={t('Select entry date range')}
                                     from={entryDate?.from}
                                     to={entryDate?.to}
-                                    onPress={() => entryDateRef.current?.expand()}
+                                    onPress={handleOpenEntryDatePicker}
                                     t={t}
                                 />
 
@@ -227,45 +243,48 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
                                     label={t('Select value date range')}
                                     from={valueDate?.from}
                                     to={valueDate?.to}
-                                    onPress={() => valueDateRef.current?.expand()}
+                                    onPress={handleOpenValueDatePicker}
                                     t={t}
                                 />
 
-                                {/* Only show activity type dropdown for "All Activities" tab */}
-                                {showActivityTypeDropdown && (
+                                {/* Dropdowns - disabled when date picker is open (Android fix) */}
+                                <View pointerEvents={isDatePickerOpen ? 'none' : 'auto'}>
+                                    {/* Only show activity type dropdown for "All Activities" tab */}
+                                    {showActivityTypeDropdown && (
+                                        <DropDownUI
+                                            options={activityTypesFilters}
+                                            selected={operation}
+                                            onChange={setOperation}
+                                            label={t('Activity type')}
+                                            icon={<ArrowsUpDownIcon size={24} color="#556767" />}
+                                            placeholder={t('Activity type')}
+                                            dropdownKey="activity"
+                                            variant="filter"
+                                        />
+                                    )}
+
                                     <DropDownUI
-                                        options={activityTypesFilters}
-                                        selected={operation}
-                                        onChange={setOperation}
-                                        label={t('Activity type')}
-                                        icon={<ArrowsUpDownIcon size={24} color="#556767" />}
-                                        placeholder={t('Activity type')}
-                                        dropdownKey="activity"
+                                        options={statusFilters}
+                                        selected={isReflected}
+                                        onChange={setIsReflected}
+                                        label={t('Activity status')}
+                                        icon={<CheckCircleIcon size={24} color="#556767" />}
+                                        placeholder={t('Activity status')}
+                                        dropdownKey="status"
                                         variant="filter"
                                     />
-                                )}
 
-                                <DropDownUI
-                                    options={statusFilters}
-                                    selected={isReflected}
-                                    onChange={setIsReflected}
-                                    label={t('Activity status')}
-                                    icon={<CheckCircleIcon size={24} color="#556767" />}
-                                    placeholder={t('Activity status')}
-                                    dropdownKey="status"
-                                    variant="filter"
-                                />
-
-                                <DropDownUI
-                                    options={originFilters}
-                                    selected={origin}
-                                    onChange={setOrigin}
-                                    label={t('All origins')}
-                                    icon={<CubeTransparentIcon size={24} color="#556767" />}
-                                    placeholder={t('All origins')}
-                                    dropdownKey="origin"
-                                    variant="filter"
-                                />
+                                    <DropDownUI
+                                        options={originFilters}
+                                        selected={origin}
+                                        onChange={setOrigin}
+                                        label={t('All origins')}
+                                        icon={<CubeTransparentIcon size={24} color="#556767" />}
+                                        placeholder={t('All origins')}
+                                        dropdownKey="origin"
+                                        variant="filter"
+                                    />
+                                </View>
 
                                 {/* Action Buttons */}
                                 <View className="mt-8">
@@ -291,6 +310,7 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
                             type="entryDate"
                             savedRange={entryDate}
                             onDateRangeSelected={(range) => setEntryDate(range)}
+                            onClose={handleDatePickerClose}
                         />
 
                         <DateRangePickerBottomSheet
@@ -299,6 +319,7 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
                             type="valueDate"
                             savedRange={valueDate}
                             onDateRangeSelected={(range) => setValueDate(range)}
+                            onClose={handleDatePickerClose}
                         />
                     </View>
                 )}

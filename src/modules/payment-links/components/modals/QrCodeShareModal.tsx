@@ -1,18 +1,10 @@
-import { cn } from "@/src/core/utils/cn";
-import { formatDateString } from "@/src/core/utils/dateUtils";
-import { decimalNumber, formatInputCurrency } from "@/src/core/utils/number-fields";
-import Button from "@/src/shared/components/Buttons/Button";
-import FontText from "@/src/shared/components/FontText";
-import Input from "@/src/shared/components/inputs/Input";
-import { COMMON_STYLES } from "@/src/shared/styles/main";
-import { AnimatePresence, MotiView } from "moti";
-import { memo, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Modal, Pressable, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { XMarkIcon } from "react-native-heroicons/outline";
-import { KeyboardAvoidingView, KeyboardController } from "react-native-keyboard-controller";
-import DateRangePickerBottomSheet, { DateRangePickerRef } from "../../../../../shared/components/bottom-sheets/date-range/DateRangePickerBottomSheet";
 import GeneralModalHeader from "@/src/shared/components/GeneralModal/GeneralModalHeader";
+import { BlurView } from "expo-blur";
+import { AnimatePresence, MotiView } from "moti";
+import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Modal, Pressable, TouchableWithoutFeedback, View } from "react-native";
+import { KeyboardController } from "react-native-keyboard-controller";
 import ShareQrCode from "../ShareQrCode";
 
 interface QrCodeShareModalProps {
@@ -66,7 +58,14 @@ const QrCodeShareModal = ({ isVisible, onClose, qrCodeUrl }: QrCodeShareModalPro
                                 transition={{ type: 'timing', duration: 300 }}
                                 className="absolute inset-0 bg-content-secondary/30"
                             >
-                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                <BlurView
+                                    intensity={15}
+                                    tint="dark"
+                                    style={{ flex: 1 }}
+                                    experimentalBlurMethod="dimezisBlurView"
+                                >
+                                    <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                </BlurView>
                             </MotiView>
 
                             <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>

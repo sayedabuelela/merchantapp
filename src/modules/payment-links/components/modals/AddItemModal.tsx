@@ -13,6 +13,7 @@ import { KeyboardAvoidingView, Modal, Pressable, TouchableOpacity, TouchableWith
 import { MinusIcon, PlusIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { KeyboardController } from 'react-native-keyboard-controller';
 import { itemSchema, ItemType } from '../../payment-links.scheme';
+import { BlurView } from 'expo-blur';
 
 const addItemSchema = itemSchema.omit({ subTotal: true });
 type AddItemForm = Omit<ItemType, 'subTotal'>;
@@ -100,7 +101,14 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                 transition={{ type: 'timing', duration: 300 }}
                                 className="absolute inset-0 bg-content-secondary/30"
                             >
-                                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                <BlurView
+                                    intensity={15}
+                                    tint="dark"
+                                    style={{ flex: 1 }}
+                                    experimentalBlurMethod="dimezisBlurView"
+                                >
+                                    <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                                </BlurView>
                             </MotiView>
 
                             <TouchableWithoutFeedback onPress={() => KeyboardController?.dismiss()}>

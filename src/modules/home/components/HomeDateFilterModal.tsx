@@ -137,9 +137,10 @@ const HomeDateFilterModal = ({ isVisible, onClose, filters, setFilters }: HomeDa
                             className="absolute inset-0 bg-content-secondary/30"
                         >
                             <BlurView
-                                intensity={30}
+                                intensity={15}
                                 tint="dark"
                                 style={{ flex: 1 }}
+                                experimentalBlurMethod="dimezisBlurView"
                             >
                                 <Pressable style={{ flex: 1 }} onPress={handleClose} />
                             </BlurView>
