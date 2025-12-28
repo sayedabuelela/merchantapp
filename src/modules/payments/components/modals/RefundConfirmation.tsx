@@ -165,8 +165,8 @@ const RefundConfirmation: FC<RefundConfirmationProps> = ({
 
             {/* Refund Amount Input */}
             {contactOtpContent ? (
-                <View className="mb-6">
-                    <FontText type="body" weight="regular" className="text-content-secondary text-sm mb-2">
+                <View className="mb-4">
+                    <FontText type="body" weight="regular" className="text-content-secondary text-sm mb-3">
                         {t('Please enter the OTP sent to your phone')}
                     </FontText>
                     <OtpInput
@@ -176,6 +176,8 @@ const RefundConfirmation: FC<RefundConfirmationProps> = ({
                         // onComplete={handleOtpComplete}
                         autoFocus={true}
                         disabled={isRefundingContactWithOtp}
+                        digitSize={55}
+                        digitMargin={10}
                     />
                     {error && (
                         <FontText type="body" weight="regular" className="text-feedback-error text-xs mt-1">

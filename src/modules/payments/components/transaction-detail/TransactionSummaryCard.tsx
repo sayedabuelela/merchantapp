@@ -4,6 +4,7 @@ import { TransactionDetail } from '../../payments.model';
 import DetailsSection from '@/src/shared/components/details-screens/DetailsSection';
 import SectionItem from '@/src/shared/components/details-screens/SectionItem';
 import { PaymentMethodDetails } from '../order-detail/PaymentMethodDetails';
+import SectionItemWithCopy from '@/src/shared/components/details-screens/SectionItemWithCopy';
 
 interface TransactionSummaryCardProps {
     transaction: TransactionDetail;
@@ -22,7 +23,7 @@ export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardPr
                 amount={transaction.amount}
                 currency={transaction.currency}
                 status={transaction.paymentStatus}
-                orderId={transaction.transactionId}
+                merchantOrderId={transaction.merchantOrderId}
             />
             <PaymentMethodDetails
                 method={transaction.method}
@@ -30,8 +31,8 @@ export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardPr
                 paymentChannel={transaction.paymentChannel}
             />
             <DetailsSection className="mt-4">
-                <SectionItem title={t('Merchant order ID')} value={transaction.merchantOrderId} />
-                <SectionItem
+                <SectionItemWithCopy title={t('Merchant order ID')} value={transaction.merchantOrderId} />
+                <SectionItemWithCopy
                     title={t('Network order ID')}
                     value={transaction.order?.orderId}
                 />

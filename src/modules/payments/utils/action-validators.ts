@@ -288,6 +288,12 @@ export const isCaptureAvailable = (order: OrderDetailPayment): boolean => {
   const isMpgsProvider = normalizeString(provider) === 'mpgs';
   if (!isMpgsProvider) return false;
 
+  // RULE: No capture for POS transactions
+  const isPosTransaction = normalizeString(order.paymentChannel) === 'pos';
+  if (isPosTransaction) return false;
+
+
+
   // Status must be specifically 'authorized'
   const isAuthorizedStatus = normalizeString(status) === 'authorized';
   if (!isAuthorizedStatus) return false;
@@ -406,6 +412,12 @@ export const isVoidAvailableForTransaction = (transaction: TransactionDetail): b
     const isAuthorizeAndCaptured =
       normalizeString(trxType) === 'authorize' &&
       transactions?.some(trx => normalizeString(trx.operation) === 'capture');
+
+    // NEW RULE: If transaction is 'authorize' type, it should ONLY have Capture action available.
+    // So we block Void for 'authorize' type explicitly here.
+    if (normalizeString(trxType) === 'authorize') {
+      return false;
+    }
 
     return (
       isPaymentType &&
@@ -533,6 +545,10 @@ export const isCaptureAvailableForTransaction = (transaction: TransactionDetail)
 
   const isMpgsProvider = normalizeString(provider) === 'mpgs';
   if (!isMpgsProvider) return false;
+
+  // RULE: No capture for POS transactions
+  const isPosTransaction = normalizeString(transaction.paymentChannel) === 'pos';
+  if (isPosTransaction) return false;
 
   // Status must be specifically 'authorized'
   const isAuthorizedStatus = normalizeString(status) === 'authorized';

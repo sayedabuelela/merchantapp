@@ -83,7 +83,7 @@ const DetailsTab = ({ order }: Props) => {
                 <SectionRowItem
                     valueClassName="capitalize mr-[1px]"
                     title={t('Transaction type')}
-                    value={order.lastTransactionType}
+                    value={order.lastTransactionType === 'mogo_get_installment_plans' ? 'Mogo' : order.lastTransactionType}
                 />
                 <SectionRowItem
                     title={t('Updated')}

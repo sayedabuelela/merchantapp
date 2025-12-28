@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { InteractionManager, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, {
     Extrapolate,
     interpolate,
     interpolateColor,
     runOnJS,
+    SharedValue,
     useAnimatedStyle,
     useSharedValue,
     withSequence,
@@ -19,7 +20,6 @@ const SHAKE_OFFSET = 5;
 
 const COLOR_PRIMARY = '#3b82f6';
 const COLOR_DEFAULT_BORDER = '#D5D9D9';
-const COLOR_FOCUSED_BORDER = '#9ca3af';
 const COLOR_ERROR = '#ef4444';
 const COLOR_BACKGROUND = '#FDFDFD';
 const COLOR_TEXT = '#111827';
@@ -28,6 +28,90 @@ const COLOR_PLACEHOLDER = '#6b7280';
 const TIMING_CONFIG = { duration: 250 };
 const SCALE_TIMING_CONFIG = { duration: 250 };
 const SHAKE_TIMING_CONFIG = { duration: 50 };
+
+interface DigitBoxProps {
+    index: number;
+    digit: string;
+    isActive: boolean;
+    isFocused: boolean;
+    isError: SharedValue<number>;
+    scaleValue: SharedValue<number>;
+    opacityValue: SharedValue<number>;
+    onPress: (index: number) => void;
+    disabled: boolean;
+    testID: string;
+    size: number;
+    margin: number;
+}
+
+const DigitBox: React.FC<DigitBoxProps> = ({
+    index,
+    digit,
+    isActive,
+    isFocused,
+    isError,
+    scaleValue,
+    opacityValue,
+    onPress,
+    disabled,
+    testID,
+    size,
+    margin,
+}) => {
+    const boxAnimatedStyle = useAnimatedStyle(() => {
+        const isCurrentlyActive = isActive && isFocused;
+
+        const borderColor = interpolateColor(
+            isError.value,
+            [0, 1],
+            [
+                isCurrentlyActive ? COLOR_PRIMARY : COLOR_DEFAULT_BORDER,
+                COLOR_ERROR,
+            ]
+        );
+
+        return {
+            borderWidth: isCurrentlyActive ? 0 : 2,
+            borderRadius: isCurrentlyActive ? 0 : 8,
+            borderColor: borderColor,
+            transform: [{ scale: scaleValue.value }],
+        };
+    });
+
+    const textAnimatedStyle = useAnimatedStyle(() => ({
+        opacity: opacityValue.value,
+    }));
+
+    const placeholderAnimatedStyle = useAnimatedStyle(() => {
+        const placeholderOpacity = interpolate(
+            opacityValue.value,
+            [0, 0.5],
+            [1, 0],
+            Extrapolate.CLAMP
+        );
+        return {
+            opacity: placeholderOpacity,
+        };
+    });
+
+    return (
+        <Pressable
+            onPress={() => onPress(index)}
+            disabled={disabled}
+            style={[styles.digitPressable, { width: size, height: size, marginRight: margin }]}
+            testID={testID}
+        >
+            <Animated.View style={[styles.digitBox, { width: size, height: size }, boxAnimatedStyle]}>
+                <Animated.View style={[styles.placeholderContainer, placeholderAnimatedStyle]}>
+                    <View style={styles.placeholderDot} />
+                </Animated.View>
+                <Animated.Text style={[styles.digitText, textAnimatedStyle]}>
+                    {digit}
+                </Animated.Text>
+            </Animated.View>
+        </Pressable>
+    );
+};
 
 interface OtpInputProps {
     length?: number;
@@ -40,6 +124,8 @@ interface OtpInputProps {
     separatorCharacter?: string;
     separatorIndices?: number[];
     testID?: string;
+    digitSize?: number;
+    digitMargin?: number;
 }
 
 export const OtpInput: React.FC<OtpInputProps> = ({
@@ -53,6 +139,8 @@ export const OtpInput: React.FC<OtpInputProps> = ({
     separatorCharacter = '-',
     separatorIndices = [Math.floor(length / 2) - 1],
     testID = 'otp-input',
+    digitSize = DIGIT_BOX_SIZE,
+    digitMargin = DIGIT_BOX_MARGIN,
 }) => {
     const hiddenInputRef = useRef<TextInput>(null);
     const [isFocused, setIsFocused] = useState(false);
@@ -62,22 +150,43 @@ export const OtpInput: React.FC<OtpInputProps> = ({
     const shakeTranslateX = useSharedValue(0);
     const isErrorSV = useSharedValue(0);
 
-    const digitAnimValues = useRef(
-        Array(length)
-            .fill(0)
-            .map(() => ({
-                scale: useSharedValue(1),
-                opacity: useSharedValue(0),
-            }))
-    ).current;
+    // Pre-create shared values for maximum supported length (8 digits)
+    // This avoids calling useSharedValue inside a loop
+    const scale0 = useSharedValue(1);
+    const scale1 = useSharedValue(1);
+    const scale2 = useSharedValue(1);
+    const scale3 = useSharedValue(1);
+    const scale4 = useSharedValue(1);
+    const scale5 = useSharedValue(1);
+    const scale6 = useSharedValue(1);
+    const scale7 = useSharedValue(1);
+    const opacity0 = useSharedValue(0);
+    const opacity1 = useSharedValue(0);
+    const opacity2 = useSharedValue(0);
+    const opacity3 = useSharedValue(0);
+    const opacity4 = useSharedValue(0);
+    const opacity5 = useSharedValue(0);
+    const opacity6 = useSharedValue(0);
+    const opacity7 = useSharedValue(0);
+
+    const scaleValues = [scale0, scale1, scale2, scale3, scale4, scale5, scale6, scale7];
+    const opacityValues = [opacity0, opacity1, opacity2, opacity3, opacity4, opacity5, opacity6, opacity7];
+
+    const digitAnimValues = useMemo(() =>
+        Array.from({ length }, (_, i) => ({
+            scale: scaleValues[i],
+            opacity: opacityValues[i],
+        })),
+        [length]
+    );
 
     const totalSeparators = showSeparator ? separatorIndices.length : 0;
     const separatorWidth = 20;
     const containerWidth =
-        length * DIGIT_BOX_SIZE +
-        (length - 1) * DIGIT_BOX_MARGIN +
+        length * digitSize +
+        (length - 1) * digitMargin +
         totalSeparators * separatorWidth;
-    const boxFullWidth = DIGIT_BOX_SIZE + DIGIT_BOX_MARGIN;
+    const boxFullWidth = digitSize + digitMargin;
 
     const handleComplete = useCallback(() => {
         if (onComplete) {
@@ -147,8 +256,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
         const newValue = text.replace(/[^0-9]/g, '');
 
         if (text.length > 0 && newValue.length !== text.length && newValue.length < length) {
-            runOnJS(triggerShake)();
-            runOnJS(triggerShake)();
+            triggerShake();
         }
 
         if (newValue.length <= length) {
@@ -156,10 +264,8 @@ export const OtpInput: React.FC<OtpInputProps> = ({
         }
     };
 
-    const handleKeyPress = ({ nativeEvent }: { nativeEvent: { key: string } }) => {
-        if (disabled) return;
-        if (nativeEvent.key === 'Backspace') {
-        }
+    const handleKeyPress = () => {
+        // Backspace is handled natively through onChangeText
     };
 
     const handleFocus = () => {
@@ -207,9 +313,6 @@ export const OtpInput: React.FC<OtpInputProps> = ({
             translateX += separatorsBefore * separatorWidth;
         }
 
-        const maxTranslateX = containerWidth - DIGIT_BOX_SIZE;
-        const clampedTranslateX = Math.min(translateX, maxTranslateX);
-
         const targetOpacity = isFocused && activeIndex.value < length ? 1 : 0;
 
         return {
@@ -217,55 +320,6 @@ export const OtpInput: React.FC<OtpInputProps> = ({
             opacity: withTiming(targetOpacity, { duration: 150 }),
         };
     });
-
-    const getDigitBoxAnimatedStyle = (index: number) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        return useAnimatedStyle(() => {
-            const isActive = activeIndex.value === index && isFocused;
-
-            const borderColor = interpolateColor(
-                isErrorSV.value,
-                [0, 1],
-                [
-                    isActive ? COLOR_PRIMARY : COLOR_DEFAULT_BORDER,
-                    COLOR_ERROR,
-                ]
-            );
-
-            return {
-                borderWidth: isActive ? 0 : 2,
-                borderRadius: isActive ? 0 : 8,
-                borderColor: borderColor,
-                transform: [{ scale: digitAnimValues[index].scale.value }],
-            };
-        });
-    };
-
-    const getDigitTextAnimatedStyle = (index: number) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        return useAnimatedStyle(() => {
-            return {
-                opacity: digitAnimValues[index].opacity.value,
-
-            };
-        });
-    };
-
-    const getPlaceholderAnimatedStyle = (index: number) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        return useAnimatedStyle(() => {
-            const placeholderOpacity = interpolate(
-                digitAnimValues[index].opacity.value,
-                [0, 0.5],
-                [1, 0],
-                Extrapolate.CLAMP
-            );
-            return {
-                opacity: placeholderOpacity,
-            };
-        });
-    };
-
 
     return (
         <View style={styles.outerContainer} testID={testID}>
@@ -292,44 +346,29 @@ export const OtpInput: React.FC<OtpInputProps> = ({
                 disabled={disabled}
                 testID={`${testID}-pressable-container`}
             >
-                <Animated.View style={[styles.boxesContainer, { width: containerWidth }, containerAnimatedStyle]}>
+                <Animated.View style={[styles.boxesContainer, { width: containerWidth, height: digitSize + INDICATOR_HEIGHT + 4 }, containerAnimatedStyle]}>
                     {Array.from({ length }).map((_, index) => {
                         const digit = value[index] || '';
-                        const isCurrent = index === value.length;
-                        const showDigit = digit !== '';
                         const needsSeparatorAfter = showSeparator && separatorIndices.includes(index) && index < length - 1;
 
                         return (
                             <React.Fragment key={`digit-fragment-${index}`}>
-                                <Pressable
-                                    onPress={() => handleDigitPress(index)}
+                                <DigitBox
+                                    index={index}
+                                    digit={digit}
+                                    isActive={index === value.length}
+                                    isFocused={isFocused}
+                                    isError={isErrorSV}
+                                    scaleValue={digitAnimValues[index].scale}
+                                    opacityValue={digitAnimValues[index].opacity}
+                                    onPress={handleDigitPress}
                                     disabled={disabled}
-                                    style={styles.digitPressable}
                                     testID={`${testID}-digit-${index}`}
-                                >
-                                    <Animated.View
-                                        style={[
-                                            styles.digitBox,
-                                            getDigitBoxAnimatedStyle(index),
-                                        ]}
-                                    >
-                                        <Animated.View
-                                            style={[styles.placeholderContainer, getPlaceholderAnimatedStyle(index)]}>
-                                            <View style={styles.placeholderDot} />
-                                        </Animated.View>
-
-                                        <Animated.Text
-                                            style={[
-                                                styles.digitText,
-                                                getDigitTextAnimatedStyle(index),
-                                            ]}
-                                        >
-                                            {digit}
-                                        </Animated.Text>
-                                    </Animated.View>
-                                </Pressable>
+                                    size={digitSize}
+                                    margin={digitMargin}
+                                />
                                 {needsSeparatorAfter && (
-                                    <View style={styles.separatorContainer} testID={`${testID}-separator-${index}`}>
+                                    <View style={[styles.separatorContainer, { height: digitSize, marginRight: digitMargin }]} testID={`${testID}-separator-${index}`}>
                                         <Text style={styles.separatorText}>{separatorCharacter}</Text>
                                     </View>
                                 )}
@@ -338,7 +377,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
                     })}
 
                     <Animated.View
-                        style={[styles.indicator, indicatorAnimatedStyle, localError && { borderColor: COLOR_ERROR }]} />
+                        style={[styles.indicator, { width: digitSize, height: digitSize }, indicatorAnimatedStyle, localError && { borderColor: COLOR_ERROR }]} />
                 </Animated.View>
             </Pressable>
 

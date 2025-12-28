@@ -17,6 +17,8 @@ const getReferenceNumber = (method: PaymentMethod, payerInfo: PayerInfo): string
             return payerInfo.loanNumber;
         case 'contact':
             return payerInfo.invoiceNo;
+        case 'mogo':
+            return payerInfo.planId;
         default:
             return payerInfo.cardNumber;
     }
@@ -25,6 +27,8 @@ const getReferenceNumber = (method: PaymentMethod, payerInfo: PayerInfo): string
 const getPhoneNumber = (method: PaymentMethod, payerInfo: PayerInfo): string | undefined => {
     switch (method) {
         case 'souhoola':
+            return payerInfo.phoneNumber;
+        case 'mogo':
             return payerInfo.phoneNumber;
         case 'contact':
             return payerInfo.mobile;
@@ -55,6 +59,8 @@ const getMethodIcon = (method: PaymentMethod) => {
             return <View className="justify-center items-center w-[75px]"><SouhoolaSettlementIcon height={40} /></View>;
         case 'contact':
             return <View className="justify-center items-center w-[40px]"><ContactSettlementIcon height={40} /></View>;
+        // case 'mogo':
+        //     return <View className="justify-center items-center w-[40px]"><MogoSettlementIcon height={40} /></View>;
         default:
             return null;
     }
@@ -99,13 +105,13 @@ export const BnPlPaymentDetails = ({ method, sourceOfFunds, paymentChannel }: Bn
                     )}
                     {payerInfo.customerName && (
                         <FontText type="body" weight="bold"
-                            className="text-content-primary text-[10px]">
+                            className="text-content-primary text-xxs">
                             {payerInfo.customerName}
                         </FontText>
                     )}
                     {phoneNumber && (
                         <FontText type="body" weight="bold"
-                            className="text-content-primary text-[10px]">
+                            className="text-content-primary text-xxs mt-1">
                             {phoneNumber}
                         </FontText>
                     )}

@@ -26,7 +26,7 @@ import { useOrderDetailVM } from '../viewmodels';
 import { useOrderActionsVM } from '../viewmodels/useOrderActionsVM';
 import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
 import DetailsSkeleton from '../components/DetailsSkeleton';
-import { ArrowUturnDownIcon, ArrowUturnLeftIcon, XMarkIcon } from 'react-native-heroicons/outline';
+import { ArrowUturnDownIcon, ArrowUturnLeftIcon, CheckBadgeIcon, CheckCircleIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import usePermissions from '../../auth/hooks/usePermissions';
 import { selectUser, useAuthStore } from '../../auth/auth.store';
 
@@ -242,7 +242,7 @@ const OrderDetailsScreen = () => {
                     //      tint="light"
                     //      className="absolute bottom-0 left-0 right-0 px-4 py-4 border-t border-stroke-divider"
                     //  >
-                 
+
                     <View className="p-4 border-t border-stroke-divider bg-white">
                         <View className="flex-row gap-x-3">
                             {canVoid && (
@@ -273,8 +273,11 @@ const OrderDetailsScreen = () => {
                                 <View className="flex-1">
                                     <Button
                                         title={t('Capture')}
-                                        variant="primary"
+                                        variant="outline"
+                                        className="border-feedback-error flex-row items-center justify-center gap-x-2 h-10"
+                                        titleClasses="text-feedback-error text-sm"
                                         onPress={handleCapturePress}
+                                        icon={<CheckCircleIcon size={20} color="#D32F2F" />}
                                     />
                                 </View>
                             )}

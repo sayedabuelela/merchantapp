@@ -178,6 +178,9 @@ export interface PayerInfo {
     loanAmount?: number;
     merchantName?: string;
     totalDue?: number;
+
+    // Mogo Payment fields
+    planId?: string;
 }
 
 // Keep the old interfaces for backward compatibility if needed, or remove them

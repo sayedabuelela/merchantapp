@@ -26,10 +26,16 @@ const SectionItemWithCopy = ({ icon, title, value, valueClassName, labelClassNam
             {icon && icon}
             <View className={cn(icon ? 'ml-2' : '')}>
                 <FontText type="body" weight="regular" className={cn("text-content-secondary text-sm mb-1 self-start", labelClassName)}>{title}</FontText>
-                <View className='flex-row items-center'>
-                    <FontText type="body" weight="semi" className={cn("text-content-primary text-sm self-start mr-1", valueClassName)}>{value}</FontText>
+                <View className='flex-row items-center gap-x-2'>
+                    <FontText
+                        type="body"
+                        weight="semi"
+                        className={cn("text-content-primary text-sm self-start max-w-[94%]", valueClassName)}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >{value}</FontText>
                     <PressableScale onPress={handleCopy}>
-                        <DocumentDuplicateIcon size={18} />
+                        <DocumentDuplicateIcon size={20} color={'#001F5F'} />
                     </PressableScale>
                 </View>
             </View>

@@ -176,6 +176,8 @@ const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
                         onComplete={handleOtpComplete}
                         autoFocus={true}
                         disabled={isRefundingContactWithOtp}
+                        digitSize={55}
+                        digitMargin={10}
                     />
                     {error && (
                         <FontText type="body" weight="regular" className="text-feedback-error text-xs mt-1">

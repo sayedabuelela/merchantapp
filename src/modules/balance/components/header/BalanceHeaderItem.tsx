@@ -16,9 +16,15 @@ const BalanceHeaderItem = ({
     currency,
     mainBalance = false,
 }: Props) => {
-    const displayValue = typeof value === 'number' && currency
-        ? currencyNumber(value) + ' ' + currency
+    // const displayValue = typeof value === 'number' && currency
+    //     ? currencyNumber(value) + ' ' + currency
+    //     : value;
+    const displayValue =  value !== '--' 
+        ? currencyNumber(Number(value)) + ' ' + currency
         : value;
+        console.log('value : ',value);
+        
+    // const displayValue =  currencyNumber(value) + ' ' + currency
 
     return (
         <View className="items-center justify-center">

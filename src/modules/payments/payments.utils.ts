@@ -3,7 +3,7 @@ import { SourceOfFunds } from './payments.model';
 /**
  * BNPL payment type constants - using Set for O(1) lookup
  */
-const BNPL_TYPES_SET = new Set(['valu', 'aman', 'souhoola', 'contact']);
+const BNPL_TYPES_SET = new Set(['valu', 'aman', 'souhoola', 'contact','mogo']);
 
 /**
  * Type guards for identifying payment types
@@ -47,8 +47,8 @@ export const isCashPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
     return sourceOfFunds.type?.toLowerCase() === 'cash';
 };
 
-export type PaymentType = 'card' | 'valu' | 'aman' | 'souhoola' |'contact' | 'wallet' | 'cash' | 'unknown';
-export type BnPlPaymentType = 'valu' | 'aman' | 'souhoola' |'contact';
+export type PaymentType = 'card' | 'valu' | 'aman' | 'souhoola' |'contact' | 'mogo' | 'wallet' | 'cash' | 'unknown';
+export type BnPlPaymentType = 'valu' | 'aman' | 'souhoola' |'contact' | 'mogo';
 export const getPaymentType = (sourceOfFunds?: SourceOfFunds): PaymentType => {
     if (!sourceOfFunds) return 'unknown';
 

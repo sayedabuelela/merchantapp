@@ -131,11 +131,15 @@ export const useTransactionActionsVM = (transactionId: string) => {
         mutationFn: (request: CaptureOrderRequest) => captureOrder(paymentApi, request),
         onSuccess: (data) => {
             // Invalidate transaction detail query to refresh the screen
-            queryClient.invalidateQueries({ queryKey: ['payment-transaction-detail', transactionId] });
+            // Add delay to ensure backend has processed the status change
+            setTimeout(() => {
+                queryClient.invalidateQueries({ queryKey: ['payment-transaction-detail', transactionId] });
 
-            // Invalidate transaction list queries to update the list screen
-            queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
-            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
+                // Invalidate transaction list queries to update the list screen
+                queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
+                queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
+            }, 1000);
+
             // Show success toast
             if (data.status === 'FAILURE') {
                 const title = i18n.language === 'ar'

@@ -171,13 +171,33 @@ export const isRefundEligibleFromList = (order: PaymentSession): boolean => {
     const isNotAuthorized = normalizedStatus !== 'authorized';
 
     // Exclude POS transactions - they need cardDataToken which is only in detail API
-    const isPosTransaction = order.paymentParams?.interactionSource?.toLowerCase() === 'pos';
+    // RELAXED RULE: Allow POS so users can at least see the option in the list.
+    // The Detail screen or subsequent API call will enforce strict validation if needed.
+    // However, to match requirements: "just refund action" is allowed.
+    const isPosTransaction = order.paymentParams?.interactionSource?.toLowerCase() === 'pos' ||
+        order.paymentChannel?.toLowerCase() === 'pos';
+
+    // If POS, we allow refund if it's NOT a card transaction failing token check (we can't check token here easily)
+    // OR we just allow it and let the modal handle the specific checks or redirect to details.
+    // For now, let's allow it so the button shows up. Matches "if it pos it has just refund action".
+
+    // But wait, the original logic blocked it because "POS refunds require cardDataToken".
+    // If we return true here, the "Refund" button appears.
+    // When clicked, the modal logic (usePaymentActionsModal) will invoke refundAction.
+    // The refundAction logic (in usePaymentActionsModal) tries to get cardDataToken.
+    // Ideally, we want to allow it if we think it MIGHT be possible, or if we want to force user to details?
+    // User said: "if it refundable the actions should match for the modal and details screen now it shows only on details screen why is that?"
+    // So we MUST return true here for POS if other conditions met.
+
+    // We remove the strict !isPosTransaction check for eligibility.
+
 
     // RULE: No refund for Installment Orders (List)
     if (order.installmentDetails) return false;
 
-    return isApprovedStatus && hasRefundableAmount && isNotCash &&
-        isNotAuthorized && !isPosTransaction;
+    // For POS, we allow it to pass this check so the button appears.
+    // Validation of cardDataToken happens at the action execution level or API level.
+    return isApprovedStatus && hasRefundableAmount && isNotCash && isNotAuthorized;
 };
 
 /**
@@ -197,12 +217,19 @@ export const isCaptureEligibleFromList = (order: PaymentSession): boolean => {
     const normalizedStatus = order.status?.toLowerCase() || '';
 
     const isMpgsProvider = order.provider?.toLowerCase() === 'mpgs';
+    if (!isMpgsProvider) return false;
+
+    // RULE: No capture for POS transactions
+    const isPosTransaction = order.paymentParams?.interactionSource?.toLowerCase() === 'pos' ||
+        order.paymentChannel?.toLowerCase() === 'pos';
+    if (isPosTransaction) return false;
+
     // Capture is only available for AUTHORIZED status (pre-auth transactions)
     const isAuthorizedStatus = normalizedStatus === 'authorized';
     // Not already voided
     const isNotVoided = normalizedStatus !== 'voided';
 
-    return isMpgsProvider && isAuthorizedStatus && isNotVoided;
+    return isAuthorizedStatus && isNotVoided;
 };
 
 // ============================================================================
@@ -310,6 +337,7 @@ export const isRefundEligibleFromListTransaction = (transaction: Transaction): b
     const isNotCash = transaction.method?.toLowerCase() !== 'cash';
 
     // Exclude POS transactions - they need cardDataToken which may not be in list
+    // RELAXED RULE: Allow POS so it matches detail screen availability.
     const isPosTransaction = transaction.channel?.toLowerCase() === 'pos';
 
     // RULE: No refund for Installment Transactions (List)
@@ -322,7 +350,7 @@ export const isRefundEligibleFromListTransaction = (transaction: Transaction): b
     const isNotAuthorized = transaction.lastStatus?.toLowerCase() !== 'authorized';
 
     return isApprovedStatus && hasRefundableAmount && isNotCash &&
-        !isPosTransaction && isNotRefundType && isNotAuthorized;
+        isNotRefundType && isNotAuthorized;
 };
 
 /**
@@ -337,9 +365,15 @@ export const isCaptureEligibleFromListTransaction = (transaction: Transaction): 
     if (!transaction) return false;
 
     const isMpgsProvider = transaction.provider?.toLowerCase() === 'mpgs';
+    if (!isMpgsProvider) return false;
+
+    // RULE: No capture for POS transactions
+    const isPosTransaction = transaction.channel?.toLowerCase() === 'pos';
+    if (isPosTransaction) return false;
+
     // Use lastStatus which is 'AUTHORIZED' for pre-auth transactions
     const isAuthorizedLastStatus = transaction.lastStatus?.toLowerCase() === 'authorized';
     const isNotVoided = !transaction.isVoided && transaction.status?.toLowerCase() !== 'voided';
 
-    return isMpgsProvider && isAuthorizedLastStatus && isNotVoided;
+    return isAuthorizedLastStatus && isNotVoided;
 };

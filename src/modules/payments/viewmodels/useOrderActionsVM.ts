@@ -143,12 +143,16 @@ export const useOrderActionsVM = (sessionId: string) => {
     const captureMutation = useMutation({
         mutationFn: (request: CaptureOrderRequest) => captureOrder(paymentApi, request),
         onSuccess: (data) => {
-            // Invalidate order detail query to refresh the screen
-            queryClient.invalidateQueries({ queryKey: ['payment-order-detail', sessionId] });
+            // Add delay to ensure backend has processed the status change
+            setTimeout(() => {
+                // Invalidate order detail query to refresh the screen
+                queryClient.invalidateQueries({ queryKey: ['payment-order-detail', sessionId] });
 
-            // Invalidate order list queries to update the list screen
-            queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
-            queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
+                // Invalidate order list queries to update the list screen
+                queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
+                queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
+            }, 1000);
+
             console.log('status : ', data.status);
             if (data.status === 'FAILURE') {
                 const title = i18n.language === 'ar'
