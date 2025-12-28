@@ -83,8 +83,8 @@ export const BnPlPaymentDetails = ({ method, sourceOfFunds, paymentChannel }: Bn
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-1">
                     <FontText type="body" weight="semi"
-                        className="text-content-primary text-xs uppercase">
-                        {method} {paymentChannel && `-${t(paymentChannel)}`}
+                        className="text-content-primary text-[12px] uppercase">
+                        {method} {paymentChannel && `- ${t(paymentChannel)}`}
                     </FontText>
                 </View>
                 {getMethodIcon(normalizedMethod)}

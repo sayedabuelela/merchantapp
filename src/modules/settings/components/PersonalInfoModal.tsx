@@ -88,7 +88,6 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                                 intensity={15}
                                 tint="dark"
                                 style={{ flex: 1 }}
-                                experimentalBlurMethod="dimezisBlurView"
                             >
                                 <Pressable style={{ flex: 1 }} onPress={handleClose} />
                             </BlurView>

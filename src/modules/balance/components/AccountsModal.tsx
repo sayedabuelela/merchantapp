@@ -66,7 +66,6 @@ const AccountsModal = ({ isVisible, onClose, accounts }: Props) => {
                                 <BlurView
                                     intensity={15}
                                     tint="dark"
-                                    experimentalBlurMethod="dimezisBlurView"
                                     style={{ flex: 1 }}
                                 >
                                     <Pressable style={{ flex: 1 }} onPress={handleClose} />

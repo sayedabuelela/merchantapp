@@ -16,7 +16,6 @@ import 'react-native-reanimated';
 import { Toaster } from 'sonner-native';
 import "../global.css";
 import { ToastProvider } from '@/src/core/providers/ToastProvider';
-import { Dimensions } from 'react-native';
 if (__DEV__) {
   require("../ReactotronConfig");
 }
@@ -67,7 +66,7 @@ function AppContent() {
           <Stack.Screen name="(profile)" />
         </Stack.Protected>
       </Stack>
-      <Toaster />
+      <Toaster toastOptions={{ style: { elevation: 9999, zIndex: 9999 } }} />
     </GestureHandlerRootView>
   );
 }

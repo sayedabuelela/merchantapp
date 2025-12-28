@@ -83,7 +83,6 @@ const StoresListModal = forwardRef<StoresListModalRef, Props>(
                                     intensity={15}
                                     tint="dark"
                                     className='flex-1'
-                                    experimentalBlurMethod="dimezisBlurView"
                                 >
                                     <Pressable style={{ flex: 1 }} onPress={handleClose} />
                                 </BlurView>
