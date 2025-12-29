@@ -1,4 +1,4 @@
-import { SourceOfFunds } from './payments.model';
+import { SourceOfFunds, InstallmentDetails } from './payments.model';
 
 /**
  * BNPL payment type constants - using Set for O(1) lookup
@@ -70,6 +70,48 @@ export const isContactBnplPayment = (sourceOfFunds?: SourceOfFunds): boolean => 
     // Check type field (case-insensitive)
     if (sourceOfFunds.type) {
         return sourceOfFunds.type.trim().toLowerCase() === 'contact';
+    }
+
+    return false;
+};
+
+/**
+ * Checks if payment is specifically a VALU BNPL payment
+ * Used to route to VALU-specific settlement details
+ */
+export const isValuBnplPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    if (!sourceOfFunds) return false;
+
+    // Check type field (case-insensitive)
+    if (sourceOfFunds.type) {
+        return sourceOfFunds.type.trim().toLowerCase() === 'valu';
+    }
+
+    return false;
+};
+
+/**
+ * Checks if payment is a card payment with bank installments
+ * Used to route to BankInstallmentSettlementDetails
+ */
+export const isCardInstallmentPayment = (
+    sourceOfFunds?: SourceOfFunds,
+    installmentDetails?: InstallmentDetails
+): boolean => {
+    // Must be a card payment with installment details
+    return isCardPayment(sourceOfFunds) && !!installmentDetails;
+};
+
+/**
+ * Checks if payment is specifically a Mogo BNPL payment
+ * Used to route to Mogo-specific settlement details
+ */
+export const isMogoBnplPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    if (!sourceOfFunds) return false;
+
+    // Check type field (case-insensitive)
+    if (sourceOfFunds.type) {
+        return sourceOfFunds.type.trim().toLowerCase() === 'mogo';
     }
 
     return false;

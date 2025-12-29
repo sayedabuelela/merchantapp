@@ -1,0 +1,9 @@
+export { default as OrderInfoSection } from './OrderInfoSection';
+export { default as TerminalInfoSection } from './TerminalInfoSection';
+export { default as ContactPaymentSection } from './ContactPaymentSection';
+export { default as FeesSection } from './FeesSection';
+export { default as ValuPaymentSection } from './ValuPaymentSection';
+export { default as CardPaymentSection } from './CardPaymentSection';
+export { default as InstallmentDetailsSection } from './InstallmentDetailsSection';
+export { default as DeductedFeesSection } from './DeductedFeesSection';
+export { default as MogoPaymentSection } from './MogoPaymentSection';

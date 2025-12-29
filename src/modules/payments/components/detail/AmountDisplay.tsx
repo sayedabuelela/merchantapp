@@ -30,7 +30,7 @@ export const AmountDisplay = ({
     merchantOrderId,
     className,
 }: AmountDisplayProps) => {
-    
+
     const formattedAmount = currencyNumber(amount);
     const { t } = useTranslation();
     // Handle both order statuses (PAID) and transaction statuses (SUCCESS, APPROVED)

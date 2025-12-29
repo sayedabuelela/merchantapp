@@ -81,7 +81,7 @@ export const BnPlPaymentDetails = ({ method, sourceOfFunds, paymentChannel }: Bn
 
     return (
         <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded ">
-            <View className="flex-row items-center">
+            <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-1">
                     <FontText type="body" weight="semi"
                         className="text-content-primary text-xs uppercase">

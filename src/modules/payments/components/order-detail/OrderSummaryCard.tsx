@@ -25,7 +25,7 @@ export const OrderSummaryCard = ({order}: OrderSummaryCardProps) => {
             <PaymentMethodDetails sourceOfFunds={order.sourceOfFunds} method={order.method} paymentChannel={order.paymentChannel} />
             <DetailsSection className="mt-4">
                 <SectionItemWithCopy title={t("Merchant order ID")} value={order.merchantOrderId}/>
-                <SectionItemWithCopy title={t("Network order ID")} value={order.orderId}/>
+                <SectionItemWithCopy title={t("Kashier order ID")} value={order.orderId}/>
                 <SectionItem title={t("Origin")} value={order.metaData?.kashierOriginDetails?.id}/>
             </DetailsSection>
         </>

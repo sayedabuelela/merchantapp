@@ -103,9 +103,12 @@ const OrderDetailsScreen = () => {
             order.method === 'card' &&
             !!order.sourceOfFunds?.cardDataToken;
 
+        // POS refunds use merchantOrderId (e.g., POS-271849111959726577171) in the URL
+        const refundOrderId = isPosRefund ? order.merchantOrderId : order.orderId;
+
         refundOrderMutation(
             {
-                orderId: order.orderId,
+                orderId: refundOrderId,
                 amount,
                 currency: order.currency,
                 isPosRefund,

@@ -1,14 +1,23 @@
 import { OrderDetailPayment } from "@/src/modules/payments/payments.model"
 import {
-    isValuPayment,
     isWalletPayment,
     isCashPayment,
-    isBnPlPayment
+    isBnPlPayment,
+    isContactBnplPayment,
+    isValuBnplPayment,
+    isMogoBnplPayment,
+    isCardInstallmentPayment,
+    isCardPayment
 } from "@/src/modules/payments/payments.utils"
 import {
     BnPlSettlementDetails,
     WalletSettlementDetails,
     CashSettlementDetails,
+    ContactSettlementDetails,
+    ValuSettlementDetails,
+    MogoSettlementDetails,
+    BankInstallmentSettlementDetails,
+    CardOnlineSettlementDetails,
     adaptOrderData
 } from "@/src/modules/payments/components/detail/settlement"
 
@@ -18,13 +27,38 @@ interface Props {
 
 /**
  * Smart wrapper component that renders the appropriate settlement details
- * based on the payment type (VALU, Wallet, Cash, etc.)
+ * based on the payment type (VALU, Wallet, Cash, Contact, Bank Installment, Card Online, etc.)
  */
 const SettlementTab = ({ order }: Props) => {
     const sourceOfFunds = order.sourceOfFunds;
     const settlementData = adaptOrderData(order);
 
-    // VALU payments (installments)
+    // Card payments with bank installments (must check before regular card payments)
+    if (isCardInstallmentPayment(sourceOfFunds, order.installmentDetails)) {
+        return <BankInstallmentSettlementDetails data={settlementData} />;
+    }
+
+    // Regular card payments (without installments)
+    if (isCardPayment(sourceOfFunds)) {
+        return <CardOnlineSettlementDetails data={settlementData} />;
+    }
+
+    // VALU BNPL payments (must check before generic BnPl)
+    if (isValuBnplPayment(sourceOfFunds)) {
+        return <ValuSettlementDetails data={settlementData} />;
+    }
+
+    // Mogo BNPL payments (must check before generic BnPl)
+    if (isMogoBnplPayment(sourceOfFunds)) {
+        return <MogoSettlementDetails data={settlementData} />;
+    }
+
+    // Contact BNPL payments (must check before generic BnPl)
+    if (isContactBnplPayment(sourceOfFunds)) {
+        return <ContactSettlementDetails data={settlementData} />;
+    }
+
+    // Other BNPL payments (Souhoola, Aman)
     if (isBnPlPayment(sourceOfFunds)) {
         return <BnPlSettlementDetails data={settlementData} />;
     }

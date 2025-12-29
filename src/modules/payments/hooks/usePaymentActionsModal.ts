@@ -93,21 +93,65 @@ export const usePaymentActionsModal = ({
             ? (payment as PaymentSession).paymentParams?.currency || 'EGP'
             : (payment as Transaction).currency || 'EGP';
 
-        const isPosRefund = type === 'transaction'
-            ? (payment as Transaction).channel?.toLowerCase() === 'pos' &&
-              (payment as Transaction).method === 'card' &&
-              !!(payment as Transaction).sourceOfFunds?.cardDataToken
-            : false;
+        // Get cardDataToken based on type
+        let cardDataToken: string | undefined;
+        if (type === 'order') {
+            cardDataToken = (payment as PaymentSession).sourceOfFunds?.cardDataToken ||
+                           (payment as PaymentSession).sourceOfFunds?.cardInfo?.cardDataToken;
+        } else {
+            cardDataToken = (payment as Transaction).sourceOfFunds?.cardDataToken ||
+                           (payment as Transaction).sourceOfFunds?.cardInfo?.cardDataToken;
+        }
 
-        return {
-            orderId: orderId!,
-            amount,
-            currency,
-            isPosRefund,
-            merchantId: isPosRefund ? (payment as Transaction).merchantId : undefined,
-            terminalId: undefined,
-            cardDataToken: isPosRefund ? (payment as Transaction).sourceOfFunds?.cardDataToken : undefined,
-        };
+        // Determine if POS refund
+        let isPosRefund = false;
+        if (type === 'order') {
+            isPosRefund = (payment as PaymentSession).paymentChannel?.toLowerCase() === 'pos' &&
+                         (payment as PaymentSession).method === 'card' &&
+                         !!cardDataToken;
+        } else {
+            isPosRefund = (payment as Transaction).channel?.toLowerCase() === 'pos' &&
+                         (payment as Transaction).method === 'card' &&
+                         !!cardDataToken;
+        }
+
+        // Determine the refund orderId based on type and POS status
+        let refundOrderId: string;
+        if (type === 'order') {
+            // For POS order refunds, use paymentParams.order (e.g., POS-271849111959726577171)
+            refundOrderId = isPosRefund
+                ? (payment as PaymentSession).paymentParams?.order || orderId!
+                : orderId!;
+        } else {
+            // For POS transaction refunds, use transaction.id (UUID format)
+            refundOrderId = isPosRefund && (payment as Transaction).id
+                ? (payment as Transaction).id
+                : orderId!;
+        }
+
+        // Build refund params
+        if (type === 'order') {
+            return {
+                orderId: refundOrderId,
+                amount,
+                currency,
+                isPosRefund,
+                merchantId: isPosRefund ? (payment as PaymentSession).merchantId : undefined,
+                terminalId: isPosRefund ? (payment as PaymentSession).posTerminal?.terminalId : undefined,
+                cardDataToken: isPosRefund ? cardDataToken : undefined,
+            };
+        } else {
+            return {
+                orderId: refundOrderId,
+                amount,
+                currency,
+                isPosRefund,
+                merchantId: isPosRefund ? (payment as Transaction).merchantId : undefined,
+                terminalId: isPosRefund ? (payment as Transaction).posTerminal?.terminalId : undefined,
+                cardDataToken: isPosRefund ? cardDataToken : undefined,
+                targetTransactionId: isPosRefund ? (payment as Transaction).transactionId : undefined,
+            };
+        }
     }, [orderId, payment, type]);
 
     return {

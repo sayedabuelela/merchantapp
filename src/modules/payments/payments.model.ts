@@ -51,6 +51,14 @@ export interface PaymentSession {
         status?: string;
     }>;
     installmentDetails?: InstallmentDetails;
+    // POS refund fields
+    posTerminal?: {
+        terminalId: string;
+        serialNo?: string;
+        branchName?: string;
+        branchAddress?: string;
+    };
+    sourceOfFunds?: SourceOfFunds;
 }
 
 export interface Pagination {
@@ -130,6 +138,33 @@ export interface Installment {
     interestRate: number;
 }
 
+export interface InstallmentFeesKISF {
+    rate: number;
+    flat: number;
+}
+
+export interface InstallmentFeesKOSF {
+    transaction: number;
+    processing: number;
+}
+
+export interface InstallmentFees {
+    KISF: InstallmentFeesKISF;
+    KOSF: InstallmentFeesKOSF;
+    KOSFAmount: string;
+    KISFAmount: string;
+    KOSFRate: string;
+    KISFRate: string;
+    kashierFees: string;
+    totalDeductedAmount: string;
+    VAT: number;
+    VATAmount: string;
+    interestRateAmount: string;
+    settlementAmount: string;
+    authorizationAmount: string;
+    installmentAmountPerMonth: string;
+}
+
 // Transaction Interfaces
 export type TransactionStatus = 'Approved' | 'Declined' | 'Pending' | 'Voided' | 'Cancelled' | string;
 export type TransactionType = 'PAYMENT' | 'REFUND' | 'REVERSAL' | string;
@@ -181,6 +216,9 @@ export interface PayerInfo {
 
     // Mogo Payment fields
     planId?: string;
+    firstInstallmentDate?: string;
+    installmentAmount?: number;
+    months?: number;
 }
 
 // Keep the old interfaces for backward compatibility if needed, or remove them
@@ -188,9 +226,23 @@ export type ValuPayerInfo = PayerInfo;
 export type ContactPayerInfo = PayerInfo;
 export type SouhoolaPayerInfo = PayerInfo;
 
+// Card Info - nested card data structure (used in some transaction responses)
+export interface CardInfo {
+    maskedCard?: string;
+    extendedMaskedCard?: string;
+    cardBrand?: string;
+    cardHolderName?: string;
+    cardDataToken?: string;
+    issuer?: string;
+    track2?: string;
+    primaryAccountExtension?: string;
+    appId?: string;
+    appName?: string;
+}
+
 // Source of Funds - supports multiple payment types
 export interface SourceOfFunds {
-    // Card Payment fields
+    // Card Payment fields (flat structure)
     maskedCard?: string;
     extendedMaskedCard?: string;
     cardBrand?: string;
@@ -203,6 +255,9 @@ export interface SourceOfFunds {
     save?: boolean;
     issuer?: string;
     agreement?: string | null;
+
+    // Nested card info (used in some transaction responses)
+    cardInfo?: CardInfo;
 
     // Payment fields - now uses unified PayerInfo
     payerInfo?: PayerInfo;
@@ -296,6 +351,7 @@ export interface Transaction {
     __v: number;
     installment?: Installment;
     installmentDetails?: InstallmentDetails;
+    posTerminal?: TransactionPosTerminal; // POS terminal info for POS transactions
 }
 
 export interface TransactionPagination {
@@ -358,6 +414,9 @@ export interface OrderDetailPCC {
 
 export interface OrderDetailPosTerminal {
     terminalId: string;
+    serialNo?: string;
+    branchName?: string;
+    branchAddress?: string;
 }
 
 export interface OrderDetailHistoryItem {
@@ -406,6 +465,7 @@ export interface OrderDetailPayment {
     targetTransactionId?: string;
     history?: OrderDetailHistoryItem[];
     installmentDetails?: InstallmentDetails;
+    installmentFees?: InstallmentFees;
     customer?: {
         reference?: string; // shopper reference (mandatory for pay with token)
         id?: string;
@@ -453,10 +513,34 @@ export interface TransactionDetailOriginDetails {
     createdByUserId?: string;
 }
 
+// POS Terminal info for transactions (more detailed than order's posTerminal)
+export interface TransactionPosTerminal {
+    terminalId: string;
+    serialNo?: string;
+    traceNumber?: string;
+    referenceNumber?: string;
+    entryMode?: string;
+    NII?: string;
+    merchantActivity?: string;
+    cardAcceptor?: string;
+    location?: string;
+    versions?: string;
+    acquiringInstitutionIdentificationCode?: string;
+    posConditionCode?: string;
+    settlementType?: string;
+    primaryBank?: string;
+    primaryBankMerchantId?: string;
+    primaryBankTerminalId?: string;
+    branchName?: string;
+    branchAddress?: string;
+}
+
 export interface TransactionDetail {
     labels: string[];
     discount: string | null;
     transactionId: string;
+    id?: string; // UUID format orderId for POS refund URL
+    merchantId?: string; // Required for POS refund payload
     method: string;
     provider: string;
     pcc: TransactionDetailPCC;
@@ -483,6 +567,8 @@ export interface TransactionDetail {
     transactions?: RelatedTransaction[];
     originDetails?: TransactionDetailOriginDetails;
     installmentDetails?: InstallmentDetails;
+    installmentFees?: InstallmentFees;
+    posTerminal?: TransactionPosTerminal; // POS terminal info for POS transactions
     customer?: {
         reference?: string; // shopper reference (mandatory for pay with token)
         id?: string;
@@ -569,6 +655,7 @@ export interface RefundOrderRequest {
     merchantId?: string;
     terminalId?: string;
     cardDataToken?: string;
+    targetTransactionId?: string; // Required for transaction POS refund
 }
 
 /**

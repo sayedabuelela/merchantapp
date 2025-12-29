@@ -234,6 +234,7 @@ export const refundOrder = async (
         merchantId,
         terminalId,
         cardDataToken,
+        targetTransactionId,
     } = request;
 
     let payload: Record<string, any> = {
@@ -268,6 +269,8 @@ export const refundOrder = async (
             transaction: {
                 amount: amount * 100, // POS refunds need amount in cents
                 currency,
+                // Include targetTransactionId for transaction POS refunds
+                ...(targetTransactionId && { targetTransactionId }),
             },
         };
     }

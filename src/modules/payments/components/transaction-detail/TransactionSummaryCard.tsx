@@ -33,7 +33,7 @@ export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardPr
             <DetailsSection className="mt-4">
                 <SectionItemWithCopy title={t('Merchant order ID')} value={transaction.merchantOrderId} />
                 <SectionItemWithCopy
-                    title={t('Network order ID')}
+                    title={t('Kashier order ID')}
                     value={transaction.order?.orderId}
                 />
                 <SectionItem

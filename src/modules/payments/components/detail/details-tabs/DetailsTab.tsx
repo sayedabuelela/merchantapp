@@ -96,7 +96,7 @@ const DetailsTab = ({ order }: Props) => {
                 />
                 <SectionRowItem
                     title={t('Transaction ID')}
-                    value={order.targetTransactionId}
+                    value={order?.history?.[0]?.transactionId || '-'}
                 />
             </DetailsSection>
 

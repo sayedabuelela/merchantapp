@@ -4,15 +4,21 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { formatAmount, formatText } from '@/src/modules/payments/utils/formatters';
 import { SettlementData } from './adapters';
+import { OrderInfoSection, TerminalInfoSection } from './sections';
 
 interface Props {
     data: SettlementData;
 }
 
+/**
+ * BnPl Settlement Details - Comprehensive settlement view for BNPL payments
+ * (VALU, Souhoola, Mogo, Aman)
+ * Combines Order Info, Terminal Info (for POS), and BNPL-specific payment details
+ */
 const BnPlSettlementDetails = ({ data }: Props) => {
     const { t } = useTranslation();
 
-    // Access VALU payment info from sourceOfFunds
+    // Access BNPL payment info from sourceOfFunds
     const payerInfo = data.sourceOfFunds?.payerInfo;
 
     // This component should only render if payerInfo exists
@@ -22,7 +28,14 @@ const BnPlSettlementDetails = ({ data }: Props) => {
 
     return (
         <View className="mt-4">
-            <DetailsSection>
+            {/* Order Info - Always visible */}
+            <OrderInfoSection data={data} />
+
+            {/* Terminal Info - Only for POS transactions */}
+            <TerminalInfoSection data={data} />
+
+            {/* BNPL Payment Details */}
+            <DetailsSection title={t('BNPL Payment Details')} className="mt-4">
                 <SectionRowItem
                     title={t('Mobile Number')}
                     value={formatText(payerInfo.mobileNumber)}

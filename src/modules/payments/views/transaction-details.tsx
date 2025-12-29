@@ -98,23 +98,33 @@ const TransactionDetailsScreen = () => {
     const handleRefundConfirm = (amount: number) => {
         if (!transaction || !transaction.order?.orderId) return;
 
+        // Get cardDataToken from either flat structure or nested cardInfo
+        const cardDataToken =
+            transaction.sourceOfFunds?.cardDataToken ||
+            transaction.sourceOfFunds?.cardInfo?.cardDataToken;
+
         // Check if POS refund
         const isPosRefund =
             transaction.paymentChannel?.toLowerCase() === 'pos' &&
             transaction.method === 'card' &&
-            !!transaction.sourceOfFunds?.cardDataToken;
+            !!cardDataToken;
+
+        // POS refunds use transaction.id (UUID) in the URL, regular refunds use order.orderId
+        const refundOrderId = isPosRefund && transaction.id
+            ? transaction.id
+            : transaction.order.orderId;
 
         refundTransactionMutation(
             {
-                orderId: transaction.order.orderId,
+                orderId: refundOrderId,
                 amount,
                 currency: transaction.currency,
                 isPosRefund,
-                merchantId: isPosRefund ? transaction.order.orderId.split('-')[0] : undefined,
-                // Terminal ID should be extracted from transaction metadata or order details
-                // For now, leaving undefined - backend may handle this
-                terminalId: undefined,
-                cardDataToken: isPosRefund ? transaction.sourceOfFunds?.cardDataToken : undefined,
+                merchantId: isPosRefund ? transaction.merchantId : undefined,
+                terminalId: isPosRefund ? transaction.posTerminal?.terminalId : undefined,
+                cardDataToken: isPosRefund ? cardDataToken : undefined,
+                // Include targetTransactionId for transaction POS refunds
+                targetTransactionId: isPosRefund ? transaction.transactionId : undefined,
             },
             {
                 onSuccess: () => {

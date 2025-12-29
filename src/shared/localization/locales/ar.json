@@ -418,7 +418,7 @@
   "Payment refunded": "تم الاسترداد بنجاح",
   "Payment voided": "تم الالغاء بنجاح",
   "Merchant order ID": "رقم طلب التاجر",
-  "Network order ID": "رقم طلب كاشير",
+  "Kashier order ID": "رقم طلب كاشير",
   "Recent transaction": "اخر معاملة",
   "Updated": "اخر تحديث",
   "Origin": "المصدر",

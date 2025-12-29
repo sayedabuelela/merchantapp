@@ -1,4 +1,10 @@
 export { default as CashSettlementDetails } from './CashSettlementDetails';
 export { default as BnPlSettlementDetails } from './BnPlSettlementDetails';
 export { default as WalletSettlementDetails } from './WalletSettlementDetails';
+export { default as ContactSettlementDetails } from './ContactSettlementDetails';
+export { default as ValuSettlementDetails } from './ValuSettlementDetails';
+export { default as BankInstallmentSettlementDetails } from './BankInstallmentSettlementDetails';
+export { default as CardOnlineSettlementDetails } from './CardOnlineSettlementDetails';
+export { default as MogoSettlementDetails } from './MogoSettlementDetails';
 export * from './adapters';
+export * from './sections';

@@ -38,7 +38,7 @@ const CashSettlementDetails = ({ data }: Props) => {
                 {data.vat && (
                     <SectionRowItem
                         title={t('Fees After 14% VAT')}
-                        value={formatAmount(data.vat)}
+                        value={formatAmount((Number(data.vat) + Number(data.fees)).toFixed(2))}
                     />
                 )}
                 {data.settlementAmount && (

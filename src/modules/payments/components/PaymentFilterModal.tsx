@@ -91,16 +91,17 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
     // Payment method options (shared between orders and transactions)
     const paymentMethodOptions = [
         { label: t('all'), value: null as string | null },
-        { label: t('Card'), value: 'Card' },
-        { label: t('Wallet'), value: 'Wallet' },
-        { label: t('Valu'), value: 'Valu' },
-        { label: t('Cash'), value: 'Cash' },
-        { label: t('OCTO'), value: 'OCTO' },
-        { label: t('Souhoola'), value: 'Souhoola' },
-        { label: t('Contact'), value: 'Contact' },
-        { label: t('Basata'), value: 'Basata' },
-        { label: t('Aman'), value: 'Aman' },
-        { label: t('Instapay'), value: 'Instapay' },
+        { label: t('Card'), value: 'card' },
+        { label: t('Wallet'), value: 'wallet' },
+        { label: t('Valu'), value: 'valu' },
+        { label: t('Cash'), value: 'cash' },
+        { label: t('OCTO'), value: 'octo' },
+        { label: t('Souhoola'), value: 'souhoola' },
+        { label: t('Contact'), value: 'contact' },
+        { label: t('Basata'), value: 'basata' },
+        { label: t('Aman'), value: 'aman' },
+        { label: t('Instapay'), value: 'instapay' },
+        { label: t('Mogo'), value: 'mogo' },
     ];
 
     // Status options (different per tab)
