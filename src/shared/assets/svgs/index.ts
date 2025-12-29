@@ -55,3 +55,4 @@ export { default as ContactHistoryIcon } from './files/history-icons/contact-his
 export { default as ValuHistoryIcon } from './files/history-icons/valu-history-icon.svg';
 export { default as AmanHistoryIcon } from './files/history-icons/aman-history-icon.svg';
 export { default as SouhoolaHistoryIcon } from './files/history-icons/souhoola-history-icon.svg';
+export { default as MogoIcon } from './files/settlement-types/mogo-icon.svg';

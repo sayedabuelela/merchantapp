@@ -76,7 +76,8 @@ const DetailsTab = ({ transaction }: Props) => {
         transaction.metaData?.termsAndConditions?.ip ||
         transaction.metaData?.['kashier payment UI version']
     );
-
+    console.log('transaction : ',transaction);
+    
     return (
         <View className='mt-4'>
             <DetailsSection title={t('Recent transaction')}>

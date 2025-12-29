@@ -30,7 +30,7 @@ const SectionItemWithCopy = ({ icon, title, value, valueClassName, labelClassNam
                     <FontText
                         type="body"
                         weight="semi"
-                        className={cn("text-content-primary text-sm self-start max-w-[94%]", valueClassName)}
+                        className={cn("text-content-primary text-xs self-start max-w-[94%]", valueClassName)}
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >{value}</FontText>
