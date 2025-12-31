@@ -42,28 +42,28 @@ const WalletSettlementDetails = ({ data }: Props) => {
             <DetailsSection title={t('Financial Summary')} className="mt-4">
                 <SectionRowItem
                     title={t('Amount')}
-                    value={formatAmount(data.amount)}
+                    value={formatAmount(data.amount,t('EGP'))}
                 />
                 <SectionRowItem
                     title={t('Captured Amount')}
-                    value={formatAmount(data.capturedAmount)}
+                    value={formatAmount(data.capturedAmount,t('EGP'))}
                 />
                 {data.refundedAmount > 0 && (
                     <SectionRowItem
                         title={t('Refunded Amount')}
-                        value={formatAmount(data.refundedAmount)}
+                        value={formatAmount(data.refundedAmount,t('EGP'))}
                     />
                 )}
                 {data.fees && (
                     <SectionRowItem
                         title={t('Kashier Fees')}
-                        value={formatAmount((Number(data.vat) + Number(data.fees)).toFixed(2))}
+                        value={formatAmount((Number(data.vat) + Number(data.fees)).toFixed(2),t('EGP'))}
                     />
                 )}
                 {data.settlementAmount && (
                     <SectionRowItem
                         title={t('Settlement Amount')}
-                        value={formatAmount(data.settlementAmount)}
+                        value={formatAmount(data.settlementAmount,t('EGP'))}
                     />
                 )}
             </DetailsSection>

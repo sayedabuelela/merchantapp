@@ -505,4 +505,17 @@
   "Your customer": "العميل",
   "paymentLink": "رابط الدفع",
   "forpaymentLink": "لرابط الدفع",
+  "Souhoola Payment Details": "تفاصيل دفع سهولة",
+  "Loan Number": "رقم القرض",
+  "Plan ID": "رقم الخطة",
+  "Phone Number": "رقم الهاتف",
+  "Tenure": "المدة",
+  "First Installment Date": "تاريخ أول قسط",
+  "Last Installment Date": "تاريخ آخر قسط",
+  "Admin Fees": "رسوم إدارية",
+  "Down Payment": "الدفعة الأولى",
+  "Aman Payment Details": "تفاصيل دفع أمان",
+  "Aman Transaction Id": "رقم معاملة أمان",
+  "Monthly Paid": "المبلغ الشهري",
+  "Discount Code": "كود الخصم"
 }

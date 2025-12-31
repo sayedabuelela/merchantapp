@@ -58,15 +58,15 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
             id: 'payouts-card',
             tab: 'payouts',
             mainBalance: { title: t('Payout'), value: payoutStats?.amount || 0, currency: 'EGP' },
-            leftDetail: { title: t('Last Payout'), value: payoutStats?.lastPayout || 0, currency: '' },
-            rightDetail: { title: t('Upcoming Payout'), value: payoutStats?.upcomingPayouts || 0, currency: '' },
+            leftDetail: { title: t('Last Payout'), value: payoutStats?.lastPayout || 0, currency: 'EGP' },
+            rightDetail: { title: t('Upcoming Payout'), value: payoutStats?.upcomingPayouts || 0, currency: 'EGP' },
         },
         {
             id: 'transfers-card',
             tab: 'transfers',
             mainBalance: { title: t('total transfers'), value: transfersStats?.totalTransfersAmount || 0, currency: 'EGP' },
             leftDetail: { title: t('transfers no.'), value: transfersStats?.totalTransfersCount || 0, currency: '' },
-            rightDetail: { title: t('Transfers Vol.'), value: transfersStats?.totalTransfersAmount || 0, currency: '' },
+            rightDetail: { title: t('Transfers Vol.'), value: transfersStats?.totalTransfersAmount || 0, currency: 'EGP' },
         },
     ]), [t, accountStats, paymentsStats, payoutStats, transfersStats, mode])
 

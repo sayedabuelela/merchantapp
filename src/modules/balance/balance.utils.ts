@@ -48,8 +48,8 @@ export const getActivityInfoMessage = (type: ActivityType, t: (key: string) => s
     switch (type) {
         case 'payout':
             return t('Scheduled automatic transfers of your earnings to your bank account.');
-        // case 'upcoming_balance':
-        //     return t('Funds pending settlement that will be added to your available balance.');
+        case 'upcoming_balance':
+            return t('These funds are being processed and will become available once settlement is complete. Settlement typically takes 1-3 business days depending on the transaction type.');
         default:
             return '';
     }

@@ -24,7 +24,7 @@ const ContactPaymentSection = ({ data }: Props) => {
     // Format monthly amount with currency
     const formatMonthlyAmount = (value: number | undefined): string => {
         if (value === undefined || value === null) return '--';
-        return `${value} ${data.currency || 'EGP'}`;
+        return `${value} ${data.currency || t('EGP')}`;
     };
 
     return (

@@ -26,7 +26,7 @@ const TransactionHistoryCard = ({ historyItem }: TransactionHistoryCardProps) =>
         const currency = historyItem.currency;
 
         if (operation === 'pay' && status === 'SUCCESS') {
-            return t('Successful payment');
+            return `${t('Successful payment')} ${amount} ${currency}`;
         } else if (operation === 'refund' && status === 'SUCCESS') {
             return `${t('Successfully refunded')} ${amount} ${currency}`;
         } else if (status === 'FAILURE' || status === 'FAILED') {

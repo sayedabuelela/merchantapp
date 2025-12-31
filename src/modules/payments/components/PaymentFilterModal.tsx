@@ -331,7 +331,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                     type: 'timing',
                                     duration: 500,
                                 }}
-                                className="bg-white w-full rounded-t-3xl pt-4 shadow-lg pb-6 px-6"
+                                className="bg-white w-full rounded-t-3xl pt-4 shadow-lg pb-8 px-6"
                                 style={{
                                     shadowColor: '#000',
                                     shadowOffset: { width: 0, height: -2 },
@@ -456,7 +456,8 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
                                         title={t('Clear All')}
                                         onPress={handleClearAll}
                                         className="border-0 mt-2"
-                                        titleClasses="text-placeholder-color"
+                                        // disabled={isDisabled}
+                                        titleClasses={isDisabled ? "text-placeholder-color" : ""}
                                     />
                                 </View>
                             </MotiView>

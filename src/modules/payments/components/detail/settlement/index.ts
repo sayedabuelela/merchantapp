@@ -6,5 +6,7 @@ export { default as ValuSettlementDetails } from './ValuSettlementDetails';
 export { default as BankInstallmentSettlementDetails } from './BankInstallmentSettlementDetails';
 export { default as CardOnlineSettlementDetails } from './CardOnlineSettlementDetails';
 export { default as MogoSettlementDetails } from './MogoSettlementDetails';
+export { default as SouhoolaSettlementDetails } from './SouhoolaSettlementDetails';
+export { default as AmanSettlementDetails } from './AmanSettlementDetails';
 export * from './adapters';
 export * from './sections';

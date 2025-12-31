@@ -76,19 +76,19 @@ const InstallmentDetailsSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Monthly Installment Amount')}
-                value={formatAmount(installment.installmentAmountPerMonth)}
+                value={formatAmount(installment.installmentAmountPerMonth,t('EGP'))}
             />
             <SectionRowItem
                 title={t('Authorized Amount')}
-                value={formatAmount(installment.authorizedAmount)}
+                value={formatAmount(installment.authorizedAmount,t('EGP'))}
             />
             <SectionRowItem
                 title={t('Original Amount')}
-                value={formatAmount(installment.originalAmount)}
+                value={formatAmount(installment.originalAmount, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Settlement Amount')}
-                value={formatAmount(installment.settlementAmount)}
+                value={formatAmount(installment.settlementAmount, t('EGP'))}
             />
         </DetailsSection>
     );

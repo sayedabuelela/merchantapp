@@ -225,9 +225,7 @@ const TransactionDetailsScreen = () => {
                         {/* Tab Content */}
                         <FadeInUpView key={activeTab} delay={0} duration={400}>
                             {activeTab === 'details' && <DetailsTab transaction={transaction} />}
-                            {activeTab === 'settlement' && (
-                                <SettlementTab transaction={transaction} />
-                            )}
+                            {activeTab === 'settlement' && (<SettlementTab transaction={transaction} />)}
                             {activeTab === 'history' && <HistoryTab transaction={transaction} />}
                         </FadeInUpView>
 

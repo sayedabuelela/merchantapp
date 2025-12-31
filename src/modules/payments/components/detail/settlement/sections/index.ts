@@ -7,3 +7,5 @@ export { default as CardPaymentSection } from './CardPaymentSection';
 export { default as InstallmentDetailsSection } from './InstallmentDetailsSection';
 export { default as DeductedFeesSection } from './DeductedFeesSection';
 export { default as MogoPaymentSection } from './MogoPaymentSection';
+export { default as SouhoolaPaymentSection } from './SouhoolaPaymentSection';
+export { default as AmanPaymentSection } from './AmanPaymentSection';

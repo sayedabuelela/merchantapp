@@ -19,11 +19,11 @@ const BalanceHeaderItem = ({
     // const displayValue = typeof value === 'number' && currency
     //     ? currencyNumber(value) + ' ' + currency
     //     : value;
-    const displayValue =  value !== '--' 
+    const displayValue = (value !== '--' && typeof value === 'number' )
         ? currencyNumber(Number(value)) + ' ' + currency
         : value;
-        console.log('value : ',value);
-        
+    console.log('value : ', currency);
+
     // const displayValue =  currencyNumber(value) + ' ' + currency
 
     return (

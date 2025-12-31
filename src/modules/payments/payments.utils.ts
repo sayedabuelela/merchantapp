@@ -116,3 +116,33 @@ export const isMogoBnplPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
 
     return false;
 };
+
+/**
+ * Checks if payment is specifically a Souhoola BNPL payment
+ * Used to route to Souhoola-specific settlement details
+ */
+export const isSouhoolaBnplPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    if (!sourceOfFunds) return false;
+
+    // Check type field (case-insensitive)
+    if (sourceOfFunds.type) {
+        return sourceOfFunds.type.trim().toLowerCase() === 'souhoola';
+    }
+
+    return false;
+};
+
+/**
+ * Checks if payment is specifically an Aman BNPL payment
+ * Used to route to Aman-specific settlement details
+ */
+export const isAmanBnplPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    if (!sourceOfFunds) return false;
+
+    // Check type field (case-insensitive)
+    if (sourceOfFunds.type) {
+        return sourceOfFunds.type.trim().toLowerCase() === 'aman';
+    }
+
+    return false;
+};

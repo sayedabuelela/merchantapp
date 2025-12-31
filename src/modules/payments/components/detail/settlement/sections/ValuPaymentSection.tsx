@@ -43,7 +43,7 @@ const ValuPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Monthly Paid')}
-                value={formatAmount(payerInfo.emi)}
+                value={formatAmount(payerInfo.emi,t('EGP'))}
             />
             <SectionRowItem
                 title={t('First Installment Date')}
@@ -55,23 +55,23 @@ const ValuPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Admin Fees')}
-                value={formatAmount(payerInfo.adminFees)}
+                value={formatAmount(payerInfo.adminFees, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Down Payment')}
-                value={formatAmount(payerInfo.downPayment)}
+                value={formatAmount(payerInfo.downPayment, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Due Amount')}
-                value={formatAmount(payerInfo.financedAmount)}
+                value={formatAmount(payerInfo.financedAmount, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Cash Back')}
-                value={formatAmount(payerInfo.CashbackAmount)}
+                value={formatAmount(payerInfo.CashbackAmount, t('EGP'))}
             />
             <SectionRowItem
                 title={t('To U')}
-                value={formatAmount(payerInfo.ToUAmount)}
+                value={formatAmount(payerInfo.ToUAmount,t('EGP'))}
             />
             <SectionRowItem
                 title={t('Mobile Number')}

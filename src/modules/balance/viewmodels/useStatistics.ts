@@ -59,7 +59,7 @@ const useStatistics = (filters?: StatisticsDateFilters) => {
         enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
     })
     const payoutStatistics = useQuery<PayoutStatistics>({
-        queryKey: ["payout-statistics", activeAccountId, dateFrom, dateTo],
+        queryKey: ["payout-statistics", activeAccountId, dateFrom, dateTo,mode === Mode.LIVE],
         queryFn: () => getPayoutStatistics(api, activeAccountId!, dateParams),
         staleTime: 5 * 60 * 1000, // 5 minutes
         enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),

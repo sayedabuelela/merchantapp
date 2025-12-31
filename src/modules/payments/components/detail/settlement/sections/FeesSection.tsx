@@ -3,6 +3,7 @@ import SectionRowItem from '@/src/shared/components/details-screens/SectionRowIt
 import { useTranslation } from 'react-i18next';
 import { formatAmount, formatText } from '@/src/modules/payments/utils/formatters';
 import { SettlementData } from '../adapters';
+import { formatRelativeDate, formatTime } from '@/src/core/utils/dateUtils';
 
 interface Props {
     data: SettlementData;
@@ -17,7 +18,7 @@ const FeesSection = ({ data }: Props) => {
 
     // Only render if we have at least one value to show
     const hasData = data.fees || data.vat || data.settlementAmount ||
-                    data.rfsDate || data.earlySettlementFees;
+        data.rfsDate || data.earlySettlementFees;
 
     if (!hasData) {
         return null;
@@ -25,26 +26,31 @@ const FeesSection = ({ data }: Props) => {
 
     return (
         <DetailsSection title={t('Fees')} className='mt-6'>
+
             <SectionRowItem
                 title={t('Kashier Fees')}
-                value={formatAmount(data.fees)}
+                value={formatAmount(data.fees, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Fees After 14% VAT')}
-                value={formatAmount((Number(data.vat) + Number(data.fees)).toFixed(2))}
+                value={formatAmount(Number((Number(data.vat) + Number(data.fees)).toFixed(2)), t('EGP'))}
             />
             <SectionRowItem
                 title={t('Settlement Amount')}
-                value={formatAmount(data.settlementAmount)}
+                value={formatAmount(data.settlementAmount, t('EGP'))}
             />
-            <SectionRowItem
-                title={t('Ready for settlement date')}
-                value={formatText(data.rfsDate)}
-            />
-            <SectionRowItem
-                title={t('Early Settlement Fees')}
-                value={formatAmount(data.earlySettlementFees)}
-            />
+            {data.rfsDate !== undefined && (
+                <SectionRowItem
+                    title={t('RFS Date')}
+                    value={`${formatRelativeDate(data.rfsDate)}, ${formatTime(data.rfsDate)}`}
+                />
+            )}
+            {data.earlySettlementFees !== undefined && (
+                <SectionRowItem
+                    title={t('Early Settlement Fees')}
+                    value={formatAmount(data.earlySettlementFees, t('EGP'))}
+                />
+            )}
         </DetailsSection>
     );
 };

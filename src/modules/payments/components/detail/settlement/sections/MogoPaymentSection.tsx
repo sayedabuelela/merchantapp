@@ -34,24 +34,24 @@ const MogoPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Down Payment')}
-                value={formatAmount(payerInfo.downPayment)}
+                value={formatAmount(payerInfo.downPayment, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Financed amount')}
-                value={formatAmount(payerInfo.financedAmount)}
+                value={formatAmount(payerInfo.financedAmount, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Installment amount')}
-                value={formatAmount(payerInfo.installmentAmount)}
+                value={formatAmount(payerInfo.installmentAmount, t("EGP"))}
             />
             <SectionRowItem
                 title={t('Loan amount')}
-                value={formatAmount(payerInfo.loanAmount)}
+                value={formatAmount(payerInfo.loanAmount, t("EGP"))}
             />
-            <SectionRowItem
+            {/* <SectionRowItem
                 title={t('Plan ID')}
                 value={formatText(payerInfo.planId)}
-            />
+            /> */}
             <SectionRowItem
                 title={t('Phone Number')}
                 value={formatText(payerInfo.phoneNumber)}

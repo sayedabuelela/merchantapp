@@ -131,6 +131,8 @@ google-services.json
 *.hprof
 # APK files
 *.apk
+# Markdown files
+*.md
 # ===================================================
 # 🔹 Buck (Build System)
 # ===================================================

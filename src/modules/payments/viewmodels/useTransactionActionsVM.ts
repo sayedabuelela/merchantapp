@@ -32,6 +32,8 @@ export const useTransactionActionsVM = (transactionId: string) => {
             // Invalidate transaction list queries to update the list screen
             queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
             queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
+            // Invalidate all order detail queries since transaction actions affect related orders
+            queryClient.invalidateQueries({ queryKey: ['payment-order-detail'] });
             // Show success toast
             const title = i18n.language === 'ar'
                 ? 'نجاح الإلغاء'
@@ -88,6 +90,8 @@ export const useTransactionActionsVM = (transactionId: string) => {
             // Invalidate transaction list queries to update the list screen
             queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
             queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
+            // Invalidate all order detail queries since transaction actions affect related orders
+            queryClient.invalidateQueries({ queryKey: ['payment-order-detail'] });
 
             // Show success toast
             const message = i18n.language === 'ar'
@@ -138,6 +142,8 @@ export const useTransactionActionsVM = (transactionId: string) => {
                 // Invalidate transaction list queries to update the list screen
                 queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
                 queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
+                // Invalidate all order detail queries since transaction actions affect related orders
+                queryClient.invalidateQueries({ queryKey: ['payment-order-detail'] });
             }, 1000);
 
             // Show success toast
@@ -252,6 +258,8 @@ export const useTransactionActionsVM = (transactionId: string) => {
             // Invalidate list queries
             queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
             queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
+            // Invalidate all order detail queries since transaction actions affect related orders
+            queryClient.invalidateQueries({ queryKey: ['payment-order-detail'] });
 
             const message = i18n.language === 'ar'
                 ? data.messages?.ar || 'تم استرداد المبلغ بنجاح'
