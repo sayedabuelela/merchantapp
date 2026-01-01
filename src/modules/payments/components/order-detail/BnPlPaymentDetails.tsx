@@ -20,14 +20,17 @@ interface BnPlPaymentDetailsProps {
  * - Contact uses invoiceNo as loan reference
  */
 const getLoanOrPlanId = (method: PaymentMethod, payerInfo: PayerInfo): string | number | undefined => {
+
     switch (method) {
         case 'mogo':
-            return payerInfo.planId;
+            return payerInfo.loanNumber;
         case 'valu':
         case 'souhoola':
             return payerInfo.loanNumber;
         case 'contact':
             return payerInfo.invoiceNo;
+        case 'aman':
+            return payerInfo.transactionId;
         default:
             return payerInfo.loanNumber;
     }
@@ -89,7 +92,7 @@ export const BnPlPaymentDetails = ({ method, sourceOfFunds, paymentChannel }: Bn
         }
     }
     return (
-        <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded gap-y-5">
+        <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded">
             {/* Row 1: Type (method - channel) + Icon */}
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-1">

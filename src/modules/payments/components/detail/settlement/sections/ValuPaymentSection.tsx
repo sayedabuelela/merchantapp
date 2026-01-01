@@ -3,6 +3,7 @@ import SectionRowItem from '@/src/shared/components/details-screens/SectionRowIt
 import { useTranslation } from 'react-i18next';
 import { formatAmount, formatText } from '@/src/modules/payments/utils/formatters';
 import { SettlementData } from '../adapters';
+import { formatDateByLocale } from '@/src/core/utils/dateUtils';
 
 interface Props {
     data: SettlementData;
@@ -21,7 +22,9 @@ const ValuPaymentSection = ({ data }: Props) => {
     if (!payerInfo) {
         return null;
     }
-
+    console.log('payerInfo.firstEmiDueDate : ', payerInfo.lastInstallmentDate);
+    const firstEmiDueDate = payerInfo?.firstEmiDueDate?.split("/") ?? [];
+    const lastInstallmentDate = payerInfo?.lastInstallmentDate?.split("/") ?? [];
     return (
         <DetailsSection title={t('Valu Payment Details')}>
             <SectionRowItem
@@ -43,15 +46,15 @@ const ValuPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Monthly Paid')}
-                value={formatAmount(payerInfo.emi,t('EGP'))}
+                value={formatAmount(payerInfo.emi, t('EGP'))}
             />
             <SectionRowItem
                 title={t('First Installment Date')}
-                value={formatText(payerInfo.firstEmiDueDate)}
+                value={formatDateByLocale(new Date(firstEmiDueDate[2], firstEmiDueDate[1] - 1, firstEmiDueDate[0]))}
             />
             <SectionRowItem
                 title={t('Last Installment Date')}
-                value={formatText(payerInfo.lastInstallmentDate)}
+                value={formatDateByLocale(new Date(lastInstallmentDate[2], lastInstallmentDate[1] - 1, lastInstallmentDate[0]))}
             />
             <SectionRowItem
                 title={t('Admin Fees')}
@@ -71,7 +74,7 @@ const ValuPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('To U')}
-                value={formatAmount(payerInfo.ToUAmount,t('EGP'))}
+                value={formatAmount(payerInfo.ToUAmount, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Mobile Number')}

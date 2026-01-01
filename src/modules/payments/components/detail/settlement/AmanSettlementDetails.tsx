@@ -53,17 +53,19 @@ const AmanSettlementDetails = ({ data }: Props) => {
                         title={t('Settlement Amount')}
                         value={formatAmount(data.settlementAmount, t('EGP'))}
                     />
-                    <SectionRowItem
-                        title={t('Ready for settlement date')}
-                        value={data.rfsDate ? `${formatRelativeDate(data.rfsDate)}, ${formatTime(data.rfsDate)}` : formatText(undefined)}
-                    />
+                    {data.rfsDate !== undefined && data.rfsDate !== 'NA' && (
+                        <SectionRowItem
+                            title={t('Ready for settlement date')}
+                            value={data.rfsDate ? `${formatRelativeDate(data.rfsDate)}, ${formatTime(data.rfsDate)}` : '-'}
+                        />
+                    )}
                 </DetailsSection>
             ) : (
                 /* Transaction Details view: Order Info section + Terminal Info (for POS) */
                 <>
                     <DetailsSection title={t('Order Info')} className='mt-6'>
                         <SectionRowItem
-                            title={t('Kashier Fee')}
+                            title={t('Kashier Fees')}
                             value={formatAmount(data.fees, t('EGP'))}
                         />
                         <SectionRowItem

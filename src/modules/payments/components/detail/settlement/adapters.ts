@@ -78,11 +78,10 @@ export const adaptTransactionData = (transaction: TransactionDetail): Settlement
     fees: transaction.order?.feeTrxAmount,
     vat: transaction.order?.feeVatAmount,
     settlementAmount: undefined, // Transactions don't have settlementAmount
-    earlySettlementFees: undefined, // Transactions don't have earlySettlementFees
     rfsDate: transaction.rfsDate,
     sourceOfFunds: transaction.sourceOfFunds,
     currency: transaction.currency,
-
+    earlySettlementFees: transaction.order?.earlySettlementFees,
     // Order Info fields
     authorizationId: transaction.transactionId,
     merchantType: transaction.order?.accountType,

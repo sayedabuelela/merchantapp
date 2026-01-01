@@ -51,7 +51,7 @@ const DeductedFeesSection = ({ data }: Props) => {
         <DetailsSection title={t('Deducted Fees')} className="mt-6">
             <SectionRowItem
                 title={`${t('Bank interest rate')} (${interestRatePercent})`}
-                value={formatAmount(fees.interestRateAmount,t('EGP'))}
+                value={formatAmount(fees.interestRateAmount, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Kashier online processing fees')}
@@ -63,10 +63,10 @@ const DeductedFeesSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={`${t('Kashier installment service fees')} (${kisfRatePercent})`}
-                value={formatAmount(fees.KISFAmount,t('EGP'))}
+                value={formatAmount(fees.KISFAmount, t('EGP'))}
             />
             <SectionRowItem
-                title={`${t('VAT')} (${vatPercent})`}
+                title={`${t('VAT')} (14%)`}
                 value={formatAmount(fees.VATAmount, t('EGP'))}
             />
             <SectionRowItem

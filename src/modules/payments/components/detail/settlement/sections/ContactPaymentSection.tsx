@@ -35,7 +35,7 @@ const ContactPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Monthly Amount')}
-                value={formatMonthlyAmount(payerInfo.installmentValue)}
+                value={formatAmount(payerInfo.installmentValue, data.currency || t('EGP'))}
             />
             <SectionRowItem
                 title={t('Client Phone Number')}

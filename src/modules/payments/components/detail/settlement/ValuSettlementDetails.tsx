@@ -27,7 +27,7 @@ const ValuSettlementDetails = ({ data }: Props) => {
     if (!payerInfo) {
         return null;
     }
-
+    console.log('ValuSettlementDetails : ', data);
     // Determine if this is order view or transaction view
     // Order data has settlementAmount, transaction data does not
     const isOrderView = data.settlementAmount !== undefined;

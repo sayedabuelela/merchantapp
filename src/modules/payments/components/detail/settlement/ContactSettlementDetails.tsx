@@ -13,14 +13,12 @@ interface Props {
 const ContactSettlementDetails = ({ data }: Props) => {
     return (
         <View className="mt-4">
-            {/* Order Info - Always visible */}
-            <OrderInfoSection data={data} />
-
-            {/* Terminal Info - Only for POS transactions */}
-            <TerminalInfoSection data={data} />
-
             {/* Contact Payment Details - Contact-specific information */}
             <ContactPaymentSection data={data} />
+            {/* Terminal Info - Only for POS transactions */}
+            <TerminalInfoSection data={data} />
+            {/* Order Info - Always visible */}
+            <OrderInfoSection data={data} />
         </View>
     );
 };

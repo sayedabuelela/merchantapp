@@ -5,10 +5,10 @@
 /**
  * Formats amount fields - returns "0 EGP" for null/undefined/0, otherwise formats the number
  */
-export const formatAmount = (value: number | string | null | undefined,currency:string): string => {
+export const formatAmount = (value: number | string | null | undefined, currency: string): string => {
     if (value === null || value === undefined || value === 0) return `0.00 ${currency}`;
     const numericValue = typeof value === 'string' ? parseFloat(value) : value;
-    if (isNaN(numericValue)) return `0 ${currency}`;
+    if (isNaN(numericValue)) return `0.00 ${currency}`;
     const formattedValue = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2

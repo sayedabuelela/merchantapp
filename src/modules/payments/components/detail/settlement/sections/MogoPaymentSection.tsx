@@ -3,7 +3,7 @@ import SectionRowItem from '@/src/shared/components/details-screens/SectionRowIt
 import { useTranslation } from 'react-i18next';
 import { formatAmount, formatText } from '@/src/modules/payments/utils/formatters';
 import { SettlementData } from '../adapters';
-
+import { formatDateByLocale } from '@/src/core/utils/dateUtils';
 interface Props {
     data: SettlementData;
 }
@@ -22,11 +22,14 @@ const MogoPaymentSection = ({ data }: Props) => {
         return null;
     }
 
+    const [day, month, year] = payerInfo?.firstInstallmentDate?.split("/") ?? [];
+    console.log('payerInfo?.firstInstallmentDate : ', day, month, year);
+
     return (
         <DetailsSection title={t('Mogo Payment Details')}>
             <SectionRowItem
                 title={t('First Installment Date')}
-                value={formatText(payerInfo.firstInstallmentDate)}
+                value={formatDateByLocale(new Date(year, day - 1, month))}
             />
             <SectionRowItem
                 title={t('Tenure')}

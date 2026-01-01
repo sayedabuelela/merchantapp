@@ -18,6 +18,8 @@ const InstallmentDetailsSection = ({ data }: Props) => {
     const { t, i18n } = useTranslation();
 
     const installment = data.installmentDetails;
+    const installmentFees = data.installmentFees;
+    console.log('installment : ', data);
 
     if (!installment) {
         return null;
@@ -76,11 +78,11 @@ const InstallmentDetailsSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Monthly Installment Amount')}
-                value={formatAmount(installment.installmentAmountPerMonth,t('EGP'))}
+                value={formatAmount(installment.installmentAmountPerMonth, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Authorized Amount')}
-                value={formatAmount(installment.authorizedAmount,t('EGP'))}
+                value={formatAmount(installmentFees?.authorizationAmount, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Original Amount')}

@@ -27,7 +27,7 @@ const OrderInfoSection = ({ data }: Props) => {
     return (
         <DetailsSection title={t('Order Info')} className='mt-6'>
             <SectionRowItem
-                title={t('Kashier Fee')}
+                title={t('Kashier Fees')}
                 value={formatAmount(data.fees, t('EGP'))}
             />
             <SectionRowItem

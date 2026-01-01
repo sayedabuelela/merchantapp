@@ -36,7 +36,7 @@ interface Props {
 const SettlementTab = ({ transaction }: Props) => {
     const sourceOfFunds = transaction.sourceOfFunds;
     const settlementData = adaptTransactionData(transaction);
-
+    console.log('settlementData : ', settlementData);
     // Card payments with bank installments (must check before regular card payments)
     if (isCardInstallmentPayment(sourceOfFunds, transaction.installmentDetails)) {
         return <BankInstallmentSettlementDetails data={settlementData} />;

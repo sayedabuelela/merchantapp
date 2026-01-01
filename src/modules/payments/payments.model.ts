@@ -491,6 +491,7 @@ export interface TransactionDetailOrder {
     feeVatAmount?: string;
     accountType?: string;
     orderId?: string;
+    earlySettlementFees?: number;
 }
 
 export interface TransactionDetailPCC {

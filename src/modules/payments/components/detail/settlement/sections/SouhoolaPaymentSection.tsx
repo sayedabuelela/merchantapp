@@ -46,11 +46,11 @@ const SouhoolaPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Admin Fees')}
-                value={formatAmount(payerInfo.adminFees,t('EGP'))}
+                value={formatAmount(payerInfo.adminFees, t('EGP'))}
             />
             <SectionRowItem
                 title={t('Down Payment')}
-                value={formatAmount(payerInfo.downPayment,t('EGP'))}
+                value={formatAmount(payerInfo.downPayment, t('EGP'))}
             />
         </DetailsSection>
     );
