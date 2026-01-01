@@ -60,8 +60,10 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'P@ssw0rd',
             // email: 'eabdallah@kashier.io',
             // password: 'Password500$$',
-            // email: 'tofoho1501@mucate.com',
-            // password: 'P@ssw0rd',
+            // email: 'e4szws6xwi@xkxkud.com',
+            // password: 'Password500$$',
+            email: 'tofoho1501@mucate.com',
+            password: 'P@ssw0rd',
         },
     });
 

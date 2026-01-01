@@ -1,11 +1,44 @@
 import { AxiosInstance } from "axios";
 import { CurrencyRequestData } from "../currency/currency.model";
-import { GlobalOnboardingData, OnboardingDataPayload } from "./onboarding-data.model";
+import { BusinessProfileResponse, GlobalOnboardingData, OnboardingDataPayload } from "./onboarding-data.model";
+
+/**
+ * Adapts the new BusinessProfileResponse format to the existing GlobalOnboardingData format.
+ * This ensures backward compatibility with all existing consumers.
+ */
+const adaptBusinessProfileToGlobalOnboardingData = (
+    response: BusinessProfileResponse
+): GlobalOnboardingData => {
+    const { requestInfo, merchant } = response;
+    const merchantInfo = merchant?.merchantInfo;
+
+    return {
+        isApprovedBusinessInfo: requestInfo?.isApprovedBusinessInfo ?? 'pending',
+        merchant: {
+            merchantInfo: merchantInfo,
+        },
+        isLive: merchantInfo?.isLive ?? false,
+        // These fields are not present in the new API response
+        // Providing sensible defaults for backward compatibility
+        allowedPaymentMethods: {
+            acceptedPaymentMethods: [],
+            acceptedBNPLMethods: [],
+            bnplSettlementTypes: {},
+            sparkitEnabled: false,
+            terminalCredentials: {},
+            transfersEnabled: false,
+            transfersProviders: [],
+            operations: {},
+            acceptedCardProviders: [],
+            acceptedWalletProviders: [],
+        },
+        hasAccounts: false,
+    };
+};
 
 export const getOnboardingAllData = async (api: AxiosInstance, merchantId: string): Promise<GlobalOnboardingData> => {
-    const response = await api.get<{ body: GlobalOnboardingData }>(`/v2/merchants/${merchantId}/onborad`)
-    console.log('response.data', response.data);
-    return response.data.body;
+    const response = await api.get<BusinessProfileResponse>(`/v2/merchants/${merchantId}/business-profile`);
+    return adaptBusinessProfileToGlobalOnboardingData(response.data);
 }
 
 export const submitPartialOnboardingData = async <T extends OnboardingDataPayload>(

@@ -26,20 +26,34 @@ export interface PublicData {
     socialLinkedIn?: string | null;
     socialTwitter?: string | null;
     storeName: string;
-    termsAndConditions?: TermsAndConditions | null; // Optional as it might not always be set
-    businessLogo?: BusinessLogoMetadata | null; // Moved from root of merchantInfo to here
+    termsAndConditions?: TermsAndConditions | null;
+    businessLogo?: BusinessLogoMetadata | null;
     merchantAccoutType?: AccountType;
 }
 
 export interface MerchantInfo {
-    businessLogo?: BusinessLogoMetadata | null; 
+    businessLogo?: BusinessLogoMetadata | null;
     merchantAccountType: AccountType;
     businessContactInfo: BusinessContactFormData;
     documents: Document[] | null;
     payoutMethod: PayoutMethod | null;
-    publicData: PublicData | null; 
-    // merchantStatus?: ApprovalStatus; // Not in your new example for merchantInfo
-    // isLive?: boolean; // Not in your new example for merchantInfo
+    publicData: PublicData | null;
+    merchantStatus?: ApprovalStatus;
+    isLive?: boolean;
+}
+
+// --- New Business Profile API Response Types ---
+export interface BusinessProfileRequestInfo {
+    isApprovedBusinessInfo: ApprovalStatus;
+}
+
+export interface BusinessProfileMerchant {
+    merchantInfo: MerchantInfo;
+}
+
+export interface BusinessProfileResponse {
+    requestInfo: BusinessProfileRequestInfo;
+    merchant: BusinessProfileMerchant;
 }
 
 export interface Merchant {

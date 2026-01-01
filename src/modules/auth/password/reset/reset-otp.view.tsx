@@ -54,6 +54,7 @@ const ResetPasswordOTPScreen = () => {
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
             >
                 <View className='items-center mb-10'>
                     <FadeInDownView delay={0} duration={600}>

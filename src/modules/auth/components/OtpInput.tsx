@@ -282,13 +282,17 @@ export const OtpInput: React.FC<OtpInputProps> = ({
 
     const handleContainerPress = () => {
         if (!disabled && hiddenInputRef.current) {
-            hiddenInputRef.current.focus();
+            InteractionManager.runAfterInteractions(() => {
+                hiddenInputRef.current?.focus();
+            });
         }
     };
 
     const handleDigitPress = (index: number) => {
         if (!disabled && hiddenInputRef.current) {
-            hiddenInputRef.current.focus();
+            InteractionManager.runAfterInteractions(() => {
+                hiddenInputRef.current?.focus();
+            });
             const newIndex = Math.min(index, value.length);
             activeIndex.value = withTiming(newIndex, TIMING_CONFIG);
         }
@@ -452,11 +456,8 @@ const styles = StyleSheet.create({
         width: 1,
         height: 1,
         opacity: 0,
-        // Remove: top: -1000
-        // Add these instead:
         top: 0,
         left: 0,
-        zIndex: -1,
     },
     separatorContainer: {
         height: DIGIT_BOX_SIZE,

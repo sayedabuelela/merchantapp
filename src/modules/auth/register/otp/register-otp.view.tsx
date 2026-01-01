@@ -56,12 +56,10 @@ export default function VerifyOTPScreen() {
                     paddingHorizontal: 24,
                     paddingBottom: 24
                 }}
-                // keyboardShouldPersistTaps="handled"
+                keyboardShouldPersistTaps="handled"
                 bottomOffset={100}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
-                // keyboardShouldPersistTaps="always"
-                // disableScrollOnKeyboardShow
             >
                 <View className='items-center mb-6'>
                     <FadeInDownView delay={0} duration={600}>
