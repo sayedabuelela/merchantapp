@@ -29,7 +29,7 @@ const ResetPasswordOTPScreen = () => {
     const onSubmit = async () => {
         console.log('OTP Submitted:', otpValue);
         await verifyResetOtp({ key: email, code: otpValue });
-        router.push({
+        router.replace({
             pathname: `/(auth)/(reset-password)/create-password`,
             params: { code: otpValue },
         })

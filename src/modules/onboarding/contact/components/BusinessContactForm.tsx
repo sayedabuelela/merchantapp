@@ -150,7 +150,10 @@ const BusinessContactForm = ({ onSubmit, loading, error, existingData, cities, s
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             label={t('Address Line 1')}
                             returnKeyType='next'
                             autoCorrect={false}
@@ -184,8 +187,11 @@ const BusinessContactForm = ({ onSubmit, loading, error, existingData, cities, s
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
-                            label={t('Address Line 2')}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
+                            label={t('Address Line 2 (Optional)')}
                             returnKeyType='next'
                             autoCorrect={false}
                             error={!!errors.addressLine2}
@@ -218,7 +224,10 @@ const BusinessContactForm = ({ onSubmit, loading, error, existingData, cities, s
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             label={t('Business Phone')}
                             returnKeyType='next'
                             keyboardType='phone-pad'
@@ -253,7 +262,10 @@ const BusinessContactForm = ({ onSubmit, loading, error, existingData, cities, s
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             label={t('Business Email')}
                             returnKeyType='next'
                             keyboardType='email-address'
@@ -289,7 +301,10 @@ const BusinessContactForm = ({ onSubmit, loading, error, existingData, cities, s
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             label={t('Hotline Number (Optional)')}
                             returnKeyType='done'
                             keyboardType='phone-pad'

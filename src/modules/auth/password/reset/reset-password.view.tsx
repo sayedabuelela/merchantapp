@@ -45,7 +45,7 @@ const ResetCreatePasswordScreen = () => {
                     <AnimatedError errorMsg={t(resetError.error || resetError.message || "Something went wrong")} />
                 )}
 
-                <FadeInUpView delay={150} duration={600}>
+                <FadeInUpView delay={150} duration={600} className='flex-1'>
                     <PasswordForm onSubmit={onSubmit} />
                 </FadeInUpView>
             </ScrollView>

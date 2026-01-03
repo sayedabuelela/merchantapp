@@ -30,7 +30,7 @@ export default function VerifyOTPScreen() {
     const onSubmit = async () => {
         console.log('OTP Submitted:', otpValue);
         await verifyOtp({ key: email, code: otpValue });
-        router.push({
+        router.replace({
             pathname: `/(auth)/(register)/register-password`,
             params: { email, code: otpValue },
         })

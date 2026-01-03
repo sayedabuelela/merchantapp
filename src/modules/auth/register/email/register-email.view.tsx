@@ -86,7 +86,10 @@ const RegisterEmailScreen = () => {
                                         ref={ref}
                                         value={value}
                                         onChangeText={handleInputChange(onChange)}
-                                        onBlur={onBlur}
+                                        onBlur={() => {
+                                            onChange(value.trim());
+                                            onBlur();
+                                        }}
                                         label={t('Email')}
                                         returnKeyType='next'
                                         keyboardType='email-address'

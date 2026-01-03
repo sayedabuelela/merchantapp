@@ -49,7 +49,7 @@ const GenericDocumentUploadScreen = ({
     const { currentFileKey, displayableFileUri, handleUploadDocumentStep, isUploading, isLoadingDocument, uploadProgress } = useDocumentViewModel({ documentType });
     const {
         image,
-        document,
+        document: pickedDocument,
         pickImage,
         pickDocument,
         clearImage,
@@ -58,8 +58,20 @@ const GenericDocumentUploadScreen = ({
         isLoading: isPicking
     } = useFilePicker();
 
+    // Use whichever file was picked (image from gallery/camera, or document from files)
+    const pickedFile = image || pickedDocument;
+
+    const handleClearFile = () => {
+        if (image) {
+            clearImage();
+        }
+        if (pickedDocument) {
+            clearDocument();
+        }
+    };
+
     const handleSubmit = async () => {
-        if (currentFileKey && !image) {
+        if (currentFileKey && !pickedFile) {
             addOrUpdateDocument({
                 key: currentFileKey,
                 documentType,
@@ -68,8 +80,8 @@ const GenericDocumentUploadScreen = ({
             });
 
             await handleUploadDocumentStep(null, nextRoute);
-        } else if (image) {
-            await handleUploadDocumentStep(image, nextRoute);
+        } else if (pickedFile) {
+            await handleUploadDocumentStep(pickedFile, nextRoute);
         } else {
             await handleUploadDocumentStep(null, nextRoute);
         }
@@ -96,9 +108,10 @@ const GenericDocumentUploadScreen = ({
                             handleUpload={openModal}
                             isUploading={isUploading}
                             isLoadingDocument={isLoadingDocument}
-                            fileData={image ? { dataUri: image?.uri, key: image?.name, deletable: true } : { dataUri: displayableFileUri, key: currentFileKey, deletable: false }}
-                            clearImage={clearImage}
-                            clearDocument={clearDocument}
+                            fileData={pickedFile
+                                ? { dataUri: pickedFile.uri, key: pickedFile.name, mimeType: pickedFile.type, deletable: true }
+                                : { dataUri: displayableFileUri, key: currentFileKey, deletable: false }}
+                            clearFile={handleClearFile}
                             uploadProgress={uploadProgress}
                         />
                     </ScaleView>
@@ -113,7 +126,7 @@ const GenericDocumentUploadScreen = ({
                             disabled={
                                 isOptional
                                     ? (isPicking || isUploading)
-                                    : ((!image && !displayableFileUri) || isPicking || isUploading)
+                                    : ((!pickedFile && !displayableFileUri) || isPicking || isUploading)
                             }
                             onPress={handleSubmit}
                         />

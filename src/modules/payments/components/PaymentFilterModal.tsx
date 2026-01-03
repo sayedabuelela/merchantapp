@@ -133,9 +133,9 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
     // Payment source options (orders only)
     const paymentSourceOptions = [
         { label: t('All'), value: null as string | null },
-        { label: t('Payment Link'), value: 'Payment Link' },
-        { label: t('Payment Page'), value: 'Payment Page' },
-        { label: t('Product Page'), value: 'Product Page' },
+        { label: t('Payment Link'), value: 'paymentLink' },
+        { label: t('Payment Page'), value: 'paymentPage' },
+        { label: t('Product Page'), value: 'productPage' },
         { label: t('integration'), value: 'integration' },
     ];
 

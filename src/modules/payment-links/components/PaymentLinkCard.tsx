@@ -99,10 +99,10 @@ const PaymentLinkCard = ({
                             {(lastShareStatus?.email.status || lastShareStatus?.sms.status) && (
                                 <View className='flex-row items-center gap-x-2 mt-2'>
                                     {lastShareStatus?.email.status && (
-                                        <DeliveryStatusBox delivery_status={lastShareStatus.email.status} />
+                                        <DeliveryStatusBox delivery_status={lastShareStatus.email.status} type="email" />
                                     )}
                                     {lastShareStatus?.sms.status && (
-                                        <DeliveryStatusBox delivery_status={lastShareStatus.sms.status} />
+                                        <DeliveryStatusBox delivery_status={lastShareStatus.sms.status} type="sms" />
                                     )}
                                 </View>
                             )}

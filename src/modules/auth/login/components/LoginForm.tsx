@@ -34,7 +34,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // email: 'logare2532@frisbook.com',
             // email: 'saboelela@kashier.io',
             // password: 'P@ssw0rdd',
-            // email: 'awageeh@kashier.io',
+            // email: ' awageeh@kashier.io',
             // password: 'P@ssw0rd012',
             // email: 'kexoka8183@fixwap.com',
             // email: 'sexepic929@fixwap.com',
@@ -60,10 +60,10 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'P@ssw0rd',
             // email: 'eabdallah@kashier.io',
             // password: 'Password500$$',
-            // email: 'e4szws6xwi@xkxkud.com',
-            // password: 'Password500$$',
-            email: 'tofoho1501@mucate.com',
-            password: 'P@ssw0rd',
+            email: 'e4szws6xwi@xkxkud.com',
+            password: 'Password500$$',
+            // email: 'tofoho1501@mucate.com',
+            // password: 'P@ssw0rd',
         },
     });
 
@@ -114,7 +114,10 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                         ref={ref}
                         value={value}
                         onChangeText={handleInputChange(onChange)}
-                        onBlur={onBlur}
+                        onBlur={() => {
+                            onChange(value.trim());
+                            onBlur();
+                        }}
                         label={t('Email')}
                         returnKeyType='next'
                         keyboardType='email-address'

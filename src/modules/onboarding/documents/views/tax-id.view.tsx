@@ -10,7 +10,7 @@ const TaxIdScreen = () => {
         <GenericDocumentUpload
             progress={80}
             documentRule={documentRule}
-            documentUploadBoxTitle={t('Tax ID2')}
+            documentUploadBoxTitle={t('Tax ID')}
             documentType="taxId"
             nextRoute={ROUTES.ONBOARDING.DOCUMENTS.OTHERS}
         />

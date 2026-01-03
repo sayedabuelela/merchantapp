@@ -59,7 +59,10 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value.trim());
+                                onBlur();
+                            }}
                             label={t('First Name')}
                             returnKeyType='next'
                             autoCorrect={false}
@@ -93,7 +96,10 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value.trim());
+                                onBlur();
+                            }}
                             label={t('Last Name')}
                             returnKeyType='next'
                             autoCorrect={false}
@@ -127,7 +133,10 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value.trim());
+                                onBlur();
+                            }}
                             label={t('Store Name')}
                             returnKeyType='next'
                             autoCorrect={false}
@@ -161,7 +170,10 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value.trim());
+                                onBlur();
+                            }}
                             label={t('Mobile Number')}
                             returnKeyType='done'
                             autoCorrect={false}

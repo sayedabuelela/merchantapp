@@ -1,5 +1,11 @@
 
 import { z } from "zod";
+const urlRegex = /^https?:\/\/(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:\/[^\s]*)?$/;
+
+const optionalUrl = z.string().trim().refine(
+    (val) => !val || urlRegex.test(val),
+    'Please enter a valid URL'
+).optional();
 
 export const businessScheme = z.object({
     businessLogo: z.union([
@@ -11,19 +17,19 @@ export const businessScheme = z.object({
         }),
         z.string(),
     ]).optional(),
-    legalCompanyName: z.string().min(1, 'Business name is required'),
-    storeName: z.string().min(1, 'Business name is required'),
-    description: z.string().optional(),
-    businessIndustry: z.string().min(1, 'Business Industry is required'),
-    businessSector: z.string().min(1, 'Business Sector is required'),
-    companyWebsite: z.string().optional(),
-    socialTwitter: z.string().optional(),
-    socialLinkedIn: z.string().optional(),
-    socialFacebook: z.string().optional(),
-    socialInstagram: z.string().optional(),
+    legalCompanyName: z.string().trim().min(1, 'This field is required'),
+    storeName: z.string().trim().min(1, 'This field is required'),
+    description: z.string().trim().optional(),
+    businessIndustry: z.string().trim().min(1, 'Business Industry is required'),
+    businessSector: z.string().trim().min(1, 'Business Sector is required'),
+    companyWebsite: optionalUrl,
+    socialTwitter: optionalUrl,
+    socialLinkedIn: optionalUrl,
+    socialFacebook: optionalUrl,
+    socialInstagram: optionalUrl,
     termsAndConditions: z.object({
-        ar: z.string().min(1, 'Terms and conditions is required'),
-        en: z.string().min(1, 'Terms and conditions is required'),
+        ar: z.string().trim().min(1, 'Terms and conditions is required'),
+        en: z.string().trim().min(1, 'Terms and conditions is required'),
     })
 })
 

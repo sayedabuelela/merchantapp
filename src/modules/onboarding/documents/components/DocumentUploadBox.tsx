@@ -11,9 +11,8 @@ interface DocumentUploadBoxProps {
     handleUpload: () => void;
     isUploading?: boolean;
     isLoadingDocument?: boolean;
-    fileData?: { dataUri?: string, key?: string, deletable?: boolean };
-    clearImage?: () => void;
-    clearDocument?: () => void;
+    fileData?: { dataUri?: string, key?: string, mimeType?: string, deletable?: boolean };
+    clearFile?: () => void;
     uploadProgress?: UploadProgressState | null;
 }
 
@@ -23,8 +22,7 @@ const DocumentUploadBox = ({
     isUploading,
     isLoadingDocument,
     fileData,
-    clearImage,
-    clearDocument,
+    clearFile,
     uploadProgress,
 }: DocumentUploadBoxProps) => {
     const { t } = useTranslation();
@@ -52,10 +50,10 @@ const DocumentUploadBox = ({
                         <FontText type="body" weight="semi" className="text-primary text-sm self-start ml-2">{t('Upload')}</FontText>
                     </TouchableOpacity>
                 </View>
-                {fileData?.dataUri && <DisplayDocument
+                {(fileData?.dataUri || fileData?.mimeType?.includes('pdf')) && <DisplayDocument
                     isLoadingDocument={isLoadingDocument}
                     fileData={fileData}
-                    clearImage={clearImage}
+                    clearFile={clearFile}
                 />}
 
             </View>

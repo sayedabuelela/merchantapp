@@ -133,7 +133,10 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             label={t('Legal Company Name')}
                             returnKeyType='next'
                             autoCorrect={false}
@@ -171,7 +174,10 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             returnKeyType='next'
                             error={!!errors.storeName}
                             placeholder={t('Enter your store name')}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             onSubmitEditing={() => {
                                 setFocus('description');
                             }}
@@ -292,7 +298,10 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             returnKeyType='next'
                             error={!!errors.description}
                             placeholder={t('Enter your business description')}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             onSubmitEditing={() => {
                                 setFocus('description');
                             }}
@@ -321,7 +330,10 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             label={t('Website URL (Optional)')}
                             returnKeyType='next'
                             keyboardType='url'
@@ -356,7 +368,10 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             label={t('LinkedIn (Optional)')}
                             returnKeyType='next'
                             keyboardType='url'
@@ -390,7 +405,10 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             label={t('Facebook (Optional)')}
                             returnKeyType='next'
                             keyboardType='url'
@@ -424,7 +442,10 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
                             label={t('Instagram (Optional)')}
                             returnKeyType='next'
                             keyboardType='url'
@@ -458,8 +479,11 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
-                            label={t('Instagram (Optional)')}
+                            onBlur={() => {
+                                onChange(value?.trim());
+                                onBlur();
+                            }}
+                            label={t('X (Optional)')}
                             returnKeyType='next'
                             keyboardType='url'
                             autoCorrect={false}
@@ -502,7 +526,10 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             ref={ref}
                             value={value?.en}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange({ ...value, en: value?.en?.trim() });
+                                onBlur();
+                            }}
                             label={t('In English')}
                             returnKeyType='next'
                             autoCorrect={false}
@@ -538,7 +565,10 @@ const BusinessDetailsForm = ({ onSubmit, loading, error, existingData, businessI
                             ref={ref}
                             value={value?.ar}
                             onChangeText={handleInputChange(onChange)}
-                            onBlur={onBlur}
+                            onBlur={() => {
+                                onChange({ ...value, ar: value?.ar?.trim() });
+                                onBlur();
+                            }}
                             label={t('اللغة العربية')}
                             labelClassName="text-right self-end font-body-semi-rtl self-start"
                             returnKeyType='done'
