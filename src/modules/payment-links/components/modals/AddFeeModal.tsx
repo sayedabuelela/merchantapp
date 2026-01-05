@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Modal, Pressable, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { XMarkIcon } from 'react-native-heroicons/outline';
 import { KeyboardController } from 'react-native-keyboard-controller';
-import { FeeType, feeSchema } from '../../payment-links.scheme';
+import { FeeType, feeSchema, VALIDATION_LIMITS } from '../../payment-links.scheme';
 import { cleanDecimalInput, formatDecimalDisplay, parseDecimalInput } from '../../utils/numberInputUtils';
 
 interface Props {
@@ -133,6 +133,7 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                     value={value}
                                                     onChangeText={onChange}
                                                     error={!!errors.name}
+                                                    maxLength={VALIDATION_LIMITS.FEE_NAME_MAX_LENGTH}
                                                 />
                                             )}
                                         />
@@ -202,6 +203,11 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                         {errors.flatFee && (
                                             <FontText type="body" className="text-feedback-error mt-1">
                                                 {t(errors.flatFee?.message || '')}
+                                            </FontText>
+                                        )}
+                                        {errors.rate && (
+                                            <FontText type="body" className="text-feedback-error mt-1">
+                                                {t(errors.rate?.message || '')}
                                             </FontText>
                                         )}
                                     </View>

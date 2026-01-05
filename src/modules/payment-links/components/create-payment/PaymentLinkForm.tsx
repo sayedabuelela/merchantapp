@@ -13,7 +13,7 @@ import { Pressable, View } from "react-native";
 import { BanknotesIcon, ShoppingBagIcon, TicketIcon, UserIcon } from "react-native-heroicons/outline";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { PaymentLink } from "../../payment-links.model";
-import { createPaymentLinkSchema, CreatePaymentLinkTypes, FeeType, ItemType } from "../../payment-links.scheme";
+import { createPaymentLinkSchema, CreatePaymentLinkTypes, FeeType, ItemType, VALIDATION_LIMITS } from "../../payment-links.scheme";
 import { usePaymentLinkStore } from "../../paymentLink.store";
 import { mapApiToFormValues } from "../../paymentLink.utils";
 import AddFeeModal from "../modals/AddFeeModal";
@@ -160,6 +160,7 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                                 value={value}
                                 onChangeText={onChange}
                                 error={!!errors.customer?.name}
+                                maxLength={VALIDATION_LIMITS.CUSTOMER_NAME_MAX_LENGTH}
                             />
                         )}
                     />

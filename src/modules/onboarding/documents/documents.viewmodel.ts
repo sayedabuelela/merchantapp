@@ -7,13 +7,14 @@ import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack
 import { AxiosProgressEvent } from "axios";
 import { Route, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { toast } from 'sonner-native';
 import { selectUser, useAuthStore } from "../../auth/auth.store";
 import { accountTypeSelector, useOnboardingStore } from "../onboarding.store";
 import { transformFileContentResponse } from "./documents.helper";
 import { BusinessLogoMetadata, DocumentViewModelProps, FileUploadApiResponse, Document as OnboardingDocumentMetadata, PickedFile, UploadProgressState } from "./documents.model";
 import { getDocumentFileData as getFileContentService, submitDocumentsApi, uploadDocumentFileApi } from "./documents.service";
 import { useDocumentsStore } from "./documents.store";
-import { useToast } from "@/src/core/providers/ToastProvider";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -29,11 +30,10 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
     const documents = useDocumentsStore(state => state.documents);
     const [uploadProgress, setUploadProgress] = useState<UploadProgressState | null>(null);
     const onboardingDataQueryKey = ['onboarding-data', merchantId];
-    const { showToast } = useToast?.() ?? { showToast: () => { } };
-
+    const { t } = useTranslation();
     const { data: onboardingData, isLoading: isLoadingOnboardingData } = useQuery<GlobalOnboardingData>({
         queryKey: onboardingDataQueryKey,
-        queryFn: () => getOnboardingAllData(api, merchantId!),
+        queryFn: () => getOnboardingAllData(api),
         enabled: !!merchantId,
         staleTime: 5 * 60 * 1000,
     });
@@ -99,16 +99,24 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
             // Invalidate queries to refresh data
             queryClient.invalidateQueries({ queryKey: onboardingDataQueryKey });
             queryClient.invalidateQueries({ queryKey: ['displayableFile'] });
-            showToast({
-                message: 'Document uploaded successfully',
-                type: 'success',
+            toast.success(t('Successful Upload'), {
+                richColors: true,
+                style: {
+                    // backgroundColor: '#F3FFF4',
+                    borderWidth: 0
+                },
+                description: t('Document uploaded successfully'),
             });
         },
         onError: (error, variables) => {
             console.error(`Error uploading ${documentType}:`, error.message);
-            showToast({
-                message: `Upload failed: ${error.message}`,
-                type: 'danger',
+            toast.error(t('Failed Upload'), {
+                richColors: true,
+                style: {
+                    // backgroundColor: '#F3FFF4',
+                    borderWidth: 0
+                },
+                description: t(`Upload failed: ${error.message}`),
             });
             setUploadProgress({
                 loaded: 0,
@@ -136,16 +144,24 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
         onSuccess: () => {
             // Invalidate queries to refresh data after submission
             queryClient.invalidateQueries({ queryKey: onboardingDataQueryKey });
-            showToast({
-                message: 'Documents submitted successfully',
-                type: 'success',
+            toast.success(t('Successful Upload'), {
+                richColors: true,
+                style: {
+                    // backgroundColor: '#F3FFF4',
+                    borderWidth: 0
+                },
+                description: t('Document uploaded successfully'),
             });
         },
         onError: (error) => {
             console.error(`Error submitting documents:`, error.message);
-            showToast({
-                message: `Submission failed: ${error.message}`,
-                type: 'danger',
+            toast.error(t('Failed Upload'), {
+                richColors: true,
+                style: {
+                    // backgroundColor: '#F3FFF4',
+                    borderWidth: 0
+                },
+                description: t(`Upload failed: ${error.message}`),
             });
         },
     });
@@ -156,9 +172,12 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                 // Validate file size before upload
                 if (file.size && file.size > MAX_FILE_SIZE) {
                     const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-                    showToast({
-                        message: `File size (${fileSizeInMB}MB) exceeds the maximum limit of 5MB`,
-                        type: 'danger',
+                    toast.error(t('Failed Upload'), {
+                        richColors: true,
+                        style: {
+                            borderWidth: 0
+                        },
+                        description: t(`File size (${fileSizeInMB}MB) exceeds the maximum limit of 5MB`),
                     });
                     setUploadProgress({
                         loaded: 0,
@@ -191,9 +210,12 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                         router.push(navigateTo);
                     }
                 } else {
-                    showToast({
-                        message: 'Upload succeeded but no file key was returned',
-                        type: 'danger',
+                    toast.error(t('Something went wrong'), {
+                        richColors: true,
+                        style: {
+                            borderWidth: 0
+                        },
+                        description: t('Upload succeeded but no file key was returned'),
                     });
                     setUploadProgress({
                         loaded: file.size || 0,
@@ -212,12 +234,15 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
             }
         } catch (error) {
             console.error("Final document submission error:", error);
-            showToast({
-                message: 'Failed to upload document. Please try again.',
-                type: 'danger',
+            toast.error(t('Something went wrong'), {
+                richColors: true,
+                style: {
+                    borderWidth: 0
+                },
+                description: t('Failed to upload document. Please try again.'),
             });
         }
-    }, [uploadDocumentMutation.mutateAsync, addOrUpdateDocument, documentType, router, showToast]);
+    }, [uploadDocumentMutation.mutateAsync, addOrUpdateDocument, documentType, router]);
 
 
     const submitOnboardingStep = useCallback(async (navigateTo: Route, _documentsToSubmit?: OnboardingDocumentMetadata[]) => {
@@ -228,12 +253,15 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
             router.push(navigateTo);
         } catch (error) {
             console.error("Error submitting onboarding step:", error);
-            showToast({
-                message: 'Failed to submit documents. Please try again.',
-                type: 'danger',
+            toast.error(t('Something went wrong'), {
+                richColors: true,
+                style: {
+                    borderWidth: 0
+                },
+                description: t('Failed to submit documents. Please try again.'),
             });
         }
-    }, [submitDocumentsMutation.mutateAsync, router, showToast]);
+    }, [submitDocumentsMutation.mutateAsync, router]);
 
     return {
         existingFileMetadata,

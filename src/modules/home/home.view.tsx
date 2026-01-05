@@ -36,7 +36,6 @@ import { Link, Route } from "expo-router"
 import { ROUTES } from "@/src/core/navigation/routes"
 const HomeScreen = () => {
     const { t } = useTranslation();
-
     const user = useAuthStore(selectUser);
 
     const { unSeenCount } = useNotificationsVM();

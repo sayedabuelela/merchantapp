@@ -63,8 +63,10 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // email: 'e4szws6xwi@xkxkud.com',
             // email: 'sebejof797@gavrom.com',
             // password: 'Password500$$',
-            // email: 'hiyeri9640@emaxasp.com',
+            // email: 'dahibes933@gavrom.com',
             // password: 'P@ssw0rd',
+            // email: 'pokexa7434@colimarl.com',
+            // password: 'P@ssw0rd012',
         },
     });
 

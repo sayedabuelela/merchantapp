@@ -37,7 +37,7 @@ const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail }: BalanceStats
     return (
         <Pressable
             onPress={handleNavigateToBalance}
-            className="px-6 pt-6 pb-9 bg-[#F1F6FF] rounded">
+            className="px-4 pt-4 pb-9 bg-[#F1F6FF] rounded">
             {/* Main Balance */}
             <BalanceHeaderItem
                 title={mainBalance.title}

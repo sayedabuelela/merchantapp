@@ -9,11 +9,12 @@ import { t } from 'i18next';
 import { AnimatePresence, MotiView } from 'moti';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, Modal, Pressable, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Pressable, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { MinusIcon, PlusIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { KeyboardController } from 'react-native-keyboard-controller';
-import { itemSchema, ItemType } from '../../payment-links.scheme';
+import { itemSchema, ItemType, VALIDATION_LIMITS } from '../../payment-links.scheme';
 import { BlurView } from 'expo-blur';
+import GeneralModalHeader from '@/src/shared/components/GeneralModal/GeneralModalHeader';
 
 const addItemSchema = itemSchema.omit({ subTotal: true });
 type AddItemForm = Omit<ItemType, 'subTotal'>;
@@ -40,6 +41,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
     });
 
     const [unitPriceText, setUnitPriceText] = useState<string>('');
+    const [quantityText, setQuantityText] = useState<string>('1');
 
     const quantity = watch('quantity');
 
@@ -58,9 +60,13 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                 setUnitPriceText(
                     Number.isFinite(editingItem.unitPrice) ? String(editingItem.unitPrice) : ''
                 );
+                setQuantityText(
+                    Number.isFinite(editingItem.quantity) ? String(editingItem.quantity) : '1'
+                );
             } else {
                 reset({ description: '', unitPrice: 0, quantity: 1 });
                 setUnitPriceText('');
+                setQuantityText('1');
             }
         }
     }, [isVisible, editingItem, reset]);
@@ -68,6 +74,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
     const handleClose = () => {
         reset({ description: '', unitPrice: 0, quantity: 1 });
         setUnitPriceText('');
+        setQuantityText('1');
         onClose();
         setIsAnimating(false);
     };
@@ -82,9 +89,48 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
         handleClose();
     };
 
-    const incrementQuantity = () => setValue('quantity', quantity + 1, { shouldValidate: true });
+    const incrementQuantity = () => {
+        if (quantity < VALIDATION_LIMITS.MAX_AMOUNT) {
+            const newQuantity = quantity + 1;
+            setValue('quantity', newQuantity, { shouldValidate: true });
+            setQuantityText(String(newQuantity));
+        }
+    };
     const decrementQuantity = () => {
-        if (quantity > 1) setValue('quantity', quantity - 1, { shouldValidate: true });
+        if (quantity > 1) {
+            const newQuantity = quantity - 1;
+            setValue('quantity', newQuantity, { shouldValidate: true });
+            setQuantityText(String(newQuantity));
+        }
+    };
+
+    const handleQuantityChange = (text: string) => {
+        // Only allow integers (no decimals, no special characters)
+        const cleaned = text.replace(/[^0-9]/g, '');
+        setQuantityText(cleaned);
+
+        if (cleaned === '') {
+            // Allow empty temporarily while typing, but set form value to 1
+            setValue('quantity', 1, { shouldValidate: true });
+            return;
+        }
+
+        const parsed = parseInt(cleaned, 10);
+        if (!isNaN(parsed) && parsed >= 1 && parsed <= VALIDATION_LIMITS.MAX_AMOUNT) {
+            setValue('quantity', parsed, { shouldValidate: true });
+        } else if (!isNaN(parsed) && parsed > VALIDATION_LIMITS.MAX_AMOUNT) {
+            // Cap at max value
+            setValue('quantity', VALIDATION_LIMITS.MAX_AMOUNT, { shouldValidate: true });
+            setQuantityText(String(VALIDATION_LIMITS.MAX_AMOUNT));
+        }
+    };
+
+    const handleQuantityBlur = () => {
+        // Ensure we have a valid quantity on blur
+        if (quantityText === '' || parseInt(quantityText, 10) < 1) {
+            setQuantityText('1');
+            setValue('quantity', 1, { shouldValidate: true });
+        }
     };
 
     return (
@@ -128,7 +174,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                     <View className="w-8 h-[3px] bg-content-secondary rounded-full self-center mb-8" />
 
                                     {/* Header */}
-                                    <View className="flex-row justify-between items-center mb-6">
+                                    {/* <View className="flex-row justify-between items-center mb-6">
                                         <FontText type="head" weight="bold" className="text-content-primary text-xl">
                                             {editingItem ? t('Edit item') : t('Add an item')}
                                         </FontText>
@@ -138,7 +184,8 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                         >
                                             <XMarkIcon size={18} color="#A50017" />
                                         </TouchableOpacity>
-                                    </View>
+                                    </View> */}
+                                    <GeneralModalHeader title={editingItem ? t('Edit item') : t('Add an item')} onClose={handleClose} />
 
                                     {/* Item Name */}
                                     <View className="mb-4">
@@ -152,12 +199,13 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                                     value={value}
                                                     onChangeText={(text) => onChange(text)}
                                                     error={!!errors.description}
+                                                    maxLength={VALIDATION_LIMITS.ITEM_NAME_MAX_LENGTH}
                                                 />
                                             )}
                                         />
                                         {errors.description && (
                                             <FontText type="body" className="text-feedback-error mt-1">
-                                                {errors.description.message}
+                                                {t(errors.description.message || '')}
                                             </FontText>
                                         )}
                                     </View>
@@ -224,7 +272,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                                 />
                                                 {errors.unitPrice && (
                                                     <FontText type="body" className="text-feedback-error mt-1">
-                                                        {errors.unitPrice.message}
+                                                        {t(errors.unitPrice.message || '')}
                                                     </FontText>
                                                 )}
                                             </View>
@@ -234,20 +282,33 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                                 <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label, 'mb-2')}>
                                                     {t('Quantity')}
                                                 </FontText>
-                                                <View className="flex-row items-center justify-between w-full h-11 px-4 border border-stroke-input rounded">
-                                                    <Pressable onPress={decrementQuantity}>
-                                                        <MinusIcon size={18} color="#001F5F" />
+                                                <View className={cn(
+                                                    "flex-row items-center justify-between w-full h-11 px-3 border rounded",
+                                                    errors.quantity ? "border-2 border-stroke-danger" : "border-stroke-input"
+                                                )}>
+                                                    <Pressable onPress={decrementQuantity} hitSlop={8}>
+                                                        <MinusIcon size={18} color={quantity <= 1 ? "#B3BBBB" : "#001F5F"} />
                                                     </Pressable>
-                                                    <FontText type="body" weight="regular" className="text-content-primary text-base">
-                                                        {quantity}
-                                                    </FontText>
-                                                    <Pressable onPress={incrementQuantity}>
+                                                    <TextInput
+                                                        value={quantityText}
+                                                        onChangeText={handleQuantityChange}
+                                                        onBlur={handleQuantityBlur}
+                                                        keyboardType="number-pad"
+                                                        textAlign="center"
+                                                        className={cn(
+                                                            'font-body-regular-ltr',
+                                                            "flex-1 text-content-primary text-base mx-2",
+                                                            errors.quantity ? "border-2 border-stroke-danger" : "border-stroke-input"
+                                                        )}
+                                                        maxLength={10}
+                                                    />
+                                                    <Pressable onPress={incrementQuantity} hitSlop={8}>
                                                         <PlusIcon size={18} color="#001F5F" />
                                                     </Pressable>
                                                 </View>
                                                 {errors.quantity && (
                                                     <FontText type="body" className="text-feedback-error mt-1">
-                                                        {errors.quantity.message}
+                                                        {t(errors.quantity.message || '')}
                                                     </FontText>
                                                 )}
                                             </View>

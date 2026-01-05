@@ -1,10 +1,3 @@
-/**
- * Order Actions ViewModel
- *
- * Handles void and refund operations for orders using React Query mutations.
- * Provides loading states, error handling, and cache invalidation.
- */
-
 import { useApi } from '@/src/core/api/clients.hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -17,10 +10,6 @@ export const useOrderActionsVM = (sessionId: string) => {
     const queryClient = useQueryClient();
     const { t, i18n } = useTranslation();
 
-    /**
-     * Void mutation
-     * Invalidates order detail and order list queries on success
-     */
     const voidMutation = useMutation({
         mutationFn: (request: VoidOrderRequest) => voidOrder(paymentApi, request),
         onSuccess: (data) => {
