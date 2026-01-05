@@ -8,6 +8,7 @@ import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
+import { ChevronDownIcon } from 'react-native-heroicons/outline';
 
 const AnimatedView = Animated.View;
 
@@ -29,12 +30,13 @@ const AccordionItem: React.FC<AccordionItemProps> = React.memo(({
     title,
     children,
     initiallyOpen = false,
-    // containerClassName = "bg-surface-secondary mb-3 rounded-[5px] mt-2 mx-safe-offset-1 shadow-[0px_0px_5px_0px_#00000040]",
-    containerClassName = "my-2 rounded mx-safe-offset-1 border border-stroke-main",
+    // containerClassName = "my-2 rounded mx-safe-offset-1 border border-stroke-main",
+    containerClassName,
     headerClassName = "",
-    titleClassName = "text-content-primary text-xl self-start",
+    // titleClassName = "text-content-primary text-xl self-start",
+    titleClassName,
     contentWrapperClassName = "",
-    contentInternalContainerClassName = "pt-2 pb-4 px-4",
+    contentInternalContainerClassName = "pt-2 px-2",
     editRoute,
     showEditButton = true,
 }) => {
@@ -52,20 +54,20 @@ const AccordionItem: React.FC<AccordionItemProps> = React.memo(({
     }
     return (
         <AnimatedView
-            className={containerClassName}
+            className={cn("p-4 rounded border border-tertiary mt-4", containerClassName)}
             layout={LinearTransition.duration(250)}
         >
             <TouchableOpacity
                 onPress={toggleOpen}
-                className={cn('flex-row justify-between items-center p-4 rounded-[5px]', headerClassName, isOpen ? "rounded-b-none" : "rounded-b-[5px]")}
+                className={cn('flex-row justify-between items-center ', headerClassName, isOpen ? "pb-2 mb-2 border-b border-b-tertiary" : "")}
             >
-                <FontText type="head" weight="regular" className={titleClassName}>{title}</FontText>
+                <FontText type="body" weight="bold" className={cn("text-content-secondary text-base self-start", titleClassName)}>{title}</FontText>
                 <View className="flex-row items-center">
                     <MotiView
                         animate={{ rotate: isOpen ? '180deg' : '0deg' }}
                         transition={{ type: 'timing', duration: 200 }}
                     >
-                        <Feather name="chevron-down" size={24} color="#202020" />
+                        <ChevronDownIcon size={20} color="#001F5F" />
                     </MotiView>
                 </View>
             </TouchableOpacity>

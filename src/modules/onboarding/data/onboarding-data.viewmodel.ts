@@ -26,7 +26,7 @@ const useOnboardingDataViewModel = () => {
         isLoading: onboardingDataLoading
     } = useQuery<GlobalOnboardingData>({
         queryKey: onboardingDataQueryKey,
-        queryFn: () => getOnboardingAllData(api, currentMerchantId!),
+        queryFn: () => getOnboardingAllData(api),
         enabled: !!currentMerchantId && canViewBusinessProfile,
         staleTime: 5 * 60 * 1000, // 5 minutes
     });
@@ -123,7 +123,7 @@ const useOnboardingDataViewModel = () => {
     // 2. Status is 'rejected' (to resubmit with corrections)
     const canEdit = (onboardingData?.isApprovedBusinessInfo === 'approved' && onboardingData?.isLive) ||
         onboardingData?.isApprovedBusinessInfo === 'rejected';
-    const canSubmit = canEdit;
+    const canSubmit = canEdit || onboardingData?.isApprovedBusinessInfo === 'pending';
     const isUnderReview = onboardingData?.isApprovedBusinessInfo === 'submitted' ||
         onboardingData?.isApprovedBusinessInfo === 'pending';
     const isApproved = onboardingData?.isApprovedBusinessInfo === 'approved' && onboardingData?.isLive;

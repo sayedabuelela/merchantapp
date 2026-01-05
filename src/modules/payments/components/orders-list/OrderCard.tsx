@@ -1,18 +1,16 @@
-import { Link } from "expo-router"
-import { Pressable, View } from "react-native"
-import FontText from "@/src/shared/components/FontText"
-import { currencyNumber } from "@/src/core/utils/number-fields"
-import { ArrowSmallDownIcon, ArrowSmallUpIcon, EnvelopeIcon, UserIcon } from "react-native-heroicons/outline"
-import { useTranslation } from "react-i18next"
-import { formatAMPM } from "@/src/core/utils/dateUtils"
 import { cn } from "@/src/core/utils/cn"
-import React from "react";
-import StatusBox from "@/src/modules/payment-links/components/StatusBox";
-import { PaymentSession } from "@/src/modules/payments/payments.model";
-import { PhoneIcon } from "react-native-heroicons/mini";
-import { logJSON } from "@/src/core/utils/logger"
-import IconBox from "@/src/shared/components/wrappers/IconBox"
+import { formatAMPM } from "@/src/core/utils/dateUtils"
+import { currencyNumber } from "@/src/core/utils/number-fields"
+import { objectHasKeys } from "@/src/core/utils/objects"
+import StatusBox from "@/src/modules/payment-links/components/StatusBox"
+import { PaymentSession } from "@/src/modules/payments/payments.model"
+import FontText from "@/src/shared/components/FontText"
+import { Link } from "expo-router"
 import { PressableScale } from "pressto"
+import React from "react"
+import { useTranslation } from "react-i18next"
+import { View } from "react-native"
+import { EnvelopeIcon, PhoneIcon, UserIcon } from "react-native-heroicons/outline"
 
 
 interface OrderCardProps {
@@ -79,28 +77,36 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                             {paymentParams.order}
                         </FontText>
                     </View>
-                    {/* <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
-                    <View className="flex-row items-center gap-x-4">
-                        <View className="flex-row items-center gap-x-1">
-                            <UserIcon size={10} color="#556767" />
-                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                Customer Name
-                            </FontText>
+                    {(paymentParams.customer !== undefined && objectHasKeys(paymentParams.customer)) && (
+                        <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
+                            <View className="flex-row items-center gap-x-4">
+                                {paymentParams.customer?.firstName && (
+                                    <View className="flex-row items-center gap-x-1">
+                                        <UserIcon size={10} color="#556767" />
+                                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                                            {paymentParams.customer?.firstName}
+                                        </FontText>
+                                    </View>
+                                )}
+                                {paymentParams.customer?.mobilePhone && (
+                                    <View className="flex-row items-center gap-x-1">
+                                        <PhoneIcon size={10} color="#556767" />
+                                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                                            {paymentParams.customer?.mobilePhone}
+                                        </FontText>
+                                    </View>
+                                )}
+                            </View>
+                            {paymentParams.customer?.email && (
+                                <View className="flex-row items-center gap-x-1">
+                                    <EnvelopeIcon size={10} color="#556767" />
+                                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                                        {paymentParams.customer?.email}
+                                    </FontText>
+                                </View>
+                            )}
                         </View>
-                        <View className="flex-row items-center gap-x-1">
-                            <PhoneIcon size={10} color="#556767" />
-                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                01012345678
-                            </FontText>
-                        </View>
-                    </View>
-                    <View className="flex-row items-center gap-x-1">
-                        <EnvelopeIcon size={10} color="#556767" />
-                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                            sabu@email.com
-                        </FontText>
-                    </View>
-                </View> */}
+                    )}
                 </View>
             </PressableScale>
         </Link>

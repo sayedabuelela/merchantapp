@@ -52,8 +52,10 @@ export interface BusinessProfileMerchant {
 }
 
 export interface BusinessProfileResponse {
-    requestInfo: BusinessProfileRequestInfo;
-    merchant: BusinessProfileMerchant;
+    body: {
+        requestInfo: BusinessProfileRequestInfo;
+        merchant: BusinessProfileMerchant;
+    }
 }
 
 export interface Merchant {

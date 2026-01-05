@@ -27,16 +27,16 @@ export const useUpdateNotificationVM = () => {
             // Reset badge count
             await resetBadgeCount();
 
-            // Show success toast
-            const message = i18n.language === 'ar'
-                ? 'تم تحديث الإشعار بنجاح'
-                : 'Notification updated successfully';
+            // // Show success toast
+            // const message = i18n.language === 'ar'
+            //     ? 'تم تحديث الإشعار بنجاح'
+            //     : 'Notification updated successfully';
 
-            showToast({
-                message,
-                type: 'success',
-                duration: 3000,
-            });
+            // showToast({
+            //     message,
+            //     type: 'success',
+            //     duration: 3000,
+            // });
         },
         onError: (error: any) => {
             // Show error toast
@@ -46,7 +46,7 @@ export const useUpdateNotificationVM = () => {
 
             showToast({
                 message: errorMessage,
-                type: 'error',
+                type: 'danger',
                 duration: 3000,
             });
         },

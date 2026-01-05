@@ -44,7 +44,7 @@ const SettingsScreen = () => {
         // handleBiometricModal();
         // if (success) router.replace(ROUTES.TABS.ROOT);
     }
-    // console.log('onboardingData : ', onboardingData?.isApprovedBusinessInfo);
+    console.log('onboardingData : ', onboardingData);
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -69,8 +69,8 @@ const SettingsScreen = () => {
                     animationType="fadeInUp"
                     duration={500}
                 >
-                    {onboardingData?.isApprovedBusinessInfo === 'pending' && (
-                        <ActivationNote goToOnboardingStatus={goToOnboardingStatus} />
+                    {onboardingData?.isApprovedBusinessInfo && (
+                        <ActivationNote goToOnboardingStatus={goToOnboardingStatus} status={onboardingData?.isApprovedBusinessInfo} />
                     )}
                     <ModeToggle />
 

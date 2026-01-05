@@ -47,9 +47,7 @@ const useCurrencyViewModel = () => {
         isFetching: isFetchingCurrencyData,
     } = useQuery<GlobalOnboardingData, Error, Currency[] | undefined>({
         queryKey: onboardingDataQueryKey,
-        queryFn: () => currentMerchantId ?
-            getOnboardingAllData(api, currentMerchantId) :
-            Promise.reject(new Error("No merchant ID available")),
+        queryFn: () => getOnboardingAllData(api),
         select: (allFetchedData) => {
             return allFetchedData?.merchant?.merchantInfo?.payoutMethod?.currencies;
         },

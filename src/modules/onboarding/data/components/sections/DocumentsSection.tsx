@@ -17,7 +17,7 @@ const DocumentsSection = ({
 }: DocumentsSectionProps) => {
     const { t } = useTranslation();
     const { isLoadingDocuments, allDocumentsData } = useDocuments({ documents });
-    // console.log('allDocumentsData : ', allDocumentsData?.result[1].documentType);
+    // console.log('allDocumentsData : ', allDocumentsData?.result[1]);
     // console.log('documents',documents);
     const renderItem = ({ item }: { item: DownloadedFileObject }) => (
         <DataDocumentRow
@@ -34,13 +34,16 @@ const DocumentsSection = ({
             {isLoadingDocuments ? (
                 <ActivityIndicator />
             ) : (
-                allDocumentsData?.result?.map((item, index) => (
-                    <DataDocumentRow
-                        key={index}
-                        label={item.documentType}
-                        url={`data:${item.type};base64,${item.file}`} // Still needs optimization!
-                    />
-                ))
+                allDocumentsData?.result?.map((item, index) => {
+                    console.log('item.type :', item.type);
+                    return (
+                        <DataDocumentRow
+                            key={index}
+                            label={item.documentType}
+                            url={`data:${item.type};base64,${item.file}`} // Still needs optimization!
+                        />
+                    )
+                })
             )}
         </AccordionItem>
     )

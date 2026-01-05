@@ -23,6 +23,14 @@ export interface PaymentParams {
     order: string;
     storeName: string;
     interactionSource?: string;
+    customer?: {
+        reference?:string,
+        firstName?:string,
+        lastNumber?:string,
+        email?:string,
+        mobilePhone?:string,
+        nationalId?:string
+    }
 }
 
 export interface PaymentSession {

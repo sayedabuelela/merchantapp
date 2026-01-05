@@ -7,7 +7,7 @@ export const businessContactScheme = z.object({
     country: z.string().trim().min(1, 'Business country is required'),
     governorate: z.string().trim().min(1, 'Business governorate is required'),
     addressLine1: z.string().trim().min(1, 'This field is required'),
-    addressLine2: z.string().trim().optional(),
+    addressLine2: z.string().trim().min(1, 'This field is required'),
     businessPhone: z
         .string()
         .trim()

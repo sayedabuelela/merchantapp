@@ -191,7 +191,7 @@ const BusinessContactForm = ({ onSubmit, loading, error, existingData, cities, s
                                 onChange(value?.trim());
                                 onBlur();
                             }}
-                            label={t('Address Line 2 (Optional)')}
+                            label={t('Address Line 2')}
                             returnKeyType='next'
                             autoCorrect={false}
                             error={!!errors.addressLine2}

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { selectUser, useAuthStore } from "../../auth/auth.store";
 import { AccountType } from "../account-type/account-type.model";
 import useOnboardingDataViewModel from "../data/onboarding-data.viewmodel";
-import { BusinessLogoMetadata, PickedFile } from "../documents/documents.model";
+import { PickedFile } from "../documents/documents.model";
 import useDocumentViewModel from "../documents/documents.viewmodel";
 import { accountTypeSelector, useOnboardingStore } from "../onboarding.store";
 import { OnboardingFormState } from "../types";
@@ -104,26 +104,6 @@ const useBusinessViewModel = () => {
         return sector ? sector[language] : '';
     };
 
-    // const prepareFormDataForSubmission = (formData: BusinessDetailsRequestData): BusinessDetailsRequestData => {
-    //     return {
-    //         ...formData,
-    //         businessIndustry: selectedSector
-    //     };
-    // };
-    const createBusinessLogoMetadata = async (
-        dirtyFields: Record<string, boolean>,
-        logo: PickedFile | undefined
-    ): Promise<BusinessLogoMetadata> => {
-        return {
-            documentType: 'businessLogo',
-            isDeleted: false,
-            isReviewd: false,
-            key: dirtyFields.businessLogo
-                ? (await uploadDocumentAsync({ pickedFile: logo as PickedFile })).body.imageTitle
-                : logoMetadata?.key || ''
-        };
-    };
-
     const submitBusinessDetailsForm = async (
         data: BusinessDetailsFormData,
         formState: OnboardingFormState
@@ -137,13 +117,24 @@ const useBusinessViewModel = () => {
 
         const { businessLogo, businessSector, ...rest } = data;
 
+        // Normalize optional fields to empty strings (API expects strings, not undefined)
+        const normalizedPublicData = {
+            legalCompanyName: rest.legalCompanyName,
+            storeName: rest.storeName,
+            description: rest.description ?? "",
+            businessIndustry: selectedSector,
+            companyWebsite: rest.companyWebsite ?? "",
+            socialTwitter: rest.socialTwitter ?? "",
+            socialLinkedIn: rest.socialLinkedIn ?? "",
+            socialFacebook: rest.socialFacebook ?? "",
+            socialInstagram: rest.socialInstagram ?? "",
+            termsAndConditions: rest.termsAndConditions,
+        };
+
         const payload: BusinessDetailsRequestData = {
             merchantInfo: {
                 merchantAccountType: accountType as AccountType,
-                publicData: {
-                    ...rest,
-                    businessIndustry: selectedSector,
-                }
+                publicData: normalizedPublicData
             }
         };
 

@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { I18nManager } from "react-native";
 import { GlobalOnboardingData } from "../data/onboarding-data.model";
 import useOnboardingDataViewModel from "../data/onboarding-data.viewmodel";
+import { accountTypeSelector, useOnboardingStore } from "../onboarding.store";
 import { BusinessContactFormData, City } from "./contact.model";
 import { getCities } from "./contact.services";
 
@@ -16,6 +17,7 @@ const useContactViewModel = () => {
     const { api } = useApi();
     const user = useAuthStore(selectUser);
     const currentMerchantId = user?.merchantId;
+    const accountType = useOnboardingStore(accountTypeSelector);
     const [selectedCity, setSelectedCity] = useState<string | undefined>(undefined);
     const { onboardingDataQueryKey, submitPartialData, isSubmittingPartialData: isSubmittingContactData, submitPartialDataError } = useOnboardingDataViewModel();
 
@@ -40,10 +42,6 @@ const useContactViewModel = () => {
         queryFn: () => getCities(api),
     });
 
-    // const { mutateAsync: saveBusinessContactMutation, isPending: isSavingBusinessContact, error: saveBusinessContactError } = useMutation({
-    //     mutationFn: async (data: BusinessContactRequestData) => await saveBusinessContact(api, currentMerchantId!, data),
-    // });
-
     useEffect(() => {
         if (cities && businessContactData?.governorate) {
             initializeCity(businessContactData.governorate);
@@ -64,28 +62,6 @@ const useContactViewModel = () => {
         setSelectedCity(cityValue);
     };
 
-    // const submitBusinessContactForm = async (data: BusinessContactFormData, formState: { dirtyFields: { [key: string]: boolean }, isDirty: boolean }) => {
-
-    //     const { dirtyFields, isDirty } = formState;
-
-    //     if (!isDirty) {
-    //         router.push(ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE);
-    //         return;
-    //     }
-
-    //     let payload: BusinessContactRequestData = {
-    //         merchantInfo: {
-    //             businessContactInfo: data
-    //         }
-    //     };
-    //     try {
-    //         await saveBusinessContactMutation(payload);
-    //         router.push(ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE);
-    //     } catch (error) {
-    //         console.error('Error submitting business contact form:', error);
-    //     }
-    // }
-
     const submitBusinessContact = useCallback(async (data: BusinessContactFormData, formState: { dirtyFields: { [key: string]: boolean }, isDirty: boolean }) => {
 
         const { isDirty } = formState;
@@ -95,13 +71,33 @@ const useContactViewModel = () => {
             return;
         }
 
-        await submitPartialData({
+        // Normalize optional fields to empty strings (API expects strings, not undefined)
+        const normalizedData: BusinessContactFormData = {
+            country: data.country,
+            governorate: data.governorate,
+            addressLine1: data.addressLine1,
+            addressLine2: data.addressLine2 ?? "",
+            businessPhone: data.businessPhone,
+            businessEmail: data.businessEmail,
+            hotlineNumber: data.hotlineNumber ?? "",
+        };
+
+        const payload = {
             merchantInfo: {
-                businessContactInfo: data
+                businessContactInfo: normalizedData
             }
-        });
-        router.push(ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE);
-    }, [submitPartialData]);
+        };
+
+        try {
+            console.log('Submitting business contact payload:', JSON.stringify(payload, null, 2));
+
+            await submitPartialData(payload);
+            router.push(ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE);
+        } catch (error: any) {
+            console.error('Failed to submit business contact:', error);
+            console.error('Error details:', JSON.stringify(error, null, 2));
+        }
+    }, [submitPartialData, router, accountType]);
 
 
     return {

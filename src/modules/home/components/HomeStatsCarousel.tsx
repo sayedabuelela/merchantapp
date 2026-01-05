@@ -6,7 +6,7 @@ import { AccountStatistics, PaymentsStatistics, PayoutStatistics, TransfersStati
 import { useTranslation } from 'react-i18next'
 import { HomeTabType } from '../home.model'
 import { Mode } from '@/src/core/environment/environments'
-import { useEnvironmentStore, selectMode } from '@/src/core/environment/environments.store' 
+import { useEnvironmentStore, selectMode } from '@/src/core/environment/environments.store'
 const { width } = Dimensions.get('window')
 const CARD_PADDING = 24
 const CARD_WIDTH = width - (CARD_PADDING * 2)
@@ -49,9 +49,9 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
         },
         {
             id: 'payments-card',
-        tab: 'orders',
+            tab: 'orders',
             mainBalance: { title: t('total payments'), value: paymentsStats?.amount || 0, currency: 'EGP' },
-            leftDetail: { title: t('Payments No.'), value: paymentsStats?.count || 0, currency: '' },
+            leftDetail: { title: t('Payments No'), value: paymentsStats?.count || 0, currency: '' },
             rightDetail: { title: t('Top Method'), value: paymentsStats?.topMethod || '--', currency: '' },
         },
         {
@@ -65,8 +65,8 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
             id: 'transfers-card',
             tab: 'transfers',
             mainBalance: { title: t('total transfers'), value: transfersStats?.totalTransfersAmount || 0, currency: 'EGP' },
-            leftDetail: { title: t('transfers no.'), value: transfersStats?.totalTransfersCount || 0, currency: '' },
-            rightDetail: { title: t('Transfers Vol.'), value: transfersStats?.totalTransfersAmount || 0, currency: 'EGP' },
+            leftDetail: { title: t('transfers no'), value: transfersStats?.totalTransfersCount || 0, currency: '' },
+            rightDetail: { title: t('Transfers Vol'), value: transfersStats?.totalTransfersAmount || 0, currency: 'EGP' },
         },
     ]), [t, accountStats, paymentsStats, payoutStats, transfersStats, mode])
 

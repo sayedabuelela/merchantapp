@@ -68,6 +68,10 @@ const SouhoolaSettlementDetails = ({ data }: Props) => {
                         value={formatAmount(data.fees, t('EGP'))}
                     />
                     <SectionRowItem
+                        title={t('Fees After 14% VAT')}
+                        value={formatAmount(Number((Number(data.vat) + Number(data.fees)).toFixed(2)), t('EGP'))}
+                    />
+                    <SectionRowItem
                         title={t('Authorization ID')}
                         value={formatText(data.authorizationId)}
                     />

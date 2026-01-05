@@ -3,12 +3,12 @@ import Button from "@/src/shared/components/Buttons/Button"
 import { WarningSettingsIcon } from "@/src/shared/assets/svgs"
 import { View } from "react-native"
 import { useTranslation } from "react-i18next"
+import { ApprovalStatus } from "../../onboarding/data/onboarding-data.model"
 
-type ActivationStatus = 'pending' | 'submitted' | 'rejected';
 
 interface ActivationNoteProps {
     goToOnboardingStatus?: () => void;
-    status?: ActivationStatus;
+    status?: ApprovalStatus;
 }
 
 const ActivationNote = ({ goToOnboardingStatus, status = 'pending' }: ActivationNoteProps) => {

@@ -8,13 +8,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { accountTypeSelector, useOnboardingStore } from "../onboarding.store";
 import OnboardingStatusItem from "./components/StatusItem";
 import { FadeInDownView, FadeInUpView, StaggerChildrenView } from "@/src/shared/components/wrappers/animated-wrappers";
+import { objectHasKeys } from "@/src/core/utils/objects";
 
 const OnboardingStatusScreen = () => {
     const { t } = useTranslation();
     const { onboardingData } = useOnboardingDataViewModel();
     const accountType = useOnboardingStore(accountTypeSelector);
     const router = useRouter();
-    console.log('StatusScreen onboardingData : ', onboardingData);
+    console.log('StatusScreen onboardingData CONTACT : ', onboardingData);
     const handleSkip = () => {
         router.replace(ROUTES.TABS.HOME);
     }
@@ -37,25 +38,25 @@ const OnboardingStatusScreen = () => {
                     <OnboardingStatusItem
                         title={t('Business Details')}
                         onPress={() => { router.push(ROUTES.ONBOARDING.BUSINESS) }}
-                        status={onboardingData?.merchant?.merchantInfo?.publicData !== undefined}
+                        status={(onboardingData?.merchant?.merchantInfo?.publicData !== undefined && objectHasKeys(onboardingData?.merchant?.merchantInfo?.publicData))}
                     />
 
                     <OnboardingStatusItem
                         title={t('Business Contact Info')}
                         onPress={() => { router.push(ROUTES.ONBOARDING.CONTACT) }}
-                        status={onboardingData?.merchant?.merchantInfo?.businessContactInfo !== undefined}
+                        status={(onboardingData?.merchant?.merchantInfo?.businessContactInfo !== undefined && objectHasKeys(onboardingData?.merchant?.merchantInfo?.businessContactInfo))}
                     />
 
                     <OnboardingStatusItem
                         title={t('Business Documents')}
                         onPress={() => { router.push(ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE) }}
-                        status={onboardingData?.merchant?.merchantInfo?.documents !== undefined}
+                        status={(onboardingData?.merchant?.merchantInfo?.documents !== undefined && onboardingData?.merchant?.merchantInfo?.documents?.length !== 0)}
                     />
 
                     <OnboardingStatusItem
                         title={t('Currency Settings')}
                         onPress={() => { router.push(ROUTES.ONBOARDING.CURRENCY_SETTINGS) }}
-                        status={onboardingData?.merchant?.merchantInfo?.payoutMethod !== undefined}
+                        status={(onboardingData?.merchant?.merchantInfo?.payoutMethod !== undefined && objectHasKeys(onboardingData?.merchant?.merchantInfo?.payoutMethod))}
                         isLast
                     />
                 </StaggerChildrenView>

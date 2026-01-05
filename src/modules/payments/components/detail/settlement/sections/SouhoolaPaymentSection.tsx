@@ -10,7 +10,7 @@ interface Props {
 
 /**
  * Souhoola Payment Section - Displays Souhoola-specific payment details
- * Fields: Loan Number, Phone Number, Tenure, First/Last Installment Date, Admin Fees, Down Payment
+ * Fields: Loan Number, Phone Number, Admin Fees, Down Payment
  */
 const SouhoolaPaymentSection = ({ data }: Props) => {
     const { t } = useTranslation();
@@ -31,18 +31,6 @@ const SouhoolaPaymentSection = ({ data }: Props) => {
             <SectionRowItem
                 title={t('Phone Number')}
                 value={formatText(payerInfo.phoneNumber)}
-            />
-            <SectionRowItem
-                title={t('Tenure')}
-                value={formatText(payerInfo.tenure?.toString())}
-            />
-            <SectionRowItem
-                title={t('First Installment Date')}
-                value={formatText(payerInfo.firstEmiDueDate || payerInfo.firstInstallmentDate)}
-            />
-            <SectionRowItem
-                title={t('Last Installment Date')}
-                value={formatText(payerInfo.lastInstallmentDate)}
             />
             <SectionRowItem
                 title={t('Admin Fees')}
