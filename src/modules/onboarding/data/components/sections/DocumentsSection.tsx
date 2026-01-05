@@ -1,10 +1,12 @@
 import { ROUTES } from "@/src/core/navigation/routes";
-import { Document, DownloadedFileObject } from "@/src/modules/onboarding/documents/documents.model";
+import { Document } from "@/src/modules/onboarding/documents/documents.model";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import useDocuments from "../../../documents/hooks/useDocuments";
 import AccordionItem from "../AccordionItem";
 import DataDocumentRow from "../DataDocumentRow";
+import FontText from "@/src/shared/components/FontText";
 
 interface DocumentsSectionProps {
     documents: Document[];
@@ -16,15 +18,17 @@ const DocumentsSection = ({
     showEditButton = true,
 }: DocumentsSectionProps) => {
     const { t } = useTranslation();
-    const { isLoadingDocuments, allDocumentsData } = useDocuments({ documents });
-    // console.log('allDocumentsData : ', allDocumentsData?.result[1]);
-    // console.log('documents',documents);
-    const renderItem = ({ item }: { item: DownloadedFileObject }) => (
-        <DataDocumentRow
-            label={item.documentType}
-            url={`data:${item.type};base64,${item.file}`} // Still needs optimization!
-        />
+
+    // Filter out deleted documents
+    const activeDocuments = useMemo(() =>
+        documents?.filter(doc => !doc.isDeleted && doc.key) || [],
+        [documents]
     );
+
+    const { isLoadingDocuments, allDocumentsData } = useDocuments({ documents: activeDocuments });
+
+    const hasDocuments = allDocumentsData?.result && allDocumentsData.result.length > 0;
+
     return (
         <AccordionItem
             title={t('Documents')}
@@ -33,17 +37,21 @@ const DocumentsSection = ({
         >
             {isLoadingDocuments ? (
                 <ActivityIndicator />
+            ) : hasDocuments ? (
+                allDocumentsData.result.map((item, index) => (
+                    <DataDocumentRow
+                        key={index}
+                        label={item.documentType}
+                        url={`data:${item.type};base64,${item.file}`}
+                        mimeType={item.type}
+                    />
+                ))
             ) : (
-                allDocumentsData?.result?.map((item, index) => {
-                    console.log('item.type :', item.type);
-                    return (
-                        <DataDocumentRow
-                            key={index}
-                            label={item.documentType}
-                            url={`data:${item.type};base64,${item.file}`} // Still needs optimization!
-                        />
-                    )
-                })
+                <View className="py-2">
+                    <FontText type="body" weight="regular" className="text-content-tertiary text-sm">
+                        {t('No documents uploaded')}
+                    </FontText>
+                </View>
             )}
         </AccordionItem>
     )
