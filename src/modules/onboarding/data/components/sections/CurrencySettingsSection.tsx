@@ -8,11 +8,13 @@ import AccordionItem from "../AccordionItem";
 interface CurrencySettingsSectionProps {
   currencies: Currency[];
   showEditButton?: boolean;
+  hasUnsavedChanges?: boolean;
 }
 
 const CurrencySettingsSection = ({
   currencies,
   showEditButton = true,
+  hasUnsavedChanges = false,
 }: CurrencySettingsSectionProps) => {
   const { t } = useTranslation();
   return (
@@ -20,6 +22,7 @@ const CurrencySettingsSection = ({
       title={t('Currency Settings')}
       editRoute={ROUTES.ONBOARDING.CURRENCY_SETTINGS}
       showEditButton={showEditButton}
+      hasUnsavedChanges={hasUnsavedChanges}
     >
       <View className="flex-row items-center justify-between mb-4 ">
         <FontText type="body" weight="regular" className={` text-[#6F7E7E] text-sm mr-3 self-start`}>{t('Account Currency')}</FontText>

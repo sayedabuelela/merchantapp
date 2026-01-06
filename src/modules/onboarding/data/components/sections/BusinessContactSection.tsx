@@ -6,6 +6,7 @@ import DataRow from "../DataRow";
 
 interface BusinessContactSectionProps extends BusinessContactFormData {
     showEditButton?: boolean;
+    hasUnsavedChanges?: boolean;
 }
 
 const BusinessContactSection = ({
@@ -17,6 +18,7 @@ const BusinessContactSection = ({
     businessEmail,
     hotlineNumber,
     showEditButton = true,
+    hasUnsavedChanges = false,
 }: BusinessContactSectionProps) => {
     const { t } = useTranslation();
     return (
@@ -24,6 +26,7 @@ const BusinessContactSection = ({
             title={t('Business Contact Info')}
             editRoute={ROUTES.ONBOARDING.CONTACT}
             showEditButton={showEditButton}
+            hasUnsavedChanges={hasUnsavedChanges}
         >
             <DataRow label={t('Country')} value={country} />
             <DataRow label={t('Governorate')} value={governorate} />

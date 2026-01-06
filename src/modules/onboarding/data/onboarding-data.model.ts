@@ -51,11 +51,13 @@ export interface BusinessProfileMerchant {
     merchantInfo: MerchantInfo;
 }
 
+/**
+ * Response from GET /v2/merchants/{merchantId}/business-profile
+ * Note: No body wrapper, fields directly at root level
+ */
 export interface BusinessProfileResponse {
-    body: {
-        requestInfo: BusinessProfileRequestInfo;
-        merchant: BusinessProfileMerchant;
-    }
+    requestInfo: BusinessProfileRequestInfo;
+    merchant: BusinessProfileMerchant;
 }
 
 export interface Merchant {

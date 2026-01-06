@@ -15,6 +15,7 @@ import { transformFileContentResponse } from "./documents.helper";
 import { BusinessLogoMetadata, DocumentViewModelProps, FileUploadApiResponse, Document as OnboardingDocumentMetadata, PickedFile, UploadProgressState } from "./documents.model";
 import { getDocumentFileData as getFileContentService, submitDocumentsApi, uploadDocumentFileApi } from "./documents.service";
 import { useDocumentsStore } from "./documents.store";
+import useApprovalBasedSubmit from "../hooks/useApprovalBasedSubmit";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -27,10 +28,12 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
     const merchantId = user?.merchantId;
     const addOrUpdateDocument = useDocumentsStore(state => state.addOrUpdateDocument);
     const accountType = useOnboardingStore(accountTypeSelector);
+    const setPendingDocuments = useOnboardingStore((state) => state.setPendingDocuments);
     const documents = useDocumentsStore(state => state.documents);
     const [uploadProgress, setUploadProgress] = useState<UploadProgressState | null>(null);
     const onboardingDataQueryKey = ['onboarding-data', merchantId];
     const { t } = useTranslation();
+    const { shouldSaveLocally, canPartialSubmit } = useApprovalBasedSubmit();
     const { data: onboardingData, isLoading: isLoadingOnboardingData } = useQuery<GlobalOnboardingData>({
         queryKey: onboardingDataQueryKey,
         queryFn: () => getOnboardingAllData(api),
@@ -189,6 +192,7 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                     return;
                 }
 
+                // File uploads always go to API (need the key)
                 const uploadResult = await uploadDocumentMutation.mutateAsync({ pickedFile: file });
                 const key = uploadResult?.body?.imageTitle;
 
@@ -201,11 +205,19 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                         isReviewd: false,
                     });
 
-                    // For 'others' document (final step), use the updated documents array directly
+                    // For 'others' document (final step), handle conditional submission
                     if (documentType === 'others') {
                         // Get fresh documents state after update
                         const updatedDocuments = useDocumentsStore.getState().documents;
-                        await submitOnboardingStep(navigateTo, updatedDocuments);
+
+                        if (shouldSaveLocally) {
+                            // Save to pending store for approved/rejected merchants
+                            setPendingDocuments(updatedDocuments);
+                            router.back(); // Return to review screen
+                        } else if (canPartialSubmit) {
+                            // Submit to API for pending merchants (current behavior)
+                            await submitOnboardingStep(navigateTo, updatedDocuments);
+                        }
                     } else {
                         router.push(navigateTo);
                     }
@@ -226,8 +238,16 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                     });
                 }
             } else {
+                // No file provided - handle based on document type and approval status
                 if (documentType === 'others') {
-                    await submitOnboardingStep(navigateTo);
+                    if (shouldSaveLocally) {
+                        // Save current documents to pending store
+                        const currentDocuments = useDocumentsStore.getState().documents;
+                        setPendingDocuments(currentDocuments);
+                        router.back(); // Return to review screen
+                    } else if (canPartialSubmit) {
+                        await submitOnboardingStep(navigateTo);
+                    }
                 } else {
                     router.push(navigateTo);
                 }
@@ -242,7 +262,7 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                 description: t('Failed to upload document. Please try again.'),
             });
         }
-    }, [uploadDocumentMutation.mutateAsync, addOrUpdateDocument, documentType, router]);
+    }, [uploadDocumentMutation.mutateAsync, addOrUpdateDocument, documentType, router, shouldSaveLocally, canPartialSubmit, setPendingDocuments]);
 
 
     const submitOnboardingStep = useCallback(async (navigateTo: Route, _documentsToSubmit?: OnboardingDocumentMetadata[]) => {

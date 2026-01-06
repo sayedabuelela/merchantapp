@@ -11,6 +11,7 @@ import useOnboardingDataViewModel from "../data/onboarding-data.viewmodel";
 import { accountTypeSelector, useOnboardingStore } from "../onboarding.store";
 import { BusinessContactFormData, City } from "./contact.model";
 import { getCities } from "./contact.services";
+import useApprovalBasedSubmit from "../hooks/useApprovalBasedSubmit";
 
 const useContactViewModel = () => {
     const router = useRouter();
@@ -18,8 +19,10 @@ const useContactViewModel = () => {
     const user = useAuthStore(selectUser);
     const currentMerchantId = user?.merchantId;
     const accountType = useOnboardingStore(accountTypeSelector);
+    const setPendingContactInfo = useOnboardingStore((state) => state.setPendingContactInfo);
     const [selectedCity, setSelectedCity] = useState<string | undefined>(undefined);
     const { onboardingDataQueryKey, submitPartialData, isSubmittingPartialData: isSubmittingContactData, submitPartialDataError } = useOnboardingDataViewModel();
+    const { shouldSaveLocally, canPartialSubmit } = useApprovalBasedSubmit();
 
     const {
         data: businessContactData,
@@ -28,7 +31,7 @@ const useContactViewModel = () => {
         isFetching: isFetchingContactData,
     } = useQuery<GlobalOnboardingData, Error, BusinessContactFormData>({
         queryKey: onboardingDataQueryKey,
-        queryFn: () => getOnboardingAllData(api, currentMerchantId!),
+        queryFn: () => getOnboardingAllData(api),
         select: (allFetchedData) => {
             return allFetchedData?.merchant?.merchantInfo?.businessContactInfo;
         },
@@ -66,8 +69,15 @@ const useContactViewModel = () => {
 
         const { isDirty } = formState;
 
-        if (!isDirty) {
+        // If no changes and in pending mode, just navigate forward
+        if (!isDirty && canPartialSubmit) {
             router.push(ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE);
+            return;
+        }
+
+        // If no changes and in local save mode, just go back
+        if (!isDirty && shouldSaveLocally) {
+            router.back();
             return;
         }
 
@@ -88,16 +98,24 @@ const useContactViewModel = () => {
             }
         };
 
-        try {
-            console.log('Submitting business contact payload:', JSON.stringify(payload, null, 2));
+        console.log('Submitting business contact payload:', JSON.stringify(payload, null, 2));
 
-            await submitPartialData(payload);
-            router.push(ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE);
-        } catch (error: any) {
-            console.error('Failed to submit business contact:', error);
-            console.error('Error details:', JSON.stringify(error, null, 2));
+        // Conditional submission based on approval status
+        if (shouldSaveLocally) {
+            // Save to local store for approved/rejected merchants
+            setPendingContactInfo(normalizedData);
+            router.back(); // Return to review screen
+        } else if (canPartialSubmit) {
+            // Partial submit for pending merchants (current behavior)
+            try {
+                await submitPartialData(payload);
+                router.push(ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE);
+            } catch (error: any) {
+                console.error('Failed to submit business contact:', error);
+                console.error('Error details:', JSON.stringify(error, null, 2));
+            }
         }
-    }, [submitPartialData, router, accountType]);
+    }, [submitPartialData, router, accountType, shouldSaveLocally, canPartialSubmit, setPendingContactInfo]);
 
 
     return {

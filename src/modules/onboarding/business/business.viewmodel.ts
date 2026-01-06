@@ -13,16 +13,20 @@ import { accountTypeSelector, useOnboardingStore } from "../onboarding.store";
 import { OnboardingFormState } from "../types";
 import { BusinessDetailsFormData, BusinessDetailsRequestData, BusinessIndustry } from "./business.model";
 import { getBusinessIndustries } from "./business.service";
+import useApprovalBasedSubmit from "../hooks/useApprovalBasedSubmit";
 
 const useBusinessViewModel = () => {
     const router = useRouter();
     const { api } = useApi();
     const user = useAuthStore(selectUser);
     const accountType = useOnboardingStore(accountTypeSelector);
+    const setPendingPublicData = useOnboardingStore((state) => state.setPendingPublicData);
+    const setPendingBusinessLogo = useOnboardingStore((state) => state.setPendingBusinessLogo);
     const currentMerchantId = user?.merchantId;
     const [selectedIndustry, setSelectedIndustry] = useState<BusinessIndustry | undefined>(undefined);
     const [selectedSector, setSelectedSector] = useState<string>('');
     const { onboardingDataQueryKey, submitPartialData, isSubmittingPartialData, submitPartialDataError } = useOnboardingDataViewModel();
+    const { shouldSaveLocally, canPartialSubmit } = useApprovalBasedSubmit();
     const {
         data: businessDetailsData,
         isLoading: isLoadingGlobalData,
@@ -30,9 +34,7 @@ const useBusinessViewModel = () => {
         isFetching: isFetchingGlobalData,
     } = useQuery({
         queryKey: onboardingDataQueryKey,
-        queryFn: () => currentMerchantId
-            ? getOnboardingAllData(api, currentMerchantId)
-            : Promise.reject(new Error("No merchant ID available")),
+        queryFn: () => getOnboardingAllData(api),
         select: (allFetchedData) => {
             const publicData = allFetchedData?.merchant?.merchantInfo?.publicData;
             const businessLogo = allFetchedData?.merchant?.merchantInfo?.businessLogo;
@@ -110,8 +112,15 @@ const useBusinessViewModel = () => {
     ) => {
         const { dirtyFields, isDirty } = formState;
 
-        if (!isDirty) {
+        // If no changes and in pending mode, just navigate forward
+        if (!isDirty && canPartialSubmit) {
             router.push(ROUTES.ONBOARDING.CONTACT);
+            return;
+        }
+
+        // If no changes and in local save mode, just go back
+        if (!isDirty && shouldSaveLocally) {
+            router.back();
             return;
         }
 
@@ -140,6 +149,7 @@ const useBusinessViewModel = () => {
 
         let logoKey = '';
 
+        // Logo uploads always go to API (need the key)
         if (dirtyFields.businessLogo && businessLogo) {
             try {
                 const { body: { imageTitle } } = await uploadDocumentAsync({
@@ -165,11 +175,27 @@ const useBusinessViewModel = () => {
 
         console.log('payload : ', payload);
 
-        try {
-            await submitPartialData(payload);
-            router.push(ROUTES.ONBOARDING.CONTACT);
-        } catch (error) {
-            console.error('Failed to submit business details:', error);
+        // Conditional submission based on approval status
+        if (shouldSaveLocally) {
+            // Save to local store for approved/rejected merchants
+            setPendingPublicData(normalizedPublicData);
+            if (logoKey) {
+                setPendingBusinessLogo({
+                    documentType: 'businessLogo',
+                    isDeleted: false,
+                    isReviewd: false,
+                    key: logoKey
+                });
+            }
+            router.back(); // Return to review screen
+        } else if (canPartialSubmit) {
+            // Partial submit for pending merchants (current behavior)
+            try {
+                await submitPartialData(payload);
+                router.push(ROUTES.ONBOARDING.CONTACT);
+            } catch (error) {
+                console.error('Failed to submit business details:', error);
+            }
         }
     };
 

@@ -24,6 +24,7 @@ interface AccordionItemProps {
     contentInternalContainerClassName?: string;
     editRoute?: Route;
     showEditButton?: boolean;
+    hasUnsavedChanges?: boolean;
 }
 
 const AccordionItem: React.FC<AccordionItemProps> = React.memo(({
@@ -39,6 +40,7 @@ const AccordionItem: React.FC<AccordionItemProps> = React.memo(({
     contentInternalContainerClassName = "pt-2 px-2",
     editRoute,
     showEditButton = true,
+    hasUnsavedChanges = false,
 }) => {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(initiallyOpen);
@@ -61,7 +63,12 @@ const AccordionItem: React.FC<AccordionItemProps> = React.memo(({
                 onPress={toggleOpen}
                 className={cn('flex-row justify-between items-center ', headerClassName, isOpen ? "pb-2 mb-2 border-b border-b-tertiary" : "")}
             >
-                <FontText type="body" weight="bold" className={cn("text-content-secondary text-base self-start", titleClassName)}>{title}</FontText>
+                <View className="flex-row items-center">
+                    <FontText type="body" weight="bold" className={cn("text-content-secondary text-base self-start", titleClassName)}>{title}</FontText>
+                    {hasUnsavedChanges && (
+                        <View className="ml-2 w-2 h-2 rounded-full bg-amber-500" />
+                    )}
+                </View>
                 <View className="flex-row items-center">
                     <MotiView
                         animate={{ rotate: isOpen ? '180deg' : '0deg' }}

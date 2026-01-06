@@ -9,13 +9,17 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { GlobalOnboardingData } from "../data/onboarding-data.model";
 import useOnboardingDataViewModel from "../data/onboarding-data.viewmodel";
 import { Currency } from "./currency.model";
+import useApprovalBasedSubmit from "../hooks/useApprovalBasedSubmit";
+
 const useCurrencyViewModel = () => {
     const router = useRouter();
     const { api } = useApi();
     const user = useAuthStore(selectUser);
     const currentMerchantId = user?.merchantId;
     const accountType = useOnboardingStore(accountTypeSelector);
+    const setPendingCurrencies = useOnboardingStore((state) => state.setPendingCurrencies);
     const [selectedCurrencies, setSelectedCurrencies] = useState<Currency[]>([]);
+    const { shouldSaveLocally, canPartialSubmit } = useApprovalBasedSubmit();
 
     const handleCurrencyChange = (currency: Currency) => {
         setSelectedCurrencies((prev) => {
@@ -66,15 +70,23 @@ const useCurrencyViewModel = () => {
     }, [currencyData]);
 
     const submitCurrencyData = useCallback(async (currencies: Currency[]) => {
-        await submitPartialData({
-            merchantInfo: {
-                payoutMethod: {
-                    currencies
+        // Conditional submission based on approval status
+        if (shouldSaveLocally) {
+            // Save to local store for approved/rejected merchants
+            setPendingCurrencies(currencies);
+            router.back(); // Return to review screen
+        } else if (canPartialSubmit) {
+            // Partial submit for pending merchants (current behavior)
+            await submitPartialData({
+                merchantInfo: {
+                    payoutMethod: {
+                        currencies
+                    }
                 }
-            }
-        });
-        router.push(ROUTES.ONBOARDING.DATA);
-    }, [submitPartialData]);
+            });
+            router.push(ROUTES.ONBOARDING.DATA);
+        }
+    }, [submitPartialData, shouldSaveLocally, canPartialSubmit, setPendingCurrencies, router]);
 
     return {
         currencyData,

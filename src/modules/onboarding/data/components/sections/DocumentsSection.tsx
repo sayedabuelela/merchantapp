@@ -11,11 +11,13 @@ import FontText from "@/src/shared/components/FontText";
 interface DocumentsSectionProps {
     documents: Document[];
     showEditButton?: boolean;
+    hasUnsavedChanges?: boolean;
 }
 
 const DocumentsSection = ({
     documents,
     showEditButton = true,
+    hasUnsavedChanges = false,
 }: DocumentsSectionProps) => {
     const { t } = useTranslation();
 
@@ -34,6 +36,7 @@ const DocumentsSection = ({
             title={t('Documents')}
             editRoute={ROUTES.ONBOARDING.DOCUMENTS.NATIONAL_ID_FACE}
             showEditButton={showEditButton}
+            hasUnsavedChanges={hasUnsavedChanges}
         >
             {isLoadingDocuments ? (
                 <ActivityIndicator />

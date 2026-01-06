@@ -14,7 +14,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { toast } from 'sonner-native';
 
 interface LoginFormProps {
     onSubmit: (data: LoginFormData) => void;
@@ -65,8 +64,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'Password500$$',
             // email: 'dahibes933@gavrom.com',
             // password: 'P@ssw0rd',
-            // email: 'pokexa7434@colimarl.com',
-            // password: 'P@ssw0rd012',
+            // email: 'cirtedurzo@necub.com',
+            // password: 'Password500$$',
         },
     });
 

@@ -6,6 +6,7 @@ import DataRow from "../DataRow";
 
 interface BusinessDetailsSectionProps extends PublicData {
   showEditButton?: boolean;
+  hasUnsavedChanges?: boolean;
 }
 
 const BusinessDetailsSection = ({
@@ -19,6 +20,7 @@ const BusinessDetailsSection = ({
   socialInstagram,
   socialTwitter,
   showEditButton = true,
+  hasUnsavedChanges = false,
 }: BusinessDetailsSectionProps) => {
   const { t } = useTranslation();
   return (
@@ -26,6 +28,7 @@ const BusinessDetailsSection = ({
       title={t('Business Details')}
       editRoute={ROUTES.ONBOARDING.BUSINESS}
       showEditButton={showEditButton}
+      hasUnsavedChanges={hasUnsavedChanges}
     >
       <DataRow label={t('Company Name')} value={legalCompanyName} />
       <DataRow label={t('Business/Commercial Name')} value={storeName} />

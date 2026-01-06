@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Pressable, View } from 'react-native'
 import { ArrowUpOnSquareStackIcon, BriefcaseIcon, GlobeAltIcon, UserCircleIcon } from 'react-native-heroicons/solid'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { selectUser, useAuthStore } from '../../auth/auth.store'
 import { useBiometricViewModel } from '../../auth/biometric/biometric.viewmodel'
 import useOnboardingDataViewModel from '../../onboarding/data/onboarding-data.viewmodel'
 import { accountTypeSelector, useOnboardingStore } from '../../onboarding/onboarding.store'
@@ -21,9 +22,15 @@ const SettingsScreen = () => {
     const { logout, goToBusinessProfile, goToChangePassword, goToLanguage, goToOnboardingStatus, canViewBusinessProfile } = useSettings()
     const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
     const [isBiometricModalVisible, setIsBiometricModalVisible] = useState(false);
+    const user = useAuthStore(selectUser);
     const { onboardingData } = useOnboardingDataViewModel();
     const { enableBiometric, disableBiometric, isBiometricAvailable } = useBiometricViewModel();
     const accountType = useOnboardingStore(accountTypeSelector);
+    const isUserLive = user?.isLive ?? false;
+
+    // Show business profile when NOT new user first onboarding
+    // New user first onboarding = isLive: false AND isApprovedBusinessInfo: pending
+    const showBusinessProfileButton = isUserLive || onboardingData?.isApprovedBusinessInfo !== 'pending';
     const [isPersonalInfoModalVisible, setIsPersonalInfoModalVisible] = useState(false);
     const handlePersonalInfoModal = () => {
         setIsPersonalInfoModalVisible(!isPersonalInfoModalVisible);
@@ -69,12 +76,12 @@ const SettingsScreen = () => {
                     animationType="fadeInUp"
                     duration={500}
                 >
-                    {onboardingData?.isApprovedBusinessInfo && (
+                    {!isUserLive && onboardingData?.isApprovedBusinessInfo && onboardingData?.isApprovedBusinessInfo !== 'approved' && (
                         <ActivationNote goToOnboardingStatus={goToOnboardingStatus} status={onboardingData?.isApprovedBusinessInfo} />
                     )}
                     <ModeToggle />
 
-                    {accountType && canViewBusinessProfile && onboardingData?.isApprovedBusinessInfo !== 'pending' && (
+                    {accountType && canViewBusinessProfile && showBusinessProfileButton && (
                         <SettingsItem
                             title={t('Business Profile')}
                             icon={<BriefcaseIcon size={24} color="#001F5F" />}
