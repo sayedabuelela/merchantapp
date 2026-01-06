@@ -5,7 +5,7 @@ import { useCallback, useEffect } from "react";
 import { AccountType } from "../account-type/account-type.model";
 import { accountTypeSelector, approvalStatusSelector, setAccountTypeSelector, setApprovalStatusSelector, useOnboardingStore } from "../onboarding.store";
 import { GlobalOnboardingData, MerchantInfo, OnboardingDataPayload, OnboardingRequestPayload } from "./onboarding-data.model";
-import { getBusinessProfile, getOnboardingAllData, submitBusinessProfileUpdate, submitOnboardingRequestData, submitPartialOnboardingData } from "./onboarding-data.service";
+import { changeCurrencyOperationsActivation, getBusinessProfile, getOnboardingAllData, submitBusinessProfileUpdate, submitOnboardingRequestData, submitPartialOnboardingData } from "./onboarding-data.service";
 import { ROUTES } from "@/src/core/navigation/routes";
 import { router } from "expo-router";
 import usePermissions from "@/src/modules/auth/hooks/usePermissions";
@@ -64,8 +64,9 @@ const useOnboardingDataViewModel = () => {
             throw new Error("Merchant ID is required");
         }
 
-        // If user is live, use business-profile PUT endpoint
+        // If user is live, deactivate currency operations first, then submit profile update
         if (isUserLive) {
+            await changeCurrencyOperationsActivation(api);
             return await submitBusinessProfileUpdate(api, data);
         }
 

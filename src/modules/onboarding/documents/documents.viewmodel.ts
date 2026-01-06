@@ -6,6 +6,7 @@ import { getOnboardingAllData } from "@/src/modules/onboarding/data/onboarding-d
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { AxiosProgressEvent } from "axios";
 import { Route, useRouter } from "expo-router";
+import { ROUTES } from "@/src/core/navigation/routes";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from 'sonner-native';
@@ -213,7 +214,8 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                         if (shouldSaveLocally) {
                             // Save to pending store for approved/rejected merchants
                             setPendingDocuments(updatedDocuments);
-                            router.back(); // Return to review screen
+                            // Navigate directly to business profile screen (not back through document flow)
+                            router.replace(ROUTES.ONBOARDING.DATA);
                         } else if (canPartialSubmit) {
                             // Submit to API for pending merchants (current behavior)
                             await submitOnboardingStep(navigateTo, updatedDocuments);
@@ -244,7 +246,8 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                         // Save current documents to pending store
                         const currentDocuments = useDocumentsStore.getState().documents;
                         setPendingDocuments(currentDocuments);
-                        router.back(); // Return to review screen
+                        // Navigate directly to business profile screen (not back through document flow)
+                        router.replace(ROUTES.ONBOARDING.DATA);
                     } else if (canPartialSubmit) {
                         await submitOnboardingStep(navigateTo);
                     }

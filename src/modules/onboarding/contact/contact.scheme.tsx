@@ -12,11 +12,7 @@ export const businessContactScheme = z.object({
         .string()
         .trim()
         .min(1, 'This field is required')
-        .min(11, 'Mobile number must be exactly 11 digits')
-        .max(11, 'Mobile number must be exactly 11 digits')
-        .refine((val) => /^(011|015|010|012)/.test(val), {
-            message: 'Mobile number must start with 011, 015, 010, or 012',
-        })
+        .regex(/^\d+$/, 'Business phone must contain only numbers')
     ,
 
     businessEmail: z.string().trim().min(1, 'This field is required').regex(emailRegex, "Email isn't valid, valid email example: jw@example.com"),

@@ -12,6 +12,7 @@ import { View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { RegisterDataFormData, RegisterDataFormProps } from "../register-data.model";
 import { RegisterDataSchema } from "../register-data.scheme";
+import { cn } from "@/src/core/utils/cn";
 
 const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) => {
     const { t } = useTranslation();
@@ -25,7 +26,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
             firstName: '',
             lastName: '',
         },
-         mode: 'onChange',
+        mode: 'onChange',
     });
     // console.log('isValid : ', validatingFields);
 
@@ -55,7 +56,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                     name="firstName"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Input
-                            className='mb-5'
+                            className={cn('mb-4', errors.firstName && 'mb-2')}
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
@@ -77,7 +78,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
 
                 {errors.firstName &&
                     <Animated.View
-                        className="flex-row items-center mt-2 "
+                        className="flex-row items-center mb-4"
                         entering={FadeIn}
                         exiting={FadeOut}>
                         <AlertIcon />
@@ -92,7 +93,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                     name="lastName"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Input
-                            className='mb-5'
+                            className={cn('mb-4', errors.lastName && 'mb-2')}
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
@@ -114,7 +115,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
 
                 {errors.lastName &&
                     <Animated.View
-                        className="flex-row items-center"
+                        className="flex-row items-center mb-4"
                         entering={FadeIn}
                         exiting={FadeOut}>
                         <AlertIcon />
@@ -129,7 +130,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                     name="storeName"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Input
-                            className={`${!errors.storeName ? 'mb-5' : 'mb-3'}`}
+                            className={cn(`${!errors.storeName ? 'mb-4' : 'mb-2'}`)}
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}
@@ -151,7 +152,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
 
                 {errors.storeName &&
                     <Animated.View
-                        className="flex-row items-center mb-5"
+                        className="flex-row items-center mb-4"
                         entering={FadeIn}
                         exiting={FadeOut}>
                         <AlertIcon />
@@ -166,7 +167,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                     name="mobileNumber"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Input
-                            className='mb-5'
+                            className={cn('mb-4', errors.mobileNumber && 'mb-2')}
                             ref={ref}
                             value={value}
                             onChangeText={handleInputChange(onChange)}

@@ -80,6 +80,21 @@ export const submitBusinessProfileUpdate = async (
     return response.data;
 }
 
+/**
+ * Deactivates currency operations (router and converter) before submitting a change request.
+ * Must be called before submitBusinessProfileUpdate for live users.
+ * Uses POST /v2/merchants/changeCurrencyOperationsActivation
+ */
+export const changeCurrencyOperationsActivation = async (
+    api: AxiosInstance
+): Promise<any> => {
+    const response = await api.post('/v2/merchants/changeCurrencyOperationsActivation', {
+        currencyRouterActive: false,
+        currencyConverterActive: false
+    });
+    return response.data;
+}
+
 // export const sendPartialOnboardingData = async (api: AxiosInstance, merchantId: string, data: CurrencyRequestData) => {
 //     return submitOnboardingData(api, merchantId, data);
 // }

@@ -1,5 +1,5 @@
 import { KashierLogo } from "@/src/shared/assets/svgs";
-import { useRouter , useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView } from 'react-native';
@@ -33,12 +33,12 @@ const RegisterDataScreen = () => {
     return (
         <SafeAreaView className="flex-1 bg-white">
             <KeyboardAwareScrollView
-                className="flex-1 px-6 pt-28"
-                contentContainerStyle={{ flexGrow: 1, }}
+                className="flex-1 px-6 pt-28 pb-16"
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 60 }}
                 bottomOffset={100}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
-                contentContainerClassName="pb-12"
+            // contentContainerClassName="pb-16"
             >
                 <FadeInDownView delay={0} duration={600}>
                     <KashierLogo
