@@ -1,5 +1,5 @@
-import {create} from 'zustand'
-import {createJSONStorage, persist} from 'zustand/middleware'
+import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Environment, Mode } from './environments'
 
@@ -15,8 +15,8 @@ export const useEnvironmentStore = create<EnvironmentState>()(
         (set) => ({
             environment: Environment.STAGING,
             mode: Mode.LIVE,
-            setEnvironment: (environment) => set({environment}),
-            setMode: (mode) => set({mode}),
+            setEnvironment: (environment) => set({ environment }),
+            setMode: (mode) => set({ mode }),
         }),
         {
             name: 'environment-storage',
@@ -30,4 +30,5 @@ export const useEnvironmentStore = create<EnvironmentState>()(
 )
 // export const selectSetMode = useEnvironmentStore(s => s.setMode)
 export const selectSetMode = (state: EnvironmentState) => state.setMode;
+export const selectEnvironment = (state: EnvironmentState) => state.environment;
 export const selectMode = (state: EnvironmentState) => state.mode;

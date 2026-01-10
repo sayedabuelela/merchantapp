@@ -20,9 +20,10 @@ interface BalanceStatsCardProps {
         value: number | string
         currency: string
     }
+    onPress?: () => void
 }
 
-const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail }: BalanceStatsCardProps) => {
+const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail, onPress }: BalanceStatsCardProps) => {
     const mode = useEnvironmentStore(selectMode);
     const router = useRouter();
     const segments = useSegments();
@@ -34,9 +35,11 @@ const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail }: BalanceStats
         }
     }
 
+    const handlePress = onPress ?? handleNavigateToBalance;
+
     return (
         <Pressable
-            onPress={handleNavigateToBalance}
+            onPress={handlePress}
             className="px-4 pt-4 pb-9 bg-[#F1F6FF] rounded">
             {/* Main Balance */}
             <BalanceHeaderItem

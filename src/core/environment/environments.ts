@@ -35,8 +35,12 @@ export const SHARE_URLS = {
     [Environment.STAGING]: 'https://merchant.staging.payformance.io',
     [Environment.PRODUCTION]: 'https://merchant.kashier.io'
 }
+export const CHECKOUT_URL = {
+    [Environment.STAGING]: 'https://checkouts.staging.payformance.io',
+    [Environment.PRODUCTION]: 'https://checkouts.kashier.io'
+}
 
-export const CHECKOUT_URL = 'https://checkouts.kashier.io'
+// export const CHECKOUT_URL = 'https://checkouts.kashier.io'
 export const FRESH_DISK_URL = 'https://kashierps.freshdesk.com'
 
 

@@ -212,7 +212,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
 
                                     {/* Price + Quantity */}
                                     <View>
-                                        <View className="flex-row items-center justify-between">
+                                        <View className="flex-row items-start justify-between">
                                             {/* Price */}
                                             <View className="w-[47%]">
                                                 <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label, 'mb-2')}>

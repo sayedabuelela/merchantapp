@@ -27,7 +27,7 @@ export function mapApiToFormValues(api: PaymentLink): CreatePaymentLinkTypes {
         currency: api.currency ?? '',
         extraFees: extraFees && extraFees.length ? extraFees : undefined,
         dueDate: api.dueDate ? new Date(api.dueDate) : undefined,
-        referenceId: api.referenceId ?? api.paymentRequestId ?? undefined,
+        referenceId: api.referenceId,
         description: api.description ?? undefined,
     };
 

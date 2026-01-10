@@ -87,7 +87,7 @@ const RegisterEmailScreen = () => {
                                         value={value}
                                         onChangeText={handleInputChange(onChange)}
                                         onBlur={() => {
-                                            onChange(value.trim());
+                                            onChange(value?.trim());
                                             onBlur();
                                         }}
                                         label={t('Email')}

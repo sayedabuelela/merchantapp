@@ -61,7 +61,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                             value={value}
                             onChangeText={handleInputChange(onChange)}
                             onBlur={() => {
-                                onChange(value.trim());
+                                onChange(value?.trim());
                                 onBlur();
                             }}
                             label={t('First Name')}
@@ -98,7 +98,7 @@ const RegisterDataForm = ({ onSubmit, loading, error }: RegisterDataFormProps) =
                             value={value}
                             onChangeText={handleInputChange(onChange)}
                             onBlur={() => {
-                                onChange(value.trim());
+                                onChange(value?.trim());
                                 onBlur();
                             }}
                             label={t('Last Name')}

@@ -8,7 +8,7 @@ import { COMMON_STYLES } from "@/src/shared/styles/main";
 import { AnimatePresence, MotiView } from "moti";
 import { memo, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Pressable, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, Modal, Pressable, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { XMarkIcon } from "react-native-heroicons/outline";
 import { KeyboardAvoidingView, KeyboardController } from "react-native-keyboard-controller";
 import DateRangePickerBottomSheet, { DateRangePickerRef } from "../../../../../shared/components/bottom-sheets/date-range/DateRangePickerBottomSheet";
@@ -120,7 +120,17 @@ const FiltersModal = ({ isVisible, onClose, filters, setFilters }: FiltersModalP
   const isDisabled = !creationDateRange?.from && !creationDateRange?.to &&
     !dueDateRange?.from && !dueDateRange?.to &&
     !amount.from && !amount.to;
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
+  useEffect(() => {
+    const show = Keyboard.addListener("keyboardDidShow", () => setIsKeyboardOpen(true));
+    const hide = Keyboard.addListener("keyboardDidHide", () => setIsKeyboardOpen(false));
+
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
   return (
     <Modal
       transparent
@@ -163,7 +173,7 @@ const FiltersModal = ({ isVisible, onClose, filters, setFilters }: FiltersModalP
                     // damping: 20,
                     // stiffness: 90
                   }}
-                  className="bg-white w-full rounded-t-3xl pt-4 shadow-lg pb-12 px-6"
+                  className={cn("bg-white w-full rounded-t-3xl pt-4 shadow-lg px-6", isKeyboardOpen ? "pb-4" : "pb-12")}
                   style={{
                     shadowColor: '#000',
                     shadowOffset: { width: 0, height: -2 },

@@ -69,7 +69,8 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
     const [searchTerm, setSearchTerm] = useState("");
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
-    const { shareMutation: { mutateAsync: sharePaymentLink, isPending: isShareLoading, error, isSuccess } } = usePaymentLinkActionsVM();
+    const [activeShareType, setActiveShareType] = useState<"sms" | "email" | null>(null);
+    const { shareMutation: { mutateAsync: sharePaymentLink, error, isSuccess } } = usePaymentLinkActionsVM();
     const [isEmailValid, setIsEmailValid] = useState(true);
     const [isPhoneValid, setIsPhoneValid] = useState(true);
     const { copy, isCopied } = useClipboard();
@@ -81,6 +82,7 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
         } else {
             setIsEmailValid(true);
         }
+        setActiveShareType("email");
         try {
             await sharePaymentLink({
                 operation: "email",
@@ -90,6 +92,8 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
             setEmail("");
         } catch (e) {
             console.log('error', e)
+        } finally {
+            setActiveShareType(null);
         }
     };
 
@@ -101,6 +105,7 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
         } else {
             setIsPhoneValid(true);
         }
+        setActiveShareType("sms");
         try {
             await sharePaymentLink({
                 operation: "phone",
@@ -112,6 +117,8 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
             setSelectedCountry(EgyptPhoneCode);
         } catch (e) {
             console.log('error', e)
+        } finally {
+            setActiveShareType(null);
         }
     };
     const handleSelect = (country: { phone: string, name: string, flag: string }) => {
@@ -208,7 +215,7 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
                                 {t('Link to share')}
                             </FontText>
                             <View className="flex-row items-center gap-x-2">
-                                <View className="flex-row items-center justify-between border border-stroke-input rounded px-4 py-3 pr-8 bg-[#F5F6F6] w-[70%]">
+                                <View className="flex-row items-center justify-between border border-stroke-input rounded px-4 py-3 pr-8 bg-[#F5F6F6] w-[68%]">
                                     <Text
                                         className="font-body-regular-ltr text-content-secondary text-sm "
                                         lineBreakMode="tail"
@@ -221,15 +228,16 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
                                     </TouchableOpacity>
                                 </View>
                                 <Button
-                                    className="h-[42px] flex-1"
+                                    className="h-[46px] flex-1"
                                     title={t("Copy")}
                                     onPress={handleCopy}
                                     variant="outline"
+                                    titleClasses="text-sm"
                                 />
                             </View>
                         </View>
                         <View className="flex-row items-end gap-x-2">
-                            <View className="w-[70%]">
+                            <View className="w-[68%]">
                                 <CountryPhoneInput
                                     label={t("Send SMS")}
                                     value={phone}
@@ -241,15 +249,16 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
                                 />
                             </View>
                             <Button
-                                className="h-[42px] flex-1"
+                                className="h-[46px] flex-1"
                                 title={t("Send")}
                                 onPress={handleSendSms}
-                                isLoading={isShareLoading}
+                                isLoading={activeShareType === "sms"}
                                 variant="outline"
+                                titleClasses="text-sm"
                             />
                         </View>
                         <View className="flex-row items-end gap-x-2">
-                            <View className="w-[70%]">
+                            <View className="w-[68%]">
                                 <Input
                                     label={t("Send Email")}
                                     placeholder={t("Please enter email")}
@@ -259,11 +268,12 @@ const ShareOptions = ({ countries, paymentLinkId, setIsQrCodeModalVisible }: Pro
                                 />
                             </View>
                             <Button
-                                className="h-[42px] flex-1"
+                                className="h-[46px] flex-1"
                                 title={t("Send")}
                                 onPress={handleSendEmail}
-                                isLoading={isShareLoading}
+                                isLoading={activeShareType === "email"}
                                 variant="outline"
+                                titleClasses="text-sm"
                             />
                         </View>
 

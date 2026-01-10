@@ -12,8 +12,7 @@ import usePermissions from "@/src/modules/auth/hooks/usePermissions";
 const usePaymentLinkActionsVM = (createdByUserId?: string) => {
     const { api, paymentApi } = useApi();
     const queryClient = useQueryClient();
-    const { isLiveMode } = useEnvironment();
-
+    const { isLiveMode, environment } = useEnvironment();
     // Get permissions
     const user = useAuthStore(selectUser);
     const {
@@ -66,7 +65,7 @@ const usePaymentLinkActionsVM = (createdByUserId?: string) => {
     });
 
     const generateSherableUrl = (paymentLinkId: string) => {
-        return `${CHECKOUT_URL}/${I18nManager.isRTL ? "ar" : "en"}/paymentLinkPage?ppLink=${paymentLinkId},${isLiveMode ? "live" : "test"}`;
+        return `${CHECKOUT_URL[environment]}/${I18nManager.isRTL ? "ar" : "en"}/paymentLinkPage?ppLink=${paymentLinkId},${isLiveMode ? "live" : "test"}`;
     }
 
     return {

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Dimensions, FlatList, View, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { MotiView } from 'moti'
+import { useRouter } from 'expo-router'
 import BalanceStatsCard from '../../balance/components/header/BalanceStatsCard'
 import { AccountStatistics, PaymentsStatistics, PayoutStatistics, TransfersStatistics } from '../../balance/balance.model'
 import { useTranslation } from 'react-i18next'
@@ -28,10 +29,28 @@ type CardItem = {
 }
 const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payoutStats, setHomeActiveTab, activeTab }: HomeStatsCarouselProps) => {
     const { t } = useTranslation()
+    const router = useRouter()
     const [currentIndex, setCurrentIndex] = useState(0)
     const mode = useEnvironmentStore(selectMode)
     const flatListRef = useRef<FlatList<CardItem>>(null)
     const isProgrammaticScroll = useRef(false)
+
+    const handleCardPress = useCallback((cardId: CardItem['id']) => {
+        switch (cardId) {
+            case 'balance-card':
+                router.push('/balance?tab=overview')
+                break
+            case 'payments-card':
+                router.push('/(tabs)/payments')
+                break
+            case 'payouts-card':
+                router.push('/balance?tab=payout')
+                break
+            case 'transfers-card':
+                router.push('/services/transfers')
+                break
+        }
+    }, [router])
     // const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     //     const scrollPosition = event.nativeEvent.contentOffset.x
     //     const index = Math.round(scrollPosition / CARD_WIDTH)
@@ -125,6 +144,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
                                 mainBalance={item.mainBalance}
                                 leftDetail={item.leftDetail}
                                 rightDetail={item.rightDetail}
+                                onPress={() => handleCardPress(item.id)}
                             />
                         </View>
                     )}

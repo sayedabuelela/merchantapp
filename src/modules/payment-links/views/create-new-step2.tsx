@@ -110,111 +110,111 @@ const CreateNewPaymentLinkStep2Screen = () => {
             <KeyboardAwareScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
                 <AnimatedError errorMsg={t(error?.message || '')} />
                 <FadeInUpView delay={150} duration={600}>
-                {/* Due Date */}
-                <CreateOptionBox
-                    title={t("Set a due date")}
-                    icon={<CalendarIcon size={24} color="#556767" />}
-                >
-                    <Controller
-                        control={control}
-                        name="dueDate"
-                        render={({ field: { onChange, value } }) => (
-                            <View className="flex-row gap-x-3 w-full">
-                                <DateSelector
-                                    label={t("Due Date")}
-                                    date={value}
-                                    onPress={handleDateSelectPickerExpand}
-                                    t={t}
-                                    className="flex-1"
-                                />
-                                {value && (
-                                    <TimeSelector
-                                        label={t("Time")}
+                    {/* Due Date */}
+                    <CreateOptionBox
+                        title={t("Set a due date")}
+                        icon={<CalendarIcon size={24} color="#556767" />}
+                    >
+                        <Controller
+                            control={control}
+                            name="dueDate"
+                            render={({ field: { onChange, value } }) => (
+                                <View className="flex-row gap-x-3 w-full">
+                                    <DateSelector
+                                        label={t("Due Date")}
                                         date={value}
-                                        onPress={handleTimeSelectPickerExpand}
+                                        onPress={handleDateSelectPickerExpand}
                                         t={t}
                                         className="flex-1"
                                     />
-                                )}
-                            </View>
-                        )}
-                    />
-                    {values.dueDate && (
-                        <Controller
-                            control={control}
-                            name="isSuspendedPayment"
-                            render={({ field: { onChange, value } }) => (
-                                <TouchableOpacity className="flex-row items-center mt-4" onPress={() => onChange(!value)}>
-                                    {value ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
-                                    <FontText type="body" weight="regular" className="text-content-primary text-base ml-2">{t('Set as Expiry Date')}</FontText>
-                                </TouchableOpacity>
+                                    {value && (
+                                        <TimeSelector
+                                            label={t("Time")}
+                                            date={value}
+                                            onPress={handleTimeSelectPickerExpand}
+                                            t={t}
+                                            className="flex-1"
+                                        />
+                                    )}
+                                </View>
                             )}
                         />
-                    )}
-                    <AnimatedErrorMsg errorMsg={t(errors.dueDate?.message || '')} />
-                </CreateOptionBox>
-
-                {/* Serial Number */}
-                <CreateOptionBox
-                    title={t("Add a serial number")}
-                    icon={<HashtagIcon size={24} color="#556767" />}
-                >
-                    <Controller
-                        control={control}
-                        name="referenceId"
-                        render={({ field: { onChange, value } }) => (
-                            <Input
-                                label={t("Serial Number")}
-                                placeholder={t("Serial number (Optional)")}
-                                value={value}
-                                onChangeText={onChange}
-                                error={!!errors.referenceId}
+                        {values.dueDate && (
+                            <Controller
+                                control={control}
+                                name="isSuspendedPayment"
+                                render={({ field: { onChange, value } }) => (
+                                    <TouchableOpacity className="flex-row items-center mt-4" onPress={() => onChange(!value)}>
+                                        {value ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
+                                        <FontText type="body" weight="regular" className="text-content-primary text-base ml-2">{t('Set as Expiry Date')}</FontText>
+                                    </TouchableOpacity>
+                                )}
                             />
                         )}
-                    />
-                    <AnimatedErrorMsg errorMsg={t(errors.referenceId?.message || '')} />
-                </CreateOptionBox>
+                        <AnimatedErrorMsg errorMsg={t(errors.dueDate?.message || '')} />
+                    </CreateOptionBox>
 
-                {/* Note */}
-                <CreateOptionBox
-                    title={t("Add a note")}
-                    icon={<DocumentTextIcon size={24} color="#556767" />}
-                >
-                    <Controller
-                        control={control}
-                        name="description"
-                        render={({ field: { onChange, value } }) => (
-                            <Input
-                                label={t("Note")}
-                                placeholder={t("Type a note (Optional)")}
-                                value={value}
-                                onChangeText={onChange}
-                                multiline
-                                numberOfLines={4}
-                                error={!!errors.description}
-                            />
-                        )}
-                    />
-                    <AnimatedErrorMsg errorMsg={t(errors.description?.message || '')} />
-                </CreateOptionBox>
+                    {/* Serial Number */}
+                    <CreateOptionBox
+                        title={t("Add a serial number")}
+                        icon={<HashtagIcon size={24} color="#556767" />}
+                    >
+                        <Controller
+                            control={control}
+                            name="referenceId"
+                            render={({ field: { onChange, value } }) => (
+                                <Input
+                                    label={t("Serial Number")}
+                                    placeholder={t("Serial number (Optional)")}
+                                    value={value}
+                                    onChangeText={onChange}
+                                    error={!!errors.referenceId}
+                                />
+                            )}
+                        />
+                        <AnimatedErrorMsg errorMsg={t(errors.referenceId?.message || '')} />
+                    </CreateOptionBox>
 
-                {/* Actions */}
-                <View className="mt-8 mb-4">
-                    <Button
-                        disabled={!isValid}
-                        title={t(isEditMode ? "Update payment link" : "Create payment link")}
-                        onPress={handleSubmit(onSubmit)}
-                        isLoading={isLoadingPaymentLink}
-                    />
+                    {/* Note */}
+                    <CreateOptionBox
+                        title={t("Add a note")}
+                        icon={<DocumentTextIcon size={24} color="#556767" />}
+                    >
+                        <Controller
+                            control={control}
+                            name="description"
+                            render={({ field: { onChange, value } }) => (
+                                <Input
+                                    label={t("Note")}
+                                    placeholder={t("Type a note (Optional)")}
+                                    value={value}
+                                    onChangeText={onChange}
+                                    multiline
+                                    numberOfLines={4}
+                                    error={!!errors.description}
+                                />
+                            )}
+                        />
+                        <AnimatedErrorMsg errorMsg={t(errors.description?.message || '')} />
+                    </CreateOptionBox>
 
-                    <Button
-                        title={t("Cancel")}
-                        onPress={() => router.back()}
-                        variant="outline"
-                        className="mt-3"
-                    />
+                    {/* Actions */}
+                    <View className="mt-8 mb-4">
+                        <Button
+                            disabled={!isValid}
+                            title={t(isEditMode ? "Update payment link" : "Create payment link")}
+                            onPress={handleSubmit(onSubmit)}
+                            isLoading={isLoadingPaymentLink}
+                        />
 
-                </View>
+                        <Button
+                            title={t("Cancel")}
+                            onPress={() => router.back()}
+                            variant="outline"
+                            className="mt-3"
+                        />
+
+                    </View>
                 </FadeInUpView>
 
             </KeyboardAwareScrollView>
@@ -224,18 +224,22 @@ const CreateNewPaymentLinkStep2Screen = () => {
                 savedDate={formData.dueDate}
                 onDateSelected={(date) => {
                     if (date) {
-                        const currentDueDate = values.dueDate || new Date();
                         const newDate = new Date(date);
-                        // Preserve existing time or use current time
-                        newDate.setHours(currentDueDate.getHours());
-                        newDate.setMinutes(currentDueDate.getMinutes());
+                        if (values.dueDate) {
+                            // Preserve existing time if user already set one
+                            newDate.setHours(values.dueDate.getHours());
+                            newDate.setMinutes(values.dueDate.getMinutes());
+                        } else {
+                            // Default to 11:59 PM if no time was set
+                            newDate.setHours(23);
+                            newDate.setMinutes(59);
+                        }
                         newDate.setSeconds(0);
                         newDate.setMilliseconds(0);
                         setValue("dueDate", newDate, { shouldValidate: true });
                     } else {
                         setValue("dueDate", undefined, { shouldValidate: true });
                     }
-                    // handleDateSelectPickerClose();
                 }}
                 onClose={handleDateSelectPickerClose}
             />

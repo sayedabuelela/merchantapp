@@ -323,13 +323,17 @@ const OptimizedActionsModal = ({ isVisible, onClose, paymentLink, countries }: P
     const handleDeletePaymentLink = useCallback(async () => {
         try {
             await deletePaymentLink(paymentLink.paymentLinkId);
+            // Navigate to payment links list if deleted from details screen
+            if (isPaymentLinkDetails) {
+                router.replace('/payment-links');
+            }
         } catch (error) {
             console.error('Error deleting payment link:', error);
         } finally {
             setMode("actions");
             handleClose();
         }
-    }, [deletePaymentLink, paymentLink.paymentLinkId, handleClose]);
+    }, [deletePaymentLink, paymentLink.paymentLinkId, handleClose, isPaymentLinkDetails, router]);
 
     const handleAction = useCallback(async (actionType: string, payload?: any) => {
         console.debug('handleAction', actionType, payload);
