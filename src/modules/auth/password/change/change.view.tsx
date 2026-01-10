@@ -4,11 +4,11 @@ import FontText from "@/src/shared/components/FontText";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ChangePasswordRequest } from "./change.model";
 import { useChangePasswordViewModel } from "./change.viewmodel";
 import ChangePasswordForm from "./components/ChangePasswordForm";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const ChangePasswordScreen = () => {
     const { t } = useTranslation();
@@ -17,19 +17,18 @@ const ChangePasswordScreen = () => {
 
     const onSubmit = async ({ currentPassword, newPassword }: ChangePasswordRequest) => {
         await changePassword({ currentPassword, newPassword });
-
         router.replace('/');
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white pt-36 px-6">
+        <SafeAreaView className="flex-1 bg-white  px-6">
             <KeyboardAwareScrollView
                 className="pb-16"
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ flex: 1, flexGrow: 1 }}
+                contentContainerStyle={{ flexGrow: 1 }}
             >
-                <View className="items-center justify-center ">
+                <View className="items-center justify-center pt-36">
                     <ChangePassword />
                     <FontText
                         type="head"

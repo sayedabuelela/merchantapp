@@ -1,4 +1,5 @@
 import LanguageProvider from '@/src/core/providers/LanguageProvider';
+import NetworkProvider from '@/src/core/providers/NetworkProvider';
 import { NotificationProvider } from "@/src/core/providers/NotificationProvider";
 import SplashProvider from "@/src/core/providers/SplashProvider";
 import { selectAuthInitialize, selectIsAuthenticated, useAuthStore } from '@/src/modules/auth/auth.store';
@@ -51,22 +52,24 @@ function AppContent() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
-        <Stack.Protected guard={!isAuthenticated}>
-          <Stack.Screen name="(auth)" />
-        </Stack.Protected>
+      <NetworkProvider>
+        <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
+          <Stack.Protected guard={!isAuthenticated}>
+            <Stack.Screen name="(auth)" />
+          </Stack.Protected>
 
-        <Stack.Protected guard={canAccessEnableBiometricScreen}>
-          <Stack.Screen name="enable-biometric" />
-        </Stack.Protected>
+          <Stack.Protected guard={canAccessEnableBiometricScreen}>
+            <Stack.Screen name="enable-biometric" />
+          </Stack.Protected>
 
-        <Stack.Protected guard={isAuthenticated}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="(onboarding)" />
-          <Stack.Screen name="(profile)" />
-        </Stack.Protected>
-      </Stack>
-      <Toaster toastOptions={{ style: { elevation: 9999, zIndex: 9999 } }} />
+          <Stack.Protected guard={isAuthenticated}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="(onboarding)" />
+            <Stack.Screen name="(profile)" />
+          </Stack.Protected>
+        </Stack>
+        <Toaster toastOptions={{ style: { elevation: 9999, zIndex: 9999 } }} />
+      </NetworkProvider>
     </GestureHandlerRootView>
   );
 }

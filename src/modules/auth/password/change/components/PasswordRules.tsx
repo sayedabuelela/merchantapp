@@ -57,7 +57,7 @@ const PasswordRules = ({ checks }: PasswordRulesProps) => {
                         <FontText
                             type='body'
                             weight='semi'
-                            className={`ml-2 text-sm ${item.ok ? 'text-[#388E3B] line-through' : 'text-content-secondary'}`}>
+                            className={`ml-2 text-xs ${item.ok ? 'text-[#388E3B] line-through' : 'text-content-secondary'}`}>
                             {item.label}
                         </FontText>
                     </View>

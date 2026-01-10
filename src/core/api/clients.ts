@@ -1,5 +1,5 @@
 import axios, {AxiosInstance} from "axios";
-import {addAuthInterceptor, addErrorInterceptor} from "@/src/core/api/clients.interceptors";
+import {addAuthInterceptor, addErrorInterceptor, addNetworkCheckInterceptor} from "@/src/core/api/clients.interceptors";
 import {BASE_URLS, Environment, PAYMENT_URLS, Mode} from "@/src/core/environment/environments";
 
 const createBaseClient = (baseURL: string): AxiosInstance => {
@@ -13,6 +13,7 @@ const createBaseClient = (baseURL: string): AxiosInstance => {
         timeout: 30000, // 30 seconds timeout
     })
 
+    addNetworkCheckInterceptor(instance)
     addAuthInterceptor(instance)
     addErrorInterceptor(instance)
 

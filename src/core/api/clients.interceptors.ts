@@ -3,8 +3,27 @@ import { useBiometricStore } from "@/src/modules/auth/biometric/biometric.store"
 import { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { router } from "expo-router";
 import { ROUTES } from "../navigation/routes";
+import { useNetworkStore, selectIsOnline } from "../network/network.store";
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const addNetworkCheckInterceptor = (instance: AxiosInstance): AxiosInstance => {
+    instance.interceptors.request.use(
+        config => {
+            const isOnline = selectIsOnline(useNetworkStore.getState());
+            if (!isOnline) {
+                return Promise.reject({
+                    error: 'No internet connection. Please check your network and try again.',
+                    message: 'No internet connection. Please check your network and try again.',
+                    code: 'NO_NETWORK'
+                });
+            }
+            return config;
+        },
+        error => Promise.reject(error)
+    );
+    return instance;
+};
 
 export const addAuthInterceptor = (instance: AxiosInstance): AxiosInstance => {
     instance.interceptors.request.use(config => {

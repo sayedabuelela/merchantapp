@@ -518,5 +518,7 @@
   "Aman Payment Details": "تفاصيل دفع أمان",
   "Aman Transaction Id": "رقم معاملة أمان",
   "Monthly Paid": "المبلغ الشهري",
-  "Discount Code": "كود الخصم"
+  "Discount Code": "كود الخصم",
+  "No internet connection": "لا يوجد اتصال بالإنترنت",
+  "No internet connection. Please check your network and try again.": "لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة والمحاولة مرة أخرى."
 }

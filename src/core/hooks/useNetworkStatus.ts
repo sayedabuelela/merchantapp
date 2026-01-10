@@ -1,14 +1,17 @@
-import { useNetworkState } from 'expo-network';
+import { useNetworkStore, selectIsOnline, selectIsConnected, selectIsInternetReachable } from '../network/network.store';
 
+/**
+ * Hook to get network status from the global store.
+ * The store is updated by NetworkProvider which monitors network state.
+ */
 export const useNetworkStatus = () => {
-    const networkState = useNetworkState();
-
-    const isConnected = networkState.isConnected ?? true; // Default to true to avoid blocking if check fails
-    const isInternetReachable = networkState.isInternetReachable ?? true;
+    const isConnected = useNetworkStore(selectIsConnected);
+    const isInternetReachable = useNetworkStore(selectIsInternetReachable);
+    const hasNetwork = useNetworkStore(selectIsOnline);
 
     return {
         isConnected,
         isInternetReachable,
-        hasNetwork: isConnected && isInternetReachable !== false,
+        hasNetwork,
     };
 };

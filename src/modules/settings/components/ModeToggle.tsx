@@ -20,7 +20,7 @@ export const ModeToggle = () => {
     return (
         <View className="flex-row items-center justify-between border-b border-stroke-main py-4">
             <View className="flex-row items-center">
-                <View className={cn('w-5 h-5 rounded-full', isLiveMode ? 'bg-[#388E3B]' : 'bg-[#919C9C]')} />
+                <View className={cn('w-5 h-5 rounded-full', isLiveMode ? 'bg-[#388E3B]' : 'bg-[#ffd484]')} />
                 <FontText
                     type="body"
                     weight="bold"
@@ -32,9 +32,9 @@ export const ModeToggle = () => {
             <Switch
                 value={user?.isLive ? isLiveMode : false}
                 onValueChange={toggleMode}
-                trackColor={{ false: '#919C9C', true: '#388E3B' }}
+                trackColor={{ false: '#ffd484', true: '#388E3B' }}
                 thumbColor="#ffffff"
-                ios_backgroundColor="#919C9C"
+                ios_backgroundColor="#ffd484"
                 disabled={!user?.isLive}
             />
         </View>
