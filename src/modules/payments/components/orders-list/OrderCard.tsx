@@ -21,7 +21,6 @@ interface OrderCardProps {
 const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
     const { t } = useTranslation();
     const { paymentParams, status, capturedAmount, targetTransactionId, _id, createdAt, method } = payment;
-    // console.log('OrderCard payment', payment);
     const isPaid = status === 'PAID';
 
     const handleLongPress = () => {

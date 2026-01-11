@@ -15,7 +15,7 @@ interface Props {
 const SectionRowItem = ({ title, value, labelClassName, valueClassName, className }: Props) => {
     if (!value) return null;
     return (
-        <View className={cn('flex-row items-center justify-between', className)}>
+        <View className={cn('flex-row items-center justify-between flex-wrap', className)}>
             <FontText type="body" weight="regular"
                 className={cn("text-content-secondary text-sm self-start", labelClassName)}>{title}</FontText>
             <FontText type="body" weight="semi"

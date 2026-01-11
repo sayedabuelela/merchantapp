@@ -55,7 +55,8 @@ const SouhoolaSettlementDetails = ({ data }: Props) => {
                     />
                     {data.rfsDate !== undefined && data.rfsDate !== 'NA' && (
                         <SectionRowItem
-                            title={t('Ready for settlement date')}
+                            // title={t('Ready for settlement date')}
+                            title={t('RFSD')}
                             value={data.rfsDate ? `${formatRelativeDate(data.rfsDate)}, ${formatTime(data.rfsDate)}` : formatText(undefined)}
                         />
                     )}

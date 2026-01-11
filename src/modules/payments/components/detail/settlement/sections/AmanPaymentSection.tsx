@@ -2,11 +2,24 @@ import DetailsSection from '@/src/shared/components/details-screens/DetailsSecti
 import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import { useTranslation } from 'react-i18next';
 import { formatAmount, formatText } from '@/src/modules/payments/utils/formatters';
+import { formatRelativeDate } from '@/src/core/utils/dateUtils';
 import { SettlementData } from '../adapters';
 
 interface Props {
     data: SettlementData;
 }
+
+// Parse date string format "M/D/YYYY HH:MM:SS AM/PM" from API
+const formatInstallmentDate = (dateString: string | undefined): string => {
+    if (!dateString) return '-';
+    // Extract date part before the time (e.g., "10/5/2024" from "10/5/2024 12:00:00 AM")
+    const datePart = dateString.split(' ')[0];
+    const [month, day, year] = datePart.split('/').map(Number);
+    if (!month || !day || !year) return '-';
+    const date = new Date(year, month - 1, day);
+    if (isNaN(date.getTime())) return '-';
+    return formatRelativeDate(date);
+};
 
 /**
  * Aman Payment Section - Displays Aman-specific payment details
@@ -35,7 +48,7 @@ const AmanPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Tenure')}
-                value={formatText(payerInfo.tenure?.toString())}
+                value={formatText(payerInfo.months?.toString())}
             />
             <SectionRowItem
                 title={t('Monthly Paid')}
@@ -43,11 +56,11 @@ const AmanPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('First Installment Date')}
-                value={formatText(payerInfo.firstEmiDueDate)}
+                value={formatInstallmentDate(payerInfo.firstInstallmentDate)}
             />
             <SectionRowItem
                 title={t('Last Installment Date')}
-                value={formatText(payerInfo.lastInstallmentDate)}
+                value={formatInstallmentDate(payerInfo.lastInstallmentDate)}
             />
             <SectionRowItem
                 title={t('Admin Fees')}

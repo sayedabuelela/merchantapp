@@ -1,21 +1,19 @@
+import { useNetworkStatus } from '@/src/core/hooks/useNetworkStatus';
 import { ROUTES } from '@/src/core/navigation/routes';
 import { LoginFormData } from "@/src/modules/auth/login/login.model";
 import { KashierLogo } from "@/src/shared/assets/svgs";
 import FontText from "@/src/shared/components/FontText";
+import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Platform, View,Image } from 'react-native';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { DeveloperSettings } from '../../settings/components/DeveloperSettings';
 import { useBiometricViewModel } from "../biometric/biometric.viewmodel";
 import { LoginForm } from './components/LoginForm';
 import { useLoginViewModel } from './login.viewmodel';
-import { DeveloperSettings } from '../../settings/components/DeveloperSettings';
-import { useNetworkStatus } from '@/src/core/hooks/useNetworkStatus';
-import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
-import LottieView from 'lottie-react-native';
-import staticImages from '@/src/core/utils/static-images';
 
 const LoginScreen = () => {
     const { t } = useTranslation();
@@ -81,7 +79,6 @@ const LoginScreen = () => {
                             loading={isLoading}
                             error={networkError || error?.error || error?.message}
                         />
-
                     </FadeInUpView>
                     <FadeInUpView delay={300} duration={600}>
                         <View className="flex-row justify-center mt-8">

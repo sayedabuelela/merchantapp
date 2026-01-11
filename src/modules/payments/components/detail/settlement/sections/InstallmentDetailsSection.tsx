@@ -65,6 +65,7 @@ const InstallmentDetailsSection = ({ data }: Props) => {
                 value={planFinancingText}
             />
             <SectionRowItem
+                // title={t('Bank Name / Abb. / ID')}
                 title={t('Bank Name / Abb. / ID')}
                 value={formatText(bankInfo)}
             />

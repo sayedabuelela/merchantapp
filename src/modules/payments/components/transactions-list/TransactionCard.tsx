@@ -52,13 +52,13 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
     const isRefund = type === 'REFUND';
     const is3DSecureVerify = type === '3DSECURE_VERIFY';
 
-
+    
     const handleLongPress = () => {
         if (onOpenActions) {
             onOpenActions(transaction);
         }
     };
-    console.log('status : ', status);
+    console.log('transaction : ', transaction);
     return (
         <Link href={`/payments/transaction/${transactionId}`} asChild>
             <PressableScale onLongPress={handleLongPress}>

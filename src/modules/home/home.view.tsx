@@ -7,9 +7,9 @@ import FadeInUpView from "@/src/shared/components/wrappers/animated-wrappers/Fad
 import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/ScaleView"
 import StaggerChildrenView from "@/src/shared/components/wrappers/animated-wrappers/StaggerChildrenView"
 import { PressableScale } from 'pressto'
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { I18nManager, Platform, Pressable, ScrollView, StyleSheet, View } from "react-native"
+import { I18nManager, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native"
 import { ArrowRightIcon, ChevronDownIcon } from "react-native-heroicons/outline"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Activity } from "../balance/balance.model"
@@ -56,10 +56,10 @@ const HomeScreen = () => {
 
     // const { data: recentActivities } = useRecentBalanceActivities();
     const {
-        accountStatistics: { data: accountStats },
-        transfersStatistics: { data: transfersStats },
-        paymentsStatistics: { data: paymentsStats },
-        payoutStatistics: { data: payoutStats }
+        accountStatistics: { data: accountStats, refetch: refetchAccountStats, isRefetching: isRefetchingAccountStats },
+        transfersStatistics: { data: transfersStats, refetch: refetchTransfersStats, isRefetching: isRefetchingTransfersStats },
+        paymentsStatistics: { data: paymentsStats, refetch: refetchPaymentsStats, isRefetching: isRefetchingPaymentsStats },
+        payoutStatistics: { data: payoutStats, refetch: refetchPayoutStats, isRefetching: isRefetchingPayoutStats }
     } = useStatistics({
         dateFrom: dateFilters.dateFrom,
         dateTo: dateFilters.dateTo,
@@ -149,12 +149,64 @@ const HomeScreen = () => {
                 return t("Go to balance");
         }
     };
+
+    // Pull-to-refresh handler
+    const isRefreshing =
+        isRefetchingAccountStats ||
+        isRefetchingTransfersStats ||
+        isRefetchingPaymentsStats ||
+        isRefetchingPayoutStats ||
+        allActivitiesQuery.isRefetching ||
+        payoutsQuery.isRefetching ||
+        transfersQuery.isRefetching ||
+        ordersQuery.isRefetching;
+
+    const handleRefresh = useCallback(() => {
+        // Refetch all statistics
+        refetchAccountStats();
+        refetchTransfersStats();
+        refetchPaymentsStats();
+        refetchPayoutStats();
+
+        // Refetch list data based on active tab
+        switch (activeTab) {
+            case 'all':
+                allActivitiesQuery.refetch();
+                break;
+            case 'payouts':
+                payoutsQuery.refetch();
+                break;
+            case 'transfers':
+                transfersQuery.refetch();
+                break;
+            case 'orders':
+                ordersQuery.refetch();
+                break;
+        }
+    }, [
+        activeTab,
+        refetchAccountStats,
+        refetchTransfersStats,
+        refetchPaymentsStats,
+        refetchPayoutStats,
+        allActivitiesQuery,
+        payoutsQuery,
+        transfersQuery,
+        ordersQuery
+    ]);
+
     return (
         <SafeAreaView className="flex-1 bg-white">
             <View className={cn("flex-1 ", Platform.OS === 'android' ? 'pt-4' : 'pt-0')}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     stickyHeaderIndices={[2]}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefreshing}
+                            onRefresh={handleRefresh}
+                        />
+                    }
                 >
                     <FadeInDownView className="px-6 mb-2" delay={100} duration={600}>
                         {/* Header row */}
