@@ -12,6 +12,7 @@ import { PhoneIcon } from "react-native-heroicons/mini";
 import { formatAMPM } from "@/src/core/utils/dateUtils";
 import IconBox from "@/src/shared/components/wrappers/IconBox"
 import { PressableScale } from "pressto"
+import { objectHasKeys } from "@/src/core/utils/objects"
 
 // const IconBox = ({ children }: { children: React.ReactNode }) => {
 //     return (
@@ -44,7 +45,8 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
         createdAt,
         provider,
         type,
-        transactionResponseMessage
+        transactionResponseMessage,
+        customer
     } = transaction;
 
     const isApproved = status === 'Approved';
@@ -52,7 +54,7 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
     const isRefund = type === 'REFUND';
     const is3DSecureVerify = type === '3DSECURE_VERIFY';
 
-    
+
     const handleLongPress = () => {
         if (onOpenActions) {
             onOpenActions(transaction);
@@ -116,28 +118,36 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                             {merchantOrderId}
                         </FontText>
                     </View>
-                    {/* <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
-                    <View className="flex-row items-center gap-x-4">
-                        <View className="flex-row items-center gap-x-1">
-                            <UserIcon size={10} color="#556767"/>
-                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                Customer Name
-                            </FontText>
+                    {(customer !== undefined && objectHasKeys(customer)) && (
+                        <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
+                            <View className="flex-row items-center gap-x-4">
+                                {customer?.firstName && (
+                                    <View className="flex-row items-center gap-x-1">
+                                        <UserIcon size={10} color="#556767" />
+                                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                                            {`${customer?.firstName} ${customer?.lastName !== undefined ? customer?.lastName : ''}`}
+                                        </FontText>
+                                    </View>
+                                )}
+                                {customer?.mobilePhone && (
+                                    <View className="flex-row items-center gap-x-1">
+                                        <PhoneIcon size={10} color="#556767" />
+                                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                                            {customer?.mobilePhone}
+                                        </FontText>
+                                    </View>
+                                )}
+                            </View>
+                            {customer?.email && (
+                                <View className="flex-row items-center gap-x-1">
+                                    <EnvelopeIcon size={10} color="#556767" />
+                                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                                        {customer?.email}
+                                    </FontText>
+                                </View>
+                            )}
                         </View>
-                        <View className="flex-row items-center gap-x-1">
-                            <PhoneIcon size={10} color="#556767"/>
-                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                01012345678
-                            </FontText>
-                        </View>
-                    </View>
-                    <View className="flex-row items-center gap-x-1">
-                        <EnvelopeIcon size={10} color="#556767"/>
-                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                            sabu@email.com
-                        </FontText>
-                    </View>
-                </View> */}
+                    )}
                 </View>
             </PressableScale>
         </Link>

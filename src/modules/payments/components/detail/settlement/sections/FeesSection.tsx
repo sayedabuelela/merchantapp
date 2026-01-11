@@ -23,7 +23,7 @@ const FeesSection = ({ data }: Props) => {
     if (!hasData) {
         return null;
     }
-    
+
     return (
         <DetailsSection title={t('Fees')} className='mt-6'>
 
@@ -39,10 +39,10 @@ const FeesSection = ({ data }: Props) => {
                 title={t('Settlement Amount')}
                 value={formatAmount(data.settlementAmount, t('EGP'))}
             />
-            {data.rfsDate !== undefined && data.rfsDate !== 'NA' && (
+            {data.rfsDate !== undefined && (
                 <SectionRowItem
                     title={t('RFS Date')}
-                    value={`${formatRelativeDate(data.rfsDate)}, ${formatTime(data.rfsDate)}`}
+                    value={data.rfsDate !== 'NA' ? `${formatRelativeDate(data.rfsDate)}, ${formatTime(data.rfsDate)}` : data.rfsDate}
                 />
             )}
             {data.earlySettlementFees !== undefined && (

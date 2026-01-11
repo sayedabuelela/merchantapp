@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import FontText from '@/src/shared/components/FontText';
 import { SourceOfFunds } from '@/src/modules/payments/payments.model';
+import { WalletIcon } from '@/src/shared/assets/svgs';
 
 interface WalletPaymentDetailsProps {
     sourceOfFunds: SourceOfFunds;
@@ -20,50 +21,48 @@ export const WalletPaymentDetails = ({ sourceOfFunds, paymentChannel }: WalletPa
     const displayName = walletName.replace('Cash', ' Cash').trim();
 
     return (
-        <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded gap-y-5">
+        <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-5 mt-4 rounded gap-y-5">
             {/* Header with Wallet branding */}
-            <View className="flex-row items-center justify-between">
+            {/* <View className="flex-row items-center justify-between">
                 <FontText type="body" weight="bold" className="text-content-primary text-lg capitalize">
                     {displayName} {paymentChannel && `- ${t(paymentChannel)}`}
                 </FontText>
+            </View> */}
+            <View className="flex-row items-center justify-between">
+                <View className="flex-row items-center gap-x-1">
+                    <FontText type="body" weight="semi"
+                        className="text-content-primary text-xs uppercase">
+                        {displayName}
+                    </FontText>
+                    {paymentChannel && (
+                        <FontText type="body" weight="semi"
+                            className="text-content-primary text-[10px] uppercase">
+                            - {t(paymentChannel)}
+                        </FontText>
+                    )}
+                </View>
+                <WalletIcon />
             </View>
 
             {/* Payment Details */}
-            <View className="gap-y-3">
+            <View className="">
                 {sourceOfFunds.payerAccount && (
-                    <View className="gap-y-1">
-                        <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                            {t('Phone Number')}
-                        </FontText>
-                        <FontText type="body" weight="bold" className="text-content-primary text-base">
-                            {sourceOfFunds.payerAccount}
-                        </FontText>
-                    </View>
+                    <FontText type="body" weight="bold" className="text-content-primary text-base">
+                        {sourceOfFunds.payerAccount}
+                    </FontText>
                 )}
 
-                <View className="flex-row items-center justify-between">
-                    {sourceOfFunds.payScheme && (
-                        <View className="gap-y-1">
-                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                {t('Payment Scheme')}
-                            </FontText>
-                            <FontText type="body" weight="bold" className="text-content-primary text-[10px] capitalize">
-                                {sourceOfFunds.payScheme}
-                            </FontText>
-                        </View>
-                    )}
+                    {/* {sourceOfFunds.payScheme && (
+                        <FontText type="body" weight="bold" className="text-content-primary text-[10px] capitalize">
+                            {sourceOfFunds.payScheme}
+                        </FontText>
+                    )} */}
 
-                    {sourceOfFunds.walletStrategy && (
-                        <View className="gap-y-1">
-                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                {t('Wallet Strategy')}
-                            </FontText>
-                            <FontText type="body" weight="bold" className="text-content-primary text-[10px] capitalize">
-                                {sourceOfFunds.walletStrategy}
-                            </FontText>
-                        </View>
-                    )}
-                </View>
+                {sourceOfFunds.walletStrategy && (
+                    <FontText type="body" weight="bold" className="text-content-primary text-base">
+                        {sourceOfFunds.walletStrategy}
+                    </FontText>
+                )}
             </View>
         </View>
     );

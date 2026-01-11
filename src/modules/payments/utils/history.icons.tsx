@@ -89,7 +89,8 @@ const getPaymentMethodIcon = (item: OrderDetailHistoryItem): HistoryIconData | n
  */
 export const getHistoryIcon = (item: OrderDetailHistoryItem): HistoryIconData => {
     const status = item.status.toUpperCase();
-
+    console.log('operation : ',item.operation);
+    
     // 1. Handle refund operations FIRST (always show refund icon, even if successful)
     if (item.operation === 'refund') {
         return createNeutralIcon(ICONS.REFUND);
@@ -123,7 +124,7 @@ export const getHistoryIcon = (item: OrderDetailHistoryItem): HistoryIconData =>
     }
 
     // 6. Handle specific operations (for items without payment method)
-    if (item.operation === 'verify_customer' || item.operation === '3dsecure') {
+    if (item.operation === 'verify_customer' || item.operation === '3dsecure' || item.operation === 'authorize') {
         return createNeutralIcon(ICONS.SHIELD);
     }
 

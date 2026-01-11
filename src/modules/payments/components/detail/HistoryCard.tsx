@@ -11,7 +11,7 @@ interface HistoryCardProps {
 
 const HistoryCard = ({ historyItem }: HistoryCardProps) => {
     const { t } = useTranslation();
-
+    console.log('historyItem : ', historyItem);
     const description = getHistoryDescription(historyItem, t);
     const formattedDate = formatHistoryDate(historyItem.date);
     const { icon, backgroundColor } = getHistoryIcon(historyItem);

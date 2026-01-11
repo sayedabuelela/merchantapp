@@ -24,12 +24,12 @@ export interface PaymentParams {
     storeName: string;
     interactionSource?: string;
     customer?: {
-        reference?:string,
-        firstName?:string,
-        lastNumber?:string,
-        email?:string,
-        mobilePhone?:string,
-        nationalId?:string
+        reference?: string,
+        firstName?: string,
+        lastName?: string,
+        email?: string,
+        mobilePhone?: string,
+        nationalId?: string
     }
 }
 
@@ -67,6 +67,7 @@ export interface PaymentSession {
         branchAddress?: string;
     };
     sourceOfFunds?: SourceOfFunds;
+    lastTransactionId?: string;
 }
 
 export interface Pagination {
@@ -360,6 +361,14 @@ export interface Transaction {
     installment?: Installment;
     installmentDetails?: InstallmentDetails;
     posTerminal?: TransactionPosTerminal; // POS terminal info for POS transactions
+    customer?: {
+        reference?: string,
+        firstName?: string,
+        lastName?: string,
+        email?: string,
+        mobilePhone?: string,
+        nationalId?: string
+    };
 }
 
 export interface TransactionPagination {

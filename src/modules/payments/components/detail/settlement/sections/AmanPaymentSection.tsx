@@ -1,15 +1,12 @@
 import DetailsSection from '@/src/shared/components/details-screens/DetailsSection';
 import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import { useTranslation } from 'react-i18next';
-import { formatAmount, formatText } from '@/src/modules/payments/utils/formatters';
-import { formatRelativeDate } from '@/src/core/utils/dateUtils';
+import { formatAmount, formatText } from '@/src/modules/payments/utils/formatters'; import { formatRelativeDate } from '@/src/core/utils/dateUtils';
 import { SettlementData } from '../adapters';
 
 interface Props {
     data: SettlementData;
 }
-
-// Parse date string format "M/D/YYYY HH:MM:SS AM/PM" from API
 const formatInstallmentDate = (dateString: string | undefined): string => {
     if (!dateString) return '-';
     // Extract date part before the time (e.g., "10/5/2024" from "10/5/2024 12:00:00 AM")
@@ -20,12 +17,6 @@ const formatInstallmentDate = (dateString: string | undefined): string => {
     if (isNaN(date.getTime())) return '-';
     return formatRelativeDate(date);
 };
-
-/**
- * Aman Payment Section - Displays Aman-specific payment details
- * Fields: Aman Transaction Id, Phone Number, Tenure, Monthly Paid,
- *         First Installment Date, Last Installment Date, Admin Fees, Discount Code
- */
 const AmanPaymentSection = ({ data }: Props) => {
     const { t } = useTranslation();
 

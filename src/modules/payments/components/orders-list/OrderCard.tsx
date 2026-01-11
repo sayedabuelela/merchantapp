@@ -20,7 +20,7 @@ interface OrderCardProps {
 
 const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
     const { t } = useTranslation();
-    const { paymentParams, status, capturedAmount, targetTransactionId, _id, createdAt, method } = payment;
+    const { paymentParams, status, capturedAmount, targetTransactionId, lastTransactionId, _id, createdAt, method } = payment;
     const isPaid = status === 'PAID';
 
     const handleLongPress = () => {
@@ -65,11 +65,11 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                     </View>
 
                     <View className="flex-row items-center gap-x-1 mt-2">
-                        {targetTransactionId && (
+                        {lastTransactionId && (
                             <FontText type="body" weight="regular"
                                 className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary"
                             >
-                                {targetTransactionId}
+                                {lastTransactionId}
                             </FontText>
                         )}
                         <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
@@ -83,7 +83,7 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                                     <View className="flex-row items-center gap-x-1">
                                         <UserIcon size={10} color="#556767" />
                                         <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                            {paymentParams.customer?.firstName}
+                                            {`${paymentParams.customer?.firstName} ${paymentParams.customer?.lastName !== undefined ? paymentParams.customer?.lastName : ''}`}
                                         </FontText>
                                     </View>
                                 )}

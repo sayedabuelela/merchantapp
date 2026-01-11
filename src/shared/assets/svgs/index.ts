@@ -57,3 +57,5 @@ export { default as AmanHistoryIcon } from './files/history-icons/aman-history-i
 export { default as SouhoolaHistoryIcon } from './files/history-icons/souhoola-history-icon.svg';
 export { default as MogoIcon } from './files/settlement-types/mogo-icon.svg';
 export { default as PdfDocumentIcon } from './files/pdf-document-icon.svg';
+export { default as ThreeDSHistoryIcon } from './files/history-icons/3ds-history-icon.svg';
+export { default as WalletIcon } from './files/wallet-icon.svg';
