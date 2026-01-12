@@ -36,7 +36,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         // ============================================================
         const foregroundSubscription = Notifications.addNotificationReceivedListener(
             async (notification) => {
-                console.log('Notification received in foreground:', notification);
+                console.log('Notification received in foreground:', notification.request.content.data);
 
                 // Extract notification ID from data payload
                 const notificationId = notification.request.content.data?._id as string | undefined;

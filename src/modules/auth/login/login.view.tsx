@@ -14,7 +14,8 @@ import { DeveloperSettings } from '../../settings/components/DeveloperSettings';
 import { useBiometricViewModel } from "../biometric/biometric.viewmodel";
 import { LoginForm } from './components/LoginForm';
 import { useLoginViewModel } from './login.viewmodel';
-
+import { getExpoPushTokenAsync, } from "expo-notifications";
+import { getDeviceInfo, getPushToken, sendLocalNotification } from "@/src/modules/notifications/notification.service";
 const LoginScreen = () => {
     const { t } = useTranslation();
     const { login, isLoading, error } = useLoginViewModel();
@@ -22,8 +23,18 @@ const LoginScreen = () => {
     const { hasNetwork } = useNetworkStatus();
     const router = useRouter();
     const [networkError, setNetworkError] = useState<string | null>(null);
-
-
+    const ttest = async () => {
+        const expoToken = await getExpoPushTokenAsync();
+         const fcmToken = await getPushToken() as string;
+        console.log('expoToken : ', expoToken.data);
+        console.log('fcmToken : ', fcmToken);
+        // sendLocalNotification({
+        //     title: 'Test Payment',
+        //     body: 'You received 100 EGP',
+        //     data: { type: 'transaction', transactionId: '123', _id: 'test-1' }
+        // });
+    }
+    // ttest();
     const handleSubmit = async ({ email, password }: LoginFormData) => {
         try {
             setNetworkError(null);

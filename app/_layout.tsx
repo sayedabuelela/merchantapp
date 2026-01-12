@@ -28,13 +28,59 @@ const queryClient = new QueryClient({
   }
 });
 
+// Track recently shown notifications to prevent duplicates
+const recentNotifications = new Map<string, number>();
+const DEDUP_WINDOW_MS = 5000; // 5 second window for deduplication
+
+const getNotificationKey = (notification: Notifications.Notification): string => {
+  const data = notification.request.content.data;
+  // Create a unique key from notification content
+  const originId = data?.originId || '';
+  const orderId = data?.orderId || '';
+  const transactionId = data?.transactionId || '';
+  const title = notification.request.content.title || '';
+  return `${originId}-${orderId}-${transactionId}-${title}`;
+};
+
+const cleanupOldNotifications = () => {
+  const now = Date.now();
+  for (const [key, timestamp] of recentNotifications.entries()) {
+    if (now - timestamp > DEDUP_WINDOW_MS) {
+      recentNotifications.delete(key);
+    }
+  }
+};
+
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
+  handleNotification: async (notification) => {
+    // Cleanup old entries
+    cleanupOldNotifications();
+
+    const key = getNotificationKey(notification);
+    const now = Date.now();
+
+    // Check if we've recently shown this notification
+    if (recentNotifications.has(key)) {
+      console.log('Skipping duplicate notification:', key);
+      return {
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        shouldShowBanner: false,
+        shouldShowList: false,
+      };
+    }
+
+    // Track this notification
+    recentNotifications.set(key, now);
+    console.log('Showing notification:', key);
+
+    return {
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    };
+  },
 });
 
 function AppContent() {

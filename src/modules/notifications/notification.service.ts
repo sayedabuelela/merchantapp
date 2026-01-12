@@ -130,9 +130,9 @@ export const registerForPushNotificationsAsync = async (
 ): Promise<string | null> => {
     const token = await getPushTokenCore();
 
-    if (token) {
-        await sendTokenToBackend(token, api);
-    }
+    // if (token) {
+    //     await sendTokenToBackend(token, api);
+    // }
 
     return token;
 };
@@ -167,14 +167,44 @@ export const sendLocalNotification = async (notification: PushNotificationData):
 export const handleNotificationResponse = (response: Notifications.NotificationResponse): void => {
     try {
         const data = response.notification.request.content.data;
-        console.log('Handling notification response:', data);
+        console.log('Handling notification response:', JSON.stringify(data, null, 2));
 
-        if (!data) return;
+        if (!data) {
+            console.log('No data in notification response');
+            return;
+        }
 
         // Navigate based on the notification data
-        if (data.type === 'transaction' && data.transactionId) {
-            router.push(`/payments/transaction/${data.transactionId}` as any);
+        // Payment types: paymentLink, order, transaction
+        const paymentType = data.paymentType as string | undefined;
+        const transactionId = data.transactionId as string | undefined;
+        const orderId = data.orderId as string | undefined;
+        const originId = data.originId as string | undefined;
+
+        console.log('Notification data:', { paymentType, transactionId, orderId, originId });
+
+        // Handle payment link notifications
+        if (paymentType === 'paymentLink' && originId) {
+            console.log('Navigating to payment link:', originId);
+            router.push(`/payment-links/${originId}` as any);
+            return;
         }
+
+        // Handle transaction notifications
+        if (transactionId) {
+            console.log('Navigating to transaction:', transactionId);
+            router.push(`/payments/transaction/${transactionId}` as any);
+            return;
+        }
+
+        // Handle order notifications
+        if (orderId) {
+            console.log('Navigating to order:', orderId);
+            router.push(`/payments/order/${orderId}` as any);
+            return;
+        }
+
+        console.log('No matching navigation route for notification data');
     } catch (error) {
         console.error('Error handling notification response:', error);
     }
@@ -239,7 +269,8 @@ export const confirmNotificationDelivery = async (
     }
 ): Promise<void> => {
     try {
-        await api.post(`notifications/${notificationId}/delivery`, deliveryData);
+        await api.put(`notification/${notificationId}`);
+        // await api.post(`notifications/${notificationId}/delivery`, deliveryData);
         console.log('Delivery confirmed for notification:', notificationId);
     } catch (error) {
         console.error('Error confirming notification delivery:', error);

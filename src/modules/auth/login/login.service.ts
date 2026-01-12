@@ -2,10 +2,14 @@ import { getDeviceInfo, getPushToken } from "@/src/modules/notifications/notific
 import { AxiosInstance } from "axios";
 import { AuthResponse, FCMData, GetMerchantResponse } from "../auth.model";
 import { LoginFormData, LoginRequest } from './login.model';
+import { getExpoPushTokenAsync } from "expo-notifications";
 
 export const authenticate = async (api: AxiosInstance, credentials: LoginFormData & { biometricEnabled?: boolean }): Promise<AuthResponse> => {
     const fcmToken = await getPushToken() as string;
+    
     const { deviceId, huawei } = await getDeviceInfo();
+    console.log('fcmToken : ',fcmToken);
+    
     const fcmData: FCMData = {
         deviceId,
         fcmToken,
