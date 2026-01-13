@@ -43,7 +43,7 @@ const AmanPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Monthly Paid')}
-                value={formatAmount(payerInfo.emi, t('EGP'))}
+                value={formatAmount(payerInfo.monthlyAmount, t('EGP'))}
             />
             <SectionRowItem
                 title={t('First Installment Date')}

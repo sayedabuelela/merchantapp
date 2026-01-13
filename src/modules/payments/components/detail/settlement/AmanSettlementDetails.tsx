@@ -53,11 +53,10 @@ const AmanSettlementDetails = ({ data }: Props) => {
                         title={t('Settlement Amount')}
                         value={formatAmount(data.settlementAmount, t('EGP'))}
                     />
-                    {data.rfsDate !== undefined && data.rfsDate !== 'NA' && (
+                    {data.rfsDate !== undefined && (
                         <SectionRowItem
-                            // title={t('Ready for settlement date')}
-                            title={t('RFSD')}
-                            value={data.rfsDate ? `${formatRelativeDate(data.rfsDate)}, ${formatTime(data.rfsDate)}` : '-'}
+                            title={t('RFS Date')}
+                            value={data.rfsDate !== 'NA' ? `${formatRelativeDate(data.rfsDate)}, ${formatTime(data.rfsDate)}` : data.rfsDate}
                         />
                     )}
                 </DetailsSection>

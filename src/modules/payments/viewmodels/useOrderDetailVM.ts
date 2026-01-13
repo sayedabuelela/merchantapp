@@ -15,7 +15,7 @@ export const useOrderDetailVM = (sessionId: string) => {
         queryKey: ['payment-order-detail', sessionId],
         queryFn: () => fetchOrderDetail(api, sessionId),
         enabled: !!sessionId,
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        // staleTime: 5 * 60 * 1000, // 5 minutes
     });
 
     return {

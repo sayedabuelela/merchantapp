@@ -228,6 +228,7 @@ export interface PayerInfo {
     firstInstallmentDate?: string;
     installmentAmount?: number;
     months?: number;
+    monthlyAmount?: number;
 }
 
 // Keep the old interfaces for backward compatibility if needed, or remove them
