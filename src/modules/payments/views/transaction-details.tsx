@@ -96,7 +96,7 @@ const TransactionDetailsScreen = () => {
     };
 
     const handleRefundConfirm = (amount: number) => {
-        if (!transaction || !transaction.order?.orderId) return;
+        if (!transaction) return;
 
         // Get cardDataToken from either flat structure or nested cardInfo
         const cardDataToken =
@@ -109,10 +109,28 @@ const TransactionDetailsScreen = () => {
             transaction.method === 'card' &&
             !!cardDataToken;
 
-        // POS refunds use transaction.id (UUID) in the URL, regular refunds use order.orderId
-        const refundOrderId = isPosRefund && transaction.id
-            ? transaction.id
-            : transaction.order.orderId;
+        // For POS refunds: use transaction.id or order.orderId (UUID format)
+        // For non-POS refunds: use transaction.order.orderId
+        const refundOrderId = isPosRefund
+            ? (transaction.id || transaction.order?.orderId)
+            : transaction.order?.orderId;
+
+        // Use transaction.merchantId if available, fallback to user's merchantId from auth store
+        const merchantId = transaction.merchantId || user?.merchantId;
+
+        console.log('Transaction refund debug:', {
+            isPosRefund,
+            refundOrderId,
+            merchantId,
+            terminalId: transaction.posTerminal?.terminalId,
+            cardDataToken: !!cardDataToken,
+            transactionId: transaction.transactionId,
+        });
+
+        if (!refundOrderId) {
+            console.error('No refundOrderId available for transaction refund');
+            return;
+        }
 
         refundTransactionMutation(
             {
@@ -120,7 +138,7 @@ const TransactionDetailsScreen = () => {
                 amount,
                 currency: transaction.currency,
                 isPosRefund,
-                merchantId: isPosRefund ? transaction.merchantId : undefined,
+                merchantId: isPosRefund ? merchantId : undefined,
                 terminalId: isPosRefund ? transaction.posTerminal?.terminalId : undefined,
                 cardDataToken: isPosRefund ? cardDataToken : undefined,
                 // Include targetTransactionId for transaction POS refunds

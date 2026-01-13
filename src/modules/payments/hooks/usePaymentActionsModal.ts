@@ -104,9 +104,12 @@ export const usePaymentActionsModal = ({
         }
 
         // Determine if POS refund
+        // For orders from list: use paymentParams.interactionSource (paymentChannel not available in list)
+        // For transactions from list: use channel
         let isPosRefund = false;
         if (type === 'order') {
-            isPosRefund = (payment as PaymentSession).paymentChannel?.toLowerCase() === 'pos' &&
+            const interactionSource = (payment as PaymentSession).paymentParams?.interactionSource;
+            isPosRefund = interactionSource?.toLowerCase() === 'pos' &&
                          (payment as PaymentSession).method === 'card' &&
                          !!cardDataToken;
         } else {
@@ -114,7 +117,8 @@ export const usePaymentActionsModal = ({
                          (payment as Transaction).method === 'card' &&
                          !!cardDataToken;
         }
-
+        console.log('isPosRefund',isPosRefund);
+        
         // Determine the refund orderId based on type and POS status
         let refundOrderId: string;
         if (type === 'order') {
@@ -122,6 +126,8 @@ export const usePaymentActionsModal = ({
             refundOrderId = isPosRefund
                 ? (payment as PaymentSession).paymentParams?.order || orderId!
                 : orderId!;
+                console.log('refundOrderId : ',(payment as PaymentSession).paymentParams?.order);
+                
         } else {
             // For POS transaction refunds, use transaction.id (UUID format)
             refundOrderId = isPosRefund && (payment as Transaction).id
@@ -131,6 +137,16 @@ export const usePaymentActionsModal = ({
 
         // Build refund params
         if (type === 'order') {
+            console.log({
+                orderId: refundOrderId,
+                amount,
+                currency,
+                isPosRefund,
+                merchantId: isPosRefund ? (payment as PaymentSession).merchantId : undefined,
+                terminalId: isPosRefund ? (payment as PaymentSession).posTerminal?.terminalId : undefined,
+                cardDataToken: isPosRefund ? cardDataToken : undefined,
+            });
+            
             return {
                 orderId: refundOrderId,
                 amount,

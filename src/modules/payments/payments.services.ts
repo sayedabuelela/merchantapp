@@ -237,20 +237,31 @@ export const refundOrder = async (
         targetTransactionId,
     } = request;
 
+    console.log('refundOrder request:', {
+        orderId,
+        amount,
+        currency,
+        isPosRefund,
+        merchantId,
+        terminalId,
+        cardDataToken: !!cardDataToken,
+        targetTransactionId,
+    });
+
     let payload: Record<string, any> = {
         apiOperation: 'REFUND',
     };
 
-    // Regular refund payload
-    if (!isPosRefund) {
-        payload.transaction = {
-            amount,
-            currency,
-        };
-    }
-
     // POS refund requires special payload
-    if (isPosRefund && merchantId && terminalId && cardDataToken) {
+    if (isPosRefund) {
+        if (!merchantId || !terminalId || !cardDataToken) {
+            console.error('POS refund missing required fields:', {
+                merchantId: !!merchantId,
+                terminalId: !!terminalId,
+                cardDataToken: !!cardDataToken,
+            });
+        }
+
         payload = {
             apiOperation: 'REFUND',
             merchantId,
@@ -267,13 +278,20 @@ export const refundOrder = async (
             },
             reason: 'Customer requested refund',
             transaction: {
-                amount: amount * 100, // POS refunds need amount in cents
+                amount,
                 currency,
-                // Include targetTransactionId for transaction POS refunds
                 ...(targetTransactionId && { targetTransactionId }),
             },
         };
+    } else {
+        // Regular (non-POS) refund payload
+        payload.transaction = {
+            amount,
+            currency,
+        };
     }
+
+    console.log('refundOrder payload:', JSON.stringify(payload, null, 2));
 
     const response = await api.put<RefundOrderResponse>(
         `/v3/orders/${orderId}?api-version=2`,

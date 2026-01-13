@@ -103,8 +103,8 @@ const OrderDetailsScreen = () => {
             order.method === 'card' &&
             !!order.sourceOfFunds?.cardDataToken;
 
-        // POS refunds use merchantOrderId (e.g., POS-271849111959726577171) in the URL
-        const refundOrderId = isPosRefund ? order.merchantOrderId : order.orderId;
+        // Always use order.orderId for refund API URL
+        const refundOrderId = order.orderId;
 
         refundOrderMutation(
             {
@@ -115,6 +115,7 @@ const OrderDetailsScreen = () => {
                 merchantId: isPosRefund ? order.merchantId : undefined,
                 terminalId: isPosRefund ? order.posTerminal?.terminalId : undefined,
                 cardDataToken: isPosRefund ? order.sourceOfFunds?.cardDataToken : undefined,
+                targetTransactionId: isPosRefund ? order.targetTransactionId : undefined,
             },
             {
                 onSuccess: () => {

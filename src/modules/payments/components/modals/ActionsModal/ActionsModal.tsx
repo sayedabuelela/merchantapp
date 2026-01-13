@@ -45,10 +45,10 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
     const user = useAuthStore(selectUser);
     const currentMerchantId = user?.merchantId;
     const { canRefundTransactions } = usePermissions(user?.actions || {});
-    console.log('canRefundTransactions', canRefundTransactions);
+    console.log('payment', payment);
     // Extract orderId from payment data
     const orderId = type === 'order'
-        ? (payment as PaymentSession).orderId
+        ? (payment as PaymentSession).paymentParams.order
         : isTransaction(payment) ? payment.id : null;
 
     // Use payment actions hook for all eligibility and action handling

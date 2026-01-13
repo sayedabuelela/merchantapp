@@ -28,7 +28,8 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
             onOpenActions(payment);
         }
     };
-
+    console.log('paymentParams.customer',paymentParams.customer);
+    
     return (
         <Link href={`/payments/${_id}`} asChild>
             <PressableScale onLongPress={handleLongPress}>
