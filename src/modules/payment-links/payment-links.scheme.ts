@@ -90,7 +90,7 @@ export const createPaymentLinkSchema = baseSchema
                 ctx.addIssue({
                     code: "custom",
                     path: ["totalAmount"],
-                    message: "Amount is required for simple type",
+                    message: "Amount is required",
                 });
             } else {
                 const amount = parseFloat(data.totalAmount);
@@ -107,7 +107,7 @@ export const createPaymentLinkSchema = baseSchema
             ctx.addIssue({
                 code: "custom",
                 path: ["items"],
-                message: "At least one item is required for professional type",
+                message: "At least one item is required",
             });
         }
     });

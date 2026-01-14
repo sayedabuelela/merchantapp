@@ -107,7 +107,11 @@ const CreateNewPaymentLinkStep2Screen = () => {
                 <MainHeader title={t("Additional Options")} withBack />
             </FadeInDownView>
 
-            <KeyboardAwareScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+            <KeyboardAwareScrollView 
+            className="flex-1" 
+            contentContainerClassName="px-6"
+            showsVerticalScrollIndicator={false}
+            >
                 <AnimatedError errorMsg={t(error?.message || '')} />
                 <FadeInUpView delay={150} duration={600}>
                     {/* Due Date */}

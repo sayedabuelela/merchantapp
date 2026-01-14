@@ -2,7 +2,7 @@ import { cn } from "@/src/core/utils/cn";
 import { FontType, FontWeight, getFontClass } from "@/src/core/utils/fonts";
 import React, { useMemo } from 'react';
 import { Text, TextProps, StyleProp, TextStyle } from 'react-native';
-import { Dimensions } from 'react-native';
+import { Dimensions, I18nManager } from 'react-native';
 
 interface FontTextProps extends TextProps {
     type?: FontType;
@@ -45,6 +45,16 @@ const extractAndScaleFontSize = (className?: string): number | undefined => {
 
     return undefined;
 };
+
+// Check if className already has an explicit line height (leading-*)
+const hasExplicitLineHeight = (className?: string): boolean => {
+    if (!className) return false;
+    return /\bleading-\d+\b/.test(className);
+};
+
+// RTL Arabic fonts (NotoNaskhArabic) have taller vertical metrics
+// Apply a line height multiplier to prevent text clipping
+const RTL_LINE_HEIGHT_MULTIPLIER = 1.8;
 const FontText = ({
     type = 'body',
     weight = 'regular',
@@ -58,13 +68,27 @@ const FontText = ({
         [className]
     );
 
-    const mergedStyle = useMemo(
-        () => (scaledFontSize ? [{ fontSize: scaledFontSize }, style] : style),
-        [scaledFontSize, style]
-    );
+    const mergedStyle = useMemo(() => {
+        const styles: TextStyle[] = [];
+
+        if (scaledFontSize) {
+            styles.push({ fontSize: scaledFontSize });
+
+            // Apply RTL line height fix if no explicit leading-* class is set
+            if (I18nManager.isRTL && !hasExplicitLineHeight(className)) {
+                styles.push({ lineHeight: scaledFontSize * RTL_LINE_HEIGHT_MULTIPLIER });
+            }
+        }
+
+        if (style) {
+            styles.push(style as TextStyle);
+        }
+
+        return styles.length > 0 ? styles : undefined;
+    }, [scaledFontSize, style, className]);
     return (
         <Text
-            className={cn(getFontClass(type, weight), className)}
+            className={cn(getFontClass(type, weight), className,)}
             style={mergedStyle}
             {...rest}
         >

@@ -109,13 +109,13 @@ const ActivityCard = ({
                             {currencyNumber(amount)} {t(currency || 'EGP')}
                         </FontText>
                     </View>
-                    <FontText type="body" weight="regular" className="text-content-primary text-xs">
+                    <FontText type="body" weight="regular" className="text-content-primary text-xs self-start">
                         {accountName}
                     </FontText>
                     {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                     {t('To')} {'Account Name'}
                 </FontText> */}
-                    <FontText type="body" weight="regular" className="text-content-secondary text-xs">
+                    <FontText type="body" weight="regular" className="text-content-secondary text-xs self-start">
                         {(operation === "payout" || fromBalance) && `${formatRelativeDate(createdAt) !== 'Today' ? formatRelativeDate(createdAt) + ' - ' : ''}`}{formatAMPM(createdAt)}
                     </FontText>
                 </View>

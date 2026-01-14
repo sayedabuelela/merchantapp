@@ -103,7 +103,7 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                     {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                     {t('To')} {'Account Name'}
                 </FontText> */}
-                    <FontText type="body" weight="regular" className="text-content-secondary text-xs mb-2 mt-1">
+                    <FontText type="body" weight="regular" className="text-content-secondary text-xs mb-2 mt-1 self-start">
                         {/* {type} .  */}
                         {formatAMPM(createdAt)}
                     </FontText>

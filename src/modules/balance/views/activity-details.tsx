@@ -53,7 +53,7 @@ const ActivityDetails = () => {
     console.log('transfer : ', transfer);
     console.log('payment : ', payment);
     console.log('isPayment : ', isPayment);
-    console.log('transfer?.status.toUpperCase() : ', activity?.originalAmount);
+    console.log('activity.accountName : ', activity?.accountName);
     // console.log('')
     // console.log('transefer' )
     // console.log('batch : ', batchs);
@@ -66,7 +66,9 @@ const ActivityDetails = () => {
                         <ScrollView
                             showsHorizontalScrollIndicator={false}
                             showsVerticalScrollIndicator={false}
-                            className="flex-1 px-6">
+                            className="flex-1 "
+                            contentContainerClassName="px-6"
+                            >
                             <DetailsSection
                                 className='mb-6'
                                 icon={<RectangleGroupIcon size={24} color="#556767" />}

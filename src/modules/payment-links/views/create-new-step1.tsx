@@ -76,7 +76,7 @@ const CreateNewPaymentLinkStep1Screen = () => {
                     withBack
                 />
             </FadeInDownView>
-            <KeyboardAwareScrollView className="flex-1 px-6">
+            <KeyboardAwareScrollView className="flex-1" contentContainerClassName='px-6'>
                 <AnimatedError errorMsg={t(error?.message || '')} />
                 <FadeInUpView delay={150} duration={600}>
                     <PaymentLinkForm
