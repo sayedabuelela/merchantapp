@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore, selectUpdateUser, selectUser, selectUpdateToken, selectIsAuthenticated } from '@/src/modules/auth/auth.store';
 import { getMerchant } from '@/src/modules/auth/login/login.service';
 import { useApi } from '@/src/core/api/clients.hooks';
 import { AxiosInstance } from 'axios';
 import { User } from '@/src/modules/auth/auth.model';
 import { useToast } from '@/src/core/providers/ToastProvider';
-// import { toast } from 'sonner-native';
 
 export const fetchAndSyncMerchant = async (api: AxiosInstance, updateUser: (user: Partial<User>) => void) => {
     const data = await getMerchant(api);
@@ -43,6 +43,7 @@ export const useSwitchMerchantId = () => {
     const updateUser = useAuthStore(selectUpdateUser);
     const updateToken = useAuthStore(selectUpdateToken);
     const { api } = useApi();
+    const { t } = useTranslation();
     const { showToast } = useToast?.() ?? { showToast: () => { } };
 
     const mutation = useMutation({
@@ -83,13 +84,11 @@ export const useSwitchMerchantId = () => {
             queryClient.invalidateQueries({ queryKey: ['merchantData'], exact: false }); // refetch merchantData if needed
 
             // optional UX
-            showToast?.({ message: 'Switched store successfully', type: 'info' });
-            // toast.info('Switched store successfully');
+            showToast?.({ message: t('Switched store successfully'), type: 'info' });
         },
         onError: (err) => {
             console.error('Switch merchant failed:', err);
-            showToast?.({ message: 'Failed to switch store', type: 'danger' });
-            // toast.error('Failed to switch store');
+            showToast?.({ message: t('Failed to switch store'), type: 'danger' });
         }
     });
 

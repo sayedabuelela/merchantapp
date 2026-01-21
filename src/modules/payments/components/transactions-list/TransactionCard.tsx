@@ -46,11 +46,12 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
         provider,
         type,
         transactionResponseMessage,
-        customer
+        customer,
+        operation
     } = transaction;
 
     const isApproved = status === 'Approved';
-    const isPayment = type === 'PAYMENT';
+    const isPayment = (type === 'PAYMENT' || operation === 'pay');
     const isRefund = type === 'REFUND';
     const is3DSecureVerify = type === '3DSECURE_VERIFY';
 
@@ -68,11 +69,11 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                     <View className="flex-row items-center justify-between mb-2">
                         <View className="flex-row items-center gap-x-2">
                             <IconBox className={cn(
-                                (isPayment && isApproved)
+                                (isPayment)
                                     ? 'bg-[#D1FFD3] border border-[#AEFFB2]'
                                     : 'bg-[#FFEAED] border border-[#FEE4E7]'
                             )}>
-                                {(isPayment && isApproved) ? (
+                                {(isPayment) ? (
                                     <ArrowSmallDownIcon size={10} color={'#1A541D'} />
                                 ) : (
                                     <ArrowSmallUpIcon size={10} color={'#A50017'} />
@@ -81,7 +82,7 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
 
                             <FontText type="body" weight="regular"
                                 className="text-content-secondary text-xs capitalize">
-                                {type}
+                                {type || operation}
                             </FontText>
 
                         </View>
@@ -114,9 +115,11 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                                 {transactionId}
                             </FontText>
                         )}
-                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
-                            {merchantOrderId}
-                        </FontText>
+                        {merchantOrderId && (
+                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                                {merchantOrderId}
+                            </FontText>
+                        )}
                     </View>
                     {(customer !== undefined && objectHasKeys(customer)) && (
                         <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">

@@ -5,7 +5,7 @@ import MainHeader from '@/src/shared/components/headers/MainHeader';
 import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import {
     ArrowsUpDownIcon,
     BanknotesIcon,
@@ -31,9 +31,10 @@ import SectionItem from '../../../shared/components/details-screens/SectionItem'
 import SummaryItem from '../../payment-links/components/details-screen/SummaryItem';
 import StatusBox from '../../payment-links/components/StatusBox';
 import { PaymentStatus } from '../../payment-links/payment-links.model';
-import ActivityCard from '../components/ActivityCard';
 import { useActivityDetails, useActivityPaymentDetails, useActivityTransferDetails } from '../viewmodels/useActivity';
-import { useSettlementWindow } from '../viewmodels/useSettlementWindow';
+import { usePayoutBatches, useSettlementWindow } from '../viewmodels/useBatchRecords';
+import PaginatedTransactionList from '../components/batch-records/PaginatedTransactionList';
+import PaginatedBatchList from '../components/batch-records/PaginatedBatchList';
 
 const ActivityDetails = () => {
 
@@ -45,16 +46,32 @@ const ActivityDetails = () => {
     const origin = activity?.origin;
     const isTransfer = origin === "transfers";
     const isPayment = origin === "payments";
+    const isPayout = activity?.operation === "payout";
+    const isSettlement = activity?.operation === "settlement";
     const { data: transfer } = useActivityTransferDetails(originReference, { enabled: isTransfer });
     const { data: payment } = useActivityPaymentDetails(originReference, { enabled: isPayment });
-    const { data: settlementBatchs } = useSettlementWindow({ accountId: activity?.accountId ?? "" });
-    console.log('_id : ', _id);
+    const {
+        data: settlementBatchs,
+        hasNextPage: hasMoreSettlements,
+        isFetchingNextPage: isFetchingMoreSettlements,
+        fetchNextPage: fetchMoreSettlements
+    } = useSettlementWindow({ originReference }, { enabled: !!(isSettlement && originReference) });
+    const {
+        data: payoutBatchs,
+        hasNextPage: hasMorePayouts,
+        isFetchingNextPage: isFetchingMorePayouts,
+        fetchNextPage: fetchMorePayouts
+    } = usePayoutBatches(_id!, {}, { enabled: !!(isPayout) });
+    console.log(' !!(isSettlement && originReference) : ', !!(isSettlement && originReference));
+    console.log('isSettlement : ', activity?.operation);
+    console.log('originReference : ', originReference);
     console.log('activity : ', activity);
     console.log('transfer : ', transfer);
     console.log('payment : ', payment);
     console.log('isPayment : ', isPayment);
     console.log('activity.accountName : ', activity?.accountName);
-    // console.log('')
+    console.log('settlementBatchs : ', settlementBatchs);
+    console.log('payoutBatchs : ', payoutBatchs);
     // console.log('transefer' )
     // console.log('batch : ', batchs);
     return (
@@ -68,7 +85,8 @@ const ActivityDetails = () => {
                             showsVerticalScrollIndicator={false}
                             className="flex-1 "
                             contentContainerClassName="px-6"
-                            >
+                            nestedScrollEnabled={true}
+                        >
                             <DetailsSection
                                 className='mb-6'
                                 icon={<RectangleGroupIcon size={24} color="#556767" />}
@@ -170,7 +188,7 @@ const ActivityDetails = () => {
                                 title={t("Summary")}
                             >
                                 <FontText type="body" weight="bold"
-                                    className="text-content-secondary self-start text-base mb-2 mt-6">
+                                    className="text-content-secondary self-start text-base mb-2 mt-4">
                                     {t("Activity")}
                                 </FontText>
                                 <SummaryItem
@@ -219,19 +237,31 @@ const ActivityDetails = () => {
                             </DetailsSection>
                             {(settlementBatchs !== undefined && settlementBatchs.length > 0) && (
                                 <DetailsSection
-                                    // icon={<ClockIcon size={24} color="#556767" />}
                                     icon={<CircleStackIcon size={24} color="#556767" />}
                                     title={t("Batch records")}
                                     className='mb-6 gap-y-0'
                                 >
-                                    <View className='mt-5'>
-                                        {settlementBatchs?.map((batch) => (
-                                            <ActivityCard
-                                                key={batch._id}
-                                                {...batch}
-                                            />
-                                        ))}
-                                    </View>
+                                    <PaginatedTransactionList
+                                        transactions={settlementBatchs}
+                                        hasNextPage={hasMoreSettlements}
+                                        isFetchingNextPage={isFetchingMoreSettlements}
+                                        onLoadMore={fetchMoreSettlements}
+                                    />
+                                </DetailsSection>
+                            )}
+                            {(payoutBatchs !== undefined && payoutBatchs.length > 0) && (
+                                <DetailsSection
+                                    icon={<CircleStackIcon size={24} color="#556767" />}
+                                    title={t("Batch records")}
+                                    className='mb-6 gap-y-0'
+                                >
+                                    <PaginatedBatchList
+                                        records={payoutBatchs}
+                                        accountName={activity?.accountName}
+                                        hasNextPage={hasMorePayouts}
+                                        isFetchingNextPage={isFetchingMorePayouts}
+                                        onLoadMore={fetchMorePayouts}
+                                    />
                                 </DetailsSection>
                             )}
                         </ScrollView>

@@ -210,6 +210,100 @@ export interface ActivitiesResponse {
     pagination: ActivitiesPagination;
 }
 
+export interface SettlementResponse {
+    __v: number;
+    _id: string;
+    accountId: string;
+    batchId: string;
+    batches: Array<{
+        _id: string;
+        batchId: string;
+        channel: string;
+        method: string;
+        rfsDate: string;
+        totalFees: number;
+        totalOriginalAmount: number;
+        totalSettlementAmount: number;
+        totalVat: number;
+        transactionsCount: number;
+    }>;
+    channel: string;
+    createdAt: string;
+    endDate: string;
+    merchantId: string;
+    method: string;
+    rfsDate: string;
+    startDate: string;
+    status: string;
+    totalFees: number;
+    totalOriginalAmount: number;
+    totalSettlementAmount: number;
+    totalVat: number;
+    transactions: {
+        data: Transaction[];
+        message: string;
+        pagination: {
+            limit: number;
+            page: number;
+            pages: number;
+            total: number;
+        };
+    };
+    transactionsCount: number;
+    windowDate: string;
+    windowId: string;
+}
+interface BaseRecord {
+    type: "record" | "transaction";
+    recordId?: string;
+    recordOperation?: string;
+    recordAmount?: number;
+    recordValueDate?: string;
+    recordCreatedAt?: string;
+    accountId?: string;
+}
+export interface ActivityRecord extends BaseRecord {
+    type: "record";
+    recordId: string;
+    recordOperation: string;
+    recordAmount: number;
+    recordComment?: string;
+    recordValueDate: string;
+    recordCreatedAt: string;
+    originReference?: string;
+}
+export interface TransactionRecord extends BaseRecord {
+    type: "transaction";
+    transactionId: string;
+    batchId?: string;
+    operation?: string;
+    channel?: string;
+    method?: string;
+    amount?: number;
+    settlementAmount?: number;
+    transactionDate?: string;
+    rfsDate?: string;
+    orderId?: string;
+    pccId?: string;
+    recordFees?: number;
+    recordVat?: number;
+    recordOperation?: string;
+}
+export interface PayoutBatchResponse {
+    data: (
+        | ActivityRecord
+        | TransactionRecord
+    )[];
+    cursor: null;
+    hasMore: boolean;
+    pagination: {
+        totalItems: number;
+        totalPages: number;
+        currentPage: number;
+        pageSize: number
+    }
+}
+
 export interface ActivityDetailsResponse {
     message: string;
     data: Activity;
@@ -249,10 +343,17 @@ export interface FetchActivitiesParams {
 }
 
 export interface SettlementWindowParams {
-    accountId: string;
+    originReference: string;
     limit?: number;
     sortType?: number;
     page?: number;
     dateFrom?: string;
     dateTo?: string;
+}
+
+export interface PayoutWindowParams {
+    limit?: number;
+    sortOrder?: string;
+    sortBy?: string;
+    page?: number;
 }

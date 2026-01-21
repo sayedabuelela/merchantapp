@@ -27,7 +27,7 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
         (string | FetchActivitiesParams | undefined)[],
         number
     >({
-        queryKey: ["balance-activities", activeAccountId, params,mode],
+        queryKey: ["balance-activities", activeAccountId, params, mode],
         queryFn: ({ pageParam = 1 }) =>
             getActivities(api, { ...params, page: pageParam, accountId: activeAccountId }),
         getNextPageParam: (lastPage) => {
@@ -43,26 +43,20 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
     console.log('mode === Mode.LIVE : ', !!(mode === Mode.LIVE));
     const allItems = activitiesQuery.data?.pages.flatMap((p) => p.data) ?? [];
 
-    // Determine grouping based on filter params
     let shouldGroup = true;
     let groupByField: keyof Activity = 'createdAt';
 
     if (params?.operation === 'payout') {
-        // Payouts: No date grouping
         shouldGroup = false;
     } else if (params?.isReflected === false) {
-        // Upcoming balance: Group by value date (when it will be reflected)
         groupByField = 'valueDate';
     } else {
-        // All activities: Group by creation date
         groupByField = 'createdAt';
     }
 
     const grouped = shouldGroup ? groupByDate(allItems, groupByField) : [];
     const { listData, stickyHeaderIndices } = useGroupedData(allItems.length ? grouped : []);
 
-    // For payouts (ungrouped), return items directly without headers
-    // For all other cases (upcoming balance, all activities), return grouped data
     const finalListData = shouldGroup ? listData : allItems.map(item => ({ type: 'item' as const, ...item }));
     const finalStickyIndices = shouldGroup ? stickyHeaderIndices : [];
 
@@ -88,7 +82,7 @@ export const useRecentBalanceActivities = () => {
         isAuthenticated: isAuthenticated,
     });
     return useQuery<ActivitiesResponse, Error, ActivitiesResponse>({
-        queryKey: ["balanceActivities", activeAccountId, { limit: 3, page: 1 },mode],
+        queryKey: ["balanceActivities", activeAccountId, { limit: 3, page: 1 }, mode],
         queryFn: () => getActivities(api, { limit: 3, page: 1, accountId: activeAccountId }),
         enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated && mode === Mode.LIVE),
         staleTime: 5 * 60 * 1000,

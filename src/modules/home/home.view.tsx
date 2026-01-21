@@ -206,8 +206,7 @@ const HomeScreen = () => {
                             refreshing={isRefreshing}
                             onRefresh={handleRefresh}
                         />
-                    }
-                >
+                    }>
                     <FadeInDownView className="px-6 mb-2" delay={100} duration={600}>
                         {/* Header row */}
                         <View className="flex-row justify-between items-start">

@@ -7,7 +7,7 @@ import { getGreeting } from '@/src/modules/balance/balance.utils'
 const GreetingUser = ({ userName }: { userName: string }) => {
     return (
         <View>
-            <FontText type="head" weight="regular" className="text-xl text-content-primary">
+            <FontText type="head" weight="regular" className="text-xl text-content-primary self-start">
                 {getGreeting()},
             </FontText>
             <FontText type="head" weight="bold" className="text-2xl text-content-primary capitalize">

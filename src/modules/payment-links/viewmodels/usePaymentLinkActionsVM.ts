@@ -1,5 +1,6 @@
 import { useApi } from "@/src/core/api/clients.hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { deletePaymentLink, cancelPaymentLink, sharePaymentLink, markAsPaid } from "../api/ paymentLinksActions";
 import { MarkAsPaidParams, ShareRequest, ShareResponse } from "../payment-links.model";
 import { I18nManager } from "react-native";
@@ -12,6 +13,7 @@ import usePermissions from "@/src/modules/auth/hooks/usePermissions";
 const usePaymentLinkActionsVM = (createdByUserId?: string) => {
     const { api, paymentApi } = useApi();
     const queryClient = useQueryClient();
+    const { t } = useTranslation();
     const { isLiveMode, environment } = useEnvironment();
     // Get permissions
     const user = useAuthStore(selectUser);
@@ -27,7 +29,7 @@ const usePaymentLinkActionsVM = (createdByUserId?: string) => {
     const deleteMutation = useMutation({
         mutationFn: async (paymentLinkId: string) => {
             if (!canDeletePaymentLink) {
-                throw new Error('Unauthorized: You do not have permission to delete this payment link');
+                throw new Error(t('Unauthorized: You do not have permission to delete this payment link'));
             }
             return deletePaymentLink(api, paymentLinkId);
         },
@@ -39,7 +41,7 @@ const usePaymentLinkActionsVM = (createdByUserId?: string) => {
     const cancelMutation = useMutation({
         mutationFn: async (paymentLinkId: string) => {
             if (!canCancelPaymentLink) {
-                throw new Error('Unauthorized: You do not have permission to cancel this payment link');
+                throw new Error(t('Unauthorized: You do not have permission to cancel this payment link'));
             }
             return cancelPaymentLink(api, paymentLinkId);
         },
@@ -51,7 +53,7 @@ const usePaymentLinkActionsVM = (createdByUserId?: string) => {
     const markAsPaidMutation = useMutation({
         mutationFn: async (params: MarkAsPaidParams) => {
             if (!canEditPaymentLink) {
-                throw new Error('Unauthorized: You do not have permission to mark this payment link as paid');
+                throw new Error(t('Unauthorized: You do not have permission to mark this payment link as paid'));
             }
             return markAsPaid(paymentApi, params);
         },

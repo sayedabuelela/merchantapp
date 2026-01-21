@@ -1,6 +1,7 @@
 import { useApi } from "@/src/core/api/clients.hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Route, router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { PaymentLink, PaymentLinkResponse } from "../payment-links.model";
 import { CreatePaymentLinkTypes } from "../payment-links.scheme";
 import {
@@ -17,6 +18,7 @@ import usePermissions from "@/src/modules/auth/hooks/usePermissions";
 const usePaymentLinkVM = (paymentLinkId?: string) => {
     const { api } = useApi();
     const queryClient = useQueryClient();
+    const { t } = useTranslation();
     const { showToast } = useToast?.() ?? { showToast: () => { } };
     const isEditMode = !!paymentLinkId;
     // console.log("usePaymentLinkVM isEditMode", isEditMode);
@@ -48,7 +50,7 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
     } = useMutation<PaymentLinkResponse, Error, CreatePaymentLinkTypes>({
         mutationFn: async (data) => {
             if (!canCreatePaymentLinks) {
-                throw new Error('Unauthorized: You do not have permission to create payment links');
+                throw new Error(t('Unauthorized: You do not have permission to create payment links'));
             }
             return createPaymentLink(api, data);
         },
@@ -56,10 +58,10 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
             await queryClient.invalidateQueries({ queryKey: ["payment-links"], exact: false });
             const qrCode = usePaymentLinkStore.getState().qrCode;
             usePaymentLinkStore.getState().clearFormData();
-            showToast({ message: 'Payment link created successfully',type: 'success' });
+            showToast({ message: t('Payment link created successfully'), type: 'success' });
             router.replace({
                 pathname: "/payment-links/create-success",
-                params: { 
+                params: {
                     paymentLinkId: response.data.paymentLinkId,
                     ...(qrCode && { query: 'qr-code' })
                 }
@@ -75,7 +77,7 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
     } = useMutation<PaymentLinkResponse, Error, CreatePaymentLinkTypes>({
         mutationFn: async (data) => {
             if (!canEditPaymentLink) {
-                throw new Error('Unauthorized: You do not have permission to edit this payment link');
+                throw new Error(t('Unauthorized: You do not have permission to edit this payment link'));
             }
             return updatePaymentLink(api, paymentLinkId!, data);
         },
@@ -83,10 +85,10 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
             await queryClient.invalidateQueries({ queryKey: ["payment-links"], exact: false });
             usePaymentLinkStore.getState().clearFormData();
             if (response.data.paymentLinkId) {
-                showToast({ message: 'Payment link updated successfully',type: 'success' });
+                showToast({ message: t('Payment link updated successfully'), type: 'success' });
                 router.dismissTo(`/payment-links/${response.data.paymentLinkId}`);
             } else {
-                showToast({ message: 'Payment link updated successfully',type: 'success' });
+                showToast({ message: t('Payment link updated successfully'), type: 'success' });
                 router.replace(ROUTES.TABS.PAYMENT_LINKS as Route);
             }
         },

@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { AccountStatistics, TransfersStatistics, AccountsListResponse, AccountsListParams, ActivitiesResponse, FetchActivitiesParams, ActivityDetailsResponse, TransferDetailsResponse, PaymentDetailsResponse, SettlementWindowParams, DashboardStatisticsResponse, PaymentsStatistics, PayoutStatistics } from "./balance.model";
+import { AccountStatistics, TransfersStatistics, AccountsListResponse, AccountsListParams, ActivitiesResponse, FetchActivitiesParams, ActivityDetailsResponse, TransferDetailsResponse, PaymentDetailsResponse, SettlementWindowParams, DashboardStatisticsResponse, PaymentsStatistics, PayoutStatistics, SettlementResponse, PayoutBatchResponse, PayoutWindowParams } from "./balance.model";
 
 export const getTransfersStatistics = async (
     api: AxiosInstance,
@@ -152,9 +152,9 @@ export const getPaymentDetails = async (
 export const getSettlementWindow = async (
     api: AxiosInstance,
     params: SettlementWindowParams
-): Promise<ActivitiesResponse> => {
+): Promise<SettlementResponse> => {
     const {
-        accountId,
+        originReference,
         limit = 3,
         sortType = -1,
         page = 1,
@@ -163,7 +163,7 @@ export const getSettlementWindow = async (
     } = params;
 
     try {
-        const response = await api.get(`v2/balance/records/${accountId}`, {
+        const response = await api.get(`v3/payment/settlement/batches/${originReference}`, {
             params: {
                 limit,
                 sortType,
@@ -174,9 +174,41 @@ export const getSettlementWindow = async (
                 dateTo
             }
         });
+        console.log('getSettlementWindow response.data : ', response.data);
+
         return response.data;
     } catch (error) {
         console.error("Error fetching settlement window:", error);
+        throw error;
+    }
+};
+
+export const getPayoutBatches = async (
+    api: AxiosInstance,
+    activityId: string,
+    params: PayoutWindowParams
+): Promise<PayoutBatchResponse> => {
+    const {
+        limit = 3,
+        sortOrder = 'desc',
+        sortBy = 'amount',
+        page = 1,
+    } = params;
+
+    try {
+        const response = await api.get(`v2/balance/payout-details/${activityId}`, {
+            params: {
+                limit,
+                sortOrder,
+                sortBy,
+                page,
+            }
+        });
+        console.log('getPayoutBatches response.data : ', response.data);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching payout batches:", error);
         throw error;
     }
 };

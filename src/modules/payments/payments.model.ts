@@ -370,6 +370,7 @@ export interface Transaction {
         mobilePhone?: string,
         nationalId?: string
     };
+    operation?:string
 }
 
 export interface TransactionPagination {

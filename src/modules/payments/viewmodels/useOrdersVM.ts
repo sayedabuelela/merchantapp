@@ -34,7 +34,7 @@ export const useOrdersVM = (params?: FetchSessionsParams) => {
     const allItems = ordersQuery.data?.pages.flatMap((p) => p.data) ?? [];
 
     // Group orders by createdAt date
-    const grouped = groupByDate(allItems, 'createdAt');
+    const grouped = groupByDate(allItems, 'updatedAt');
     const { listData, stickyHeaderIndices } = useGroupedData(allItems.length ? grouped : []);
 
     // Get stats from the first page

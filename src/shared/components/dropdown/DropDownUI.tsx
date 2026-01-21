@@ -4,6 +4,7 @@ import { ChevronDownIcon } from "react-native-heroicons/outline";
 import * as DropdownMenu from 'zeego/dropdown-menu';
 import { DownArrow } from "@/src/shared/assets/svgs";
 import { cn } from "@/src/core/utils/cn";
+import { useTranslation } from "react-i18next";
 
 export interface DropDownOption<T> {
     label: string;
@@ -24,15 +25,17 @@ interface DropDownUIProps<T> {
 const DropDownUI = <T extends string | number | boolean | null | undefined>({
     options,
     selected,
-    placeholder = "Select option",
+    placeholder,
     onChange,
     dropdownKey = 'dropdown',
     variant = 'default',
     icon,
     label
 }: DropDownUIProps<T>) => {
+    const { t } = useTranslation();
+    const defaultPlaceholder = placeholder ?? t('Select option');
     const selectedOption = options.find((opt) => opt.value === selected);
-    const selectedLabel = selectedOption?.label ?? placeholder;
+    const selectedLabel = selectedOption?.label ?? defaultPlaceholder;
     const isSelected = selectedOption !== undefined;
 
     if (variant === 'filter') {
