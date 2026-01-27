@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
 import { FirstOnboardingSlide } from '../first-onboarding.model';
 import FontText from '@/src/shared/components/FontText';
+import SlideBackground from './SlideBackground';
 
 interface OnboardingSlideProps {
     slide: FirstOnboardingSlide;
@@ -16,6 +17,8 @@ const OnboardingSlide = memo(({ slide }: OnboardingSlideProps) => {
 
     return (
         <View style={{ width }} className="flex-1 items-center justify-center px-8">
+            {/* Background layers: gradients + blur */}
+            <SlideBackground />
             <View className="flex-1 justify-center items-center w-full">
                 <HeroComponent />
             </View>
