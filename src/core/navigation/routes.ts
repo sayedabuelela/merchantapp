@@ -2,6 +2,10 @@ import { LANGUAGES } from "@/src/shared/localization/i18n";
 import { Route } from "expo-router";
 
 export const ROUTES = {
+    // First Onboarding routes
+    FIRST_ONBOARDING: {
+        ROOT: "/(first-onboarding)" as Route,
+    },
     // Auth routes
     AUTH: {
         //Login routes

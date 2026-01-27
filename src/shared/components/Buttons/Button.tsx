@@ -31,7 +31,7 @@ const Button = forwardRef(({
 }: ButtonProps, ref: React.Ref<typeof TouchableOpacity>) => {
 
 
-    const baseClasses = "items-center justify-center rounded";
+    const baseClasses = "items-center justify-center rounded-[6px]";
 
     const sizeClasses = {
         sm: "py-1.5 px-3",

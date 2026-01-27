@@ -100,6 +100,8 @@ function AppContent() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NetworkProvider>
         <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
+          <Stack.Screen name="(first-onboarding)" />
+
           <Stack.Protected guard={!isAuthenticated}>
             <Stack.Screen name="(auth)" />
           </Stack.Protected>
