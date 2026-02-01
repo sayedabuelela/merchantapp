@@ -54,15 +54,15 @@ const DeductedFeesSection = ({ data }: Props) => {
                 value={formatAmount(fees.interestRateAmount, t('EGP'))}
             />
             <SectionRowItem
-                title={t('Kashier online processing fees')}
+                title={t('online processing fees')}
                 value={formatAmount(fees.KOSF?.processing ?? 0, t('EGP'))}
             />
             <SectionRowItem
-                title={`${t('Kashier online transaction fees')} (${kosfRatePercent})`}
+                title={`${t('online transaction fees')} (${kosfRatePercent})`}
                 value={formatAmount(fees.KOSFAmount, t('EGP'))}
             />
             <SectionRowItem
-                title={`${t('Kashier installment service fees')} (${kisfRatePercent})`}
+                title={`${t('installment service fees')} (${kisfRatePercent})`}
                 value={formatAmount(fees.KISFAmount, t('EGP'))}
             />
             <SectionRowItem

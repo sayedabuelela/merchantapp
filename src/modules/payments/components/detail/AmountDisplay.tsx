@@ -34,7 +34,11 @@ export const AmountDisplay = ({
     const formattedAmount = currencyNumber(amount);
     const { t } = useTranslation();
     // Handle both order statuses (PAID) and transaction statuses (SUCCESS, APPROVED)
-    const isPaid = status === 'PAID' || status === 'SUCCESS' || status === 'APPROVED';
+    // Also handle effective POS statuses (PENDING_ACK, REVERSED)
+    const upperStatus = status?.toUpperCase();
+    const isPaid = upperStatus === 'PAID' || upperStatus === 'SUCCESS' || upperStatus === 'APPROVED';
+    const isPending = upperStatus === 'PENDING_ACK';
+    const isNegative = upperStatus === 'REVERSED' || upperStatus === 'DECLINED' || upperStatus === 'FAILED';
     const { copy, isCopied } = useClipboard();
     const handleCopy = async () => {
         if (typeof merchantOrderId === 'string' && merchantOrderId !== "NA") {
@@ -49,9 +53,15 @@ export const AmountDisplay = ({
                     {formattedAmount} {t(currency)}
                 </FontText>
                 <View className="flex-row items-center gap-x-1">
-                    <IconBox className={cn(isPaid ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
+                    <IconBox className={cn(
+                        isPaid ? 'bg-[#D1FFD3] border border-[#AEFFB2]' :
+                        isPending ? 'bg-[#FFF7E8] border border-[#F5D99A]' :
+                        'bg-[#FFEAED] border border-[#FEE4E7]'
+                    )}>
                         {isPaid ? (
                             <ArrowSmallDownIcon size={10} color={'#1A541D'} />
+                        ) : isPending ? (
+                            <ArrowSmallDownIcon size={10} color={'#B77801'} />
                         ) : (
                             <ArrowSmallUpIcon size={10} color={'#A50017'} />
                         )}

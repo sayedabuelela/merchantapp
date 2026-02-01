@@ -122,7 +122,7 @@ const ActivityDetails = () => {
                                 <SectionItem
                                     icon={<CubeTransparentIcon size={24} color="#556767" />}
                                     title={t("Origin")}
-                                    value={activity.origin === "operations team" ? t('System') : activity.origin}
+                                    value={activity.origin === "operations team" ? t('Transfers') : activity.origin}
                                     valueClassName="capitalize"
                                 />
 
@@ -197,7 +197,7 @@ const ActivityDetails = () => {
                                     className='mb-4'
                                 />
                                 <SummaryItem
-                                    title={t("Fees")}
+                                    title={t("Fees (Vat-Included)")}
                                     value={activity.fees === undefined ? '--' : currencyNumber(Number(activity.fees)) + ' ' + t('EGP')}
                                     className='mb-1'
                                 />

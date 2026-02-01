@@ -13,6 +13,7 @@ import { formatAMPM } from "@/src/core/utils/dateUtils";
 import IconBox from "@/src/shared/components/wrappers/IconBox"
 import { PressableScale } from "pressto"
 import { objectHasKeys } from "@/src/core/utils/objects"
+import { getEffectiveTransactionStatus } from "../../utils/posStatus.utils"
 
 // const IconBox = ({ children }: { children: React.ReactNode }) => {
 //     return (
@@ -50,6 +51,7 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
         operation
     } = transaction;
 
+    const effectiveStatus = getEffectiveTransactionStatus(transaction);
     const isApproved = status === 'Approved';
     const isPayment = (type === 'PAYMENT' || operation === 'pay');
     const isRefund = type === 'REFUND';
@@ -99,7 +101,7 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                                 {method} - {channel}
                             </FontText>
                         )}
-                        <StatusBox status={status} />
+                        <StatusBox status={effectiveStatus} />
                     </View>
                     {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                     {t('To')} {'Account Name'}

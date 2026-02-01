@@ -370,7 +370,9 @@ export interface Transaction {
         mobilePhone?: string,
         nationalId?: string
     };
-    operation?:string
+    operation?:string;
+    ackStatus?: 'pending' | 'done' | string;
+    isReversed?: boolean;
 }
 
 export interface TransactionPagination {
@@ -599,7 +601,8 @@ export interface TransactionDetail {
         mobilePhone?: string;
         Phone?: string;
         nationalId?: string;
-    }
+    };
+    ackStatus?: 'pending' | 'done' | string;
 }
 
 export interface FetchTransactionDetailResponse {

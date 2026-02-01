@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import { formatAMPM, formatRelativeDate } from '@/src/core/utils/dateUtils';
 import DetailsAccordionItem from '@/src/modules/onboarding/data/components/DetailsAccordionItem';
+import { getEffectiveTransactionDetailStatus, getPosStatusWarningKey } from '../../../utils/posStatus.utils';
+import AnimatedWarningMsg from '@/src/shared/components/animated-messages/AnimatedWarningMsg';
 
 interface Props {
     transaction: TransactionDetail;
@@ -76,10 +78,18 @@ const DetailsTab = ({ transaction }: Props) => {
         transaction.metaData?.termsAndConditions?.ip ||
         transaction.metaData?.['kashier payment UI version']
     );
+
+    // Get effective status and warning for POS transactions
+    const effectiveStatus = getEffectiveTransactionDetailStatus(transaction);
+    const warningKey = getPosStatusWarningKey(transaction);
+    const warningMessage = warningKey ? t(warningKey) : null;
     console.log('transaction : ',transaction);
-    
+
     return (
         <View className='mt-4'>
+            {warningMessage && (
+                <AnimatedWarningMsg warningMsg={warningMessage} className="mt-0 mb-4" />
+            )}
             <DetailsSection title={t('Recent transaction')}>
                 <SectionRowItem
                     valueClassName="capitalize mr-[1px]"
@@ -93,7 +103,7 @@ const DetailsTab = ({ transaction }: Props) => {
                 <SectionRowItem
                     valueClassName="capitalize"
                     title={t('Status')}
-                    value={latestTransaction?.status || transaction.status}
+                    value={effectiveStatus}
                 />
                 <SectionRowItem
                     title={t('Transaction ID')}

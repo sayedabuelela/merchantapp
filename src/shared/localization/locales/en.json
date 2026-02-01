@@ -1,4 +1,7 @@
 {
+    "PENDING ACK": "Pending Ack",
+    "pos_pending_warning": "Your transaction is pending due to a technical issue. We may reverse it to your client once we resolve the issue. No action is required from you.",
+    "pos_reversed_warning": "The transaction has been canceled and transferred back to your client. No further action is required from your side at this time.",
     "firstOnboarding.slide1.title": "Create payment links",
     "firstOnboarding.slide1.description": "Send secure payment links to get paid faster with custom options.",
     "firstOnboarding.slide2.title": "Share with QR code",

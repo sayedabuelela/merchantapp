@@ -15,6 +15,7 @@ const statusStyles: Record<string, { backgroundColor: string; color: string }> =
     EXPIRED: { backgroundColor: '#F5F6F6', color: '#919C9C' },
     UNPAID: { backgroundColor: '#FFF7E8', color: '#B77801' },
     PENDING: { backgroundColor: '#FFF7E8', color: '#B77801' },
+    "PENDING_ACK": { backgroundColor: '#FFF7E8', color: '#B77801' },
     INITIATED: { backgroundColor: '#FFF7E8', color: '#956200' },
     "AWAITING_APPROVAL": { backgroundColor: '#FFF7E8', color: '#956200' },
     REJECTED: { backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017' },

@@ -5,6 +5,7 @@ import DetailsSection from '@/src/shared/components/details-screens/DetailsSecti
 import SectionItem from '@/src/shared/components/details-screens/SectionItem';
 import { PaymentMethodDetails } from '../order-detail/PaymentMethodDetails';
 import SectionItemWithCopy from '@/src/shared/components/details-screens/SectionItemWithCopy';
+import { getEffectiveTransactionDetailStatus } from '../../utils/posStatus.utils';
 
 interface TransactionSummaryCardProps {
     transaction: TransactionDetail;
@@ -16,13 +17,14 @@ interface TransactionSummaryCardProps {
  */
 export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardProps) => {
     const { t } = useTranslation();
+    const effectiveStatus = getEffectiveTransactionDetailStatus(transaction);
 
     return (
         <>
             <AmountDisplay
                 amount={transaction.amount}
                 currency={transaction.currency}
-                status={transaction.paymentStatus}
+                status={effectiveStatus}
                 merchantOrderId={transaction.merchantOrderId}
             />
             <PaymentMethodDetails

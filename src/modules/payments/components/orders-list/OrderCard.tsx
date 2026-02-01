@@ -20,7 +20,7 @@ interface OrderCardProps {
 
 const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
     const { t } = useTranslation();
-    const { paymentParams, status, capturedAmount, targetTransactionId, lastTransactionId, _id, createdAt, method } = payment;
+    const { paymentParams, status, capturedAmount, targetTransactionId, lastTransactionId, _id, createdAt,updatedAt, method } = payment;
     const isPaid = status === 'PAID';
 
     const handleLongPress = () => {
@@ -60,7 +60,7 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                     </View>
                     <View className="flex-row items-center justify-between">
                         <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                            {formatAMPM(createdAt)}
+                            {formatAMPM(updatedAt)}
                         </FontText>
                         <StatusBox status={status} />
                     </View>
