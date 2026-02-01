@@ -22,7 +22,7 @@ const UpcomingBalanceSection = ({ upcomingValueDates, currency, setType }: Props
         <View className="mb-8">
             <SectionHeader
                 title={t('Upcoming balance')}
-                nextRouteTitle={t('Payouts')}
+                nextRouteTitle={t('View all')}
                 onPressNextRoute={setType}
             />
             <FlatList

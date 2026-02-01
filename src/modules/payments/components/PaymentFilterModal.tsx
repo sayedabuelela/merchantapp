@@ -85,7 +85,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
         { label: t('All channels'), value: null as string | null },
         { label: t('Online'), value: 'online' },
         { label: t('POS'), value: 'pos' },
-        { label: t('E-commerce'), value: 'ECOMMERCE' },
+        // { label: t('E-commerce'), value: 'ECOMMERCE' },
     ];
 
     // Payment method options (shared between orders and transactions)

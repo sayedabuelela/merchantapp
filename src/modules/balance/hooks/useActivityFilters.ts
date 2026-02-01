@@ -1,5 +1,7 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { ActivityType, FetchActivitiesParams } from '../balance.model';
+
+type FilterableTab = 'payout' | 'upcoming_balance' | 'all';
 
 const INITIAL_FILTERS: FetchActivitiesParams = {
     operation: undefined,
@@ -11,59 +13,86 @@ const INITIAL_FILTERS: FetchActivitiesParams = {
     creationDateTo: undefined,
 };
 
+type TabFiltersState = Record<FilterableTab, FetchActivitiesParams>;
+
+const INITIAL_TAB_FILTERS: TabFiltersState = {
+    payout: { ...INITIAL_FILTERS },
+    upcoming_balance: { ...INITIAL_FILTERS },
+    all: { ...INITIAL_FILTERS },
+};
+
 /**
- * Custom hook to manage activity filters based on the active tab
- * Automatically syncs filters when tab changes
+ * Returns the tab-specific defaults that are always applied (operation, isReflected).
+ */
+function getTabDefaults(tab: ActivityType): Partial<FetchActivitiesParams> {
+    switch (tab) {
+        case 'payout':
+            return { operation: 'payout', isReflected: undefined };
+        case 'upcoming_balance':
+            return { operation: undefined, isReflected: false };
+        case 'all':
+        case 'overview':
+        default:
+            return { operation: undefined, isReflected: undefined };
+    }
+}
+
+/**
+ * Custom hook to manage activity filters with separate state per tab.
+ * Each tab maintains its own independent filter state.
  */
 export const useActivityFilters = (type: ActivityType) => {
-    const [filters, setFilters] = useState<FetchActivitiesParams>(INITIAL_FILTERS);
+    const [tabFilters, setTabFilters] = useState<TabFiltersState>(INITIAL_TAB_FILTERS);
 
-    // Update filters based on active tab
-    useEffect(() => {
-        setFilters(prev => {
-            const newFilters = { ...prev };
+    const currentTab: FilterableTab = type === 'overview' ? 'all' : type;
 
-            switch (type) {
-                case 'payout':
-                    newFilters.operation = 'payout';
-                    newFilters.isReflected = undefined;
-                    break;
+    // Merge the user's filter state with tab-specific defaults
+    const filters = useMemo<FetchActivitiesParams>(() => {
+        const userFilters = tabFilters[currentTab];
+        const defaults = getTabDefaults(type);
+        return {
+            ...userFilters,
+            // Tab defaults override user values for operation/isReflected on payout & upcoming
+            ...defaults,
+            // But for 'all' tab, operation comes from user filters (activity type dropdown)
+            ...(type === 'all' ? { operation: userFilters.operation } : {}),
+        };
+    }, [tabFilters, currentTab, type]);
 
-                case 'upcoming_balance':
-                    newFilters.operation = undefined;
-                    newFilters.isReflected = false;
-                    break;
+    const setFilters = useCallback(
+        (update: FetchActivitiesParams | ((prev: FetchActivitiesParams) => FetchActivitiesParams)) => {
+            setTabFilters(prev => {
+                const prevTabState = prev[currentTab];
+                const newTabState = typeof update === 'function' ? update(prevTabState) : update;
+                return { ...prev, [currentTab]: newTabState };
+            });
+        },
+        [currentTab],
+    );
 
-                case 'all':
-                    newFilters.operation = undefined;
-                    newFilters.isReflected = undefined;
-                    break;
-
-                case 'overview':
-                    // Overview doesn't use filters
-                    newFilters.operation = undefined;
-                    newFilters.isReflected = undefined;
-                    break;
-            }
-
-            return newFilters;
-        });
-    }, [type]);
-
-    // Check if any filters are active (excluding default filter keys)
+    // Check if any user-set filters are active for the current tab
     const hasActiveFilters = useMemo(() => {
-        // const filterKeysToIgnore = ['page', 'limit', 'search', 'operation', 'accountId', 'isReflected'];
-        const filterKeysToIgnore = ['page', 'limit', 'search', 'accountId','isReflected'];
-        return Object.entries(filters).some(([key, value]) => {
-            if (filterKeysToIgnore.includes(key)) return false;
+        const userFilters = tabFilters[currentTab];
+        const keysToIgnore = ['page', 'limit', 'search', 'accountId', 'isReflected', 'operation'];
+
+        // Check date/origin fields
+        const hasGeneralFilter = Object.entries(userFilters).some(([key, value]) => {
+            if (keysToIgnore.includes(key)) return false;
             return value !== undefined && value !== '';
         });
-    }, [filters]);
-    console.log('hasActiveFilters : ', hasActiveFilters);
-    console.log('filters : ', filters);
-    const clearFilters = () => {
-        setFilters(INITIAL_FILTERS);
-    };
+
+        // For 'all' tab, also check if operation is set (activity type filter)
+        const hasOperationFilter = type === 'all' && userFilters.operation !== undefined && userFilters.operation !== '';
+
+        return hasGeneralFilter || hasOperationFilter;
+    }, [tabFilters, currentTab, type]);
+
+    const clearFilters = useCallback(() => {
+        setTabFilters(prev => ({
+            ...prev,
+            [currentTab]: { ...INITIAL_FILTERS },
+        }));
+    }, [currentTab]);
 
     return {
         filters,

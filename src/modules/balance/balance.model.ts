@@ -146,6 +146,15 @@ export interface Activity {
     method: string;
     isReflected: boolean;
     comment: string;
+    metaData?: {
+        method: string;
+        channel: string;
+    }
+    payoutInfo?: {
+        method: string;
+        accountNumber: string;
+        accountHolderName: string;
+    }
     fees: string;
 }
 

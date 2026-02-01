@@ -29,8 +29,10 @@ interface DateRange {
 const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentTab }: FiltersModalProps) => {
     const { t } = useTranslation();
 
-    // Only show activity type dropdown when "All Activities" tab is active
-    const showActivityTypeDropdown = currentTab === 'all';
+    // Determine which fields to show based on the current tab
+    const showActivityType = currentTab === 'all' || currentTab === 'upcoming_balance';
+    const showOrigins = currentTab === 'all' || currentTab === 'upcoming_balance';
+    const showStatus = currentTab === 'all';
 
     const [showModal, setShowModal] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
@@ -112,33 +114,31 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
             creationDateTo: entryDate?.to ? formatDateString(entryDate.to) : undefined,
             dateFrom: valueDate?.from ? formatDateString(valueDate.from) : undefined,
             dateTo: valueDate?.to ? formatDateString(valueDate.to) : undefined,
-            // Only update operation if "All Activities" tab is active, otherwise keep tab-based operation
-            operation: currentTab === 'all' ? (operation === null ? undefined : operation) : currentTab,
-            isReflected: isReflected === null ? undefined : isReflected,
-            origin: origin === null ? undefined : origin
+            // Only save fields that are visible for the current tab
+            ...(showActivityType ? { operation: operation === null ? undefined : operation } : {}),
+            ...(showStatus ? { isReflected: isReflected === null ? undefined : isReflected } : {}),
+            ...(showOrigins ? { origin: origin === null ? undefined : origin } : {}),
         }));
         handleClose();
-    }, [entryDate, valueDate, operation, isReflected, origin, currentTab, setFilters, handleClose]);
+    }, [entryDate, valueDate, operation, isReflected, origin, showActivityType, showStatus, showOrigins, setFilters, handleClose]);
 
     const handleClearAll = useCallback(() => {
         setValueDate({ from: undefined, to: undefined });
         setEntryDate({ from: undefined, to: undefined });
-        // Reset to null (All selected) instead of undefined
-        setOperation(null);
-        setIsReflected(null);
-        setOrigin(null);
+        if (showActivityType) setOperation(null);
+        if (showStatus) setIsReflected(null);
+        if (showOrigins) setOrigin(null);
         setFilters(prev => ({
             ...prev,
-            // Keep operation based on current tab when clearing
-            operation: currentTab === 'all' ? undefined : currentTab,
-            isReflected: undefined,
-            origin: undefined,
             dateFrom: undefined,
             dateTo: undefined,
             creationDateFrom: undefined,
             creationDateTo: undefined,
+            ...(showActivityType ? { operation: undefined } : {}),
+            ...(showStatus ? { isReflected: undefined } : {}),
+            ...(showOrigins ? { origin: undefined } : {}),
         }));
-    }, [currentTab, setFilters]);
+    }, [showActivityType, showStatus, showOrigins, setFilters]);
 
     const handleOpenEntryDatePicker = useCallback(() => {
         setIsDatePickerOpen(true);
@@ -155,13 +155,12 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
     }, []);
 
 
-    // Button is disabled if no actual filters are selected (null = "All" selected, not a real filter)
-    // When activity type dropdown is hidden (payout/transfer tabs), ignore operation in validation
+    // Button is disabled if no filters relevant to the current tab are selected
     const isDisabled = !entryDate?.from && !entryDate?.to &&
         !valueDate?.from && !valueDate?.to &&
-        (showActivityTypeDropdown ? (operation === null || operation === undefined) : true) &&
-        (isReflected === null || isReflected === undefined) &&
-        (origin === null || origin === undefined);
+        (showActivityType ? (operation === null || operation === undefined) : true) &&
+        (showStatus ? (isReflected === null || isReflected === undefined) : true) &&
+        (showOrigins ? (origin === null || origin === undefined) : true);
 
     return (
         <Modal
@@ -248,8 +247,7 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
 
                                 {/* Dropdowns - disabled when date picker is open (Android fix) */}
                                 <View pointerEvents={isDatePickerOpen ? 'none' : 'auto'}>
-                                    {/* Only show activity type dropdown for "All Activities" tab */}
-                                    {showActivityTypeDropdown && (
+                                    {showActivityType && (
                                         <DropDownUI
                                             options={activityTypesFilters}
                                             selected={operation}
@@ -262,27 +260,31 @@ const ActivityFilterModal = ({ isVisible, onClose, filters, setFilters, currentT
                                         />
                                     )}
 
-                                    <DropDownUI
-                                        options={statusFilters}
-                                        selected={isReflected}
-                                        onChange={setIsReflected}
-                                        label={t('Activity status')}
-                                        icon={<CheckCircleIcon size={24} color="#556767" />}
-                                        placeholder={t('Activity status')}
-                                        dropdownKey="status"
-                                        variant="filter"
-                                    />
+                                    {showOrigins && (
+                                        <DropDownUI
+                                            options={originFilters}
+                                            selected={origin}
+                                            onChange={setOrigin}
+                                            label={t('All origins')}
+                                            icon={<CubeTransparentIcon size={24} color="#556767" />}
+                                            placeholder={t('All origins')}
+                                            dropdownKey="origin"
+                                            variant="filter"
+                                        />
+                                    )}
 
-                                    <DropDownUI
-                                        options={originFilters}
-                                        selected={origin}
-                                        onChange={setOrigin}
-                                        label={t('All origins')}
-                                        icon={<CubeTransparentIcon size={24} color="#556767" />}
-                                        placeholder={t('All origins')}
-                                        dropdownKey="origin"
-                                        variant="filter"
-                                    />
+                                    {showStatus && (
+                                        <DropDownUI
+                                            options={statusFilters}
+                                            selected={isReflected}
+                                            onChange={setIsReflected}
+                                            label={t('Activity status')}
+                                            icon={<CheckCircleIcon size={24} color="#556767" />}
+                                            placeholder={t('Activity status')}
+                                            dropdownKey="status"
+                                            variant="filter"
+                                        />
+                                    )}
                                 </View>
 
                                 {/* Action Buttons */}

@@ -38,13 +38,17 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
     const handleCardPress = useCallback((cardId: CardItem['id']) => {
         switch (cardId) {
             case 'balance-card':
-                router.push('/balance?tab=overview')
+                if (mode === Mode.LIVE) {
+                    router.push('/balance?tab=overview')
+                }
                 break
             case 'payments-card':
                 router.push('/(tabs)/payments')
                 break
             case 'payouts-card':
-                router.push('/balance?tab=payout')
+                if (mode === Mode.LIVE) {
+                    router.push('/balance?tab=payout')
+                }
                 break
             case 'transfers-card':
                 router.push('/services/transfers')

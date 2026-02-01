@@ -13,11 +13,11 @@ interface Props {
 const SectionItem = ({ icon, title, value, valueClassName, labelClassName }: Props) => {
     if (!value) return null;
     return (
-        <View className='flex-row items-start'>
+        <View className='flex-1 flex-row items-start'>
             {icon && icon}
             <View className={cn(icon ? 'ml-2' : '')}>
                 <FontText type="body" weight="regular" className={cn("text-content-secondary text-sm mb-1 self-start", labelClassName)}>{title}</FontText>
-                <FontText type="body" weight="semi" className={cn("text-content-primary text-sm self-start", valueClassName)}>{value}</FontText>
+                <FontText type="body" weight="semi" className={cn("text-content-primary text-sm self-start w-full", valueClassName)}>{value}</FontText>
             </View>
         </View>
     )

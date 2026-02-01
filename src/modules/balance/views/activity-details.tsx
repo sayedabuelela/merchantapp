@@ -19,10 +19,13 @@ import {
     CubeTransparentIcon,
     CurrencyPoundIcon,
     FingerPrintIcon,
+    FlagIcon,
+    HashtagIcon,
     IdentificationIcon,
     PaperClipIcon,
     PowerIcon,
     RectangleGroupIcon,
+    TagIcon,
     UserIcon
 } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -35,6 +38,7 @@ import { useActivityDetails, useActivityPaymentDetails, useActivityTransferDetai
 import { usePayoutBatches, useSettlementWindow } from '../viewmodels/useBatchRecords';
 import PaginatedTransactionList from '../components/batch-records/PaginatedTransactionList';
 import PaginatedBatchList from '../components/batch-records/PaginatedBatchList';
+import { PosPaymentBlackIcon } from '@/src/shared/assets/svgs';
 
 const ActivityDetails = () => {
 
@@ -48,6 +52,8 @@ const ActivityDetails = () => {
     const isPayment = origin === "payments";
     const isPayout = activity?.operation === "payout";
     const isSettlement = activity?.operation === "settlement";
+    const metaData = activity?.metaData;
+    const payoutInfo = activity?.payoutInfo;
     const { data: transfer } = useActivityTransferDetails(originReference, { enabled: isTransfer });
     const { data: payment } = useActivityPaymentDetails(originReference, { enabled: isPayment });
     const {
@@ -62,18 +68,6 @@ const ActivityDetails = () => {
         isFetchingNextPage: isFetchingMorePayouts,
         fetchNextPage: fetchMorePayouts
     } = usePayoutBatches(_id!, {}, { enabled: !!(isPayout) });
-    console.log(' !!(isSettlement && originReference) : ', !!(isSettlement && originReference));
-    console.log('isSettlement : ', activity?.operation);
-    console.log('originReference : ', originReference);
-    console.log('activity : ', activity);
-    console.log('transfer : ', transfer);
-    console.log('payment : ', payment);
-    console.log('isPayment : ', isPayment);
-    console.log('activity.accountName : ', activity?.accountName);
-    console.log('settlementBatchs : ', settlementBatchs);
-    console.log('payoutBatchs : ', payoutBatchs);
-    // console.log('transefer' )
-    // console.log('batch : ', batchs);
     return (
         <SafeAreaView className="flex-1 bg-white">
             {isLoadingActivity ? (<SimpleLoader />) :
@@ -106,6 +100,23 @@ const ActivityDetails = () => {
                                     valueClassName="capitalize"
                                 />
 
+                                {metaData !== undefined && (
+                                    <>
+                                        <SectionItem
+                                            icon={<BanknotesIcon size={24} color="#556767" />}
+                                            title={t("Method")}
+                                            value={t(metaData?.method)}
+                                            valueClassName="capitalize"
+                                        />
+
+                                        <SectionItem
+                                            icon={<PosPaymentBlackIcon />}
+                                            title={t("Channel")}
+                                            value={t(metaData?.channel)}
+                                        />
+                                    </>
+                                )}
+
                                 <SectionItem
                                     icon={<CheckCircleIcon size={24} color="#556767" />}
                                     title={t("Reflected")}
@@ -125,7 +136,7 @@ const ActivityDetails = () => {
                                     value={activity.origin === "operations team" ? t('Transfers') : activity.origin}
                                     valueClassName="capitalize"
                                 />
-
+                                {/* 
                                 {(transfer?.method !== undefined || payment?.method !== undefined) && (
                                     <SectionItem
                                         icon={<BanknotesIcon size={24} color="#556767" />}
@@ -133,15 +144,15 @@ const ActivityDetails = () => {
                                         value={transfer?.method || payment?.method}
                                         valueClassName="capitalize"
                                     />
-                                )}
+                                )} */}
 
-                                {transfer?.status !== undefined && (
+                                {/* {transfer?.status !== undefined && (
                                     <SectionItem
-                                        icon={<PowerIcon size={24} color="#556767" />}
+                                        icon={<FlagIcon size={24} color="#556767" />}
                                         title={t("Status")}
                                         value={<StatusBox status={transfer?.status.toUpperCase() as PaymentStatus} />}
                                     />
-                                )}
+                                )} */}
 
                                 <SectionItem
                                     icon={<CalendarIcon size={24} color="#556767" />}
@@ -158,29 +169,44 @@ const ActivityDetails = () => {
                                 )}
 
                             </DetailsSection>
-                            {transfer !== undefined && (
-                                <DetailsSection
-                                    className='mb-6'
-                                    icon={<IdentificationIcon size={24} color="#556767" />}
-                                    title={t("Recipient")}
-                                >
-                                    <SectionItem
-                                        icon={<UserIcon size={24} color="#556767" />}
-                                        title={t("Recipient name")}
-                                        value={transfer.recipientName}
-                                    />
-                                    <SectionItem
-                                        icon={<FingerPrintIcon size={24} color="#556767" />}
-                                        title={t("Account number")}
-                                        value={transfer.recipientNumber}
-                                    />
-                                    <SectionItem
-                                        icon={<BuildingLibraryIcon size={24} color="#556767" />}
-                                        title={t("Bank")}
-                                        value={transfer.recipientBank}
-                                    />
-                                </DetailsSection>
-                            )}
+                            {/* {transfer !== undefined && ( */}
+                            <DetailsSection
+                                className='mb-6'
+                                icon={<IdentificationIcon size={24} color="#556767" />}
+                                title={t("Recipient")}
+                            >
+                                <SectionItem
+                                    icon={<HashtagIcon size={24} color="#556767" />}
+                                    title={t("Account ID")}
+                                    value={activity.accountId}
+                                />
+
+                                <SectionItem
+                                    icon={<TagIcon size={24} color="#556767" />}
+                                    title={t("Account name")}
+                                    value={activity.accountName}
+                                />
+                                {payoutInfo !== undefined && (
+                                    <>
+                                        <SectionItem
+                                            icon={<UserIcon size={24} color="#556767" />}
+                                            title={t("Recipient name")}
+                                            value={payoutInfo.accountHolderName}
+                                        />
+                                        <SectionItem
+                                            icon={<FingerPrintIcon size={24} color="#556767" />}
+                                            title={t("Account number")}
+                                            value={payoutInfo.accountNumber}
+                                        />
+                                        <SectionItem
+                                            icon={<BuildingLibraryIcon size={24} color="#556767" />}
+                                            title={t("Bank")}
+                                            value={payoutInfo.method}
+                                        />
+                                    </>
+                                )}
+                            </DetailsSection>
+                            {/* )} */}
 
                             <DetailsSection
                                 className='gap-y-0 mb-6'
@@ -192,7 +218,7 @@ const ActivityDetails = () => {
                                     {t("Activity")}
                                 </FontText>
                                 <SummaryItem
-                                    title={t("Gross amount")}
+                                    title={t(`${activity.operation === 'topup' || activity.operation === 'topup (+ve)' ? "Adjusted" : "Gross"} amount`)}
                                     value={activity.originalAmount === undefined ? '--' : currencyNumber(activity.originalAmount) + ' ' + t('EGP')}
                                     className='mb-4'
                                 />
@@ -225,7 +251,7 @@ const ActivityDetails = () => {
                                 />
                             </DetailsSection>
 
-                            <DetailsSection
+                            {/* <DetailsSection
                                 icon={<ChatBubbleBottomCenterIcon size={24} color="#556767" />}
                                 title={t("Comment")}
                                 className='mb-6'
@@ -234,7 +260,7 @@ const ActivityDetails = () => {
                                     className="text-content-primary self-start text-base">
                                     {activity.comment !== undefined ? activity.comment : "----"}
                                 </FontText>
-                            </DetailsSection>
+                            </DetailsSection> */}
                             {(settlementBatchs !== undefined && settlementBatchs.length > 0) && (
                                 <DetailsSection
                                     icon={<CircleStackIcon size={24} color="#556767" />}

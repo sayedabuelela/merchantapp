@@ -1,6 +1,8 @@
-import { View, FlatList, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, Pressable } from "react-native";
 import { Transaction } from "@/src/modules/payments/payments.model";
 import TransactionCard from "@/src/modules/payments/components/transactions-list/TransactionCard";
+import FontText from "@/src/shared/components/FontText";
+import { useTranslation } from "react-i18next";
 
 interface PaginatedTransactionListProps {
   transactions: Transaction[];
@@ -15,37 +17,25 @@ const PaginatedTransactionList = ({
   isFetchingNextPage,
   onLoadMore,
 }: PaginatedTransactionListProps) => {
-  const renderItem = ({ item }: { item: Transaction }) => {
-    return <TransactionCard key={item._id} transaction={item} />;
-  };
-
-  const handleEndReached = () => {
-    if (hasNextPage && !isFetchingNextPage && onLoadMore) {
-      onLoadMore();
-    }
-  };
-
-  const renderFooter = () => {
-    if (!isFetchingNextPage) return null;
-    return (
-      <View className="py-4 items-center">
-        <ActivityIndicator size="small" color="#556767" />
-      </View>
-    );
-  };
+  const { t } = useTranslation();
 
   return (
-    <View className="mt-5 max-h-[400px]">
-      <FlatList
-        data={transactions}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `${item._id}-${item.transactionId}-${index}`}
-        onEndReached={handleEndReached}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-      />
+    <View className="mt-5">
+      {transactions.map((item, index) => (
+        <TransactionCard key={`${item._id}-${item.transactionId}-${index}`} transaction={item} />
+      ))}
+      {isFetchingNextPage && (
+        <View className="py-4 items-center">
+          <ActivityIndicator size="small" color="#556767" />
+        </View>
+      )}
+      {hasNextPage && !isFetchingNextPage && onLoadMore && (
+        <Pressable onPress={onLoadMore} className="py-4 items-center">
+          <FontText type="body" weight="semibold" className="text-primary text-sm">
+            {t("Load more")}
+          </FontText>
+        </Pressable>
+      )}
     </View>
   );
 };

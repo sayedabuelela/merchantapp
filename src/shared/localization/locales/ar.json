@@ -280,7 +280,6 @@
   "Governorate": "المحافظة",
   "Gross amount": "إجمالي المبلغ",
   "Held funds": "أموال محتجزة",
-  "Hello World": "مرحبًا بالعالم",
   "History": "السجل",
   "Hold": "معلّق",
   "Hotline": "الخط الساخن",
@@ -737,5 +736,8 @@
   "Terms and conditions is required": "الشروط والأحكام مطلوبة",
   "Select option": "اختر خيارًا",
   "Logout": "تسجيل الخروج",
-  "This field is required": "هذا الحقل مطلوب"
+  "This field is required": "هذا الحقل مطلوب",
+  "Soon you'll be able to transfer funds quickly and securely between accounts using the app. Stay tuned!": "قريبًا ستتمكن من تحويل الأموال بسرعة وأمان بين الحسابات باستخدام التطبيق. تابعونا.",
+  "View all": "عرض الكل",
+  "Load more": "عرض المزيد"
 }

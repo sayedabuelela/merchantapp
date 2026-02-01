@@ -65,3 +65,4 @@ export { default as OnboardingSlide3AllIcons } from './files/onboarding-slides/t
 export { default as OnboardingSlide4AllIcons } from './files/onboarding-slides/forth-slide/reports-icon.svg';
 export { default as OnboardingSlide5AllIcons } from './files/onboarding-slides/fifth-slide/all-icons.svg';
 export { default as OnboardingSlide5KashierLogo } from './files/onboarding-slides/fifth-slide/kashier-logo-icon.svg';
+export { default as PosPaymentBlackIcon } from './files/balance/pos-payment-black.svg';

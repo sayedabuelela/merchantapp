@@ -3,6 +3,7 @@ import NetworkProvider from '@/src/core/providers/NetworkProvider';
 import { NotificationProvider } from "@/src/core/providers/NotificationProvider";
 import SplashProvider from "@/src/core/providers/SplashProvider";
 import { selectAuthInitialize, selectIsAuthenticated, useAuthStore } from '@/src/modules/auth/auth.store';
+import { selectHasSeenOnboarding, useFirstOnboardingStore } from '@/src/modules/first-onboarding/first-onboarding.store';
 import { useBiometricViewModel } from '@/src/modules/auth/biometric/biometric.viewmodel';
 import '@/src/shared/localization/i18n';
 // import { useReactQueryDevTools } from '@dev-plugins/react-query';
@@ -89,6 +90,7 @@ function AppContent() {
   const initializeAuth = useAuthStore(selectAuthInitialize);
   const isAuthenticated = useAuthStore(selectIsAuthenticated);
   const { isBiometricAvailable, isInitialized: isBiometricInitialized } = useBiometricViewModel();
+  const hasSeenOnboarding = useFirstOnboardingStore(selectHasSeenOnboarding);
 
   if (!initializeAuth) {
     return null;
@@ -100,7 +102,9 @@ function AppContent() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NetworkProvider>
         <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
-          <Stack.Screen name="(first-onboarding)" />
+          <Stack.Protected guard={!hasSeenOnboarding && !isAuthenticated}>
+            <Stack.Screen name="(first-onboarding)" />
+          </Stack.Protected>
 
           <Stack.Protected guard={!isAuthenticated}>
             <Stack.Screen name="(auth)" />
