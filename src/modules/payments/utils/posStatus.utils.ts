@@ -14,7 +14,7 @@ export const isApprovedPosPayOperation = (
     type?: string,
     operation?: string
 ): boolean => {
-    const isApproved = status === 'Approved';
+    const isApproved = status === 'Approved' || status?.toUpperCase() === 'SUCCESS';
     const validTypes = ['PAYMENT', 'REFUND', 'REVERSAL'];
     const validOperations = ['pay', 'void', 'refund'];
     const isValidType = !!(type && validTypes.includes(type.toUpperCase()));
@@ -70,19 +70,21 @@ export const getEffectiveTransactionDetailStatus = (transaction: TransactionDeta
         provider: transaction.provider,
         status: transaction.status,
         type: transaction.trxType,
+        operation: transaction.trxType,
         isReversed: transaction.isReversed,
         ackStatus: transaction.ackStatus,
     });
 };
 
 /**
- * Get warning message key for POS status
+ * Get message key and severity for POS status
+ * reversed = danger, pending = warning
  */
-export const getPosStatusWarningKey = (transaction: TransactionDetail): string | null => {
+export const getPosStatusWarningKey = (transaction: TransactionDetail): { key: string; severity: 'danger' | 'warning' } | null => {
     if (!isPosTransaction(transaction.provider)) return null;
-    if (!isApprovedPosPayOperation(transaction.status, transaction.trxType, undefined)) return null;
+    if (!isApprovedPosPayOperation(transaction.status, transaction.trxType, transaction.trxType)) return null;
 
-    if (transaction.isReversed) return 'pos_reversed_warning';
-    if (transaction.ackStatus === 'pending') return 'pos_pending_warning';
+    if (transaction.isReversed) return { key: 'pos_reversed_warning', severity: 'danger' };
+    if (transaction.ackStatus === 'pending') return { key: 'pos_pending_warning', severity: 'warning' };
     return null;
 };

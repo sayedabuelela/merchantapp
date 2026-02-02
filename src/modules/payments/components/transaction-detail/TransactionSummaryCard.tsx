@@ -18,7 +18,6 @@ interface TransactionSummaryCardProps {
 export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardProps) => {
     const { t } = useTranslation();
     const effectiveStatus = getEffectiveTransactionDetailStatus(transaction);
-
     return (
         <>
             <AmountDisplay
@@ -46,3 +45,4 @@ export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardPr
         </>
     );
 };
+

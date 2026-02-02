@@ -7,6 +7,7 @@ import { formatAMPM, formatRelativeDate } from '@/src/core/utils/dateUtils';
 import DetailsAccordionItem from '@/src/modules/onboarding/data/components/DetailsAccordionItem';
 import { getEffectiveTransactionDetailStatus, getPosStatusWarningKey } from '../../../utils/posStatus.utils';
 import AnimatedWarningMsg from '@/src/shared/components/animated-messages/AnimatedWarningMsg';
+import AnimatedError from '@/src/shared/components/animated-messages/AnimatedError';
 
 interface Props {
     transaction: TransactionDetail;
@@ -81,14 +82,15 @@ const DetailsTab = ({ transaction }: Props) => {
 
     // Get effective status and warning for POS transactions
     const effectiveStatus = getEffectiveTransactionDetailStatus(transaction);
-    const warningKey = getPosStatusWarningKey(transaction);
-    const warningMessage = warningKey ? t(warningKey) : null;
-    console.log('transaction : ',transaction);
-
+    const posStatus = getPosStatusWarningKey(transaction);
+    const posMessage = posStatus ? t(posStatus.key) : null;
     return (
         <View className='mt-4'>
-            {warningMessage && (
-                <AnimatedWarningMsg warningMsg={warningMessage} className="mt-0 mb-4" />
+            {posMessage && posStatus?.severity === 'danger' && (
+                <AnimatedError errorMsg={posMessage} className="mt-0 mb-4" />
+            )}
+            {posMessage && posStatus?.severity === 'warning' && (
+                <AnimatedWarningMsg warningMsg={posMessage} className="mt-0 mb-4" />
             )}
             <DetailsSection title={t('Recent transaction')}>
                 <SectionRowItem

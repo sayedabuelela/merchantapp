@@ -26,6 +26,7 @@ const statusStyles: Record<string, { backgroundColor: string; color: string }> =
     REFUNDED: { backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017' },
     "PARTIALLY_REFUNDED": { backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017' },
     FAILED: { backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017' },
+    FAILURE: { backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017' },
     OPENED: { backgroundColor: "#f8f9f9", color: '#556767' },
 };
 
