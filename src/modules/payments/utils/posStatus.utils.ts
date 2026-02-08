@@ -1,4 +1,4 @@
-import { Transaction, TransactionDetail } from '../payments.model';
+import { Transaction, TransactionDetail, PaymentSession, OrderDetailPayment } from '../payments.model';
 
 /**
  * Check if transaction is from POS (iso8583 provider)
@@ -86,5 +86,69 @@ export const getPosStatusWarningKey = (transaction: TransactionDetail): { key: s
 
     if (transaction.isReversed) return { key: 'pos_reversed_warning', severity: 'danger' };
     if (transaction.ackStatus === 'pending') return { key: 'pos_pending_warning', severity: 'warning' };
+    return null;
+};
+
+/**
+ * Check if a session status implies an approved pay/void/refund operation.
+ * Used as fallback when order history is unavailable.
+ */
+const isApprovedSessionStatus = (status?: string): boolean => {
+    const approvedStatuses = ['PAID', 'VOIDED', 'REFUNDED', 'PARTIALLY_REFUNDED'];
+    return !!status && approvedStatuses.includes(status.toUpperCase());
+};
+
+/**
+ * Get effective display status for PaymentSession (order list)
+ */
+export const getEffectiveOrderStatus = (order: PaymentSession): string => {
+    if (!isPosTransaction(order.provider)) return order.status;
+
+    // Try history-based check first
+    const latestHistory = order.history?.[0];
+    const isApproved = latestHistory
+        ? isApprovedPosPayOperation(latestHistory.status, undefined, latestHistory.operation)
+        : isApprovedSessionStatus(order.status);
+
+    if (!isApproved) return order.status;
+
+    if (order.isReversed) return 'REVERSED';
+    if (order.ackStatus === 'pending') return 'PENDING_ACK';
+    return order.status;
+};
+
+/**
+ * Get effective display status for OrderDetailPayment (order detail)
+ */
+export const getEffectiveOrderDetailStatus = (order: OrderDetailPayment): string => {
+    if (!isPosTransaction(order.provider)) return order.status;
+
+    const latestHistory = order.history?.[0];
+    const isApproved = latestHistory
+        ? isApprovedPosPayOperation(latestHistory.status, undefined, latestHistory.operation)
+        : isApprovedSessionStatus(order.status);
+
+    if (!isApproved) return order.status;
+
+    if (order.isReversed) return 'REVERSED';
+    if (order.ackStatus === 'pending') return 'PENDING_ACK';
+    return order.status;
+};
+
+/**
+ * Get message key and severity for POS order status
+ */
+export const getOrderPosStatusWarningKey = (order: OrderDetailPayment): { key: string; severity: 'danger' | 'warning' } | null => {
+    if (!isPosTransaction(order.provider)) return null;
+
+    const latestHistory = order.history?.[0];
+    const isApproved = latestHistory
+        ? isApprovedPosPayOperation(latestHistory.status, undefined, latestHistory.operation)
+        : isApprovedSessionStatus(order.status);
+
+    if (!isApproved) return null;
+
+    if (order.isReversed) return { key: 'pos_reversed_warning', severity: 'danger' };
+    if (order.ackStatus === 'pending') return { key: 'pos_pending_warning', severity: 'warning' };
     return null;
 };

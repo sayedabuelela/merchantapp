@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import SectionRowItem from "@/src/shared/components/details-screens/SectionRowItem";
 import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils";
 import DetailsAccordionItem from "@/src/modules/onboarding/data/components/DetailsAccordionItem";
+import { getEffectiveOrderDetailStatus, getOrderPosStatusWarningKey } from "../../../utils/posStatus.utils";
+import AnimatedWarningMsg from "@/src/shared/components/animated-messages/AnimatedWarningMsg";
+import AnimatedError from "@/src/shared/components/animated-messages/AnimatedError";
 
 interface Props {
     order: OrderDetailPayment;
@@ -77,8 +80,21 @@ const DetailsTab = ({ order }: Props) => {
         order.metaData?.['kashier payment UI version']
     );
 
+    // Get effective status and warning for POS orders
+    const effectiveOrderStatus = getEffectiveOrderDetailStatus(order);
+    const posStatus = getOrderPosStatusWarningKey(order);
+    const posMessage = posStatus ? t(posStatus.key) : null;
+    const isPosOverride = effectiveOrderStatus === 'REVERSED' || effectiveOrderStatus === 'PENDING_ACK';
+    const displayStatus = isPosOverride ? effectiveOrderStatus : latestHistoryStatus;
+
     return (
         <View className='mt-4'>
+            {posMessage && posStatus?.severity === 'danger' && (
+                <AnimatedError errorMsg={posMessage} className="mt-0 mb-4" />
+            )}
+            {posMessage && posStatus?.severity === 'warning' && (
+                <AnimatedWarningMsg warningMsg={posMessage} className="mt-0 mb-4" />
+            )}
             <DetailsSection title={t('Recent transaction')}>
                 <SectionRowItem
                     valueClassName="capitalize mr-[1px]"
@@ -92,7 +108,7 @@ const DetailsTab = ({ order }: Props) => {
                 <SectionRowItem
                     valueClassName="capitalize"
                     title={t('Status')}
-                    value={latestHistoryStatus}
+                    value={displayStatus}
                 />
                 <SectionRowItem
                     title={t('Transaction ID')}

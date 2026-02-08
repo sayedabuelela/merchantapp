@@ -5,6 +5,7 @@ import { objectHasKeys } from "@/src/core/utils/objects"
 import StatusBox from "@/src/modules/payment-links/components/StatusBox"
 import { PaymentSession } from "@/src/modules/payments/payments.model"
 import FontText from "@/src/shared/components/FontText"
+import { getEffectiveOrderStatus } from "../../utils/posStatus.utils"
 import { Link } from "expo-router"
 import { PressableScale } from "pressto"
 import React from "react"
@@ -21,6 +22,7 @@ interface OrderCardProps {
 const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
     const { t } = useTranslation();
     const { paymentParams, status, capturedAmount, targetTransactionId, lastTransactionId, _id, createdAt,updatedAt, method } = payment;
+    const effectiveStatus = getEffectiveOrderStatus(payment);
     const isPaid = status === 'PAID';
 
     const handleLongPress = () => {
@@ -62,7 +64,7 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                         <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                             {formatAMPM(updatedAt)}
                         </FontText>
-                        <StatusBox status={status} />
+                        <StatusBox status={effectiveStatus} />
                     </View>
 
                     <View className="flex-row items-center gap-x-1 mt-2">

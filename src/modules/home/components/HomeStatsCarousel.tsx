@@ -54,7 +54,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
                 router.push('/services/transfers')
                 break
         }
-    }, [router])
+    }, [router,mode])
     // const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     //     const scrollPosition = event.nativeEvent.contentOffset.x
     //     const index = Math.round(scrollPosition / CARD_WIDTH)

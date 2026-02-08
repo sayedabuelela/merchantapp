@@ -68,6 +68,8 @@ export interface PaymentSession {
     };
     sourceOfFunds?: SourceOfFunds;
     lastTransactionId?: string;
+    ackStatus?: 'pending' | 'done' | string;
+    isReversed?: boolean;
 }
 
 export interface Pagination {
@@ -498,6 +500,8 @@ export interface OrderDetailPayment {
         Phone?: string;
         nationalId?: string;
     }
+    ackStatus?: 'pending' | 'done' | string;
+    isReversed?: boolean;
 }
 
 export interface FetchOrderDetailResponse {
