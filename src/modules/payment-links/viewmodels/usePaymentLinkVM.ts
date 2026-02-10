@@ -12,6 +12,7 @@ import {
 import { usePaymentLinkStore } from "../paymentLink.store";
 import { ROUTES } from "@/src/core/navigation/routes";
 import { useToast } from "@/src/core/providers/ToastProvider";
+import { useAnalytics } from "@/src/modules/analytics/useAnalytics";
 import { selectUser, useAuthStore } from "@/src/modules/auth/auth.store";
 import usePermissions from "@/src/modules/auth/hooks/usePermissions";
 
@@ -20,6 +21,7 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
     const queryClient = useQueryClient();
     const { t } = useTranslation();
     const { showToast } = useToast?.() ?? { showToast: () => { } };
+    const { trackPaymentLinkCreated } = useAnalytics();
     const isEditMode = !!paymentLinkId;
     // console.log("usePaymentLinkVM isEditMode", isEditMode);
     // Fetch payment link for edit mode
@@ -54,10 +56,14 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
             }
             return createPaymentLink(api, data);
         },
-        onSuccess: async (response) => {
+        onSuccess: async (response, variables) => {
             await queryClient.invalidateQueries({ queryKey: ["payment-links"], exact: false });
             const qrCode = usePaymentLinkStore.getState().qrCode;
             usePaymentLinkStore.getState().clearFormData();
+            trackPaymentLinkCreated(
+                parseFloat(variables.totalAmount) || 0,
+                variables.currency ?? 'EGP',
+            );
             showToast({ message: t('Payment link created successfully'), type: 'success' });
             router.replace({
                 pathname: "/payment-links/create-success",

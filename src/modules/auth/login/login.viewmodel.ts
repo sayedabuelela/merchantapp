@@ -9,9 +9,10 @@ import { useTranslation } from "react-i18next";
 import { AuthResponse } from "../auth.model";
 import { storeCredentials } from "../biometric/biometric.utils";
 import { fetchAndSyncMerchant } from "../hooks/useMerchant";
+import { useAnalytics } from "@/src/modules/analytics/useAnalytics";
+import { setCrashlyticsUser } from "@/src/modules/crashlytics/crashlytics.service";
 import { LoginError, LoginFormData } from './login.model';
 import { authenticate } from "./login.service";
-// import { toast } from "sonner-native";
 
 export const useLoginViewModel = () => {
     const { api } = useApi();
@@ -23,6 +24,7 @@ export const useLoginViewModel = () => {
     const router = useRouter();
     const { showToast } = useToast?.() ?? { showToast: () => { } };
     const { t } = useTranslation();
+    const { trackLogin, setUserProperties } = useAnalytics();
     const {
         mutateAsync,
         isPending: isLoading,
@@ -46,6 +48,9 @@ export const useLoginViewModel = () => {
             const { success, refreshToken, accessToken, ...user } = data.body;
             setMode(data.body.isLive ? Mode.LIVE : Mode.TEST)
             setAuth({ ...user, email: user.signupKey }, token);
+            trackLogin('credentials');
+            setUserProperties(user.merchantId, data.body.isLive ? 'live' : 'test');
+            setCrashlyticsUser();
             await queryClient.fetchQuery({
                 queryKey: ['merchantData', user.merchantId],
                 queryFn: () => fetchAndSyncMerchant(api, useAuthStore.getState().updateUser),

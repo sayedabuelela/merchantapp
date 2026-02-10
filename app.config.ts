@@ -95,6 +95,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: './src/shared/assets/images/app-icon.png',
   },
   plugins: [
+    "@react-native-firebase/crashlytics",
     [
       "expo-web-browser"
     ],
@@ -141,6 +142,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'expo-secure-store',
+    '@react-native-firebase/app',
+    './plugins/withModularHeaders',
   ],
   experiments: {
     typedRoutes: true,

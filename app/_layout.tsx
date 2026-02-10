@@ -18,9 +18,15 @@ import 'react-native-reanimated';
 import { Toaster } from 'sonner-native';
 import "../global.css";
 import { ToastProvider } from '@/src/core/providers/ToastProvider';
+import AppErrorBoundary from '@/src/shared/components/ErrorBoundary';
+import { initializeCrashlytics } from '@/src/modules/crashlytics/crashlytics.init';
+import { ErrorBoundary } from 'expo-router';
+
 if (__DEV__) {
   require("../ReactotronConfig");
 }
+
+initializeCrashlytics();
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -125,6 +131,8 @@ function AppContent() {
     </GestureHandlerRootView>
   );
 }
+export { ErrorBoundary };
+
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -133,8 +141,10 @@ export default function RootLayout() {
           <NotificationProvider>
             <ToastProvider>
               <KeyboardProvider>
-                <StatusBar style="dark" backgroundColor='#ffffff' />
-                <AppContent />
+                <AppErrorBoundary>
+                  <StatusBar style="dark" backgroundColor='#ffffff' />
+                  <AppContent />
+                </AppErrorBoundary>
               </KeyboardProvider>
             </ToastProvider>
           </NotificationProvider>

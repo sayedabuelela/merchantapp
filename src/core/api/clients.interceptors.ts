@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/src/modules/auth/auth.store";
 import { useBiometricStore } from "@/src/modules/auth/biometric/biometric.store";
+import { recordNonFatalError, logMessage, clearCrashlyticsUser } from "@/src/modules/crashlytics/crashlytics.service";
 import { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { router } from "expo-router";
 import { ROUTES } from "../navigation/routes";
@@ -77,6 +78,7 @@ export const addErrorInterceptor = (instance: AxiosInstance): AxiosInstance => {
             // Handle timeout errors (after retry)
             if (error.code === 'ECONNABORTED') {
                 console.log("Interceptor: Request timeout");
+                recordNonFatalError('APITimeout', `Timeout: ${config.method?.toUpperCase()} ${config.url}`);
                 return Promise.reject({
                     error: 'Request timeout. Please check your internet connection and try again.',
                     message: 'Request timeout. Please check your internet connection and try again.',
@@ -87,6 +89,7 @@ export const addErrorInterceptor = (instance: AxiosInstance): AxiosInstance => {
             // Handle network errors (after retry)
             if (error.code === 'ERR_NETWORK' || !error.response) {
                 console.log("Interceptor: Network error");
+                recordNonFatalError('APINetworkError', `Network error: ${config.method?.toUpperCase()} ${config.url}`);
                 return Promise.reject({
                     error: 'Network error. Please check your internet connection.',
                     message: 'Network error. Please check your internet connection.',
@@ -96,8 +99,10 @@ export const addErrorInterceptor = (instance: AxiosInstance): AxiosInstance => {
 
             if (error.response?.status === 401 || error.response?.status === 403) {
                 console.log('[Interceptor] 401/403 Error:', error.config?.url);
+                logMessage(`Auth expired: ${error.response.status} ${config.url}`);
                 const clearAuth = useAuthStore.getState().clearAuth;
                 clearAuth();
+                clearCrashlyticsUser();
                 const hasBiometricEnabled = useBiometricStore.getState().isEnabled;
 
                 if (hasBiometricEnabled) {
@@ -107,6 +112,10 @@ export const addErrorInterceptor = (instance: AxiosInstance): AxiosInstance => {
                 }
                 return Promise.reject(error);
                 
+            }
+
+            if (error.response?.status && error.response.status >= 500) {
+                recordNonFatalError('APIServerError', `Server error ${error.response.status}: ${config.method?.toUpperCase()} ${config.url}`);
             }
 
             if (error.response?.data) {

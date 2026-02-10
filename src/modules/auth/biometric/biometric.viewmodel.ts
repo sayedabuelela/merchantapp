@@ -12,6 +12,8 @@ import { fetchAndSyncMerchant } from "../hooks/useMerchant";
 import { authenticate } from "../login/login.service";
 import { biometricAuthenticate, checkDeviceBiometric } from './biometric.service';
 import { selectIsInitialized, selectSetEnabled, selectSetInitialized, useBiometricStore } from './biometric.store';
+import { useAnalytics } from "@/src/modules/analytics/useAnalytics";
+import { setCrashlyticsUser } from "@/src/modules/crashlytics/crashlytics.service";
 import { getCredentials } from "./biometric.utils";
 import { toast } from "sonner-native";
 
@@ -39,6 +41,7 @@ export const useBiometricViewModel = (): BiometricViewModel => {
     const router = useRouter();
     const { showToast } = useToast?.() ?? { showToast: () => { } };
     const { t } = useTranslation();
+    const { trackLogin, setUserProperties } = useAnalytics();
 
 
     useEffect(() => {
@@ -135,6 +138,9 @@ export const useBiometricViewModel = (): BiometricViewModel => {
 
             // Store auth
             setAuth({ ...user, email: user.signupKey }, token);
+            trackLogin('biometric');
+            setUserProperties(user.merchantId, data.body.isLive ? 'live' : 'test');
+            setCrashlyticsUser();
 
             // Fetch and sync merchant data
             await queryClient.fetchQuery({

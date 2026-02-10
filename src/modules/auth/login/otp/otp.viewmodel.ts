@@ -10,6 +10,8 @@ import { useBiometricViewModel } from "../../biometric/biometric.viewmodel";
 import { fetchAndSyncMerchant } from "../../hooks/useMerchant";
 import { LoginFormData } from "../login.model";
 import { authenticate } from "../login.service";
+import { useAnalytics } from "@/src/modules/analytics/useAnalytics";
+import { setCrashlyticsUser } from "@/src/modules/crashlytics/crashlytics.service";
 import { GenerateOtpError, GenerateOtpResponse, VerifyCodeError } from "./otp.model";
 import { authenticateWith2fa } from "./otp.service";
 
@@ -20,6 +22,7 @@ const useOtp = () => {
     const { isBiometricAvailable, isInitialized } = useBiometricViewModel();
     const queryClient = useQueryClient();
     const router = useRouter();
+    const { trackLogin, setUserProperties } = useAnalytics();
     const { mutateAsync: generateOtp, isPending: isGenerating, error } = useMutation<GenerateOtpResponse, GenerateOtpError, LoginFormData>({
         mutationFn: (credentials) => authenticate(api, credentials),
     });
@@ -31,7 +34,9 @@ const useOtp = () => {
             const { success, refreshToken, accessToken, ...user } = data.body;
             setMode(data.body.isLive ? Mode.LIVE : Mode.TEST)
             setAuth({ ...user, email: user.signupKey }, token);
-            // await storeCredentials(credentials);
+            trackLogin('2fa');
+            setUserProperties(user.merchantId, data.body.isLive ? 'live' : 'test');
+            setCrashlyticsUser();
             await queryClient.fetchQuery({
                 queryKey: ['merchantData', user.merchantId],
                 queryFn: () => fetchAndSyncMerchant(api, useAuthStore.getState().updateUser),

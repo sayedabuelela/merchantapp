@@ -10,6 +10,8 @@ import {
     getDeviceInfo,
 } from '@/src/modules/notifications/notification.service';
 import { useApi } from '@/src/core/api/clients.hooks';
+import { trackEvent } from '@/src/modules/analytics/analytics.service';
+import { AnalyticsEvents } from '@/src/modules/analytics/analytics.constants';
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
     const { api } = useApi();
@@ -51,6 +53,15 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                     confirmedNotifications.current.add(notificationId);
                     console.log('✅ Delivery confirmed for notification:', notificationId);
                 }
+
+                // Track payment link paid events
+                const data = notification.request.content.data;
+                if (data?.paymentType === 'paymentLink' && data?.amount) {
+                    trackEvent(AnalyticsEvents.PAYMENT_LINK_PAID, {
+                        amount: Number(data.amount) || 0,
+                        currency: (data.currency as string) ?? 'EGP',
+                    });
+                }
             }
         );
 
@@ -79,6 +90,15 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                             });
                             confirmedNotifications.current.add(notificationId);
                             console.log('✅ Delivery confirmed for background notification:', notificationId);
+
+                            // Track payment link paid events
+                            const data = notification.request.content.data;
+                            if (data?.paymentType === 'paymentLink' && data?.amount) {
+                                trackEvent(AnalyticsEvents.PAYMENT_LINK_PAID, {
+                                    amount: Number(data.amount) || 0,
+                                    currency: (data.currency as string) ?? 'EGP',
+                                });
+                            }
                         }
                     }
 
