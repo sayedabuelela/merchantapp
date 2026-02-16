@@ -1,5 +1,6 @@
 import { ChangePasswordSettingsIcon, DisabledFingerprintSettingsIcon, FingerprintSettingsIcon } from '@/src/shared/assets/svgs'
 import FontText from '@/src/shared/components/FontText'
+import { FadeInDownView, StaggerChildrenView } from '@/src/shared/components/wrappers/animated-wrappers'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Pressable, View } from 'react-native'
@@ -16,7 +17,6 @@ import { ModeToggle } from '../components/ModeToggle'
 import PersonalInfoModal from '../components/PersonalInfoModal'
 import SettingsItem from '../components/SettingsItem'
 import useSettings from '../settings.viewmodel'
-import { FadeInDownView, StaggerChildrenView } from '@/src/shared/components/wrappers/animated-wrappers'
 const SettingsScreen = () => {
     const { t } = useTranslation();
     const { logout, goToBusinessProfile, goToChangePassword, goToLanguage, goToOnboardingStatus, canViewBusinessProfile } = useSettings()
@@ -52,6 +52,15 @@ const SettingsScreen = () => {
         // if (success) router.replace(ROUTES.TABS.ROOT);
     }
     console.log('onboardingData : ', onboardingData);
+
+    // const handleCrashTest = () => {
+    //     // First send a non-fatal error
+    //     recordError(new Error('Test non-fatal error'), 'Crash test from settings');
+    //     // Then trigger a native fatal crash after 1s delay
+    //     setTimeout(() => {
+    //         crash(getCrashlytics());
+    //     }, 1000);
+    // }
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -123,6 +132,19 @@ const SettingsScreen = () => {
                             </FontText>
                         </View>
                     </Pressable>
+
+                    {/* <Pressable className="flex-row items-center justify-between py-4" onPress={handleCrashTest}>
+                        <View className="flex-row items-center">
+                            <ArrowUpOnSquareStackIcon size={24} color="#A50017" />
+                            <FontText
+                                type="body"
+                                weight="bold"
+                                className="text-danger ml-2 text-base self-start"
+                            >
+                                {t('Crash Test')}
+                            </FontText>
+                        </View>
+                    </Pressable> */}
                 </StaggerChildrenView>
             </View>
             <LogoutModal isVisible={isLogoutModalVisible} onClose={() => setIsLogoutModalVisible(false)} onLogout={logout} />
