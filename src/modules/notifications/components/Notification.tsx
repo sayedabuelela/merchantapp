@@ -30,7 +30,7 @@ const Notification = ({ _id,
             router.push(`/payments/order/${data.orderId}` as any)
         }
     }
-    console.log("data?.paymentType : ", data?.paymentType);
+    console.log("data?.paymentType : ", data?.originId);
     return (
         <TouchableOpacity
             onPress={handlePress}
@@ -43,15 +43,15 @@ const Notification = ({ _id,
                 <FontText type="body" weight="regular" className="text-content-primary text-sm">
                     {t("Your customer")}
                 </FontText>
-
-                <FontText type="body" weight="bold" className={cn("text-content-primary text-sm mx-1")}>
-                    {data?.customerName}
-                </FontText>
-
+                {data?.customerName !== undefined && data?.customerName !== '' && (
+                    <FontText type="body" weight="bold" className={cn("text-content-primary text-sm ml-1")}>
+                        {data?.customerName}
+                    </FontText>
+                )}
                 <FontText
                     type="body"
                     weight="regular"
-                    className="text-content-primary text-sm"
+                    className="text-content-primary text-sm ml-1"
                 >
                     {t("proccedPaid")}
                 </FontText>
@@ -75,14 +75,15 @@ const Notification = ({ _id,
                         ? t(`${data?.paymentType}`)
                         : t(`${data?.paymentType}.notification`)} */}
                 </FontText>
-
-                <FontText
-                    type="body"
-                    weight="bold"
-                    className="text-content-primary mx-1 text-sm"
-                >
-                    ({data?.originId})
-                </FontText>
+                {data?.originId !== undefined && data?.originId !== '' && (
+                    <FontText
+                        type="body"
+                        weight="bold"
+                        className="text-content-primary mx-1 text-sm"
+                    >
+                        ({data?.originId})
+                    </FontText>
+                )}
 
             </View>
 

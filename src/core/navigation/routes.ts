@@ -94,4 +94,8 @@ export const ROUTES = {
         ROOT: "/balance" as Route,
         ACTIVITIES: "/balance/activities" as Route,
     },
+    // Instant settlement
+    INSTANT_SETTLEMENT: {
+        ROOT: "/instant-settlement" as Route,
+    },
 };
