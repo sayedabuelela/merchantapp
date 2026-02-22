@@ -278,7 +278,7 @@ export const refundOrder = async (
             },
             reason: 'Customer requested refund',
             transaction: {
-                amount,
+                amount:(amount * 100),
                 currency,
                 ...(targetTransactionId && { targetTransactionId }),
             },

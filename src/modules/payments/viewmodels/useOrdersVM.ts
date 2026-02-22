@@ -4,6 +4,8 @@ import { groupByDate } from "@/src/core/utils/groupData";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { FetchSessionsParams, FetchSessionsResponse } from "../payments.model";
 import { fetchPaymentSessions } from "../payments.services";
+import usePermissions from "@/src/modules/auth/hooks/usePermissions";
+import { useAuthStore, selectUser } from "@/src/modules/auth/auth.store";
 
 interface OrdersInfinityResponse {
     pages: FetchSessionsResponse[];
@@ -12,7 +14,8 @@ interface OrdersInfinityResponse {
 
 export const useOrdersVM = (params?: FetchSessionsParams) => {
     const { api } = useApi();
-    
+    const user = useAuthStore(selectUser);
+    const { canViewTransactions } = usePermissions(user?.actions || {});
     const ordersQuery = useInfiniteQuery<
         FetchSessionsResponse,
         Error,
@@ -28,7 +31,7 @@ export const useOrdersVM = (params?: FetchSessionsParams) => {
             return page < pages ? page + 1 : undefined;
         },
         initialPageParam: 1,
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        enabled: !!(canViewTransactions),
     });
 
     const allItems = ordersQuery.data?.pages.flatMap((p) => p.data) ?? [];

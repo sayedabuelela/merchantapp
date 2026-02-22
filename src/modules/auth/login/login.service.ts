@@ -8,7 +8,7 @@ export const authenticate = async (api: AxiosInstance, credentials: LoginFormDat
     const fcmToken = await getPushToken() as string;
     
     const { deviceId, huawei } = await getDeviceInfo();
-    console.log('fcmToken : ',fcmToken);
+    // console.log('fcmToken : ',fcmToken);
     
     const fcmData: FCMData = {
         deviceId,
