@@ -210,7 +210,7 @@ export default function PaymentLinkDetailsScreen() {
                                     </View>
                                 </DetailsSection>
                             </FadeInUpView>
-                            {(paymentLink?.lastShareStatus.email.status || paymentLink?.lastShareStatus.sms.status) && (
+                            {(paymentLink?.lastShareStatus?.email?.status || paymentLink?.lastShareStatus?.sms?.status) && (
                                 <FadeInUpView delay={450} duration={600}>
                                     <DetailsSection
                                         icon={<ShareIcon size={24} color="#556767" />}
