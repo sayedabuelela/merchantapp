@@ -14,7 +14,8 @@ const TransactionHistoryCard = ({ historyItem }: TransactionHistoryCardProps) =>
 
     // Format date
     const formattedDate = formatHistoryDate(historyItem.date);
-
+    console.log('historyItem',historyItem);
+    
     // Build the header with date and transaction ID
     const header = `${formattedDate} • ${historyItem.transactionId}`;
 

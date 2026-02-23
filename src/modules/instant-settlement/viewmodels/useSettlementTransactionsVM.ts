@@ -36,8 +36,8 @@ export const useSettlementTransactionsVM = (params?: FetchSettlementTransactions
 
     const allItems = transactionsQuery.data?.pages.flatMap((p) => p.body) ?? [];
 
-    // Group transactions by createdAt date
-    const grouped = groupByDate(allItems, 'createdAt');
+    // Group transactions by settlementDate
+    const grouped = groupByDate(allItems, 'settlementDate');
     const { listData, stickyHeaderIndices } = useGroupedData(allItems.length ? grouped : []);
 
     return {

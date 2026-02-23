@@ -2,6 +2,7 @@ import { AxiosInstance } from 'axios';
 import {
     FetchSettlementTransactionsParams,
     FetchSettlementTransactionsResponse,
+    InstantSettlementInquiryApiResponse,
     InstantSettlementInquiryRequest,
     InstantSettlementInquiryResponse,
     InstantSettlementRequestPayload,
@@ -50,12 +51,12 @@ export const inquireInstantSettlement = async (
     api: AxiosInstance,
     request: InstantSettlementInquiryRequest
 ): Promise<InstantSettlementInquiryResponse> => {
-    const response = await api.post<InstantSettlementInquiryResponse>(
+    const response = await api.post<InstantSettlementInquiryApiResponse>(
         '/v3/payment/instant-settlement/inquiry',
         request
     );
 
-    return response.data;
+    return response.data.response;
 };
 
 /**
