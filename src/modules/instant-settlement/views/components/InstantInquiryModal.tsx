@@ -103,7 +103,7 @@ const InstantInquiryModal = ({ isVisible, onClose, inquiryData, onRequestPayout,
                                                     weight="semi"
                                                     className='text-sm text-content-primary uppercase'
                                                 >
-                                                    {currencyNumber(inquiryData?.totalAmount ?? 0)} {t('EGP')}
+                                                    {currencyNumber(inquiryData?.totalSettledAmount ?? 0)} {t('EGP')}
                                                 </FontText>
                                             </View>
                                         </ScaleFadeIn>
