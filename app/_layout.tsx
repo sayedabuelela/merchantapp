@@ -19,6 +19,7 @@ import { Toaster } from 'sonner-native';
 import "../global.css";
 import { ToastProvider } from '@/src/core/providers/ToastProvider';
 import AppErrorBoundary from '@/src/shared/components/ErrorBoundary';
+import OTAUpdateModal from '@/src/shared/components/OTAUpdateModal';
 import { initializeCrashlytics } from '@/src/modules/crashlytics/crashlytics.init';
 import { ErrorBoundary } from 'expo-router';
 
@@ -144,6 +145,7 @@ export default function RootLayout() {
                 <AppErrorBoundary>
                   <StatusBar style="dark" backgroundColor='#ffffff' />
                   <AppContent />
+                  <OTAUpdateModal />
                 </AppErrorBoundary>
               </KeyboardProvider>
             </ToastProvider>
