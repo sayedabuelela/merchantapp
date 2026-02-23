@@ -533,6 +533,7 @@ export interface RelatedTransaction {
     transactionId: string;
     date: string;
     rfsDate?: string;
+    transactionResponseMessage?: TransactionResponseMessage;
 }
 
 export interface TransactionDetailOriginDetails {

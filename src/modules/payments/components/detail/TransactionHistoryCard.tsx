@@ -7,15 +7,16 @@ import { getTransactionHistoryIcon } from '@/src/modules/payments/utils/history.
 
 interface TransactionHistoryCardProps {
     historyItem: RelatedTransaction;
+    errorMsg?: string;
 }
 
-const TransactionHistoryCard = ({ historyItem }: TransactionHistoryCardProps) => {
+const TransactionHistoryCard = ({ historyItem, errorMsg }: TransactionHistoryCardProps) => {
     const { t } = useTranslation();
 
     // Format date
     const formattedDate = formatHistoryDate(historyItem.date);
-    console.log('historyItem',historyItem);
-    
+    console.log('historyItem', historyItem);
+
     // Build the header with date and transaction ID
     const header = `${formattedDate} • ${historyItem.transactionId}`;
 
@@ -31,7 +32,7 @@ const TransactionHistoryCard = ({ historyItem }: TransactionHistoryCardProps) =>
         } else if (operation === 'refund' && status === 'SUCCESS') {
             return `${t('Successfully refunded')} ${amount} ${currency}`;
         } else if (status === 'FAILURE' || status === 'FAILED') {
-            return t('Transaction failed');
+            return errorMsg ? `${t('Transaction failed')}: ${errorMsg}` : t('Transaction failed');
         } else {
             return `${t(operation || 'Transaction')} - ${t(status)}`;
         }

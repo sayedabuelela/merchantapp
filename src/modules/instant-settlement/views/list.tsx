@@ -40,6 +40,8 @@ const InstantSettlementScreen = () => {
   const [requestErrorMsg, setRequestErrorMsg] = useState('');
   const user = useAuthStore(selectUser);
   const { canEditBalance } = usePermissions(user?.actions!);
+  console.log('selectedIds', Array.from(selectedIds));
+
   const {
     listData,
     stickyHeaderIndices,
@@ -78,10 +80,10 @@ const InstantSettlementScreen = () => {
   const handleToggleSelect = useCallback((transaction: SettlementTransaction) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
-      if (next.has(transaction._id)) {
-        next.delete(transaction._id);
+      if (next.has(transaction.transactionId)) {
+        next.delete(transaction.transactionId);
       } else {
-        next.add(transaction._id);
+        next.add(transaction.transactionId);
       }
       return next;
     });
@@ -128,7 +130,7 @@ const InstantSettlementScreen = () => {
       <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
         <InstantSettlementCard
           transaction={transaction}
-          isSelected={selectedIds.has(transaction._id)}
+          isSelected={selectedIds.has(transaction.transactionId)}
           onToggleSelect={handleToggleSelect}
         />
       </AnimatedListItem>

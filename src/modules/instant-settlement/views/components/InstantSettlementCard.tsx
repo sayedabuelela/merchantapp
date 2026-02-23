@@ -57,7 +57,11 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
                                     </FontText>
                                 )}
                                 {transaction.merchantOrderId && (
-                                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                                    <FontText type="body"
+                                        weight="regular"
+                                        numberOfLines={1}
+                                        ellipsizeMode='tail'
+                                        className="max-w-[120px] text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
                                         {transaction.merchantOrderId}
                                     </FontText>
                                 )}

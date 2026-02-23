@@ -27,6 +27,8 @@ const InstantInquiryModal = ({ isVisible, onClose, inquiryData, onRequestPayout,
         if (isVisible) {
             setShowModal(true);
             setIsAnimating(true);
+        } else {
+            setIsAnimating(false);
         }
     }, [isVisible]);
 

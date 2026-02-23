@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, I18nManager } from 'react-native';
 import { TransactionDetail } from '@/src/modules/payments/payments.model';
 import { useTranslation } from 'react-i18next';
 import FontText from '@/src/shared/components/FontText';
@@ -30,7 +30,7 @@ const HistoryTab = ({ transaction }: Props) => {
     return (
         <View className="mt-4">
             {history.map((item, index) => (
-                <TransactionHistoryCard key={`${item.date}-${index}`} historyItem={item} />
+                <TransactionHistoryCard key={`${item.date}-${index}`} historyItem={item} errorMsg={transaction.transactionResponseMessage?.[I18nManager.isRTL ? 'ar' : 'en'] || undefined} />
             ))}
         </View>
     );
