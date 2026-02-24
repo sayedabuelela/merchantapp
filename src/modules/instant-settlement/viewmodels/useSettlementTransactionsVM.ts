@@ -31,8 +31,8 @@ export const useSettlementTransactionsVM = (params?: FetchSettlementTransactions
             return page < pages ? page + 1 : undefined;
         },
         initialPageParam: 1,
-        staleTime: 5 * 60 * 1000, // 5 minutes
     });
+    console.log('transactionsQuery', transactionsQuery.data?.pages[0]?.summary);
 
     const allItems = transactionsQuery.data?.pages.flatMap((p) => p.body) ?? [];
 
@@ -44,5 +44,6 @@ export const useSettlementTransactionsVM = (params?: FetchSettlementTransactions
         ...transactionsQuery,
         listData,
         stickyHeaderIndices,
+        instantSummary: transactionsQuery.data?.pages[0]?.summary,
     };
 };

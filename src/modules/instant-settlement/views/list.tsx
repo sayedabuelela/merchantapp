@@ -51,6 +51,7 @@ const InstantSettlementScreen = () => {
     isFetchingNextPage,
     isRefetching,
     refetch,
+    instantSummary
   } = useSettlementTransactionsVM({
     search: search || undefined,
   });
@@ -165,7 +166,7 @@ const InstantSettlementScreen = () => {
               weight="semi"
               className='text-sm text-content-primary uppercase'
             >
-              {currencyNumber(1212)} {t('EGP')}
+              {currencyNumber(instantSummary?.totalAmount ?? 0)} {t('EGP')}
             </FontText>
           </View>
         </ScaleFadeIn>
@@ -183,7 +184,7 @@ const InstantSettlementScreen = () => {
               weight="semi"
               className='text-sm text-content-primary uppercase'
             >
-              {'1212'}
+              {instantSummary?.orderCount}
             </FontText>
           </View>
         </ScaleFadeIn>

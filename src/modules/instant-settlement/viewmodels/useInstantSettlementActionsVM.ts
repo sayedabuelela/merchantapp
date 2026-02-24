@@ -10,6 +10,8 @@ import {
     inquireInstantSettlement,
     requestInstantSettlement,
 } from '../instant-settlement.services';
+import { router } from 'expo-router';
+import { ROUTES } from '@/src/core/navigation/routes';
 
 export const useInstantSettlementActionsVM = () => {
     const { api } = useApi();
@@ -48,6 +50,7 @@ export const useInstantSettlementActionsVM = () => {
                 style: { borderWidth: 0 },
                 description: t('Your instant settlement request has been submitted successfully'),
             });
+            router.push(ROUTES.TABS.HOME);
         },
         onError: (error: any) => {
             const errorMessage =

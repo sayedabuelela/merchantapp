@@ -106,6 +106,10 @@ export interface FetchSettlementTransactionsParams {
 export interface FetchSettlementTransactionsResponse {
     body: SettlementTransaction[];
     pagination: TransactionPagination;
+    summary: {
+        totalAmount: number;
+        orderCount: number;
+    }
     message: string;
 }
 

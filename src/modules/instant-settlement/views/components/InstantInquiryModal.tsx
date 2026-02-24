@@ -114,7 +114,7 @@ const InstantInquiryModal = ({ isVisible, onClose, inquiryData, onRequestPayout,
                                                     weight="regular"
                                                     className='text-xs text-content-secondary'
                                                 >
-                                                    {t('Instant sett. fees')}
+                                                    {t('Instant sett. fees (1%)')}
                                                 </FontText>
                                                 <FontText
                                                     type="body"
@@ -132,7 +132,7 @@ const InstantInquiryModal = ({ isVisible, onClose, inquiryData, onRequestPayout,
                                                     weight="regular"
                                                     className='text-xs text-content-secondary'
                                                 >
-                                                    {t('VAT')}
+                                                    {t('VAT (14%)')}
                                                 </FontText>
                                                 <FontText
                                                     type="body"

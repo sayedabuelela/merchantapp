@@ -43,13 +43,13 @@ const RefundConfirmation: FC<RefundConfirmationProps> = ({
     const maxRefundableAmount = order.capturedAmount - order.refundedAmount;
 
     // State for refund amount (default to full refund)
-    const [refundAmount, setRefundAmount] = useState<string>(maxRefundableAmount.toString());
+    const [refundAmount, setRefundAmount] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
 
     // Update refund amount when order data changes (after partial refund)
-    useEffect(() => {
-        setRefundAmount(maxRefundableAmount.toString());
-    }, [maxRefundableAmount]);
+    // useEffect(() => {
+    //     setRefundAmount(maxRefundableAmount.toString());
+    // }, [maxRefundableAmount]);
     
     const isMethodContact = order.method?.toLowerCase() === 'contact';
     const isConfirmDisabled = 
