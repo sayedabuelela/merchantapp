@@ -63,10 +63,10 @@ const RefundConfirmation: FC<RefundConfirmationProps> = ({
     useEffect(() => {
         const amount = parseFloat(refundAmount);
 
-        if (isNaN(amount) || refundAmount.trim() === '') {
-            setError(t('Please enter a valid amount'));
-            return;
-        }
+        // if (isNaN(amount) || refundAmount.trim() === '') {
+        //     setError(t('Please enter a valid amount'));
+        //     return;
+        // }
 
         if (amount <= 0) {
             setError(t('Amount must be greater than 0'));
