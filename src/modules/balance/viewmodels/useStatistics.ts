@@ -42,26 +42,22 @@ const useStatistics = (filters?: StatisticsDateFilters) => {
     const accountStatistics = useQuery<AccountStatistics>({
         queryKey: ["account-statistics", activeAccountId],
         queryFn: () => getAccountStatistics(api, activeAccountId!),
-        staleTime: 5 * 60 * 1000, // 5 minutes
         enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
     })
 
     const transfersStatistics = useQuery<TransfersStatistics>({
         queryKey: ["transfers-statistics", activeAccountId, dateFrom, dateTo],
         queryFn: () => getTransfersStatistics(api, activeAccountId!, dateParams),
-        staleTime: 5 * 60 * 1000, // 5 minutes
         enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
     })
     const paymentsStatistics = useQuery<PaymentsStatistics>({
         queryKey: ["payments-statistics", activeAccountId, dateFrom, dateTo],
         queryFn: () => getPaymentsStatistics(api, activeAccountId!, dateParams),
-        staleTime: 5 * 60 * 1000, // 5 minutes
         enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
     })
     const payoutStatistics = useQuery<PayoutStatistics>({
         queryKey: ["payout-statistics", activeAccountId, dateFrom, dateTo,mode === Mode.LIVE],
         queryFn: () => getPayoutStatistics(api, activeAccountId!, dateParams),
-        staleTime: 5 * 60 * 1000, // 5 minutes
         enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
     })
     // const dashboardStatistics = useQuery({

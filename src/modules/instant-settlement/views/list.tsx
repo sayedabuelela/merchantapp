@@ -79,15 +79,17 @@ const InstantSettlementScreen = () => {
   }, []);
 
   const handleToggleSelect = useCallback((transaction: SettlementTransaction) => {
-    setSelectedIds(prev => {
-      const next = new Set(prev);
-      if (next.has(transaction.transactionId)) {
-        next.delete(transaction.transactionId);
-      } else {
-        next.add(transaction.transactionId);
-      }
-      return next;
-    });
+    if (transaction.status === 'Approved') {
+      setSelectedIds(prev => {
+        const next = new Set(prev);
+        if (next.has(transaction.transactionId)) {
+          next.delete(transaction.transactionId);
+        } else {
+          next.add(transaction.transactionId);
+        }
+        return next;
+      });
+    }
   }, []);
 
   const handleUnselectAll = useCallback(() => {
