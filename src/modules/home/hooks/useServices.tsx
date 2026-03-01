@@ -1,18 +1,18 @@
-import { useTranslation } from 'react-i18next';
-import { Route } from 'expo-router';
+import { Mode } from '@/src/core/environment/environments';
+import { selectMode, useEnvironmentStore } from '@/src/core/environment/environments.store';
 import { ROUTES } from '@/src/core/navigation/routes';
+import { POSIcon } from '@/src/shared/assets/svgs';
+import { Route } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import {
     ArrowsUpDownIcon,
     ArrowUpLeftIcon,
     BanknotesIcon,
     BoltIcon,
     LinkIcon,
-    PlusIcon,
     QrCodeIcon
 } from 'react-native-heroicons/outline';
-import { POSIcon } from '@/src/shared/assets/svgs';
-import { useEnvironmentStore, selectMode } from '@/src/core/environment/environments.store'
-import { Mode } from '@/src/core/environment/environments';
+import useHasFeature from '../../auth/hooks/useHasFeature';
 export interface ServiceItem {
     title: string;
     description: string;
@@ -25,14 +25,15 @@ export interface ServiceItem {
 export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
     const { t } = useTranslation();
     const mode = useEnvironmentStore(selectMode)
-    return [
-        {
+    const hasInstantSettlementFeature = useHasFeature("instant_settlement_request");
+    const servicesList: ServiceItem[] = [
+        ...(hasInstantSettlementFeature ? [{
             title: t('Instant settlement'),
             description: t('Get your money now!'),
             // href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
             href: ROUTES.INSTANT_SETTLEMENT.ROOT as Route,
             icon: <BoltIcon size={20} color="#001F5F" />
-        },
+        }] : []),
         {
             title: t('QR code payments'),
             description: t('Get paid with a QR code'),
@@ -73,4 +74,5 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
             comingSoon: true
         },
     ];
+    return servicesList;
 };

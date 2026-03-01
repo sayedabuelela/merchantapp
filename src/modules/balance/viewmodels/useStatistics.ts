@@ -51,12 +51,12 @@ const useStatistics = (filters?: StatisticsDateFilters) => {
         enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
     })
     const paymentsStatistics = useQuery<PaymentsStatistics>({
-        queryKey: ["payments-statistics", activeAccountId, dateFrom, dateTo],
+        queryKey: ["payments-statistics", activeAccountId, dateFrom, dateTo, mode],
         queryFn: () => getPaymentsStatistics(api, activeAccountId!, dateParams),
-        enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
+        enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId ),
     })
     const payoutStatistics = useQuery<PayoutStatistics>({
-        queryKey: ["payout-statistics", activeAccountId, dateFrom, dateTo,mode === Mode.LIVE],
+        queryKey: ["payout-statistics", activeAccountId, dateFrom, dateTo, mode === Mode.LIVE],
         queryFn: () => getPayoutStatistics(api, activeAccountId!, dateParams),
         enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
     })

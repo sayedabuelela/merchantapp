@@ -114,14 +114,32 @@ const InstantInquiryModal = ({ isVisible, onClose, inquiryData, onRequestPayout,
                                                     weight="regular"
                                                     className='text-xs text-content-secondary'
                                                 >
-                                                    {t('Instant sett. fees (1%)')}
+                                                    {t('ACH Fees')}
                                                 </FontText>
                                                 <FontText
                                                     type="body"
                                                     weight="semi"
                                                     className='text-sm text-content-primary uppercase'
                                                 >
-                                                    {currencyNumber(inquiryData?.totalFees ?? 0)} {t('EGP')}
+                                                    {currencyNumber(inquiryData?.flatFees ?? 0)} {t('EGP')}
+                                                </FontText>
+                                            </View>
+                                        </ScaleFadeIn>
+                                        <ScaleFadeIn delay={0} duration={400} >
+                                            <View className="flex-row items-center justify-between border-b border-stroke-main pb-2 mb-2">
+                                                <FontText
+                                                    type="body"
+                                                    weight="regular"
+                                                    className='text-xs text-content-secondary'
+                                                >
+                                                    {t('Instant sett. fees')} {`(${inquiryData?.rateFees}%)`}
+                                                </FontText>
+                                                <FontText
+                                                    type="body"
+                                                    weight="semi"
+                                                    className='text-sm text-content-primary uppercase'
+                                                >
+                                                    {currencyNumber(inquiryData?.totalRateFees ?? 0)} {t('EGP')}
                                                 </FontText>
                                             </View>
                                         </ScaleFadeIn>

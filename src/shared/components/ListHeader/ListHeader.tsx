@@ -54,9 +54,9 @@ const ListHeader = ({
                         <Pressable onPress={() => setIsSearchOpen(!isSearchOpen)}>
                             <MagnifyingGlassIcon size={24} color="#001F5F" fill={isSearchOpen ? '#001F5F' : '#fff'} />
                         </Pressable>
-                        <Pressable onPress={onFilterPress}>
+                        {/* <Pressable onPress={onFilterPress}>
                             <FunnelIcon size={24} color="#001F5F" fill={(isFilterOpen || hasFilters) ? '#001F5F' : '#fff'} />
-                        </Pressable>
+                        </Pressable> */}
                     </>
                     }
                     {actionButton && (

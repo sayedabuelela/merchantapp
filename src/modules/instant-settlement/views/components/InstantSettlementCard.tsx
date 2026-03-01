@@ -42,6 +42,7 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
                         <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                             {formatAMPM(transaction.createdAt)}
                         </FontText>
+                        <StatusBox status={transaction.status} />
                     </View>
                     <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center gap-x-1 mt-2">
@@ -55,14 +56,13 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
                             {transaction.merchantOrderId && (
                                 <FontText type="body"
                                     weight="regular"
-                                    numberOfLines={1}
-                                    ellipsizeMode='tail'
-                                    className="max-w-[110px] text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                                    // numberOfLines={1}
+                                    // ellipsizeMode='tail'
+                                    className=" text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
                                     {transaction.merchantOrderId}
                                 </FontText>
                             )}
                         </View>
-                        <StatusBox status={transaction.status} />
                     </View>
                 </Pressable>
             </View>
