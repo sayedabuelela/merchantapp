@@ -1,13 +1,17 @@
+import { useApi } from "@/src/core/api/clients.hooks";
 import { ROUTES } from "@/src/core/navigation/routes";
 import { selectClearAuth, selectUser, useAuthStore } from "@/src/modules/auth/auth.store";
 import { selectSetEnabled, selectSetInitialized, useBiometricStore } from "@/src/modules/auth/biometric/biometric.store";
 import { clearCredentials } from "@/src/modules/auth/biometric/biometric.utils";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import usePermissions from "../auth/hooks/usePermissions";
+import { logoutDevice } from "./settings.service";
 
 const useSettings = () => {
+    const { api } = useApi();
     const clearAuth = useAuthStore(selectClearAuth);
     const router = useRouter();
     const setInitialized = useBiometricStore(selectSetInitialized);
@@ -15,8 +19,17 @@ const useSettings = () => {
 
     const user = useAuthStore(selectUser);
     const { canViewBusinessProfile } = usePermissions(user?.actions!, user?.merchantId);
-    
+
+    const { mutateAsync: logoutMutation } = useMutation({
+        mutationFn: () => logoutDevice(api),
+    });
+
     const logout = async () => {
+        try {
+            await logoutMutation();
+        } catch {
+            // Continue with local logout even if API call fails
+        }
         await clearCredentials();
         clearAuth();
         setInitialized(false);

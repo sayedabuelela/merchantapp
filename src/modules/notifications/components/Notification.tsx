@@ -30,7 +30,7 @@ const Notification = ({ _id,
             router.push(`/payments/order/${data.orderId}` as any)
         }
     }
-    console.log("data?.paymentType : ", data?.originId);
+    console.log("data?.paymentType : ", data);
     return (
         <TouchableOpacity
             onPress={handlePress}
