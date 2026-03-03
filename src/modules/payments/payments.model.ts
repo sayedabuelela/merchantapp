@@ -83,6 +83,7 @@ export interface OrderStats {
     paidOrders: {
         count: number;
         amount: number;
+        topMethod:string;
     };
     unpaidOrders: {
         count: number;

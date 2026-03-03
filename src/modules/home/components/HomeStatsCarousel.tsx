@@ -3,7 +3,8 @@ import { Dimensions, FlatList, View, NativeScrollEvent, NativeSyntheticEvent } f
 import { MotiView } from 'moti'
 import { useRouter } from 'expo-router'
 import BalanceStatsCard from '../../balance/components/header/BalanceStatsCard'
-import { AccountStatistics, PaymentsStatistics, PayoutStatistics, TransfersStatistics } from '../../balance/balance.model'
+import { AccountStatistics, PayoutStatistics, TransfersStatistics } from '../../balance/balance.model'
+import { OrderStats } from '../../payments/payments.model'
 import { useTranslation } from 'react-i18next'
 import { HomeTabType } from '../home.model'
 import { Mode } from '@/src/core/environment/environments'
@@ -15,7 +16,7 @@ const CARD_WIDTH = width - (CARD_PADDING * 2)
 interface HomeStatsCarouselProps {
     accountStats?: AccountStatistics
     transfersStats?: TransfersStatistics
-    paymentsStats?: PaymentsStatistics
+    paymentsStats?: OrderStats['paidOrders']
     payoutStats?: PayoutStatistics
     setHomeActiveTab: (tab: HomeTabType) => void
     activeTab: HomeTabType

@@ -58,7 +58,7 @@ const HomeScreen = () => {
     const {
         accountStatistics: { data: accountStats, refetch: refetchAccountStats, isRefetching: isRefetchingAccountStats },
         transfersStatistics: { data: transfersStats, refetch: refetchTransfersStats, isRefetching: isRefetchingTransfersStats },
-        paymentsStatistics: { data: paymentsStats, refetch: refetchPaymentsStats, isRefetching: isRefetchingPaymentsStats },
+        // paymentsStatistics: { data: paymentsStats, refetch: refetchPaymentsStats, isRefetching: isRefetchingPaymentsStats },
         payoutStatistics: { data: payoutStats, refetch: refetchPayoutStats, isRefetching: isRefetchingPayoutStats }
     } = useStatistics({
         dateFrom: dateFilters.dateFrom,
@@ -101,6 +101,8 @@ const HomeScreen = () => {
         dateFrom: dateFilters.dateFrom,
         dateTo: dateFilters.dateTo
     });
+
+    const paymentsStats = ordersQuery.stats?.paidOrders;
 
     // Get the appropriate data based on active tab (limited to 5 items)
     const getListData = () => {
@@ -154,7 +156,6 @@ const HomeScreen = () => {
     const isRefreshing =
         isRefetchingAccountStats ||
         isRefetchingTransfersStats ||
-        isRefetchingPaymentsStats ||
         isRefetchingPayoutStats ||
         allActivitiesQuery.isRefetching ||
         payoutsQuery.isRefetching ||
@@ -165,7 +166,6 @@ const HomeScreen = () => {
         // Refetch all statistics
         refetchAccountStats();
         refetchTransfersStats();
-        refetchPaymentsStats();
         refetchPayoutStats();
 
         // Refetch list data based on active tab
@@ -187,7 +187,6 @@ const HomeScreen = () => {
         activeTab,
         refetchAccountStats,
         refetchTransfersStats,
-        refetchPaymentsStats,
         refetchPayoutStats,
         allActivitiesQuery,
         payoutsQuery,
