@@ -26,8 +26,9 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
     const { t } = useTranslation();
     const [displayedError, setDisplayedError] = useState<string | undefined>(undefined);
 
-    const { control, handleSubmit, formState: { errors, isValid }, setFocus } = useForm<LoginFormData>({
+    const { control, handleSubmit, formState: { errors }, setFocus } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
+        mode: 'onTouched',
         defaultValues: {
             // email: 'pisej21977@hazhab.com',
             // email: 'logare2532@frisbook.com',
@@ -190,7 +191,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                 className='mt-6'
                 title={t('Login')}
                 isLoading={loading}
-                disabled={!isValid}
+                disabled={loading}
                 onPress={() => {
                     toast.success('Login failed',
                         {
@@ -207,7 +208,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                 className='mt-6'
                 title={t('Login')}
                 isLoading={loading}
-                disabled={!isValid}
+                disabled={loading}
                 onPress={handleSubmit(submitHandler)}
             />
 
