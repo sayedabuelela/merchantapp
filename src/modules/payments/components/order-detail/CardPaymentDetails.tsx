@@ -14,7 +14,8 @@ interface CardPaymentDetailsProps {
  */
 export const CardPaymentDetails = ({sourceOfFunds, paymentChannel}: CardPaymentDetailsProps) => {
     const {t} = useTranslation();
-
+    console.log('sourceOfFunds.issuer',sourceOfFunds.issuer);
+    
     return (
         <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded gap-y-5">
             <View className="flex-row items-center justify-between">

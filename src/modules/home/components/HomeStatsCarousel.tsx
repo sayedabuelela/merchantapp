@@ -55,7 +55,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
                 router.push('/services/transfers')
                 break
         }
-    }, [router,mode])
+    }, [router, mode])
     // const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     //     const scrollPosition = event.nativeEvent.contentOffset.x
     //     const index = Math.round(scrollPosition / CARD_WIDTH)
@@ -76,7 +76,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
             tab: 'orders',
             mainBalance: { title: t('total payments'), value: paymentsStats?.amount || 0, currency: 'EGP' },
             leftDetail: { title: t('Payments No'), value: paymentsStats?.count || 0, currency: '' },
-            rightDetail: { title: t('Top Method'), value: paymentsStats?.topMethod || '--', currency: '' },
+            rightDetail: { title: t('Top Method'), value: t(paymentsStats?.topMethod || '--'), currency: '' },
         },
         {
             id: 'payouts-card',
