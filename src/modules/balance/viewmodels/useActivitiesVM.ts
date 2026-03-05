@@ -37,7 +37,7 @@ export const useActivitiesVM = (params?: FetchActivitiesParams) => {
         initialPageParam: 1,
         enabled: !!(canViewBalance && hasBalanceFeature && isAuthenticated && mode === Mode.LIVE),
         // keepPreviousData: true,
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        // staleTime: 5 * 60 * 1000, // 5 minutes
     });
     // console.log('activitiesQuery : ', activitiesQuery.data?.pages);
     console.log('mode === Mode.LIVE : ', !!(mode === Mode.LIVE));

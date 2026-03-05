@@ -85,8 +85,8 @@ const HomeScreen = () => {
     const payoutsQuery = useActivitiesVM({
         limit: 5,
         operation: 'payout',
-        creationDateFrom: dateFilters.dateFrom,
-        creationDateTo: dateFilters.dateTo
+        dateFrom: dateFilters.dateFrom,
+        dateTo: dateFilters.dateTo
     });
 
     const transfersQuery = useActivitiesVM({

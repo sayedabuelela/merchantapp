@@ -151,6 +151,7 @@ const InstantSettlementScreen = () => {
           hasFilters={hasActiveFilters}
           handleClearSearch={handleClearSearch}
           searchValue={search}
+          showFilters={false}
         />
       </FadeInDownView>
       <View className="flex-row items-center px-6 gap-x-5 mb-6">

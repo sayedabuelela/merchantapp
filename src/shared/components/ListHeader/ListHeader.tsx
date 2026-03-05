@@ -21,6 +21,7 @@ interface Props {
         icon: React.ReactNode;
         onPress: () => void;
     };
+    showFilters?: boolean;
     className?: string;
 }
 
@@ -34,6 +35,7 @@ const ListHeader = ({
     handleClearSearch,
     searchValue,
     actionButton,
+    showFilters = true,
     className
 }: Props) => {
     const { t } = useTranslation();
@@ -54,9 +56,11 @@ const ListHeader = ({
                         <Pressable onPress={() => setIsSearchOpen(!isSearchOpen)}>
                             <MagnifyingGlassIcon size={24} color="#001F5F" fill={isSearchOpen ? '#001F5F' : '#fff'} />
                         </Pressable>
-                        {/* <Pressable onPress={onFilterPress}>
-                            <FunnelIcon size={24} color="#001F5F" fill={(isFilterOpen || hasFilters) ? '#001F5F' : '#fff'} />
-                        </Pressable> */}
+                        {showFilters && (
+                            <Pressable onPress={onFilterPress}>
+                                <FunnelIcon size={24} color="#001F5F" fill={(isFilterOpen || hasFilters) ? '#001F5F' : '#fff'} />
+                            </Pressable>
+                        )}
                     </>
                     }
                     {actionButton && (

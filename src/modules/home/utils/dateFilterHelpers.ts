@@ -1,53 +1,60 @@
-import { formatDateRange, formatDateString } from "@/src/core/utils/dateUtils";
+import { formatDateRange } from "@/src/core/utils/dateUtils";
 import { DateFilterType } from "../home.model";
 
 /**
+ * Formats a date to ISO string with time component (e.g., 2026-03-05T00:00:00.000Z)
+ */
+const formatDateTimeString = (date: Date): string => {
+  return date.toISOString();
+};
+
+/**
  * Calculates the date range for predefined filter types
- * Returns ISO format strings (YYYY-MM-DD) for API consumption
+ * Returns ISO format strings with time component for API consumption
  */
 export const getDateRangeForFilter = (filterType: DateFilterType): {
   dateFrom: string;
   dateTo: string;
 } => {
   const today = new Date();
-  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
-  const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+  const startOfToday = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0));
+  const endOfToday = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 0));
 
   switch (filterType) {
     case 'today':
       return {
-        dateFrom: formatDateString(startOfToday),
-        dateTo: formatDateString(endOfToday)
+        dateFrom: formatDateTimeString(startOfToday),
+        dateTo: formatDateTimeString(endOfToday)
       };
 
     case 'yesterday': {
       const yesterday = new Date(today);
       yesterday.setDate(today.getDate() - 1);
-      const startOfYesterday = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0, 0);
-      const endOfYesterday = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59, 999);
+      const startOfYesterday = new Date(Date.UTC(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0, 0));
+      const endOfYesterday = new Date(Date.UTC(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59, 0));
       return {
-        dateFrom: formatDateString(startOfYesterday),
-        dateTo: formatDateString(endOfYesterday)
+        dateFrom: formatDateTimeString(startOfYesterday),
+        dateTo: formatDateTimeString(endOfYesterday)
       };
     }
 
     case '7days': {
       const sevenDaysAgo = new Date(today);
-      sevenDaysAgo.setDate(today.getDate() - 6); // -6 because today counts as day 1
-      const startOfSevenDaysAgo = new Date(sevenDaysAgo.getFullYear(), sevenDaysAgo.getMonth(), sevenDaysAgo.getDate(), 0, 0, 0, 0);
+      sevenDaysAgo.setDate(today.getDate() - 6);
+      const startOfSevenDaysAgo = new Date(Date.UTC(sevenDaysAgo.getFullYear(), sevenDaysAgo.getMonth(), sevenDaysAgo.getDate(), 0, 0, 0, 0));
       return {
-        dateFrom: formatDateString(startOfSevenDaysAgo),
-        dateTo: formatDateString(endOfToday)
+        dateFrom: formatDateTimeString(startOfSevenDaysAgo),
+        dateTo: formatDateTimeString(endOfToday)
       };
     }
 
     case '30days': {
       const thirtyDaysAgo = new Date(today);
-      thirtyDaysAgo.setDate(today.getDate() - 29); // -29 because today counts as day 1
-      const startOfThirtyDaysAgo = new Date(thirtyDaysAgo.getFullYear(), thirtyDaysAgo.getMonth(), thirtyDaysAgo.getDate(), 0, 0, 0, 0);
+      thirtyDaysAgo.setDate(today.getDate() - 29);
+      const startOfThirtyDaysAgo = new Date(Date.UTC(thirtyDaysAgo.getFullYear(), thirtyDaysAgo.getMonth(), thirtyDaysAgo.getDate(), 0, 0, 0, 0));
       return {
-        dateFrom: formatDateString(startOfThirtyDaysAgo),
-        dateTo: formatDateString(endOfToday)
+        dateFrom: formatDateTimeString(startOfThirtyDaysAgo),
+        dateTo: formatDateTimeString(endOfToday)
       };
     }
 

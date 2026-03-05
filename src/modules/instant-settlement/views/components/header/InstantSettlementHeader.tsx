@@ -9,9 +9,10 @@ interface Props {
     hasFilters: boolean;
     handleClearSearch: () => void;
     searchValue: string;
+    showFilters?:boolean
 }
 
-const InstantSettlementHeader = ({ onFilterPress, onSubmitSearch, isFilterOpen, isListEmpty, hasFilters, handleClearSearch, searchValue }: Props) => {
+const InstantSettlementHeader = ({ onFilterPress, onSubmitSearch, isFilterOpen, isListEmpty, hasFilters, handleClearSearch, searchValue,showFilters }: Props) => {
     const { t } = useTranslation();
 
     return (
@@ -24,6 +25,7 @@ const InstantSettlementHeader = ({ onFilterPress, onSubmitSearch, isFilterOpen, 
             hasFilters={hasFilters}
             handleClearSearch={handleClearSearch}
             searchValue={searchValue}
+            showFilters={showFilters}
             className='border-b border-stroke-main pb-4 mb-6'
         />
     )
