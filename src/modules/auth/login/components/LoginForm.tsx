@@ -50,7 +50,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // email: 'pesyamao2@gmail.com',
             // password: 'SaraTest@010',
             // email: 'aayman@kashier.io',
-            // password: 'zAQ!@#$%^123456',
+            // password: 'P@ssw0rd012',
             // staging
             // email: 'duaa.bst@gmail.com',
             // password: 'AsmaaTest110@',
