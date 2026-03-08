@@ -13,6 +13,8 @@ import {
     QrCodeIcon
 } from 'react-native-heroicons/outline';
 import useHasFeature from '../../auth/hooks/useHasFeature';
+import usePermissions from '../../auth/hooks/usePermissions';
+import { selectUser, useAuthStore } from '../../auth/auth.store';
 export interface ServiceItem {
     title: string;
     description: string;
@@ -24,10 +26,12 @@ export interface ServiceItem {
 
 export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
     const { t } = useTranslation();
+    const user = useAuthStore(selectUser);
     const mode = useEnvironmentStore(selectMode)
     const hasInstantSettlementFeature = useHasFeature("instant_settlement_request");
+    const hasEditBalance = usePermissions(user?.actions!, "edit_balance");
     const servicesList: ServiceItem[] = [
-        ...(hasInstantSettlementFeature ? [{
+        ...((hasInstantSettlementFeature || hasEditBalance) ? [{
             title: t('Instant settlement'),
             description: t('Get your money now!'),
             // href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
