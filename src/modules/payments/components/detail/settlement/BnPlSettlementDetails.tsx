@@ -17,7 +17,8 @@ interface Props {
  */
 const BnPlSettlementDetails = ({ data }: Props) => {
     const { t } = useTranslation();
-
+    console.log('BnPlSettlementDetails data',data);
+    
     // Access BNPL payment info from sourceOfFunds
     const payerInfo = data.sourceOfFunds?.payerInfo;
 

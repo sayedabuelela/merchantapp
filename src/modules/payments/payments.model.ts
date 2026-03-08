@@ -183,6 +183,40 @@ export type TransactionType = 'PAYMENT' | 'REFUND' | 'REVERSAL' | string;
 export type TransactionLastStatus = 'CAPTURED' | 'AUTHORIZED' | 'REFUNDED' | 'VOIDED' | string;
 export type PaymentAgreement = string;
 
+// Tru BNPL nested types
+export interface TruOrderInfo {
+    id?: number;
+    amount?: string;
+    administrative_fees?: string;
+    down_payment?: string;
+    installment_amount?: number;
+}
+
+export interface TruInstallment {
+    amount?: string;
+    due_date?: string;
+}
+
+export interface TruBorrower {
+    name?: string;
+    national_id?: string;
+    address?: string;
+}
+
+export interface TruContractOrder {
+    id?: string;
+    installment_duration?: number;
+    installment_start_date?: string;
+    installment_end_date?: string;
+    amount?: string;
+}
+
+export interface TruContract {
+    borrower?: TruBorrower;
+    application?: { id?: string; created?: string };
+    order?: TruContractOrder;
+}
+
 // Shared interfaces between Order and Transaction
 export interface PayerInfo {
     // VALU Payment fields
@@ -232,6 +266,11 @@ export interface PayerInfo {
     installmentAmount?: number;
     months?: number;
     monthlyAmount?: number;
+
+    // Tru BNPL fields (nested structure)
+    order?: TruOrderInfo;
+    installments?: TruInstallment[];
+    contract?: TruContract;
 }
 
 // Keep the old interfaces for backward compatibility if needed, or remove them

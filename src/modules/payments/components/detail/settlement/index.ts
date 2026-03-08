@@ -8,5 +8,6 @@ export { default as CardOnlineSettlementDetails } from './CardOnlineSettlementDe
 export { default as MogoSettlementDetails } from './MogoSettlementDetails';
 export { default as SouhoolaSettlementDetails } from './SouhoolaSettlementDetails';
 export { default as AmanSettlementDetails } from './AmanSettlementDetails';
+export { default as TruSettlementDetails } from './TruSettlementDetails';
 export * from './adapters';
 export * from './sections';

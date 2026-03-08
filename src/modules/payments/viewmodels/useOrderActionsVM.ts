@@ -83,7 +83,8 @@ export const useOrderActionsVM = (sessionId: string) => {
         },
         onError: (error: any) => {
             // Show error toast
-            const errorMessage = (i18n.language === 'ar' ? error.response?.data?.messages?.ar : error.response?.data?.messages?.en) || t('Failed to process refund');
+            console.log('status : ', error.response.transactionResponseMessage);
+            const errorMessage =  error.response.transactionResponseMessage?.[i18n.language === 'ar' ? 'ar' : 'en'] || t('Failed to process refund');
             const title = t('Failed Refund');
             toast.error(title, {
                 richColors: true,
@@ -115,7 +116,7 @@ export const useOrderActionsVM = (sessionId: string) => {
                 queryClient.invalidateQueries({ queryKey: ['payment-transaction-detail'] });
             }, 1000);
 
-            console.log('status : ', data.status);
+            
             if (data.status === 'FAILURE') {
                 const title = t('Failed Capture');
                 const errorMessage = (i18n.language === 'ar' ? data.messages.ar : data.messages.en) || t('Failed to capture transaction');
@@ -139,7 +140,7 @@ export const useOrderActionsVM = (sessionId: string) => {
         },
         onError: (error: any) => {
             // Show error toast
-            const errorMessage = (i18n.language === 'ar' ? error.response?.data?.messages?.ar : error.response?.data?.messages?.en) || t('Failed to capture transaction');
+            const errorMessage = error.response?.data?.messages?.[i18n.language === 'ar' ? 'ar' : 'en'] || t('Failed to capture transaction');
             const title = t('Failed Capture');
             toast.error(title, {
                 richColors: true,

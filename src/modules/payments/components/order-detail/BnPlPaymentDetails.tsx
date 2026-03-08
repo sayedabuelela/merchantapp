@@ -31,6 +31,8 @@ const getLoanOrPlanId = (method: PaymentMethod, payerInfo: PayerInfo): string | 
             return payerInfo.invoiceNo;
         case 'aman':
             return payerInfo.transactionId;
+        case 'tru':
+            return payerInfo.order?.id;
         default:
             return payerInfo.loanNumber;
     }
@@ -46,6 +48,8 @@ const getPhoneNumber = (method: PaymentMethod, payerInfo: PayerInfo): string | u
             return payerInfo.phoneNumber;
         case 'contact':
             return payerInfo.mobile;
+        case 'tru':
+            return undefined;
         case 'valu':
         case 'aman':
         default:

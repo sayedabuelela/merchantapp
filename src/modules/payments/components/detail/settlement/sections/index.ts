@@ -9,3 +9,4 @@ export { default as DeductedFeesSection } from './DeductedFeesSection';
 export { default as MogoPaymentSection } from './MogoPaymentSection';
 export { default as SouhoolaPaymentSection } from './SouhoolaPaymentSection';
 export { default as AmanPaymentSection } from './AmanPaymentSection';
+export { default as TruPaymentSection } from './TruPaymentSection';
