@@ -28,7 +28,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
 
     const { control, handleSubmit, formState: { errors }, setFocus } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
-        mode: 'onTouched',
+        // mode: 'onTouched',
         defaultValues: {
             // email: 'pisej21977@hazhab.com',
             // email: 'logare2532@frisbook.com',
@@ -116,10 +116,10 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                         ref={ref}
                         value={value}
                         onChangeText={handleInputChange(onChange)}
-                        onBlur={() => {
-                            onChange(value?.trim());
-                            onBlur();
-                        }}
+                        // onBlur={() => {
+                        //     onChange(value?.trim());
+                        //     onBlur();
+                        // }}
                         label={t('Email')}
                         returnKeyType='next'
                         keyboardType='email-address'
