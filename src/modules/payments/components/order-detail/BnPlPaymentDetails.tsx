@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import FontText from '@/src/shared/components/FontText';
 import { PayerInfo, PaymentMethod, SourceOfFunds } from '@/src/modules/payments/payments.model';
-import { AmanSettlementIcon, ValuIcon, SouhoolaSettlementIcon, ContactSettlementIcon, MogoIcon } from '@/src/shared/assets/svgs';
+import { AmanSettlementIcon, ValuIcon, SouhoolaSettlementIcon, ContactSettlementIcon, MogoIcon, TruIcon } from '@/src/shared/assets/svgs';
 import { PressableScale } from 'pressto';
 import { DocumentDuplicateIcon } from 'react-native-heroicons/outline';
 import { useClipboard } from '@/src/shared/hooks/useClipboard';
@@ -60,6 +60,8 @@ const getMethodIcon = (method: PaymentMethod) => {
     switch (method) {
         case 'valu':
             return <ValuIcon />;
+        case 'tru':
+            return <TruIcon />;
         case 'aman':
             return <View className="justify-center items-center w-[75px] h-[60px] bg-[#16BBC5] rounded"><AmanSettlementIcon height={50} /></View>;
         case 'souhoola':

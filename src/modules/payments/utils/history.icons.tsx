@@ -9,7 +9,8 @@ import {
     ContactHistoryIcon,
     ValuHistoryIcon,
     AmanHistoryIcon,
-    SouhoolaHistoryIcon
+    SouhoolaHistoryIcon,
+    TruIcon
 } from "@/src/shared/assets/svgs";
 import { OrderDetailHistoryItem, RelatedTransaction } from "@/src/modules/payments/payments.model";
 
@@ -41,6 +42,7 @@ export const ICONS = {
     SOUHOOLA: <SouhoolaHistoryIcon />,
     CONTACT: <ContactHistoryIcon />,
     ABANDONED: <ShoppingCartIcon size={16} color={COLORS.ICON_WHITE} />,
+    TRU:<TruIcon width={20} />
 } as const;
 
 /**
@@ -70,6 +72,7 @@ const PAYMENT_METHOD_ICONS: Record<string, HistoryIconData> = {
     basata: createNeutralIcon(ICONS.BASATA),
     souhoola: createNeutralIcon(ICONS.SOUHOOLA),
     contact: createNeutralIcon(ICONS.CONTACT),
+    tru: createNeutralIcon(ICONS.TRU),
 };
 
 /**
@@ -89,7 +92,7 @@ const getPaymentMethodIcon = (item: OrderDetailHistoryItem): HistoryIconData | n
  */
 export const getHistoryIcon = (item: OrderDetailHistoryItem): HistoryIconData => {
     const status = item.status.toUpperCase();
-    console.log('operation : ',item.operation);
+    console.log('getHistoryIcon : ',item);
     
     // 1. Handle refund operations FIRST (always show refund icon, even if successful)
     if (item.operation === 'refund') {

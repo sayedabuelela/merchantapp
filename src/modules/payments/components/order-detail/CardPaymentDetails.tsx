@@ -41,7 +41,7 @@ export const CardPaymentDetails = ({ sourceOfFunds, paymentChannel }: CardPaymen
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-1">
                     {sourceOfFunds?.issuer && (
-                        getIssuerIcon(sourceOfFunds?.issuer)
+                        getIssuerIcon(sourceOfFunds?.issuer.toUpperCase())
                     )}
                     {paymentChannel && (
                         <FontText type="body" weight="semi"
