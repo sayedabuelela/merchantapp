@@ -59,7 +59,8 @@ const HomeScreen = () => {
         accountStatistics: { data: accountStats, refetch: refetchAccountStats, isRefetching: isRefetchingAccountStats },
         transfersStatistics: { data: transfersStats, refetch: refetchTransfersStats, isRefetching: isRefetchingTransfersStats },
         // paymentsStatistics: { data: paymentsStats, refetch: refetchPaymentsStats, isRefetching: isRefetchingPaymentsStats },
-        payoutStatistics: { data: payoutStats, refetch: refetchPayoutStats, isRefetching: isRefetchingPayoutStats }
+        payoutStatistics: { data: payoutStats, refetch: refetchPayoutStats, isRefetching: isRefetchingPayoutStats },
+        canFetchStatistics,
     } = useStatistics({
         dateFrom: dateFilters.dateFrom,
         dateTo: dateFilters.dateTo,
@@ -163,21 +164,23 @@ const HomeScreen = () => {
         ordersQuery.isRefetching;
 
     const handleRefresh = useCallback(() => {
-        // Refetch all statistics
-        refetchAccountStats();
-        refetchTransfersStats();
-        refetchPayoutStats();
+        // Refetch all statistics (only if permitted, since refetch() bypasses enabled)
+        if (canFetchStatistics) {
+            refetchAccountStats();
+            refetchTransfersStats();
+            refetchPayoutStats();
+        }
 
         // Refetch list data based on active tab
         switch (activeTab) {
             case 'all':
-                allActivitiesQuery.refetch();
+                if (canFetchStatistics) allActivitiesQuery.refetch();
                 break;
             case 'payouts':
-                payoutsQuery.refetch();
+                if (canFetchStatistics) payoutsQuery.refetch();
                 break;
             case 'transfers':
-                transfersQuery.refetch();
+                if (canFetchStatistics) transfersQuery.refetch();
                 break;
             case 'orders':
                 ordersQuery.refetch();
@@ -185,6 +188,7 @@ const HomeScreen = () => {
         }
     }, [
         activeTab,
+        canFetchStatistics,
         refetchAccountStats,
         refetchTransfersStats,
         refetchPayoutStats,

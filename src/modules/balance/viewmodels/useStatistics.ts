@@ -15,10 +15,12 @@ const useStatistics = (filters?: StatisticsDateFilters) => {
     const mode = useEnvironmentStore(selectMode);
     const { api } = useApi()
     const user = useAuthStore(selectUser)
-    const { canViewBalance } = usePermissions(user?.actions!);
+    const { canViewBalance ,canEditBalance} = usePermissions(user?.actions!);
+    
     const hasBalanceFeature = useHasFeature("multi accounts");
     const activeAccountId = useBalanceStore(selectActiveAccountId);
-
+    console.log('canEditBalancecanEditBalance',canEditBalance);
+    
     // const dateFrom = filters?.dateFrom
     // const dateTo = filters?.dateTo
     // const dateParams = {
@@ -39,16 +41,18 @@ const useStatistics = (filters?: StatisticsDateFilters) => {
         ...(dateFrom ? { dateFrom } : {}),
         ...(dateTo ? { dateTo } : {}),
     };
+    const canFetchStatistics = !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE);
+
     const accountStatistics = useQuery<AccountStatistics>({
         queryKey: ["account-statistics", activeAccountId],
         queryFn: () => getAccountStatistics(api, activeAccountId!),
-        enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
+        enabled: canFetchStatistics,
     })
 
     const transfersStatistics = useQuery<TransfersStatistics>({
         queryKey: ["transfers-statistics", activeAccountId, dateFrom, dateTo],
         queryFn: () => getTransfersStatistics(api, activeAccountId!, dateParams),
-        enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
+        enabled: canFetchStatistics,
     })
     // const paymentsStatistics = useQuery<PaymentsStatistics>({
     //     queryKey: ["payments-statistics", activeAccountId, dateFrom, dateTo, mode],
@@ -58,7 +62,7 @@ const useStatistics = (filters?: StatisticsDateFilters) => {
     const payoutStatistics = useQuery<PayoutStatistics>({
         queryKey: ["payout-statistics", activeAccountId, dateFrom, dateTo, mode === Mode.LIVE],
         queryFn: () => getPayoutStatistics(api, activeAccountId!, dateParams),
-        enabled: !!(canViewBalance && hasBalanceFeature && activeAccountId && mode === Mode.LIVE),
+        enabled: canFetchStatistics,
     })
     // const dashboardStatistics = useQuery({
     //     queryKey: ["dashboard-statistics", activeAccountId],
@@ -95,7 +99,8 @@ const useStatistics = (filters?: StatisticsDateFilters) => {
         transfersStatistics,
         // dashboardStatistics,
         // paymentsStatistics,
-        payoutStatistics
+        payoutStatistics,
+        canFetchStatistics,
     }
 }
 

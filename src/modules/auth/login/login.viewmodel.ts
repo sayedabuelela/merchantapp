@@ -44,7 +44,9 @@ export const useLoginViewModel = () => {
                 })
                 return;
             }
+            console.log('AuthResponse data.body', data.body);
             const { accessToken: { token } } = data.body;
+
             const { success, refreshToken, accessToken, ...user } = data.body;
             setMode(data.body.isLive ? Mode.LIVE : Mode.TEST)
             setAuth({ ...user, email: user.signupKey }, token);

@@ -30,6 +30,9 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
     const mode = useEnvironmentStore(selectMode)
     const hasInstantSettlementFeature = useHasFeature("instant_settlement_request");
     const { canEditBalance } = usePermissions(user?.actions!);
+    console.log('useServices canEditBalance', canEditBalance);
+    console.log('hasInstantSettlementFeature', user?.enabledFeatures);
+
     const servicesList: ServiceItem[] = [
         ...((hasInstantSettlementFeature && canEditBalance) ? [{
             title: t('Instant settlement'),

@@ -39,7 +39,7 @@ const BalancesScreen = () => {
     const { t } = useTranslation();
     const { user } = useAuthStore();
     const recentActivities = useRecentBalanceActivities();
-    const { accountStatistics: accountStats, transfersStatistics: transfersStats } = useStatistics();
+    const { accountStatistics: accountStats, transfersStatistics: transfersStats, canFetchStatistics } = useStatistics();
     const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<Activity>>>>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [search, setSearchValue] = useState('');
@@ -152,9 +152,11 @@ const BalancesScreen = () => {
                                 recentActivities.isRefetching
                             }
                             onRefresh={() => {
-                                accountStats.refetch();
-                                transfersStats.refetch();
-                                recentActivities.refetch();
+                                if (canFetchStatistics) {
+                                    accountStats.refetch();
+                                    transfersStats.refetch();
+                                    recentActivities.refetch();
+                                }
                             }}
                         />
                     }

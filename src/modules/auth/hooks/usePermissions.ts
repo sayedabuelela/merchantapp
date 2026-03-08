@@ -20,21 +20,23 @@ export enum EMainActions {
 }
 
 export function serializeActions(actions: IActions): IActions {
-    let result: IActions = { ...actions };
+    if (!actions) return {} as IActions;
+    // Deep clone to avoid mutating the original store data
+    const result: IActions = JSON.parse(JSON.stringify(actions));
 
-    for (const key in actions) {
-        const mainItem = (actions as any)[key];
+    for (const key in result) {
+        const mainItem = (result as any)[key];
         if (key !== "*") {
             for (const k in mainItem) {
                 const children = mainItem[k];
                 for (const inner in children) {
-                    if (!children[inner]) delete (result as any)[key][k][inner];
+                    if (!children[inner]) delete children[inner];
                 }
-                if (!Object.keys((result as any)[key][k]).length) {
-                    delete (result as any)[key][k];
+                if (!Object.keys(children).length) {
+                    delete mainItem[k];
                 }
             }
-            if (!Object.keys((result as any)[key]).length) {
+            if (!Object.keys(mainItem).length) {
                 delete (result as any)[key];
             }
         }
@@ -61,6 +63,7 @@ export const checkRules = (
 ): boolean => {
     const userActions = serializeActions(actions);
     const moduleActions = userActions[mod];
+    if (mod === 'balance') console.log('checkRules balance: full actions:', JSON.stringify(userActions));
 
     if ("*" in userActions) {
         return true;
@@ -79,8 +82,8 @@ export const checkRules = (
     }
 
     const generalActions = new Set(Object.keys(moduleActions[""] || {}));
-    const ownActions = new Set(Object.keys(moduleActions["payment_requests_own"] || {}));
-    const anyActions = new Set(Object.keys(moduleActions["payment_requests_any"] || {}));
+    const ownActions = new Set(Object.keys(moduleActions[`${mod}_own`] || {}));
+    const anyActions = new Set(Object.keys(moduleActions[`${mod}_any`] || {}));
 
     for (const inner of inners) {
         if (generalActions.has(inner)) {
@@ -128,7 +131,7 @@ const usePermissions = (roles: IActions, merchantId = '', creatorId = '') => {
             canViewBusinessProfile: checkRules('', roles, EMainActions.SETTINGS, ["businessProfile", "view_bp_st"], ''),
             canEditBusinessProfile: checkRules('', roles, EMainActions.SETTINGS, ["businessProfile", "edit_bp_st"], ''),
             canRequestBusinessProfile: checkRules('', roles, EMainActions.SETTINGS, ["businessProfile", "request_bp_st"], ''),
-            canViewBalance: checkRules('', roles, EMainActions.BALANCE, ['all', "view_balance"]),
+            canViewBalance: checkRules('', roles, EMainActions.BALANCE, ["", "view_balance"]),
             canCreateBalance: checkRules('', roles, EMainActions.BALANCE, ["", "create_balance"]),
             canEditBalance: checkRules('', roles, EMainActions.BALANCE, ["", "edit_balance"]),
 
