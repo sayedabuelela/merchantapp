@@ -26,7 +26,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
     const { t } = useTranslation();
     const [displayedError, setDisplayedError] = useState<string | undefined>(undefined);
 
-    const { control, handleSubmit, formState: { errors }, setFocus } = useForm<LoginFormData>({
+    const { control, handleSubmit, formState: { errors, isValid }, setFocus } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
         // mode: 'onTouched',
         defaultValues: {
@@ -209,7 +209,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                 className='mt-6'
                 title={t('Login')}
                 isLoading={loading}
-                disabled={loading}
+                disabled={loading || !isValid}
                 onPress={handleSubmit(submitHandler)}
             />
 

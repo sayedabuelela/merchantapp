@@ -27,13 +27,13 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
     const mode = useEnvironmentStore(selectMode)
     const hasInstantSettlementFeature = useHasFeature("instant_settlement_request");
     const servicesList: ServiceItem[] = [
-        // ...(hasInstantSettlementFeature ? [{
-        //     title: t('Instant settlement'),
-        //     description: t('Get your money now!'),
-        //     // href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
-        //     href: ROUTES.INSTANT_SETTLEMENT.ROOT as Route,
-        //     icon: <BoltIcon size={20} color="#001F5F" />
-        // }] : []),
+        ...(hasInstantSettlementFeature ? [{
+            title: t('Instant settlement'),
+            description: t('Get your money now!'),
+            // href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
+            href: ROUTES.INSTANT_SETTLEMENT.ROOT as Route,
+            icon: <BoltIcon size={20} color="#001F5F" />
+        }] : []),
         {
             title: t('QR code payments'),
             description: t('Get paid with a QR code'),
