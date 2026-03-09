@@ -30,7 +30,7 @@ const RefundConfirmation: FC<RefundConfirmationProps> = ({
     const { t } = useTranslation();
     const [contactOtpContent, setContactOtpContent] = useState(false);
     const [otpValue, setOtpValue] = useState('');
-    
+
     // Get OTP functions from viewmodel
     const {
         requestContactOtpAsync,
@@ -38,11 +38,12 @@ const RefundConfirmation: FC<RefundConfirmationProps> = ({
         refundContactWithOtpAsync,
         isRefundingContactWithOtp,
     } = useOrderActionsVM(orderId);
-    
+
     // Calculate max refundable amount
     const maxRefundableAmount = order.capturedAmount - order.refundedAmount;
 
     // State for refund amount (default to full refund, tru method always full refund)
+    const isMethodTru = order.method?.toLowerCase() === 'tru';
     const [refundAmount, setRefundAmount] = useState<string>(isMethodTru ? maxRefundableAmount.toString() : '');
     const [error, setError] = useState<string | null>(null);
 
@@ -50,12 +51,11 @@ const RefundConfirmation: FC<RefundConfirmationProps> = ({
     // useEffect(() => {
     //     setRefundAmount(maxRefundableAmount.toString());
     // }, [maxRefundableAmount]);
-    
+
     const isMethodContact = order.method?.toLowerCase() === 'contact';
-    const isMethodTru = order.method?.toLowerCase() === 'tru';
-    const isConfirmDisabled = 
-        !!error || 
-        isRefunding || 
+    const isConfirmDisabled =
+        !!error ||
+        isRefunding ||
         !refundAmount ||
         (contactOtpContent && (!otpValue || otpValue.length !== 5)) ||
         isRequestingContactOtp ||
