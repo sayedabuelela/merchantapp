@@ -245,7 +245,6 @@ const InstantSettlementScreen = () => {
           </View>
         )}
       </View>
-
       {isLoading ? (
         <View className={cn("flex-1 px-6 mt-6")}>
           <PaymentLinkCardSkeleton />

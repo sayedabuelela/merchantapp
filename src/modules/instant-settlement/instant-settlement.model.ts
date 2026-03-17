@@ -90,6 +90,15 @@ export interface SettlementTransaction {
     __v: number;
     isSettled: boolean;
     settlementDate?: string;
+    pccFees: {
+        early_settlement_fees: {
+            PCC_early_settlement_rate: number,
+            total_early_settlement_rate: number,
+            total_early_settlement_fees: number
+        },
+        early_settlement_vat: number,
+        settledAmount: number
+    },
 }
 
 // Fetch settlement transactions params

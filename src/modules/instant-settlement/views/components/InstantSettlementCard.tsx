@@ -21,7 +21,7 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
     const router = useRouter();
 
     return (
-        <View className="border-[1.5px] rounded border-tertiary pl-3 pr-4 py-4 mb-2">
+        <View className="border-[1.5px] rounded border-tertiary pl-3 pr-3 py-4 mb-2">
             <View className="flex-row justify-between mb-1 gap-x-2">
                 <Pressable onPress={() => onToggleSelect?.(transaction)}>
                     {isSelected ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
@@ -32,17 +32,19 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
                             <FontText type="body" weight="regular" className="text-content-primary text-xs capitalize">
                                 {transaction.method}
                             </FontText>
-                            {transaction.channel ? ` · ${transaction.channel}` : ''}
+                            {/* {transaction.channel ? ` · ${transaction.channel}` : ''} */}
                         </FontText>
                         <FontText type="body" weight="bold" className={cn("text-content-primary text-sm", 'ml-auto')}>
-                            {currencyNumber(transaction.amount)} {t('EGP')}
+                            {currencyNumber(transaction.amount)} {t(transaction.currency)}
                         </FontText>
                     </View>
                     <View className="flex-row items-center justify-between">
                         <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                             {formatAMPM(transaction.createdAt)}
                         </FontText>
-                        <StatusBox status={transaction.status} />
+                        <FontText type="body" weight="regular" className={cn("text-content-secondary text-xs",)}>
+                            {currencyNumber(transaction?.pccFees?.settledAmount)} {t(transaction.currency)}
+                        </FontText>
                     </View>
                     <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center gap-x-1 mt-2">
@@ -56,13 +58,14 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
                             {transaction.merchantOrderId && (
                                 <FontText type="body"
                                     weight="regular"
-                                    // numberOfLines={1}
-                                    // ellipsizeMode='tail'
-                                    className=" text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                                    numberOfLines={1}
+                                    ellipsizeMode='tail'
+                                    className=" text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary max-w-[130px]">
                                     {transaction.merchantOrderId}
                                 </FontText>
                             )}
                         </View>
+                        <StatusBox status={transaction.status} />
                     </View>
                 </Pressable>
             </View>
