@@ -65,6 +65,7 @@ export const useSwitchMerchantId = () => {
                 merchantId,
                 isLive: data?.isLive,
                 actions: data?.actions,
+                enabledFeatures: data.enabledFeatures
             });
 
             // 3) Fetch & sync full merchant data using centralized function — ensures updateUser merges the server data

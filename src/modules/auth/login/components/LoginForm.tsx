@@ -33,7 +33,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // email: 'pisej21977@hazhab.com',
             // email: 'logare2532@frisbook.com',
             // email: 'saboelela@kashier.io',
-            // password: 'P@ssw0rdd',
+            // password: 'P@ssw0rd',
             // email: ' awageeh@kashier.io',
             // password: 'P@ssw0rd012',
             // email: 'kexoka8183@fixwap.com',
