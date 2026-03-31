@@ -50,7 +50,7 @@ const ChangePasswordForm = ({ onSubmit, isLoading }: PasswordFormProps) => {
     //     console.log('useEffect password:', password);
     // }, [password]);
     const checks = {
-        length: newPassword.length >= 8 || password.length >= 8,
+        length: newPassword.length >= 12 || password.length >= 8,
         uppercase: /[A-Z]/.test(newPassword) || /[A-Z]/.test(password),
         lowercase: /[a-z]/.test(newPassword) || /[a-z]/.test(password),
         number: /\d/.test(newPassword) || /\d/.test(password),

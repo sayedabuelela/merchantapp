@@ -28,7 +28,7 @@ const PasswordForm = ({ onSubmit }: PasswordFormProps) => {
     const password = useWatch({ control, name: 'password', defaultValue: '' });
 
     const checks = {
-        length: password.length >= 8,
+        length: password.length >= 12,
         uppercase: /[A-Z]/.test(password),
         lowercase: /[a-z]/.test(password),
         number: /\d/.test(password),
@@ -68,7 +68,7 @@ const PasswordForm = ({ onSubmit }: PasswordFormProps) => {
                         {t('These are instructions about how your password should be:')}
                     </FontText>
                     {[
-                        { label: t('Password must be at least 8 characters'), ok: checks.length },
+                        { label: t('Password must be at least 12 characters'), ok: checks.length },
                         { label: t('One capital letter & one small letter at least'), ok: checks.uppercase && checks.lowercase },
                         { label: t('Use at least one number in your password'), ok: checks.number },
                         { label: t('Add at least one special character ( @#$%!- ) in your password'), ok: checks.special },
