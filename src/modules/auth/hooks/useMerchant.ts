@@ -50,14 +50,19 @@ export const useSwitchMerchantId = () => {
         mutationFn: async (merchantId: string) => {
             // POST or GET depending on API; you used POST in your code.
             const { data } = await api.post(`/v2/identity/switch-business?merchantId=${merchantId}`);
+            console.log('switch-business response:', JSON.stringify(data));
             return data;
         },
         onSuccess: async (data, merchantId) => {
+            // Cancel and remove onboarding queries BEFORE changing auth state
+            // to prevent stale observers from refetching with the wrong queryFn/token
+            await queryClient.cancelQueries({ queryKey: ['onboarding-data'] });
+            queryClient.removeQueries({ queryKey: ['onboarding-data'] });
+
             // 1) Update token (if server returns one)
             const newToken = data?.accessToken?.token ?? data?.accessToken;
             if (newToken) {
                 updateToken(newToken);
-                // setApiAuthToken(newToken); // ensure axios uses it from now on
             }
 
             // 2) Update user minimal fields immediately (merchantId, isLive, actions)
@@ -82,7 +87,7 @@ export const useSwitchMerchantId = () => {
             queryClient.invalidateQueries({ queryKey: ['payment-links'] });
             queryClient.invalidateQueries({ queryKey: ['payment-transactions'] });
             queryClient.invalidateQueries({ queryKey: ['payment-orders'] });
-            queryClient.invalidateQueries({ queryKey: ['merchantData'], exact: false }); // refetch merchantData if needed
+            queryClient.invalidateQueries({ queryKey: ['merchantData'], exact: false });
 
             // optional UX
             showToast?.({ message: t('Switched store successfully'), type: 'info' });

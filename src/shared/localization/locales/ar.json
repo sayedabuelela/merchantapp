@@ -50,6 +50,7 @@
   "All": "الكل",
   "All Accounts": "جميع الحسابات",
   "All Services": "جميع الخدمات",
+  "All services": "جميع الخدمات",
   "All accounts": "كل الحسابات",
   "All activities": "كل الأنشطة",
   "All Activities": "كل الأنشطة",
@@ -746,5 +747,14 @@
   "Update": "تحديث",
   "WALLET": "المحفظة",
   "CARD": "البطاقة",
-  "MOGO":"موجو"
+  "MOGO":"موجو",
+  "Instant settlement":"التسوية الفورية",
+  "Get your money now!":"احصل على أموالك الآن!",
+  "No settlement transactions found":"لا توجد معاملات تسوية",
+  "No transactions":"لا توجد معاملات",
+  "Payout now":"سحب الآن",
+  "Unselect all":"إلغاء التحديد",
+  "Total amount":"المبلغ الإجمالي",
+  "live mode":"وضع لايف",
+  "test mode":"وضع تجريبي",
 }

@@ -33,6 +33,7 @@ const adaptBusinessProfileToGlobalOnboardingData = (data: BusinessProfileRespons
  * Uses GET /v2/merchants/onborad
  */
 export const getOnboardingAllData = async (api: AxiosInstance): Promise<GlobalOnboardingData> => {
+    console.log('getOnboardingAllData CALLED', new Error().stack);
     const response = await api.get(`/v2/merchants/onborad`);
     return response.data.body;
 };
