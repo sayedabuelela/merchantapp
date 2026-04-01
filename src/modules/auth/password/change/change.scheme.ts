@@ -12,6 +12,6 @@ const passwordCriteria = z
     );
 
 export const changePasswordSchema = z.object({
-    currentPassword: z.string().min(8, 'Must be at least 8 characters'),
+    currentPassword: z.string().min(8, 'Must be at least 12 characters'),
     newPassword: passwordCriteria,
 });

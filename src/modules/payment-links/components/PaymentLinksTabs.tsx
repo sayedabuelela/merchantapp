@@ -23,6 +23,8 @@ export default function PaymentLinksTabs({ value, onSelectStatus, isListEmpty }:
         { label: t("Expired"), value: "expired" },
         { label: t("Awaiting approval"), value: "awaiting_approval" },
         { label: t("Rejected"), value: "rejected" },
+        { label: t("On Hold"), value: "on hold" },
+        { label: t("Auth Cancelled"), value: "voided" },
     ];
     return (
         <ScrollView
