@@ -29,6 +29,8 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
     const [isAnimating, setIsAnimating] = useState(false);
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [isAnimatingStoresList, setIsAnimatingStoresList] = useState(false);
+    console.log('PersonalInfoModal : user ', user);
+
     // console.log("user : ", user);
     // const [selectedStore, setSelectedStore] = useState<StoreItemProps | null>(null);
     const { t } = useTranslation();
@@ -124,7 +126,7 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                                         <View className="flex-row items-center mt-4">
                                             <BuildingStorefrontIcon size={24} color="#556767" />
                                             <FontText type="head" weight="bold" className="text-content-secondary text-xl mx-1">
-                                                {user?.belongsToMerchants && user?.merchantId && user?.belongsToMerchants[user?.merchantId]?.storeName}
+                                                {(user?.belongsTo && user?.merchantId) && user?.belongsTo[0]?.storeName}
                                             </FontText>
                                             {user?.belongsTo.length > 1 && (
                                                 <ChevronDownIcon size={19} color="#556767" />

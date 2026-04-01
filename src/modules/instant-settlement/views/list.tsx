@@ -140,7 +140,7 @@ const InstantSettlementScreen = () => {
       </AnimatedListItem>
     );
   }, [listData, selectedIds, handleToggleSelect]);
-  const infoMsg = t('Now you could instantly settled Card and Wallet transactions, Select transaction and click Payout.')
+  const infoMsg = t('Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.')
   return (
     <SafeAreaView className="flex-1 bg-white">
       <FadeInDownView delay={0} duration={300}>
@@ -156,7 +156,7 @@ const InstantSettlementScreen = () => {
         />
       </FadeInDownView>
       <View className="px-6">
-        <AnimatedInfoMsg infoMsg={infoMsg} />
+        <AnimatedInfoMsg className="mt-0" infoMsg={infoMsg} />
       </View>
       <View className="flex-row items-center px-6 gap-x-5 mb-6">
         <ScaleFadeIn delay={0} duration={400} className="flex-1">

@@ -38,7 +38,7 @@ const AnimatedError = ({ errorMsg, className, withBackground = true }: AnimatedE
                     )}
                 >
                     <AlertIconCircle />
-                    <FontText className={`${COMMON_STYLES.errorMsg} ml-2 flex-1 flex-wrap`}>
+                    <FontText className={`${COMMON_STYLES.errorMsg} ms-2 flex-shrink`}>
                         {errorMsg}
                     </FontText>
                 </MotiView>

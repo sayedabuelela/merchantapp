@@ -41,7 +41,7 @@ const AnimatedInfoMsg = ({ infoMsg, className, withBackground = true }: Animated
                     <FontText
                         type="body"
                         weight="regular"
-                        className={`${COMMON_STYLES.infoMsg}  ml-2 flex-1 flex-wrap`}>
+                        className={`${COMMON_STYLES.infoMsg} ms-2 flex-shrink`}>
                         {infoMsg}
                     </FontText>
                 </MotiView>

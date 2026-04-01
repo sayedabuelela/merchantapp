@@ -13,6 +13,7 @@ import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/Fad
 import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store';
 import usePermissions from '@/src/modules/auth/hooks/usePermissions';
 import { ROUTES } from '@/src/core/navigation/routes';
+import { ScrollView, View } from 'react-native';
 
 const CreateNewPaymentLinkStep1Screen = () => {
     const { t } = useTranslation();
@@ -76,7 +77,7 @@ const CreateNewPaymentLinkStep1Screen = () => {
                     withBack
                 />
             </FadeInDownView>
-            <KeyboardAwareScrollView className="flex-1" contentContainerClassName='px-6'>
+            <ScrollView className="flex-1" contentContainerClassName='px-6' showsVerticalScrollIndicator={false}>
                 <AnimatedError errorMsg={t(error?.message || '')} />
                 <FadeInUpView delay={150} duration={600}>
                     <PaymentLinkForm
@@ -89,7 +90,7 @@ const CreateNewPaymentLinkStep1Screen = () => {
                         qrCode={qrCode}
                     />
                 </FadeInUpView>
-            </KeyboardAwareScrollView>
+            </ScrollView>
         </SafeAreaView>
     );
 };

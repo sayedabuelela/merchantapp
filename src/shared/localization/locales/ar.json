@@ -757,5 +757,9 @@
   "Total amount": "المبلغ الإجمالي",
   "live mode": "وضع لايف",
   "test mode": "وضع تجريبي",
-  "Now you could instantly settled Card and Wallet transactions, Select transaction and click Payout.": "الآن يمكنك تسوية معاملات البطاقات والمحافظ الإلكترونية فوراً، حدد المعاملة وانقر على تسوية."
+  "Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.": "الآن يمكنك تسوية معاملات البطاقات والمحافظ الإلكترونية فوراً، حدد المعاملة وانقر على تسوية.",
+  "Invalid Username And Password Combination": "البريد الإلكتروني أو كلمة المرور غير صحيح",
+  "Invalid username and password combination. Please note you have one final trial to confirm your email and password.":"البريد الإلكتروني أو كلمة المرور غير صحيح. يُرجى العلم أنه لديك محاولة أخيرة لتأكيد بريدك الإلكتروني وكلمة مرورك.",
+  "Account has been deactivated due to five consecutive incorrect password attempts. please check your email to verify your identity and reactivate your account":"تم تعطيل الحساب بسبب خمس محاولات متتالية لإدخال كلمة مرور خاطئة. يرجى مراجعة بريدك الإلكتروني للتحقق من هويتك وإعادة تنشيط حسابك."
+
 }

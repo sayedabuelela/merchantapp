@@ -42,7 +42,7 @@ const AnimatedWarningMsg = ({ warningMsg, className, withBackground = true }: An
                     <FontText
                         type="body"
                         weight="regular"
-                        className="text-[#956200] ml-2 flex-1 flex-wrap text-sm">
+                        className="text-[#956200] ms-2 flex-shrink text-sm">
                         {warningMsg}
                     </FontText>
                 </MotiView>

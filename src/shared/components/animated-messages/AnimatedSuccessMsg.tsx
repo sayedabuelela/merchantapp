@@ -42,7 +42,7 @@ const AnimatedSuccessMsg = ({ successMsg, className, withBackground = true }: An
                     <FontText
                         type="body"
                         weight="regular"
-                        className={`${COMMON_STYLES.successMsg} ml-2 flex-1 flex-wrap`}>
+                        className={`${COMMON_STYLES.successMsg} ms-2 flex-shrink`}>
                         {successMsg}
                     </FontText>
                 </MotiView>
