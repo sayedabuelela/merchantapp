@@ -284,7 +284,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                                 </FontText>
                                                 <View className={cn(
                                                     "flex-row items-center justify-between w-full h-11 px-3 border rounded",
-                                                    errors.quantity ? "border-2 border-stroke-danger" : "border-stroke-input"
+                                                    errors.quantity ? "border border-stroke-danger" : "border-stroke-input"
                                                 )}>
                                                     <Pressable onPress={decrementQuantity} hitSlop={8}>
                                                         <MinusIcon size={18} color={quantity <= 1 ? "#B3BBBB" : "#001F5F"} />
@@ -298,7 +298,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                                         className={cn(
                                                             'font-body-regular-ltr',
                                                             "flex-1 text-content-primary text-base mx-2",
-                                                            errors.quantity ? "border-2 border-stroke-danger" : "border-stroke-input"
+                                                            errors.quantity ? "border border-stroke-danger" : "border-stroke-input"
                                                         )}
                                                         maxLength={10}
                                                     />

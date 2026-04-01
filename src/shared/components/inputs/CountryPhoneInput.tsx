@@ -23,7 +23,7 @@ interface Props {
 }
 const CountryPhoneInput = ({ value, onChangeText, label, onCodePress, selectedCountryCode, error, disabled }: Props) => {
     const borderColorClass = error
-    ? "border-2 border-stroke-danger" : "border-stroke-input"
+    ? "border border-stroke-danger" : "border-stroke-input"
 
     return (
         <>
@@ -50,7 +50,7 @@ const CountryPhoneInput = ({ value, onChangeText, label, onCodePress, selectedCo
                 </TouchableOpacity>
                 <TextInput
                     value={value}
-                    className={cn(`flex-1 w-full h-full overflow-hidden text-base leading-[1.35]  text-content-primary text-left self-start ${getFontClass('body', 'regular')}`)}
+                    className={cn(`flex-1 w-full h-full overflow-hidden text-base leading-[1.35]  text-content-primary text-left ${getFontClass('body', 'regular')}`)}
                     onChangeText={onChangeText}
                     placeholderTextColor="#B3BBBB"
                     autoCapitalize="none"

@@ -25,7 +25,7 @@ const Input = forwardRef<TextInput, InputProps>(
     ({ value, onChangeText, label, labelClassName, className, inputClassName, error, isPassword, isHasCurrency, onBlur, ...props }, ref) => {
         const [show, setShow] = React.useState(isPassword ?? false);
         const borderColorClass = error
-            ? "border-2 border-stroke-danger" : "border-stroke-input"
+            ? "border-stroke-danger" : "border-stroke-input"
 
         return (
             <>
@@ -41,7 +41,7 @@ const Input = forwardRef<TextInput, InputProps>(
                     <TextInput
                         ref={ref}
                         value={value}
-                        className={cn('flex-1 w-full h-full overflow-hidden text-base text-content-primary', `text-${isRTL ? 'right' : 'left'}`, 'self-start', getFontClass('body', 'regular'),isRTL?'leading-[1.8] ':'leading-[1.35]', inputClassName || '')}
+                        className={cn('flex-1 w-full h-full text-base text-content-primary', `text-${isRTL ? 'right' : 'left'}`, getFontClass('body', 'regular'), isRTL ? 'leading-[1.8] ' : 'leading-[1.35]', inputClassName || '')}
                         onChangeText={onChangeText}
                         placeholderTextColor="#B3BBBB"
                         autoCapitalize="none"
