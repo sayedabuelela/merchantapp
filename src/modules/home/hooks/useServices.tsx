@@ -31,18 +31,18 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
     const hasInstantSettlementFeature = useHasFeature("instant_settlement_request");
     const { canEditBalance } = usePermissions(user?.actions!);
     console.log('useServices canEditBalance', canEditBalance);
-    console.log('hasInstantSettlementFeature',user);
+    console.log('hasInstantSettlementFeature', user);
     // console.log('hasInstantSettlementFeature user.merchantId',user?.merchantId);
     // console.log('user?.actions',user?.belongsToMerchants['MID-957-917']);
 
     const servicesList: ServiceItem[] = [
-        ...((hasInstantSettlementFeature && canEditBalance) ? [{
-            title: t('Instant settlement'),
-            description: t('Get your money now!'),
-            // href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
-            href: ROUTES.INSTANT_SETTLEMENT.ROOT as Route,
-            icon: <BoltIcon size={20} color="#001F5F" />
-        }] : []),
+        // ...((hasInstantSettlementFeature && canEditBalance && mode === Mode.LIVE) ? [{
+        //     title: t('Instant settlement'),
+        //     description: t('Get your money now!'),
+        //     href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
+        //     // href: ROUTES.INSTANT_SETTLEMENT.ROOT as Route,
+        //     icon: <BoltIcon size={20} color="#001F5F" />
+        // }] : []),
         {
             title: t('QR code payments'),
             description: t('Get paid with a QR code'),

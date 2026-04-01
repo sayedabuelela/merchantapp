@@ -17,6 +17,8 @@ import { ModeToggle } from '../components/ModeToggle'
 import PersonalInfoModal from '../components/PersonalInfoModal'
 import SettingsItem from '../components/SettingsItem'
 import useSettings from '../settings.viewmodel'
+import { useMerchantMap } from '../hooks/useMerchantMap'
+import MerchantLogo from '../components/MerchantLogo'
 const SettingsScreen = () => {
     const { t } = useTranslation();
     const { logout, goToBusinessProfile, goToChangePassword, goToLanguage, goToOnboardingStatus, canViewBusinessProfile } = useSettings()
@@ -27,7 +29,9 @@ const SettingsScreen = () => {
     const { enableBiometric, disableBiometric, isBiometricAvailable } = useBiometricViewModel();
     const accountType = useOnboardingStore(accountTypeSelector);
     const isUserLive = user?.isLive ?? false;
-
+    const merchantMap = useMerchantMap(user?.belongsTo || []);
+    const merchantData = merchantMap.get(user?.merchantId);
+    const businessLogoUrl = merchantData?.businessLogoUrl || "";
     // Show business profile when NOT new user first onboarding
     // New user first onboarding = isLive: false AND isApprovedBusinessInfo: pending
     const showBusinessProfileButton = isUserLive || onboardingData?.isApprovedBusinessInfo !== 'pending';
@@ -74,7 +78,8 @@ const SettingsScreen = () => {
                         {t('Settings')}
                     </FontText>
                     <Pressable onPress={handlePersonalInfoModal}>
-                        <UserCircleIcon size={40} color="#001F5F" />
+                        {/* <UserCircleIcon size={40} color="#001F5F" /> */}
+                        <MerchantLogo logoUrl={businessLogoUrl} />
                     </Pressable>
                 </View>
             </FadeInDownView>
@@ -89,7 +94,6 @@ const SettingsScreen = () => {
                         <ActivationNote goToOnboardingStatus={goToOnboardingStatus} status={onboardingData?.isApprovedBusinessInfo} />
                     )}
                     <ModeToggle />
-
                     {accountType && canViewBusinessProfile && showBusinessProfileButton && (
                         <SettingsItem
                             title={t('Business Profile')}
@@ -98,14 +102,12 @@ const SettingsScreen = () => {
                             withArrow
                         />
                     )}
-
                     <SettingsItem
                         title={t('Change Password')}
                         icon={<ChangePasswordSettingsIcon />}
                         onPress={goToChangePassword}
                         withArrow
                     />
-
                     <SettingsItem
                         title={t('Language')}
                         icon={<GlobeAltIcon size={24} color="#001F5F" />}
