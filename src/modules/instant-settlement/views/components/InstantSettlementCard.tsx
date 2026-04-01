@@ -68,7 +68,7 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
                                 </FontText>
                             )}
                         </View>
-                        <StatusBox status={transaction.status} />
+                        <StatusBox className='ms-4' status={transaction.status} />
                     </View>
                 </Pressable>
             </View>
