@@ -52,8 +52,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // email: 'aayman@kashier.io',
             // password: 'T9@kL7!qZ#vR2p',
             // staging
-            // email: 'duaa.bst@gmail.com',
-            // password: 'AsmaaTest110@',
+            email: 'duaa.bst@gmail.com',
+            password: 'AsmaaTest110@',
             // email: 'jglgm9d29g@jkotypc.com',
             // password: 'Password500$$',
             // email: 'vawoyal409@fandoe.com',

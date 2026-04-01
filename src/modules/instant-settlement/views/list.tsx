@@ -25,6 +25,7 @@ import { ArrowSmallUpIcon, XCircleIcon, BanknotesIcon, ExclamationTriangleIcon }
 import InstantInquiryModal from "./components/InstantInquiryModal";
 import { selectUser, useAuthStore } from "../../auth/auth.store";
 import usePermissions from "../../auth/hooks/usePermissions";
+import AnimatedInfoMsg from "@/src/shared/components/animated-messages/AnimatedInfoMsg";
 
 type RequestStatus = 'idle' | 'success' | 'error';
 
@@ -139,7 +140,7 @@ const InstantSettlementScreen = () => {
       </AnimatedListItem>
     );
   }, [listData, selectedIds, handleToggleSelect]);
-
+  const infoMsg = t('Now you could instantly settled Card and Wallet transactions, Select transaction and click Payout.')
   return (
     <SafeAreaView className="flex-1 bg-white">
       <FadeInDownView delay={0} duration={300}>
@@ -154,6 +155,9 @@ const InstantSettlementScreen = () => {
           showFilters={false}
         />
       </FadeInDownView>
+      <View className="px-6">
+        <AnimatedInfoMsg infoMsg={infoMsg} />
+      </View>
       <View className="flex-row items-center px-6 gap-x-5 mb-6">
         <ScaleFadeIn delay={0} duration={400} className="flex-1">
           <View className="items-center justify-center border rounded border-stroke-main bg-surface-secondary py-3">
