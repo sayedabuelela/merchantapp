@@ -76,7 +76,7 @@ const MerchantLogo = ({
                 imageStyle,
             ]}
             onError={() => setHasError(true)}
-            resizeMode="cover"
+            contentFit="cover"
         />
     );
 };
@@ -90,9 +90,13 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [isAnimatingStoresList, setIsAnimatingStoresList] = useState(false);
     const merchantMap = useMerchantMap(user?.belongsTo || []);
-    const merchantData = merchantMap.get("MID-839-360");
+    const merchantData = merchantMap.get(user?.merchantId);
     const storeName = merchantData?.storeName || "";
     const businessLogoUrl = merchantData?.businessLogoUrl || "";
+    console.log('storeName',storeName);
+    console.log('businessLogoUrl',businessLogoUrl);
+    console.log('merchantData',user?.belongsTo);
+    
     // console.log("user : ", user);
     // const [selectedStore, setSelectedStore] = useState<StoreItemProps | null>(null);
     const { t } = useTranslation();

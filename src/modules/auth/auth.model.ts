@@ -41,7 +41,7 @@ export interface AllowedPaymentMethods {
 }
 
 export interface BelongsTo {
-    merchantId: string;
+    merchantId?: string;
     storeName: string;
     businessLogoUrl: string;
     businessLogo?: string;
