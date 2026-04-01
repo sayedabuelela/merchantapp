@@ -5,14 +5,16 @@ import { UserPersonalInfo } from '@/src/shared/assets/svgs';
 import FontText from '@/src/shared/components/FontText';
 import { useRouter } from 'expo-router';
 import { AnimatePresence, MotiView } from 'moti';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, TouchableOpacity, View } from 'react-native';
+import { ImageStyle, Modal, Pressable, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { BuildingStorefrontIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { ChevronDownIcon } from 'react-native-heroicons/solid';
 import PersonalInfoItem from './PersonalInfoItem';
 import StoresListModal, { StoresListModalRef } from './StoresListModal';
 import { BlurView } from 'expo-blur';
+import { BelongsTo } from '../../auth/auth.model';
+import { Image } from 'expo-image';
 interface Props {
     isVisible: boolean;
     onClose: () => void;
@@ -20,6 +22,64 @@ interface Props {
 }
 
 
+const useMerchantMap = (belongsTo: BelongsTo[]) => {
+    return useMemo(() => {
+        return new Map(
+            belongsTo.map(item => [
+                item.merchantId,
+                {
+                    storeName: item.storeName,
+                    businessLogoUrl: item.businessLogoUrl,
+                },
+            ])
+        );
+    }, [belongsTo]);
+};
+type MerchantLogoProps = {
+    logoUrl?: string;
+    size?: number;
+    containerStyle?: StyleProp<ViewStyle>;
+    imageStyle?: StyleProp<ImageStyle>;
+};
+
+const MerchantLogo = ({
+    logoUrl,
+    size = 40,
+    containerStyle,
+    imageStyle,
+}: MerchantLogoProps) => {
+    const [hasError, setHasError] = useState(false);
+
+    const isValidUrl =
+        logoUrl &&
+        !logoUrl.includes("undefined") &&
+        !hasError;
+
+    if (!isValidUrl) {
+        return (
+            <View
+                style={[
+                    { width: size, height: size, alignItems: "center", justifyContent: "center" },
+                    containerStyle,
+                ]}
+            >
+                <UserPersonalInfo />
+            </View>
+        );
+    }
+
+    return (
+        <Image
+            source={{ uri: logoUrl }}
+            style={[
+                { width: size, height: size, borderRadius: size / 2 },
+                imageStyle,
+            ]}
+            onError={() => setHasError(true)}
+            resizeMode="cover"
+        />
+    );
+};
 
 const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
     const user = useAuthStore(selectUser);
@@ -29,8 +89,10 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
     const [isAnimating, setIsAnimating] = useState(false);
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [isAnimatingStoresList, setIsAnimatingStoresList] = useState(false);
-    console.log('PersonalInfoModal : user ', user);
-
+    const merchantMap = useMerchantMap(user?.belongsTo || []);
+    const merchantData = merchantMap.get("MID-839-360");
+    const storeName = merchantData?.storeName || "";
+    const businessLogoUrl = merchantData?.businessLogoUrl || "";
     // console.log("user : ", user);
     // const [selectedStore, setSelectedStore] = useState<StoreItemProps | null>(null);
     const { t } = useTranslation();
@@ -122,11 +184,12 @@ const PersonalInfoModal = ({ isVisible, onClose, onLogout }: Props) => {
                                     <Pressable onPress={handleExpandBottomSheet} className="items-center mb-8"
                                         disabled={user?.belongsTo.length === 1}
                                     >
-                                        <UserPersonalInfo />
+                                        {/* <UserPersonalInfo /> */}
+                                        <MerchantLogo logoUrl={businessLogoUrl} />
                                         <View className="flex-row items-center mt-4">
                                             <BuildingStorefrontIcon size={24} color="#556767" />
                                             <FontText type="head" weight="bold" className="text-content-secondary text-xl mx-1">
-                                                {(user?.belongsTo && user?.merchantId) && user?.belongsTo[0]?.storeName}
+                                                {(user?.belongsTo && user?.merchantId) && storeName}
                                             </FontText>
                                             {user?.belongsTo.length > 1 && (
                                                 <ChevronDownIcon size={19} color="#556767" />

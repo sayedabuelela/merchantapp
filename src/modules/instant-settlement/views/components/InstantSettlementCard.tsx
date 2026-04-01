@@ -21,7 +21,7 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
     const router = useRouter();
 
     return (
-        <View className="border-[1.5px] rounded border-tertiary pl-3 pr-3 py-4 mb-2">
+        <View className="border-[1.5px] rounded border-tertiary pl-3  pr-3 py-4 mb-2">
             <View className="flex-row justify-between mb-1 gap-x-2">
                 <Pressable onPress={() => onToggleSelect?.(transaction)}>
                     {isSelected ? <CheckBoxSquareFilledIcon /> : <CheckBoxSquareEmptyIcon />}
@@ -46,13 +46,14 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
                             {currencyNumber(transaction?.pccFees?.settledAmount)} {t(transaction.currency)}
                         </FontText>
                     </View>
-                    <View className="flex-row justify-end mt-1">
+                    {/* <View className="flex-row justify-end mt-1">
                         <StatusBox status={transaction.status} />
-                    </View>
-                    <View className="flex-row items-center justify-between">
-                        <View className="flex-row items-center gap-x-1 mt-2">
+                    </View> */}
+                    <View className="flex-row items-center justify-between mt-2">
+                        <View className="flex-1 flex-shrink flex-row items-center gap-x-1 ">
                             {transaction.transactionId && (
                                 <FontText type="body" weight="regular"
+                                    numberOfLines={1}
                                     className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary"
                                 >
                                     {transaction.transactionId}
@@ -61,13 +62,13 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
                             {transaction.merchantOrderId && (
                                 <FontText type="body"
                                     weight="regular"
-                                    // numberOfLines={1}
-                                    // ellipsizeMode='tail'
-                                    className=" text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary ">
+                                    numberOfLines={1}
+                                    className="flex-shrink text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
                                     {transaction.merchantOrderId}
                                 </FontText>
                             )}
                         </View>
+                        <StatusBox status={transaction.status} />
                     </View>
                 </Pressable>
             </View>
