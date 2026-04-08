@@ -770,5 +770,8 @@
   "ACH Fees": "رسوم التحويل البنكي (ACH)",
   "Total Payout amount": "إجمالي مبلغ التحويل",
   "APPROVED": "تمت الموافقة",
-  "egp": "جنية مصري"
+  "egp": "جنية مصري",
+  "Settlement Requested": "تم طلب التسوية",
+  "Your instant settlement request has been submitted successfully": "تم إرسال طلب التسوية الفورية بنجاح",
+  "Request payout": "طلب تحويل"
 }
