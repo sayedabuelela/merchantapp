@@ -762,6 +762,7 @@
   "Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.": "الآن يمكنك تسوية معاملات البطاقات والمحافظ الإلكترونية فوراً، حدد المعاملة وانقر على تسوية.",
   "Invalid Username And Password Combination": "البريد الإلكتروني أو كلمة المرور غير صحيح",
   "Invalid username and password combination. Please note you have one final trial to confirm your email and password.":"البريد الإلكتروني أو كلمة المرور غير صحيح. يُرجى العلم أنه لديك محاولة أخيرة لتأكيد بريدك الإلكتروني وكلمة مرورك.",
-  "Account has been deactivated due to five consecutive incorrect password attempts. please check your email to verify your identity and reactivate your account":"تم تعطيل الحساب بسبب خمس محاولات متتالية لإدخال كلمة مرور خاطئة. يرجى مراجعة بريدك الإلكتروني للتحقق من هويتك وإعادة تنشيط حسابك."
+  "Account has been deactivated due to five consecutive incorrect password attempts. please check your email to verify your identity and reactivate your account":"تم تعطيل الحساب بسبب خمس محاولات متتالية لإدخال كلمة مرور خاطئة. يرجى مراجعة بريدك الإلكتروني للتحقق من هويتك وإعادة تنشيط حسابك.",
+  "This feature is just available daily between 10:00 AM to 10:00 PM, please use it within the window to receive your money instantly.":"هذا الميزة متاحة فقط يومياً من 10:00 صباحاً إلى 10:00 مساءً، يرجى استخدامها ضمن النافذة الزمنية لاستلام أموالك فوراً."
 
 }

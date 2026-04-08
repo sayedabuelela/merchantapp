@@ -122,9 +122,15 @@ export interface FetchSettlementTransactionsResponse {
     message: string;
 }
 
+// Instant Settlement Transaction Item (for inquiry/request payloads)
+export interface InstantSettlementTransactionItem {
+    transactionId: string;
+    accountId: string;
+}
+
 // Instant Settlement Inquiry
 export interface InstantSettlementInquiryRequest {
-    transactionIds: string[];
+    transactions: InstantSettlementTransactionItem[];
 }
 
 export interface InstantSettlementInquiryResponse {
@@ -151,7 +157,7 @@ export interface InstantSettlementInquiryApiResponse {
 
 // Instant Settlement Request
 export interface InstantSettlementRequestPayload {
-    transactionIds: string[];
+    transactions: InstantSettlementTransactionItem[];
 }
 
 export interface InstantSettlementRequestResponse {

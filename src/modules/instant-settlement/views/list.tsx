@@ -34,14 +34,14 @@ const InstantSettlementScreen = () => {
   const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<SettlementTransaction>>>>(null);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [search, setSearchValue] = useState('');
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedTransactions, setSelectedTransactions] = useState<Map<string, string>>(new Map());
   const [showInquiryModal, setShowInquiryModal] = useState(false);
   const [inquiryData, setInquiryData] = useState<InstantSettlementInquiryResponse | null>(null);
   const [requestStatus, setRequestStatus] = useState<RequestStatus>('idle');
   const [requestErrorMsg, setRequestErrorMsg] = useState('');
   const user = useAuthStore(selectUser);
   const { canEditBalance } = usePermissions(user?.actions!);
-  console.log('selectedIds', Array.from(selectedIds));
+  console.log('selectedTransactions', Array.from(selectedTransactions.entries()));
 
   const {
     listData,
@@ -81,12 +81,12 @@ const InstantSettlementScreen = () => {
 
   const handleToggleSelect = useCallback((transaction: SettlementTransaction) => {
     if (transaction.status === 'Approved') {
-      setSelectedIds(prev => {
-        const next = new Set(prev);
+      setSelectedTransactions(prev => {
+        const next = new Map(prev);
         if (next.has(transaction.transactionId)) {
           next.delete(transaction.transactionId);
         } else {
-          next.add(transaction.transactionId);
+          next.set(transaction.transactionId, transaction.pcc?.account_id ?? '');
         }
         return next;
       });
@@ -94,27 +94,34 @@ const InstantSettlementScreen = () => {
   }, []);
 
   const handleUnselectAll = useCallback(() => {
-    setSelectedIds(new Set());
+    setSelectedTransactions(new Map());
   }, []);
 
+  const buildTransactionsPayload = useCallback(() => {
+    return Array.from(selectedTransactions.entries()).map(([transactionId, accountId]) => ({
+      transactionId,
+      accountId,
+    }));
+  }, [selectedTransactions]);
+
   const handlePayoutNow = useCallback(async () => {
-    if (selectedIds.size === 0) return;
+    if (selectedTransactions.size === 0) return;
     setRequestStatus('idle');
     try {
-      const data = await inquireSettlementAsync({ transactionIds: Array.from(selectedIds) });
+      const data = await inquireSettlementAsync({ transactions: buildTransactionsPayload() });
       setInquiryData(data);
       setShowInquiryModal(true);
     } catch {
       // Error toast already handled by the VM
     }
-  }, [selectedIds, inquireSettlementAsync]);
+  }, [selectedTransactions, inquireSettlementAsync, buildTransactionsPayload]);
 
   const handleRequestPayout = useCallback(async () => {
     try {
-      await requestSettlementAsync({ transactionIds: Array.from(selectedIds) });
+      await requestSettlementAsync({ transactions: buildTransactionsPayload() });
       setShowInquiryModal(false);
       setRequestStatus('success');
-      setSelectedIds(new Set());
+      setSelectedTransactions(new Map());
     } catch (error: any) {
       setShowInquiryModal(false);
       setRequestStatus('error');
@@ -122,7 +129,7 @@ const InstantSettlementScreen = () => {
         error.response?.data?.message || t('Failed to submit settlement request')
       );
     }
-  }, [selectedIds, requestSettlementAsync, t]);
+  }, [selectedTransactions, requestSettlementAsync, buildTransactionsPayload, t]);
 
   const renderItem = useCallback(({ item, index }: { item: GroupedRow<SettlementTransaction>; index: number }) => {
     if (item.type === 'header') return <HeaderRow title={item.date} />;
@@ -134,12 +141,12 @@ const InstantSettlementScreen = () => {
       <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
         <InstantSettlementCard
           transaction={transaction}
-          isSelected={selectedIds.has(transaction.transactionId)}
+          isSelected={selectedTransactions.has(transaction.transactionId)}
           onToggleSelect={handleToggleSelect}
         />
       </AnimatedListItem>
     );
-  }, [listData, selectedIds, handleToggleSelect]);
+  }, [listData, selectedTransactions, handleToggleSelect]);
   const infoMsg = t('Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.')
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -202,7 +209,7 @@ const InstantSettlementScreen = () => {
           <Button
             title={t('Payout now')}
             onPress={handlePayoutNow}
-            disabled={selectedIds.size === 0 || isInquiring || !canEditBalance}
+            disabled={selectedTransactions.size === 0 || isInquiring || !canEditBalance}
             isLoading={isInquiring}
             icon={<ArrowSmallUpIcon size={18} color={'#919C9C'} />}
             className="flex-row gap-x-1 w-full"
@@ -214,10 +221,10 @@ const InstantSettlementScreen = () => {
             variant='outline'
             title={t('Unselect all')}
             onPress={handleUnselectAll}
-            icon={<XCircleIcon size={18} color={selectedIds.size === 0 ? '#919C9C' : '#001F5F'} />}
+            icon={<XCircleIcon size={18} color={selectedTransactions.size === 0 ? '#919C9C' : '#001F5F'} />}
             className="flex-row gap-x-1 border-0 w-full bg-white"
             titleClasses='text-sm'
-            disabled={selectedIds.size === 0}
+            disabled={selectedTransactions.size === 0}
           />
         </View>
       </View>
