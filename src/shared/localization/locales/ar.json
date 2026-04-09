@@ -773,5 +773,6 @@
   "egp": "جنية مصري",
   "Settlement Requested": "تم طلب التسوية",
   "Your instant settlement request has been submitted successfully": "تم إرسال طلب التسوية الفورية بنجاح",
-  "Request payout": "طلب تحويل"
+  "Request payout": "طلب تحويل",
+  "Settlement Request Failed": "فشل طلب التسوية"
 }

@@ -12,6 +12,7 @@ import {
 } from '../instant-settlement.services';
 import { router } from 'expo-router';
 import { ROUTES } from '@/src/core/navigation/routes';
+import { I18nManager } from 'react-native';
 
 export const useInstantSettlementActionsVM = () => {
     const { api } = useApi();
@@ -25,8 +26,9 @@ export const useInstantSettlementActionsVM = () => {
         mutationFn: (request: InstantSettlementInquiryRequest) =>
             inquireInstantSettlement(api, request),
         onError: (error: any) => {
+
             const errorMessage =
-                error.response?.data?.message || t('Failed to calculate settlement fees');
+                error.messages[I18nManager.isRTL ? 'ar' : 'en'] || t('Failed to calculate settlement fees');
             toast.error(t('Settlement Inquiry Failed'), {
                 richColors: true,
                 style: { borderWidth: 0 },
@@ -53,8 +55,10 @@ export const useInstantSettlementActionsVM = () => {
             router.push(ROUTES.TABS.HOME);
         },
         onError: (error: any) => {
+            console.log('error.response?.data', error.messages);
+
             const errorMessage =
-                error.response?.data?.message || t('Failed to submit settlement request');
+                error.messages[I18nManager.isRTL ? 'ar' : 'en'] || t('Failed to submit settlement request');
             toast.error(t('Settlement Request Failed'), {
                 richColors: true,
                 style: { borderWidth: 0 },

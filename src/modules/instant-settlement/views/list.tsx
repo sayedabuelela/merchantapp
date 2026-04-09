@@ -10,7 +10,7 @@ import EmptyDataList from "@/src/shared/components/empty-list/EmptyDataList";
 import AnimatedSuccessMsg from "@/src/shared/components/animated-messages/AnimatedSuccessMsg";
 import { FlashList } from "@shopify/flash-list";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { View } from "react-native";
+import { I18nManager, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PaymentLinkCardSkeleton from "../../payment-links/components/PaymentLinkCardSkeleton";
 import { InstantSettlementInquiryResponse, SettlementTransaction } from "../instant-settlement.model";
@@ -38,10 +38,8 @@ const InstantSettlementScreen = () => {
   const [showInquiryModal, setShowInquiryModal] = useState(false);
   const [inquiryData, setInquiryData] = useState<InstantSettlementInquiryResponse | null>(null);
   const [requestStatus, setRequestStatus] = useState<RequestStatus>('idle');
-  const [requestErrorMsg, setRequestErrorMsg] = useState('');
   const user = useAuthStore(selectUser);
   const { canEditBalance } = usePermissions(user?.actions!);
-  console.log('selectedTransactions', Array.from(selectedTransactions.entries()));
 
   const {
     listData,
@@ -125,9 +123,6 @@ const InstantSettlementScreen = () => {
     } catch (error: any) {
       setShowInquiryModal(false);
       setRequestStatus('error');
-      setRequestErrorMsg(
-        error.response?.data?.message || t('Failed to submit settlement request')
-      );
     }
   }, [selectedTransactions, requestSettlementAsync, buildTransactionsPayload, t]);
 
@@ -135,7 +130,7 @@ const InstantSettlementScreen = () => {
     if (item.type === 'header') return <HeaderRow title={item.date} />;
 
     const itemsBefore = listData.slice(0, index).filter(i => i.type !== 'header').length;
-    const transaction = item as SettlementTransaction;
+    const transaction: SettlementTransaction = item;
 
     return (
       <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
@@ -234,27 +229,6 @@ const InstantSettlementScreen = () => {
         <AnimatedSuccessMsg
           successMsg={requestStatus === 'success' ? t('Your instant settlement request has been submitted successfully') : ''}
         />
-        {requestStatus === 'error' && (
-          <View className="flex-row p-4 mb-6 rounded items-center bg-feedback-error-bg border border-error">
-            <ExclamationTriangleIcon size={24} color="#D32F2F" />
-            <FontText
-              type="body"
-              weight="regular"
-              className="text-xs text-feedback-error ml-2 flex-1 flex-wrap"
-            >
-              {requestErrorMsg}
-            </FontText>
-            <View className="flex-row gap-x-2 ml-2">
-              <Button
-                variant="outline"
-                title={t('Dismiss')}
-                onPress={() => setRequestStatus('idle')}
-                className="border-0 py-1 px-2"
-                titleClasses="text-xs"
-              />
-            </View>
-          </View>
-        )}
       </View>
       {isLoading ? (
         <View className={cn("flex-1 px-6 mt-6")}>
