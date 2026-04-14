@@ -74,7 +74,6 @@ const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
     }, [refundAmount, maxRefundableAmount, t]);
 
     const isMethodContact = transaction.method?.toLowerCase() === 'contact';
-    const isMethodTru = transaction.method?.toLowerCase() === 'tru';
     
     const handleConfirm = async () => {
         const amount = parseFloat(refundAmount);
@@ -204,7 +203,7 @@ const RefundConfirmationTransaction: FC<RefundConfirmationTransactionProps> = ({
                         placeholderTextColor="#94A3B8"
                         className="text-content-primary text-base"
                         error={!!error}
-                        editable={!isRefunding && !isMethodTru}
+                        editable={!isRefunding}
                     />
 
                     {error && (
