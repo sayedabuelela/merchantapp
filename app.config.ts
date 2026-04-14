@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Kashier',
   slug: 'kashier',
-  version: '2.0.1',
+  version: '2.0.0',
   orientation: 'portrait',
   icon: './src/shared/assets/images/app-icon.png',
   scheme: 'kashier',
