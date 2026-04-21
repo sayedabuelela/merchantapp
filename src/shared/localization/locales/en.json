@@ -27,5 +27,9 @@
     "for paymentLink": "For Payment Link",
     "Update Available": "Update Available",
     "A new version of the app is ready. Update now to get the latest features and improvements.": "A new version of the app is ready. Update now to get the latest features and improvements.",
-    "Update": "Update"
+    "Update": "Update",
+    "Your change request was rejected": "Your change request was rejected",
+    "A change request is under review": "A change request is under review",
+    "Dismiss": "Dismiss",
+    "Reason": "Reason"
 }

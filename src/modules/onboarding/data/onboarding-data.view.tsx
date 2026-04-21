@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import useDocumentViewModel from "../documents/documents.viewmodel";
 import { accountTypeSelector, pendingEditsSelector, useOnboardingStore } from "../onboarding.store";
 import BrandHeader from "./components/BrandHeader";
+import ChangeRequestRejectedBanner from "./components/ChangeRequestRejectedBanner";
 import BusinessContactSection from "./components/sections/BusinessContactSection";
 import BusinessDetailsSection from "./components/sections/BusinessDetailsSection";
 import CurrencySettingsSection from "./components/sections/CurrencySettingsSection";
@@ -13,7 +14,6 @@ import DocumentsSection from "./components/sections/DocumentsSection";
 import useOnboardingDataViewModel from "./onboarding-data.viewmodel";
 import AnimatedError from "@/src/shared/components/animated-messages/AnimatedError";
 import ActivationNote from "@/src/modules/settings/components/ActivationNote";
-import { MerchantInfo } from "./onboarding-data.model";
 import FontText from "@/src/shared/components/FontText";
 
 
@@ -22,16 +22,20 @@ const OnboardingDataScreen = () => {
     const accountType = useOnboardingStore(accountTypeSelector);
     const pendingEdits = useOnboardingStore(pendingEditsSelector);
     const hasPendingEdits = useOnboardingStore((state) => state.hasPendingEdits);
-    const clearPendingEdits = useOnboardingStore((state) => state.clearPendingEdits);
     const {
         onboardingData,
         submitRequestHandler,
-        isSubmittingOnboadingRequest,
-        submitOnboadingRequestError,
+        isSubmitting,
+        submitError,
         canEdit,
         canSubmit,
         showActivationNote,
         merchantStatus,
+        activeRequest,
+        hasPendingChangeRequest,
+        hasRejectedChangeRequest,
+        dismissChangeRequest,
+        isDismissingChangeRequest,
     } = useOnboardingDataViewModel()
 
     // Server data
@@ -43,6 +47,7 @@ const OnboardingDataScreen = () => {
     // Company name from server or pending edits
     const companyName = pendingEdits.publicData?.legalCompanyName ?? serverBusinessDetailsData?.legalCompanyName;
     const pendingEditsExist = hasPendingEdits();
+    const changeRequestBlocksSubmit = hasPendingChangeRequest || hasRejectedChangeRequest;
 
     const {
         displayableFileUri: businessLogoDataUri,
@@ -50,40 +55,21 @@ const OnboardingDataScreen = () => {
     } = useDocumentViewModel({ documentType: 'businessLogo' });
 
     const submitHandler = async () => {
-        if (!onboardingData?.merchant.merchantInfo) return;
-
-        const serverPublicData = onboardingData.merchant.merchantInfo.publicData;
-
-        // Build merged payload with server data + pending edits
-        const merchantInfo: MerchantInfo = {
-            ...onboardingData.merchant.merchantInfo,
-            // Override with pending edits if they exist
-            // Use server data as base and spread pending edits on top
-            publicData: pendingEdits.publicData && serverPublicData
-                ? { ...serverPublicData, ...pendingEdits.publicData }
-                : serverPublicData,
-            businessContactInfo: pendingEdits.businessContactInfo
-                ?? onboardingData.merchant.merchantInfo.businessContactInfo,
-            payoutMethod: pendingEdits.currencies
-                ? { currencies: pendingEdits.currencies }
-                : onboardingData.merchant.merchantInfo.payoutMethod,
-            documents: pendingEdits.documents
-                ?? onboardingData.merchant.merchantInfo.documents,
-        };
-
-        // Handle business logo from pending edits
-        if (pendingEdits.businessLogo) {
-            merchantInfo.businessLogo = pendingEdits.businessLogo;
-        }
-
         try {
-            await submitRequestHandler(merchantInfo);
-            clearPendingEdits(); // Clear pending edits after successful submit
+            await submitRequestHandler();
         } catch (error) {
-            // Error handled in submitRequestHandler, pending edits remain for retry
             console.error('Submit failed:', error);
         }
     }
+
+    const onDismissChangeRequest = async () => {
+        if (!activeRequest?.requestId) return;
+        try {
+            await dismissChangeRequest(activeRequest.requestId);
+        } catch (error) {
+            console.error('Dismiss failed:', error);
+        }
+    };
 
     const getActivationStatus = (): 'pending' | 'submitted' | 'rejected' => {
         const isApprovedBusinessInfo = onboardingData?.isApprovedBusinessInfo;
@@ -96,7 +82,6 @@ const OnboardingDataScreen = () => {
         return 'pending';
     };
 
-    // console.log('accountType : ', accountType);
     return (
         <SafeAreaView className="flex-1 bg-white px-6">
             <Header title={t(`${accountType} ${accountType === 'individual' ? 'Seller' : 'Business'}`)} />
@@ -110,17 +95,31 @@ const OnboardingDataScreen = () => {
             >
                 <View className="flex-1 justify-between">
                     <View>
-                        {submitOnboadingRequestError && (
-                            <AnimatedError errorMsg={submitOnboadingRequestError.message} />
+                        {submitError && (
+                            <AnimatedError errorMsg={submitError.message} />
                         )}
-                        {pendingEditsExist && (
+                        {hasRejectedChangeRequest && (
+                            <ChangeRequestRejectedBanner
+                                rejectionReason={activeRequest?.rejectionReason}
+                                isDismissing={isDismissingChangeRequest}
+                                onDismiss={onDismissChangeRequest}
+                            />
+                        )}
+                        {hasPendingChangeRequest && (
+                            <View className="bg-amber-50 border border-amber-200 p-3 rounded-lg mb-4">
+                                <FontText type="body" weight="semi" className="text-amber-800">
+                                    {t('A change request is under review')}
+                                </FontText>
+                            </View>
+                        )}
+                        {pendingEditsExist && !changeRequestBlocksSubmit && (
                             <View className="bg-amber-50 border border-amber-200 p-3 rounded-lg mb-4">
                                 <FontText type="body" weight="semi" className="text-amber-800">
                                     {t('You have unsaved changes. Submit to apply them.')}
                                 </FontText>
                             </View>
                         )}
-                        {showActivationNote && (
+                        {showActivationNote && !changeRequestBlocksSubmit && (
                             <ActivationNote
                                 status={getActivationStatus()}
                             />
@@ -149,7 +148,7 @@ const OnboardingDataScreen = () => {
                         {serverDocuments && (
                             <DocumentsSection
                                 documents={pendingEdits.documents || serverDocuments}
-                                showEditButton={canEdit}
+                                showEditButton={false}
                                 hasUnsavedChanges={!!pendingEdits.documents}
                             />
                         )}
@@ -161,11 +160,11 @@ const OnboardingDataScreen = () => {
                             />
                         )}
                     </View>
-                    {serverBusinessDetailsData && serverBusinessContactData && serverDocuments && serverCurrencies && (
+                    {serverBusinessDetailsData && serverBusinessContactData && serverDocuments && serverCurrencies && !changeRequestBlocksSubmit && (
                         <View className="mt-6 ">
                             <Button
-                                isLoading={isSubmittingOnboadingRequest}
-                                disabled={!canSubmit || isSubmittingOnboadingRequest}
+                                isLoading={isSubmitting}
+                                disabled={!canSubmit || isSubmitting}
                                 title={
                                     merchantStatus === 'approved'
                                         ? t("Request Change")

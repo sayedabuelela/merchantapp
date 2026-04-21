@@ -51,6 +51,44 @@ export interface BusinessProfileMerchant {
     merchantInfo: MerchantInfo;
 }
 
+export type ChangeRequestStatus = "approved" | "pending" | "rejected";
+
+export interface ActiveChangeRequest {
+    requestId: string;
+    status: ChangeRequestStatus;
+    rejectionReason?: string;
+    data?: unknown[];
+}
+
+export interface ChangeRequestPublicData {
+    businessIndustry: string;
+    legalCompanyName: string;
+    storeName: string;
+    companyWebsite?: string;
+    description?: string;
+    socialLinkedIn?: string;
+    socialFacebook?: string;
+    socialTwitter?: string;
+    socialInstagram?: string;
+}
+
+export interface ChangeRequestBusinessContactInfo {
+    country: string;
+    governorate: string;
+    addressLine1: string;
+    addressLine2?: string;
+    businessPhone: string;
+    businessEmail: string;
+    hotlineNumber?: string;
+}
+
+export interface ChangeRequestPayload {
+    publicData: ChangeRequestPublicData;
+    businessContactInfo: ChangeRequestBusinessContactInfo;
+    termsAndConditions?: TermsAndConditions;
+    businessLogo?: string;
+}
+
 /**
  * Response from GET /v2/merchants/{merchantId}/business-profile
  * Note: No body wrapper, fields directly at root level
@@ -58,6 +96,7 @@ export interface BusinessProfileMerchant {
 export interface BusinessProfileResponse {
     requestInfo: BusinessProfileRequestInfo;
     merchant: BusinessProfileMerchant;
+    activeRequest?: ActiveChangeRequest;
 }
 
 export interface Merchant {
@@ -84,6 +123,7 @@ export interface GlobalOnboardingData {
     allowedPaymentMethods: AllowedPaymentMethods;
     hasAccounts: boolean;
     isLive: boolean; // This also seems to be at the root now
+    activeRequest?: ActiveChangeRequest;
     // requestInfo object is gone from the root in your new example
 }
 

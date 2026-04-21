@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { BusinessProfileResponse, GlobalOnboardingData, OnboardingDataPayload, OnboardingRequestPayload } from "./onboarding-data.model";
+import { BusinessProfileResponse, ChangeRequestPayload, GlobalOnboardingData, OnboardingDataPayload } from "./onboarding-data.model";
 
 /**
  * Adapts the BusinessProfileResponse format to the existing GlobalOnboardingData format.
@@ -25,6 +25,7 @@ const adaptBusinessProfileToGlobalOnboardingData = (data: BusinessProfileRespons
         hasAccounts: false,
         // isLive is inside merchantInfo for business-profile response
         isLive: data.merchant.merchantInfo.isLive ?? false,
+        activeRequest: data.activeRequest,
     };
 };
 
@@ -69,29 +70,57 @@ export const submitOnboardingRequestData = async <T extends OnboardingDataPayloa
     return response.data;
 }
 
+// /**
+//  * Submit business profile update for approved/rejected merchants.
+//  * Uses PUT /v2/merchants/business-profile endpoint.
+//  * DEPRECATED: replaced by submitChangeRequest (POST /v2/merchants/change-requests).
+//  */
+// export const submitBusinessProfileUpdate = async (
+//     api: AxiosInstance,
+//     data: OnboardingRequestPayload
+// ): Promise<any> => {
+//     const response = await api.put('/v2/merchants/business-profile', data);
+//     return response.data;
+// }
+
+// /**
+//  * Deactivates currency operations (router and converter) before submitting a change request.
+//  * Must be called before submitBusinessProfileUpdate for live users.
+//  * Uses POST /v2/merchants/changeCurrencyOperationsActivation
+//  * DEPRECATED: new change-requests endpoint handles this server-side.
+//  */
+// export const changeCurrencyOperationsActivation = async (
+//     api: AxiosInstance
+// ): Promise<any> => {
+//     const response = await api.post('/v2/merchants/changeCurrencyOperationsActivation', {
+//         currencyRouterActive: false,
+//         currencyConverterActive: false
+//     });
+//     return response.data;
+// }
+
 /**
- * Submit business profile update for approved/rejected merchants.
- * Uses PUT /v2/merchants/business-profile endpoint.
+ * Submit a change request for approved live merchants.
+ * Uses POST /v2/merchants/change-requests
  */
-export const submitBusinessProfileUpdate = async (
+export const submitChangeRequest = async (
     api: AxiosInstance,
-    data: OnboardingRequestPayload
+    data: ChangeRequestPayload
 ): Promise<any> => {
-    const response = await api.put('/v2/merchants/business-profile', data);
+    const response = await api.post('/v2/merchants/change-requests', data);
     return response.data;
 }
 
 /**
- * Deactivates currency operations (router and converter) before submitting a change request.
- * Must be called before submitBusinessProfileUpdate for live users.
- * Uses POST /v2/merchants/changeCurrencyOperationsActivation
+ * Dismiss a change request (hide it from the merchant).
+ * Uses PATCH /v2/merchants/change-requests/{requestId}
  */
-export const changeCurrencyOperationsActivation = async (
-    api: AxiosInstance
+export const dismissChangeRequest = async (
+    api: AxiosInstance,
+    requestId: string
 ): Promise<any> => {
-    const response = await api.post('/v2/merchants/changeCurrencyOperationsActivation', {
-        currencyRouterActive: false,
-        currencyConverterActive: false
+    const response = await api.patch(`/v2/merchants/change-requests/${requestId}`, {
+        visibleToMerchant: false,
     });
     return response.data;
 }
