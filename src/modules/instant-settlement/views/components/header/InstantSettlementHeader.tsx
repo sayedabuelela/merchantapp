@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import ListHeader from '@/src/shared/components/ListHeader/ListHeader';
 
 interface Props {
@@ -9,11 +9,22 @@ interface Props {
     hasFilters: boolean;
     handleClearSearch: () => void;
     searchValue: string;
-    showFilters?:boolean
+    showFilters?: boolean
+    backBtn?: boolean
 }
 
-const InstantSettlementHeader = ({ onFilterPress, onSubmitSearch, isFilterOpen, isListEmpty, hasFilters, handleClearSearch, searchValue,showFilters }: Props) => {
-    const { t } = useTranslation();
+const InstantSettlementHeader = ({
+                                     backBtn = false,
+                                     onFilterPress,
+                                     onSubmitSearch,
+                                     isFilterOpen,
+                                     isListEmpty,
+                                     hasFilters,
+                                     handleClearSearch,
+                                     searchValue,
+                                     showFilters
+                                 }: Props) => {
+    const {t} = useTranslation();
 
     return (
         <ListHeader
@@ -26,6 +37,7 @@ const InstantSettlementHeader = ({ onFilterPress, onSubmitSearch, isFilterOpen, 
             handleClearSearch={handleClearSearch}
             searchValue={searchValue}
             showFilters={showFilters}
+            backBtn={backBtn}
             className='border-b border-stroke-main pb-4 mb-6'
         />
     )

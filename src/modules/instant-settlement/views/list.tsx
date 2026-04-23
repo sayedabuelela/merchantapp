@@ -155,6 +155,7 @@ const InstantSettlementScreen = () => {
           handleClearSearch={handleClearSearch}
           searchValue={search}
           showFilters={false}
+          backBtn
         />
       </FadeInDownView>
       <View className="px-6">
