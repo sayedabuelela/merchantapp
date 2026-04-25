@@ -1,23 +1,25 @@
-import { OtpIcon } from '@/src/shared/assets/svgs';
+import {OtpIcon} from '@/src/shared/assets/svgs';
 import Button from '@/src/shared/components/Buttons/Button';
 import AnimatedError from '@/src/shared/components/animated-messages/AnimatedError';
 import FontText from '@/src/shared/components/FontText';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
-import { useTranslation } from "react-i18next";
-import { Platform, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {useLocalSearchParams, useRouter} from 'expo-router';
+import React, {useCallback, useState} from 'react';
+import {useTranslation} from "react-i18next";
+import {I18nManager, Pressable, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import OtpInput from '../../components/OtpInput';
 import ResendTimer from '../../components/ResendTimer';
 import useOtp from './otp.viewmodel';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import { FadeInDownView, FadeInUpView, ScaleView } from '@/src/shared/components/wrappers/animated-wrappers';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
+import {FadeInDownView, FadeInUpView} from '@/src/shared/components/wrappers/animated-wrappers';
+import {ChevronLeftIcon} from "react-native-heroicons/outline";
 
+const isRTL = I18nManager.isRTL;
 export default function VerifyOTPScreen() {
-    const { t } = useTranslation();
-    const { verifyOtp, generateOtp, isGenerating, isVerifying, verifyError, verifyReset } = useOtp();
+    const {t} = useTranslation();
+    const {verifyOtp, generateOtp, isGenerating, isVerifying, verifyError, verifyReset} = useOtp();
     const router = useRouter();
-    const { email } = useLocalSearchParams<{ email: string }>();
+    const {email} = useLocalSearchParams<{ email: string }>();
 
     const [otpValue, setOtpValue] = useState('');
     const [isComplete, setIsComplete] = useState(false);
@@ -29,10 +31,10 @@ export default function VerifyOTPScreen() {
 
     const onSubmit = async () => {
         console.log('OTP Submitted:', otpValue);
-        await verifyOtp({ key: email, code: otpValue });
+        await verifyOtp({key: email, code: otpValue});
         router.replace({
             pathname: `/(auth)/(register)/register-password`,
-            params: { email, code: otpValue },
+            params: {email, code: otpValue},
         })
     };
 
@@ -49,6 +51,12 @@ export default function VerifyOTPScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
+            <View className="px-6">
+                <Pressable onPress={router.back}>
+                    <ChevronLeftIcon size={24} color="#0F172A"
+                                     style={isRTL ? {transform: [{rotate: '180deg'}]} : {}}/>
+                </Pressable>
+            </View>
             <KeyboardAwareScrollView
                 contentContainerStyle={{
                     flexGrow: 1,
@@ -63,7 +71,7 @@ export default function VerifyOTPScreen() {
             >
                 <View className='items-center mb-6'>
                     <FadeInDownView delay={0} duration={600}>
-                        <OtpIcon />
+                        <OtpIcon/>
                     </FadeInDownView>
 
                     <FadeInUpView delay={150} duration={600}>
@@ -85,7 +93,7 @@ export default function VerifyOTPScreen() {
                 </View>
 
                 {verifyError && (
-                    <AnimatedError errorMsg={t(verifyError.message || verifyError.error || "Something went wrong")} />
+                    <AnimatedError errorMsg={t(verifyError.message || verifyError.error || "Something went wrong")}/>
                 )}
 
                 <View className="flex-1 justify-between">
@@ -116,7 +124,7 @@ export default function VerifyOTPScreen() {
                             isLoading={isVerifying || isGenerating}
                             fullWidth
                             onPress={onSubmit}
-                        // onPress={() => { router.push(ROUTES.AUTH.REGISTER_DATA) }}
+                            // onPress={() => { router.push(ROUTES.AUTH.REGISTER_DATA) }}
                         />
                     </FadeInUpView>
 

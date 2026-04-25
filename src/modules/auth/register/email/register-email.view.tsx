@@ -1,30 +1,33 @@
-import { AlertIcon, KashierLogo } from "@/src/shared/assets/svgs";
+import {AlertIcon, KashierLogo} from "@/src/shared/assets/svgs";
 import Button from '@/src/shared/components/Buttons/Button';
 import AnimatedError from "@/src/shared/components/animated-messages/AnimatedError";
 import FontText from "@/src/shared/components/FontText";
 import Input from '@/src/shared/components/inputs/Input';
-import { COMMON_STYLES } from "@/src/shared/styles/main";
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import {  View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {COMMON_STYLES} from "@/src/shared/styles/main";
+import {zodResolver} from '@hookform/resolvers/zod';
+import {router, useRouter} from 'expo-router';
+import React, {useEffect, useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
+import {useTranslation} from 'react-i18next';
+import {I18nManager, Pressable, View} from 'react-native';
+import Animated, {FadeIn, FadeOut} from "react-native-reanimated";
+import {SafeAreaView} from 'react-native-safe-area-context';
 import useRegisterOtp from '../otp/otp.viewmodel';
-import { RegisterEmailFormData } from './register-email.model';
-import { RegisterEmailSchema } from './register-email.scheme';
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { FadeInDownView, FadeInUpView } from "@/src/shared/components/wrappers/animated-wrappers";
+import {RegisterEmailFormData} from './register-email.model';
+import {RegisterEmailSchema} from './register-email.scheme';
+import {KeyboardAwareScrollView} from "react-native-keyboard-controller";
+import {FadeInDownView, FadeInUpView} from "@/src/shared/components/wrappers/animated-wrappers";
+import {ChevronLeftIcon} from "react-native-heroicons/outline";
+
+const isRTL = I18nManager.isRTL;
 const RegisterEmailScreen = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const router = useRouter();
-    const { generateOtp, isGenerating, error } = useRegisterOtp();
+    const {generateOtp, isGenerating, error} = useRegisterOtp();
 
     const [displayedError, setDisplayedError] = useState<string | undefined>(undefined);
 
-    const { control, handleSubmit, formState: { errors, isValid }, setFocus } = useForm<RegisterEmailFormData>({
+    const {control, handleSubmit, formState: {errors, isValid}, setFocus} = useForm<RegisterEmailFormData>({
         resolver: zodResolver(RegisterEmailSchema),
         defaultValues: {
             email: '',
@@ -44,23 +47,26 @@ const RegisterEmailScreen = () => {
         fieldOnChange(...args);
     };
 
-    const onSubmit = async ({ email }: RegisterEmailFormData) => {
+    const onSubmit = async ({email}: RegisterEmailFormData) => {
         await generateOtp(email);
         router.push({
             pathname: `/(auth)/(register)/register-otp`,
-            params: { email },
+            params: {email},
         })
     };
 
 
     return (
-        <SafeAreaView className="flex-1 bg-white pt-36 px-6">
-
+        <SafeAreaView className="flex-1 bg-white  px-6">
+            <Pressable onPress={router.back}>
+                <ChevronLeftIcon size={24} color="#0F172A"
+                                 style={isRTL ? {transform: [{rotate: '180deg'}]} : {}}/>
+            </Pressable>
             <KeyboardAwareScrollView
-                className="pb-16"
+                className="pb-16 pt-36"
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1,flex:1 }}
+                contentContainerStyle={{flexGrow: 1, flex: 1}}
             >
                 <FadeInDownView delay={0} duration={600}>
                     <KashierLogo
@@ -72,7 +78,7 @@ const RegisterEmailScreen = () => {
                 </FadeInDownView>
 
                 {displayedError && (
-                    <AnimatedError errorMsg={t(displayedError)} />
+                    <AnimatedError errorMsg={t(displayedError)}/>
                 )}
 
                 <View className={`flex-1 justify-between ${!displayedError ? 'mt-20' : ''}`}>
@@ -81,7 +87,7 @@ const RegisterEmailScreen = () => {
                             <Controller
                                 control={control}
                                 name="email"
-                                render={({ field: { onChange, onBlur, value, ref } }) => (
+                                render={({field: {onChange, onBlur, value, ref}}) => (
                                     <Input
                                         ref={ref}
                                         value={value}
@@ -108,7 +114,7 @@ const RegisterEmailScreen = () => {
                                     className="flex-row items-center mt-2"
                                     entering={FadeIn}
                                     exiting={FadeOut}>
-                                    <AlertIcon />
+                                    <AlertIcon/>
                                     <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap`}>
                                         {t(errors?.email?.message || 'This is required.')}
                                     </FontText>
@@ -126,7 +132,7 @@ const RegisterEmailScreen = () => {
                             disabled={!isValid || isGenerating}
                             fullWidth
                             onPress={handleSubmit(onSubmit)}
-                        // onPress={() => { router.push(ROUTES.AUTH.REGISTER_OTP) }}
+                            // onPress={() => { router.push(ROUTES.AUTH.REGISTER_OTP) }}
                         />
                     </FadeInUpView>
                 </View>

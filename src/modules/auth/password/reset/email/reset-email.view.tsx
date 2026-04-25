@@ -1,30 +1,32 @@
-import { ResetEmailSchema } from "@/src/modules/auth/password/reset/email/reset-email.scheme";
-import { useResetPasswordOtp } from "@/src/modules/auth/password/reset/otp/otp.viewmodel";
-import { AlertIcon, ResetPassword } from "@/src/shared/assets/svgs";
+import {ResetEmailSchema} from "@/src/modules/auth/password/reset/email/reset-email.scheme";
+import {useResetPasswordOtp} from "@/src/modules/auth/password/reset/otp/otp.viewmodel";
+import {AlertIcon, ResetPassword} from "@/src/shared/assets/svgs";
 import Button from '@/src/shared/components/Buttons/Button';
 import AnimatedError from "@/src/shared/components/animated-messages/AnimatedError";
 import FontText from "@/src/shared/components/FontText";
 import Input from '@/src/shared/components/inputs/Input';
-import { COMMON_STYLES } from "@/src/shared/styles/main";
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ResetEmailFormData } from './reset-email.model';
-import { FadeInDownView, FadeInUpView } from "@/src/shared/components/wrappers/animated-wrappers";
+import {COMMON_STYLES} from "@/src/shared/styles/main";
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useRouter} from 'expo-router';
+import React, {useEffect, useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
+import {useTranslation} from 'react-i18next';
+import {I18nManager, Pressable, ScrollView, View} from 'react-native';
+import Animated, {FadeIn, FadeOut} from "react-native-reanimated";
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {ResetEmailFormData} from './reset-email.model';
+import {FadeInDownView, FadeInUpView} from "@/src/shared/components/wrappers/animated-wrappers";
+import {ChevronLeftIcon} from "react-native-heroicons/outline";
 
+const isRTL = I18nManager.isRTL;
 const ResetEmailScreen = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const router = useRouter();
-    const { generateResetOtp, isGenerating, error } = useResetPasswordOtp();
+    const {generateResetOtp, isGenerating, error} = useResetPasswordOtp();
 
     const [displayedError, setDisplayedError] = useState<string | undefined>(undefined);
 
-    const { control, handleSubmit, formState: { errors, isValid }, setFocus } = useForm<ResetEmailFormData>({
+    const {control, handleSubmit, formState: {errors, isValid}, setFocus} = useForm<ResetEmailFormData>({
         resolver: zodResolver(ResetEmailSchema),
         defaultValues: {
             email: '',
@@ -44,27 +46,32 @@ const ResetEmailScreen = () => {
         fieldOnChange(...args);
     };
 
-    const onSubmit = async ({ email }: ResetEmailFormData) => {
+    const onSubmit = async ({email}: ResetEmailFormData) => {
         await generateResetOtp(email);
         router.push({
             pathname: `/(auth)/(reset-password)/reset-otp`,
-            params: { email },
+            params: {email},
         })
     };
 
 
     return (
-        <SafeAreaView className="flex-1 bg-white pt-36">
-
+        <SafeAreaView className="flex-1 bg-white">
+            <View className="px-6">
+                <Pressable onPress={router.back}>
+                    <ChevronLeftIcon size={24} color="#0F172A"
+                                     style={isRTL ? {transform: [{rotate: '180deg'}]} : {}}/>
+                </Pressable>
+            </View>
             <ScrollView
-                className="flex-1 px-6 pb-16"
+                className="flex-1 px-6 pb-16 pt-36"
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1 }}
+                contentContainerStyle={{flexGrow: 1}}
             >
                 <FadeInDownView delay={0} duration={600}>
                     <View className="items-center justify-center mb-8">
-                        <ResetPassword />
+                        <ResetPassword/>
                         <FontText
                             type="head"
                             weight="bold"
@@ -75,7 +82,7 @@ const ResetEmailScreen = () => {
                 </FadeInDownView>
 
                 {displayedError && (
-                    <AnimatedError errorMsg={t(displayedError)} />
+                    <AnimatedError errorMsg={t(displayedError)}/>
                 )}
 
                 <View className="flex-1 justify-between">
@@ -84,7 +91,7 @@ const ResetEmailScreen = () => {
                             <Controller
                                 control={control}
                                 name="email"
-                                render={({ field: { onChange, onBlur, value, ref } }) => (
+                                render={({field: {onChange, onBlur, value, ref}}) => (
                                     <Input
                                         ref={ref}
                                         value={value}
@@ -111,7 +118,7 @@ const ResetEmailScreen = () => {
                                     className="flex-row items-center mt-2"
                                     entering={FadeIn}
                                     exiting={FadeOut}>
-                                    <AlertIcon />
+                                    <AlertIcon/>
                                     <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap`}>
                                         {t(errors?.email?.message || 'This is required.')}
                                     </FontText>
@@ -129,7 +136,7 @@ const ResetEmailScreen = () => {
                             disabled={!isValid || isGenerating}
                             fullWidth
                             onPress={handleSubmit(onSubmit)}
-                        // onPress={() => { router.push(ROUTES.AUTH.REGISTER_OTP) }}
+                            // onPress={() => { router.push(ROUTES.AUTH.REGISTER_OTP) }}
                         />
                     </FadeInUpView>
                 </View>

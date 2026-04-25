@@ -1,13 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import ListHeader from '@/src/shared/components/ListHeader/ListHeader';
 import NotificationBell from '@/src/shared/components/NotificationBell';
-import { View } from 'react-native';
+import {I18nManager, Pressable, View} from 'react-native';
 import { Account, ActivityType } from '../../../balance.model';
 import FontText from '@/src/shared/components/FontText';
 import { cn } from '@/src/core/utils/cn';
 import AccountsBtn from '../AccountsBtn';
 import { useNotificationsVM } from '@/src/modules/notifications/viewmodels/useNotificationsVM';
-
+import {ChevronLeftIcon} from "react-native-heroicons/outline";
+import {useNavigation} from "expo-router";
+const isRTL = I18nManager.isRTL;
 interface Props {
     type: ActivityType;
     notificationsCount?: number;
@@ -41,7 +43,7 @@ const ActivitiesHeader = ({
     const { t } = useTranslation();
     const { unSeenCount } = useNotificationsVM();
     const unseenCount = unSeenCount;
-
+    const {goBack} = useNavigation();
     // Overview tab: Show title + notification bell only
     // if (type === 'overview') {
     //     return (
@@ -71,6 +73,10 @@ const ActivitiesHeader = ({
             )}
             {type === 'overview' ? (
                 <View className={cn("px-6 flex-row justify-between items-center", className)}>
+                    <Pressable onPress={goBack} style={{marginEnd: 10}}>
+                        <ChevronLeftIcon size={24} color="#0F172A"
+                                         style={isRTL ? {transform: [{rotate: '180deg'}]} : {}}/>
+                    </Pressable>
                     <FontText type="head" weight="bold" className="text-xl text-content-primary">
                         {t('Balances')}
                     </FontText>
@@ -87,6 +93,7 @@ const ActivitiesHeader = ({
                     handleClearSearch={handleClearSearch!}
                     searchValue={searchValue!}
                     className={className}
+                    backBtn
                 />
             )}
         </View>

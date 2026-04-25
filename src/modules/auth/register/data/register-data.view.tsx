@@ -2,7 +2,7 @@ import { KashierLogo } from "@/src/shared/assets/svgs";
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, ScrollView } from 'react-native';
+import {I18nManager, Platform, Pressable, ScrollView, View} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RegisterDataForm from "./components/RegisterDataForm";
 import { RegisterDataFormData } from "./register-data.model";
@@ -12,6 +12,8 @@ import { Mode } from "@/src/core/environment/environments";
 import { useEnvironmentStore } from "@/src/core/environment/environments.store";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
+import {ChevronLeftIcon} from "react-native-heroicons/outline";
+const isRTL = I18nManager.isRTL;
 
 const RegisterDataScreen = () => {
     const { t } = useTranslation();
@@ -32,6 +34,12 @@ const RegisterDataScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
+            <View className="px-6">
+                <Pressable onPress={router.back}>
+                    <ChevronLeftIcon size={24} color="#0F172A"
+                                     style={isRTL ? {transform: [{rotate: '180deg'}]} : {}}/>
+                </Pressable>
+            </View>
             <KeyboardAwareScrollView
                 className="flex-1 px-6 pt-28 pb-16"
                 contentContainerStyle={{ flexGrow: 1, paddingBottom: 60 }}

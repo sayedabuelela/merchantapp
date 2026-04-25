@@ -7,11 +7,12 @@ import FontText from '@/src/shared/components/FontText';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from 'react-native';
+import {I18nManager, Pressable, ScrollView, View} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useResetPasswordOtp } from './otp/otp.viewmodel';
 import { FadeInDownView, FadeInUpView } from '@/src/shared/components/wrappers/animated-wrappers';
-
+import {ChevronLeftIcon} from "react-native-heroicons/outline";
+const isRTL = I18nManager.isRTL;
 const ResetPasswordOTPScreen = () => {
     const { t } = useTranslation();
     const { verifyResetOtp, generateResetOtp, isGenerating, isVerifying, verifyError, verifyReset } = useResetPasswordOtp();
@@ -47,10 +48,15 @@ const ResetPasswordOTPScreen = () => {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white pt-28">
-
+        <SafeAreaView className="flex-1 bg-white ">
+            <View className="px-6">
+                <Pressable onPress={router.back}>
+                    <ChevronLeftIcon size={24} color="#0F172A"
+                                     style={isRTL ? {transform: [{rotate: '180deg'}]} : {}}/>
+                </Pressable>
+            </View>
             <ScrollView
-                className="flex-1 px-6 pb-16"
+                className="flex-1 px-6 pb-16 pt-28"
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1 }}
