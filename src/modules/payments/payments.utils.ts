@@ -3,7 +3,7 @@ import { SourceOfFunds, InstallmentDetails } from './payments.model';
 /**
  * BNPL payment type constants - using Set for O(1) lookup
  */
-const BNPL_TYPES_SET = new Set(['valu', 'aman', 'souhoola', 'contact','mogo', 'tru']);
+const BNPL_TYPES_SET = new Set(['valu', 'aman', 'souhoola', 'contact','mogo', 'tru', 'forsa']);
 
 /**
  * Type guards for identifying payment types
@@ -47,8 +47,8 @@ export const isCashPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
     return sourceOfFunds.type?.toLowerCase() === 'cash';
 };
 
-export type PaymentType = 'card' | 'valu' | 'aman' | 'souhoola' |'contact' | 'mogo' | 'tru' | 'wallet' | 'cash' | 'unknown';
-export type BnPlPaymentType = 'valu' | 'aman' | 'souhoola' |'contact' | 'mogo' | 'tru';
+export type PaymentType = 'card' | 'valu' | 'aman' | 'souhoola' |'contact' | 'mogo' | 'tru' | 'forsa' | 'wallet' | 'cash' | 'unknown';
+export type BnPlPaymentType = 'valu' | 'aman' | 'souhoola' |'contact' | 'mogo' | 'tru' | 'forsa';
 export const getPaymentType = (sourceOfFunds?: SourceOfFunds): PaymentType => {
     if (!sourceOfFunds) return 'unknown';
 
@@ -157,6 +157,21 @@ export const isTruBnplPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
     // Check type field (case-insensitive)
     if (sourceOfFunds.type) {
         return sourceOfFunds.type.trim().toLowerCase() === 'tru';
+    }
+
+    return false;
+};
+
+/**
+ * Checks if payment is specifically a Forsa BNPL payment
+ * Used to route to Forsa-specific settlement details
+ */
+export const isForsaBnplPayment = (sourceOfFunds?: SourceOfFunds): boolean => {
+    if (!sourceOfFunds) return false;
+
+    // Check type field (case-insensitive)
+    if (sourceOfFunds.type) {
+        return sourceOfFunds.type.trim().toLowerCase() === 'forsa';
     }
 
     return false;

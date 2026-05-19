@@ -34,6 +34,7 @@ export const getPhoneNumber = (item: OrderDetailHistoryItem): string | null => {
  */
 export const getPaymentMethodName = (item: OrderDetailHistoryItem, t: (key: string, options?: Record<string, any>) => string): string => {
     if (item.method === 'valu') return t('Valu');
+    if (item.method === 'forsa') return t('Forsa');
 
     if (item.method === 'wallet') {
         const walletProviders: Record<string, string> = {

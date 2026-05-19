@@ -9,6 +9,7 @@ import {
     isSouhoolaBnplPayment,
     isAmanBnplPayment,
     isTruBnplPayment,
+    isForsaBnplPayment,
     isCardInstallmentPayment,
     isCardPayment,
 } from '@/src/modules/payments/payments.utils';
@@ -21,6 +22,7 @@ import {
     SouhoolaSettlementDetails,
     AmanSettlementDetails,
     TruSettlementDetails,
+    ForsaSettlementDetails,
     BankInstallmentSettlementDetails,
     CardOnlineSettlementDetails,
     adaptTransactionData,
@@ -72,6 +74,11 @@ const SettlementTab = ({ transaction }: Props) => {
     // Tru BNPL payments (must check before generic BnPl)
     if (isTruBnplPayment(sourceOfFunds)) {
         return <TruSettlementDetails data={settlementData} />;
+    }
+
+    // Forsa BNPL payments (must check before generic BnPl)
+    if (isForsaBnplPayment(sourceOfFunds)) {
+        return <ForsaSettlementDetails data={settlementData} />;
     }
 
     // Contact BNPL payments (must check before generic BnPl)

@@ -42,7 +42,9 @@ export const ICONS = {
     SOUHOOLA: <SouhoolaHistoryIcon />,
     CONTACT: <ContactHistoryIcon />,
     ABANDONED: <ShoppingCartIcon size={16} color={COLORS.ICON_WHITE} />,
-    TRU:<TruIcon width={20} />
+    TRU:<TruIcon width={20} />,
+    // TODO: replace with ForsaHistoryIcon when svg asset added
+    FORSA: <ValuHistoryIcon />,
 } as const;
 
 /**
@@ -73,6 +75,7 @@ const PAYMENT_METHOD_ICONS: Record<string, HistoryIconData> = {
     souhoola: createNeutralIcon(ICONS.SOUHOOLA),
     contact: createNeutralIcon(ICONS.CONTACT),
     tru: createNeutralIcon(ICONS.TRU),
+    forsa: createNeutralIcon(ICONS.FORSA),
 };
 
 /**

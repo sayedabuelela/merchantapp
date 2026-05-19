@@ -39,6 +39,7 @@ export { default as NoActivitiesIcon } from './files/balance/no-activities.svg';
 export { default as NoActivitiesSmallIcon } from './files/balance/no-activities-small.svg';
 export { default as MasterCardIcon } from './files/card-types/mastercard-icon.svg';
 export { default as VisaIcon } from './files/card-types/visa-icon.svg';
+export { default as ForsaIcon } from './files/card-types/forsa.svg';
 export { default as SouhoolaIcon } from './files/card-types/souhola-icon.svg';
 export { default as ValuIcon } from './files/card-types/valu-icon.svg';
 export { default as NBEIcon } from './files/banks/nbe-icon.svg';

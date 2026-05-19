@@ -103,6 +103,7 @@ const PaymentFilterModal = ({ isVisible, onClose, filters, setFilters, currentTa
         { label: t('Instapay'), value: 'instapay' },
         { label: t('Mogo'), value: 'mogo' },
         { label: t('Tru'), value: 'tru' },
+        { label: t('Forsa'), value: 'forsa' },
     ];
 
     // Status options (different per tab)

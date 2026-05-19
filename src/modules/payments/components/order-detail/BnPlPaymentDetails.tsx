@@ -1,11 +1,19 @@
-import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {View} from 'react-native';
 import FontText from '@/src/shared/components/FontText';
-import { PayerInfo, PaymentMethod, SourceOfFunds } from '@/src/modules/payments/payments.model';
-import { AmanSettlementIcon, ValuIcon, SouhoolaSettlementIcon, ContactSettlementIcon, MogoIcon, TruIcon } from '@/src/shared/assets/svgs';
-import { PressableScale } from 'pressto';
-import { DocumentDuplicateIcon } from 'react-native-heroicons/outline';
-import { useClipboard } from '@/src/shared/hooks/useClipboard';
+import {PayerInfo, PaymentMethod, SourceOfFunds} from '@/src/modules/payments/payments.model';
+import {
+    AmanSettlementIcon,
+    ValuIcon,
+    SouhoolaSettlementIcon,
+    ContactSettlementIcon,
+    MogoIcon,
+    TruIcon,
+    ForsaIcon
+} from '@/src/shared/assets/svgs';
+import {PressableScale} from 'pressto';
+import {DocumentDuplicateIcon} from 'react-native-heroicons/outline';
+import {useClipboard} from '@/src/shared/hooks/useClipboard';
 
 interface BnPlPaymentDetailsProps {
     method: string;
@@ -25,6 +33,7 @@ const getLoanOrPlanId = (method: PaymentMethod, payerInfo: PayerInfo): string | 
         case 'mogo':
             return payerInfo.loanNumber;
         case 'valu':
+        case 'forsa':
         case 'souhoola':
             return payerInfo.loanNumber;
         case 'contact':
@@ -51,6 +60,7 @@ const getPhoneNumber = (method: PaymentMethod, payerInfo: PayerInfo): string | u
         case 'tru':
             return undefined;
         case 'valu':
+        case 'forsa':
         case 'aman':
         default:
             return payerInfo.mobileNumber;
@@ -63,17 +73,21 @@ const getPhoneNumber = (method: PaymentMethod, payerInfo: PayerInfo): string | u
 const getMethodIcon = (method: PaymentMethod) => {
     switch (method) {
         case 'valu':
-            return <ValuIcon />;
+            return <ValuIcon/>;
+        case 'forsa':
+            return <ForsaIcon/>;
         case 'tru':
-            return <TruIcon />;
+            return <TruIcon/>;
         case 'aman':
-            return <View className="justify-center items-center w-[75px] h-[60px] bg-[#16BBC5] rounded"><AmanSettlementIcon height={50} /></View>;
+            return <View
+                className="justify-center items-center w-[75px] h-[60px] bg-[#16BBC5] rounded"><AmanSettlementIcon
+                height={50}/></View>;
         case 'souhoola':
-            return <View className="justify-center items-center w-[75px]"><SouhoolaSettlementIcon height={40} /></View>;
+            return <View className="justify-center items-center w-[75px]"><SouhoolaSettlementIcon height={40}/></View>;
         case 'contact':
-            return <View className="justify-center items-center w-[40px]"><ContactSettlementIcon height={40} /></View>;
+            return <View className="justify-center items-center w-[40px]"><ContactSettlementIcon height={40}/></View>;
         case 'mogo':
-            return <MogoIcon height={40} width={70} />;
+            return <MogoIcon height={40} width={70}/>;
         default:
             return null;
     }
@@ -83,11 +97,11 @@ const getMethodIcon = (method: PaymentMethod) => {
  * BNPL Payment Details Card
  * Displays: Icon, Type (method-channel), Loan Number/Plan ID value, Mobile
  */
-export const BnPlPaymentDetails = ({ method, sourceOfFunds, paymentChannel }: BnPlPaymentDetailsProps) => {
-    const { t } = useTranslation();
+export const BnPlPaymentDetails = ({method, sourceOfFunds, paymentChannel}: BnPlPaymentDetailsProps) => {
+    const {t} = useTranslation();
     const payerInfo = sourceOfFunds.payerInfo;
     if (!payerInfo) return null;
-    const { copy, isCopied } = useClipboard();
+    const {copy, isCopied} = useClipboard();
 
     const normalizedMethod = method?.toLowerCase() as PaymentMethod;
     const loanOrPlanId = getLoanOrPlanId(normalizedMethod, payerInfo);
@@ -103,12 +117,12 @@ export const BnPlPaymentDetails = ({ method, sourceOfFunds, paymentChannel }: Bn
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-1">
                     <FontText type="body" weight="semi"
-                        className="text-content-primary text-xs uppercase">
+                              className="text-content-primary text-xs uppercase">
                         {method}
                     </FontText>
                     {paymentChannel && (
                         <FontText type="body" weight="semi"
-                            className="text-content-primary text-[10px] uppercase">
+                                  className="text-content-primary text-[10px] uppercase">
                             - {t(paymentChannel)}
                         </FontText>
                     )}
@@ -121,17 +135,17 @@ export const BnPlPaymentDetails = ({ method, sourceOfFunds, paymentChannel }: Bn
                 {loanOrPlanId && (
                     <View className='flex-row items-center gap-x-1'>
                         <FontText type="body" weight="bold"
-                            className="text-content-primary text-sm">
+                                  className="text-content-primary text-sm">
                             {loanOrPlanId}
                         </FontText>
                         <PressableScale onPress={handleCopy}>
-                            <DocumentDuplicateIcon size={18} color={'#001F5F'} />
+                            <DocumentDuplicateIcon size={18} color={'#001F5F'}/>
                         </PressableScale>
                     </View>
                 )}
                 {phoneNumber && (
                     <FontText type="body" weight="bold"
-                        className="text-content-primary text-[10px] uppercase">
+                              className="text-content-primary text-[10px] uppercase">
                         {phoneNumber}
                     </FontText>
                 )}
