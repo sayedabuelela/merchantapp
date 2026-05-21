@@ -10,7 +10,7 @@ import {
     ValuHistoryIcon,
     AmanHistoryIcon,
     SouhoolaHistoryIcon,
-    TruIcon
+    TruIcon, ForsaHistoryIcon
 } from "@/src/shared/assets/svgs";
 import { OrderDetailHistoryItem, RelatedTransaction } from "@/src/modules/payments/payments.model";
 
@@ -44,7 +44,7 @@ export const ICONS = {
     ABANDONED: <ShoppingCartIcon size={16} color={COLORS.ICON_WHITE} />,
     TRU:<TruIcon width={20} />,
     // TODO: replace with ForsaHistoryIcon when svg asset added
-    FORSA: <ValuHistoryIcon />,
+    FORSA: <ForsaHistoryIcon width={22} />,
 } as const;
 
 /**

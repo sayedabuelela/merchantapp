@@ -34,6 +34,7 @@ const getLoanOrPlanId = (method: PaymentMethod, payerInfo: PayerInfo): string | 
             return payerInfo.loanNumber;
         case 'valu':
         case 'forsa':
+            return payerInfo.planId;
         case 'souhoola':
             return payerInfo.loanNumber;
         case 'contact':
@@ -61,6 +62,7 @@ const getPhoneNumber = (method: PaymentMethod, payerInfo: PayerInfo): string | u
             return undefined;
         case 'valu':
         case 'forsa':
+            return payerInfo.phone;
         case 'aman':
         default:
             return payerInfo.mobileNumber;
@@ -73,9 +75,9 @@ const getPhoneNumber = (method: PaymentMethod, payerInfo: PayerInfo): string | u
 const getMethodIcon = (method: PaymentMethod) => {
     switch (method) {
         case 'valu':
-            return <ValuIcon/>;
+            return <ValuIcon height={50} width={100}/>;
         case 'forsa':
-            return <ForsaIcon/>;
+            return <ForsaIcon />;
         case 'tru':
             return <TruIcon/>;
         case 'aman':
@@ -115,40 +117,38 @@ export const BnPlPaymentDetails = ({method, sourceOfFunds, paymentChannel}: BnPl
         <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded">
             {/* Row 1: Type (method - channel) + Icon */}
             <View className="flex-row items-center justify-between">
-                <View className="flex-row items-center gap-x-1">
-                    <FontText type="body" weight="semi"
-                              className="text-content-primary text-xs uppercase">
-                        {method}
-                    </FontText>
-                    {paymentChannel && (
+                <View className="gap-y-1">
+                    <View className="flex-row items-center gap-x-1">
                         <FontText type="body" weight="semi"
+                                  className="text-content-primary text-xs uppercase">
+                            {method}
+                        </FontText>
+                        {paymentChannel && (
+                            <FontText type="body" weight="semi"
+                                      className="text-content-primary text-[10px] uppercase">
+                                - {t(paymentChannel)}
+                            </FontText>
+                        )}
+                    </View>
+                    {loanOrPlanId && (
+                        <View className='flex-row items-center gap-x-1'>
+                            <FontText type="body" weight="bold"
+                                      className="text-content-primary text-sm">
+                                {loanOrPlanId}
+                            </FontText>
+                            <PressableScale onPress={handleCopy}>
+                                <DocumentDuplicateIcon size={18} color={'#001F5F'}/>
+                            </PressableScale>
+                        </View>
+                    )}
+                    {phoneNumber && (
+                        <FontText type="body" weight="bold"
                                   className="text-content-primary text-[10px] uppercase">
-                            - {t(paymentChannel)}
+                            {phoneNumber}
                         </FontText>
                     )}
                 </View>
                 {getMethodIcon(normalizedMethod)}
-            </View>
-
-            {/* Row 2: Loan Number / Plan ID value + Mobile */}
-            <View className="gap-y-2">
-                {loanOrPlanId && (
-                    <View className='flex-row items-center gap-x-1'>
-                        <FontText type="body" weight="bold"
-                                  className="text-content-primary text-sm">
-                            {loanOrPlanId}
-                        </FontText>
-                        <PressableScale onPress={handleCopy}>
-                            <DocumentDuplicateIcon size={18} color={'#001F5F'}/>
-                        </PressableScale>
-                    </View>
-                )}
-                {phoneNumber && (
-                    <FontText type="body" weight="bold"
-                              className="text-content-primary text-[10px] uppercase">
-                        {phoneNumber}
-                    </FontText>
-                )}
             </View>
         </View>
     );

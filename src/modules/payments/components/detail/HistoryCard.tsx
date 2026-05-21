@@ -1,20 +1,20 @@
-import { View } from "react-native";
-import { OrderDetailHistoryItem } from "@/src/modules/payments/payments.model";
-import { useTranslation } from "react-i18next";
+import {View} from "react-native";
+import {OrderDetailHistoryItem} from "@/src/modules/payments/payments.model";
+import {useTranslation} from "react-i18next";
 import FontText from "@/src/shared/components/FontText";
-import { formatHistoryDate, getHistoryDescription } from "@/src/modules/payments/utils/history.utils";
-import { getHistoryIcon } from "@/src/modules/payments/utils/history.icons";
+import {formatHistoryDate, getHistoryDescription} from "@/src/modules/payments/utils/history.utils";
+import {getHistoryIcon} from "@/src/modules/payments/utils/history.icons";
 
 interface HistoryCardProps {
     historyItem: OrderDetailHistoryItem;
 }
 
-const HistoryCard = ({ historyItem }: HistoryCardProps) => {
-    const { t } = useTranslation();
+const HistoryCard = ({historyItem}: HistoryCardProps) => {
+    const {t} = useTranslation();
     // console.log('historyItem : ', historyItem);
     const description = getHistoryDescription(historyItem, t);
     const formattedDate = formatHistoryDate(historyItem.date);
-    const { icon, backgroundColor } = getHistoryIcon(historyItem);
+    const {icon, backgroundColor} = getHistoryIcon(historyItem);
     // console.log('icon : ', icon);
     // Build the header with date and optional transaction ID
     const header = historyItem.transactionId
@@ -25,9 +25,7 @@ const HistoryCard = ({ historyItem }: HistoryCardProps) => {
         <View className="flex-row items-start p-4 rounded border border-tertiary mb-2 gap-x-4">
             {/* Status icon */}
             <View
-                className="w-8 h-8 rounded-full items-center justify-center"
-                style={{ backgroundColor }}
-            >
+                className="w-8 h-8 rounded-full items-center justify-center" style={{backgroundColor}}>
                 {icon}
             </View>
 

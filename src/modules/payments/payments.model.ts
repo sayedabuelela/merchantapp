@@ -221,6 +221,8 @@ export interface TruContract {
 export interface PayerInfo {
     // VALU Payment fields
     mobileNumber?: string;
+    loan_id?: string;
+    phone?: string;
     productPrice?: string;
     customerName?: string | null;
     nationalID?: string | null;

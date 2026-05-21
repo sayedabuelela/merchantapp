@@ -68,6 +68,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'P@ssw0rd',
             // email: 'gadow82045@flownue.com',
             // password: 'P@ssw0rd1234',
+            // email: 'aayman@kashier.io',
+            // password: 'P@ssw0rd1234',
         },
     });
 

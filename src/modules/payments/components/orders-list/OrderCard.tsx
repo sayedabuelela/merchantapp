@@ -75,7 +75,12 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                                 {lastTransactionId}
                             </FontText>
                         )}
-                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                        <FontText type="body"
+                                  weight="regular"
+                                  className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary max-w-[200px]"
+                                  numberOfLines={1}
+                                  ellipsizeMode="tail"
+                        >
                             {paymentParams.order}
                         </FontText>
                     </View>
