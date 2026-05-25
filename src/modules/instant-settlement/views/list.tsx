@@ -26,6 +26,7 @@ import InstantInquiryModal from "./components/InstantInquiryModal";
 import { selectUser, useAuthStore } from "../../auth/auth.store";
 import usePermissions from "../../auth/hooks/usePermissions";
 import AnimatedInfoMsg from "@/src/shared/components/animated-messages/AnimatedInfoMsg";
+import { isInstantSettlementUnavailable } from "@/src/core/utils/serviceAvailability";
 
 type RequestStatus = 'idle' | 'success' | 'error';
 
@@ -40,6 +41,7 @@ const InstantSettlementScreen = () => {
   const [requestStatus, setRequestStatus] = useState<RequestStatus>('idle');
   const user = useAuthStore(selectUser);
   const { canEditBalance } = usePermissions(user?.actions!);
+  const isUnavailable = isInstantSettlementUnavailable();
 
   const {
     listData,
@@ -53,7 +55,7 @@ const InstantSettlementScreen = () => {
     instantSummary
   } = useSettlementTransactionsVM({
     search: search || undefined,
-  });
+  }, !isUnavailable);
 
   const {
     inquireSettlementAsync,
@@ -142,7 +144,9 @@ const InstantSettlementScreen = () => {
       </AnimatedListItem>
     );
   }, [listData, selectedTransactions, handleToggleSelect]);
-  const infoMsg = t('Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.')
+  const infoMsg = isUnavailable
+    ? t('Settlement services during the Eid holiday period suspended and will work normally after this period')
+    : t('Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.')
   return (
     <SafeAreaView className="flex-1 bg-white">
       <FadeInDownView delay={0} duration={300}>
@@ -231,7 +235,7 @@ const InstantSettlementScreen = () => {
           successMsg={requestStatus === 'success' ? t('Your instant settlement request has been submitted successfully') : ''}
         />
       </View>
-      {isLoading ? (
+      {isUnavailable ? null : isLoading ? (
         <View className={cn("flex-1 px-6 mt-6")}>
           <PaymentLinkCardSkeleton />
         </View>

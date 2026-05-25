@@ -15,6 +15,7 @@ import {
 import useHasFeature from '../../auth/hooks/useHasFeature';
 import usePermissions from '../../auth/hooks/usePermissions';
 import { selectUser, useAuthStore } from '../../auth/auth.store';
+import { isInstantSettlementUnavailable } from '@/src/core/utils/serviceAvailability';
 export interface ServiceItem {
     title: string;
     description: string;
@@ -22,6 +23,7 @@ export interface ServiceItem {
     icon: React.ReactNode;
     onPress?: () => void;
     comingSoon?: boolean;
+    unavailable?: boolean;
 }
 
 export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
@@ -41,7 +43,8 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
             description: t('Get your money now!'),
             href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
             // href: ROUTES.INSTANT_SETTLEMENT.ROOT as Route,
-            icon: <BoltIcon size={20} color="#001F5F" />
+            icon: <BoltIcon size={20} color="#001F5F" />,
+            unavailable: isInstantSettlementUnavailable(),
         }] : []),
         {
             title: t('QR code payments'),

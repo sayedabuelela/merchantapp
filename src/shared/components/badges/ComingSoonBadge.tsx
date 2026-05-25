@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@/src/core/utils/cn'
 
 const isRTL = I18nManager.isRTL;
-const ComingSoonBadge = ({ className }: { className?: string }) => {
+const ComingSoonBadge = ({ className, label = 'Coming Soon' }: { className?: string; label?: string }) => {
     const { t } = useTranslation()
     return (
         <View className={cn("w-28 h-6 items-center justify-center border border-[#FFD8C4] bg-[#FFF5F0]", className)}>
             <FontText weight="semi" className={cn("text-[#FF9D6C] uppercase text-center", isRTL ? ' flex-1 text-xs leading-5 w-full mt-0.5' : 'text-[8px]')} type="body">
-                {t('Coming Soon')}
+                {t(label)}
             </FontText>
         </View>
     )

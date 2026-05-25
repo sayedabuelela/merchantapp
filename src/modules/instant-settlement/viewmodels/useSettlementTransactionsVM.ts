@@ -13,7 +13,10 @@ interface SettlementTransactionsInfinityResponse {
     pageParams: number[];
 }
 
-export const useSettlementTransactionsVM = (params?: FetchSettlementTransactionsParams) => {
+export const useSettlementTransactionsVM = (
+    params?: FetchSettlementTransactionsParams,
+    enabled: boolean = true,
+) => {
     const { api } = useApi();
 
     const transactionsQuery = useInfiniteQuery<
@@ -31,6 +34,7 @@ export const useSettlementTransactionsVM = (params?: FetchSettlementTransactions
             return page < pages ? page + 1 : undefined;
         },
         initialPageParam: 1,
+        enabled,
     });
     console.log('transactionsQuery', transactionsQuery.data?.pages[0]?.summary);
 

@@ -13,9 +13,10 @@ interface ServiceCardProps {
     icon: React.ReactNode;
     onPress?: () => void;
     comingSoon?: boolean;
+    unavailable?: boolean;
 }
 const isRTL = I18nManager.isRTL;
-const ServiceCard = ({ title, description, href, icon, onPress, comingSoon }: ServiceCardProps) => {
+const ServiceCard = ({ title, description, href, icon, onPress, comingSoon, unavailable }: ServiceCardProps) => {
 
     const content = (
         <Pressable
@@ -29,10 +30,10 @@ const ServiceCard = ({ title, description, href, icon, onPress, comingSoon }: Se
                 elevation: 2, // For Android
             }}
         >
-            {comingSoon &&
+            {(comingSoon || unavailable) &&
                 <View className={cn('absolute top-[17px] right-[-28px]', isRTL ? 'rotate-[-45deg]' : 'rotate-[45deg]')}>
                     <ScaleFadeIn delay={400} duration={1000}>
-                        <ComingSoonBadge />
+                        <ComingSoonBadge label={unavailable ? 'Unavailable' : 'Coming Soon'} />
                     </ScaleFadeIn>
                 </View>
             }
