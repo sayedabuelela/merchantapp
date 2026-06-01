@@ -73,7 +73,7 @@ const ValuPaymentSection = ({ data }: Props) => {
                 value={formatAmount(payerInfo.CashbackAmount, t('EGP'))}
             />
             <SectionRowItem
-                title={t('To U')}
+                title={t('Flib')}
                 value={formatAmount(payerInfo.ToUAmount, t('EGP'))}
             />
             <SectionRowItem

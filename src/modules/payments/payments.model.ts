@@ -484,6 +484,12 @@ export interface OrderDetailPosTerminal {
     branchAddress?: string;
 }
 
+export interface PerformedBy {
+    fullName: string | null;
+    userId: string | null;
+    email: string | null;
+}
+
 export interface OrderDetailHistoryItem {
     orderId?: string;
     method?: string;
@@ -493,9 +499,11 @@ export interface OrderDetailHistoryItem {
     transactionId?: string;
     operation?: string;
     amount?: number;
+    currency?: string;
     transactionResponseCode?: string;
     transactionResponseMessage?: TransactionResponseMessage;
     sourceOfFunds?: SourceOfFunds;
+    performedBy?: PerformedBy;
 }
 
 export interface OrderDetailPayment {
@@ -576,6 +584,7 @@ export interface RelatedTransaction {
     date: string;
     rfsDate?: string;
     transactionResponseMessage?: TransactionResponseMessage;
+    performedBy?: PerformedBy;
 }
 
 export interface TransactionDetailOriginDetails {

@@ -1,5 +1,6 @@
 import { OrderDetailHistoryItem } from "@/src/modules/payments/payments.model";
 import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils";
+import { formatAmount } from "@/src/modules/payments/utils/formatters";
 
 /**
  * Formats a history item date with full details
@@ -22,6 +23,9 @@ export const formatHistoryDate = (dateInput: string): string => {
 export const getPhoneNumber = (item: OrderDetailHistoryItem): string | null => {
     if (item.sourceOfFunds?.payerInfo?.mobileNumber) {
         return item.sourceOfFunds.payerInfo.mobileNumber;
+    }
+    if (item.sourceOfFunds?.payerInfo?.phone) {
+        return item.sourceOfFunds.payerInfo.phone;
     }
     if (item.sourceOfFunds?.payerAccount) {
         return item.sourceOfFunds.payerAccount;
@@ -64,7 +68,7 @@ const getTransactionDescription = (
 ): string => {
     const phone = getPhoneNumber(item);
     const paymentMethod = getPaymentMethodName(item, t);
-    const amount = item.amount ? `${item.amount} EGP` : '';
+    const amount = formatAmount(item.amount, item.currency || 'EGP');
     const status = item.status.toUpperCase();
 
     // Get error message from response (always use English for consistency)
@@ -91,24 +95,34 @@ const getTransactionDescription = (
 
     // Handle SUCCESS operations
     const operationDescriptions: Record<string, string> = {
-        pay: t('Successful payment {{paymentMethod}}', { paymentMethod }),
-        refund: t(`Successfully refunded ${amount} due to customer request. It may take a few days for the money to reach the customer`),
+        pay: t('Successful payment with {{paymentMethod}}', { paymentMethod }),
+        purchase: t('Successful purchase with {{paymentMethod}}', { paymentMethod }),
+        refund: t('Successfully refunded {{amount}} due to customer request. It may take a few days for the money to reach the customer', { amount }),
         verify_customer: phone
-            ? t(`${paymentMethod} client was successfuly verified using ${phone}`)
+            ? t('{{paymentMethod}} client was successfully verified using {{phone}}', { paymentMethod, phone })
             : t('Customer verification completed'),
         inquiry: phone
-            ? t(`Customer choose installment plan successfully ${phone}`)
+            ? t('Customer choose installment plan successfully {{phone}}', { phone })
             : t('Payment inquiry completed'),
+        loan_request: phone
+            ? t('Customer choose installment plan successfully {{phone}}', { phone })
+            : t('Customer choose installment plan successfully'),
+        get_tenures: phone
+            ? t('Succeeded getting tenures for {{paymentMethod}} customer using {{phone}}', { paymentMethod, phone })
+            : t('Succeeded getting tenures'),
+        get_categories: phone
+            ? t('Succeeded getting categories for {{paymentMethod}} customer using {{phone}}', { paymentMethod, phone })
+            : t('Succeeded getting categories'),
         initiate_valu: phone
-            ? t(`Succeeded getting Valu Customer Information using ${phone}`)
+            ? t('Succeeded getting Valu Customer Information using {{phone}}', { phone })
             : t('Valu payment initiated'),
-        initiate_r2p: t(`${paymentMethod} payment initiated`),
+        initiate_r2p: t('{{paymentMethod}} payment initiated', { paymentMethod }),
         payment_key_request: t('Order keys verified successfully'),
         order_register: t('Order registered successfully'),
-        merchant_login: t(`${paymentMethod} service initiated successfully`),
+        merchant_login: t('{{paymentMethod}} service initiated successfully', { paymentMethod }),
     };
 
-    return operationDescriptions[item.operation || ''] || t(`Successful ${item.operation?.toLowerCase()} authentication attempt ${paymentMethod}`);
+    return operationDescriptions[item.operation || ''] || t('Successful {{operation}}', { operation: item.operation?.toLowerCase() || '' });
 };
 
 /**

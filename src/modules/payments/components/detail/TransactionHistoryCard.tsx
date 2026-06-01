@@ -4,47 +4,48 @@ import { useTranslation } from 'react-i18next';
 import FontText from '@/src/shared/components/FontText';
 import { formatHistoryDate } from '@/src/modules/payments/utils/history.utils';
 import { getTransactionHistoryIcon } from '@/src/modules/payments/utils/history.icons';
+import { formatAmount } from '@/src/modules/payments/utils/formatters';
 
 interface TransactionHistoryCardProps {
     historyItem: RelatedTransaction;
     errorMsg?: string;
 }
 
+const OPERATION_LABELS: Record<string, string> = {
+    pay: 'payment',
+    refund: 'refund',
+};
+
 const TransactionHistoryCard = ({ historyItem, errorMsg }: TransactionHistoryCardProps) => {
     const { t } = useTranslation();
 
-    // Format date
     const formattedDate = formatHistoryDate(historyItem.date);
-    console.log('historyItem', historyItem);
-
-    // Build the header with date and transaction ID
     const header = `${formattedDate} • ${historyItem.transactionId}`;
 
-    // Get description based on operation and status
+    const status = historyItem.status?.toUpperCase();
+    const isFailure = status === 'FAILURE' || status === 'FAILED';
+    const isSuccess = status === 'SUCCESS';
+
     const getDescription = () => {
         const operation = historyItem.operation?.toLowerCase();
-        const status = historyItem.status;
-        const amount = historyItem.amount;
-        const currency = historyItem.currency;
-
-        if (operation === 'pay' && status === 'SUCCESS') {
-            return `${t('Successful payment')} ${amount} ${currency}`;
-        } else if (operation === 'refund' && status === 'SUCCESS') {
-            return `${t('Successfully refunded')} ${amount} ${currency}`;
-        } else if (status === 'FAILURE' || status === 'FAILED') {
-            return errorMsg ? `${t('Transaction failed')}: ${errorMsg}` : t('Transaction failed');
-        } else {
-            return `${t(operation || 'Transaction')} - ${t(status)}`;
+        if (!operation) {
+            return isFailure && errorMsg
+                ? `${t('Transaction failed')}: ${errorMsg}`
+                : t('Transaction');
         }
+
+        const opLabel = t(OPERATION_LABELS[operation] || operation);
+        const amount = formatAmount(historyItem.amount, historyItem.currency);
+        const fullName = historyItem.performedBy?.fullName;
+        const byClause = fullName ? ` ${t('by')} ${fullName}` : '';
+        return `${opLabel} ${amount}${byClause}`;
     };
 
-    // Get icon and background color using shared utility
     const { icon, backgroundColor } = getTransactionHistoryIcon(historyItem);
     const description = getDescription();
 
     return (
         <View className="flex-row items-start p-4 rounded border border-tertiary mb-2 gap-x-4">
-            {/* Status icon */}
             <View
                 className="w-8 h-8 rounded-full items-center justify-center"
                 style={{ backgroundColor }}
@@ -52,8 +53,24 @@ const TransactionHistoryCard = ({ historyItem, errorMsg }: TransactionHistoryCar
                 {icon}
             </View>
 
-            {/* Content */}
             <View className="flex-1">
+                {(isSuccess || isFailure) && (
+                    <View
+                        className={`self-start px-2 py-0.5 rounded mb-2 ${
+                            isFailure ? 'bg-feedback-error-bg' : 'bg-feedback-success-bg'
+                        }`}
+                    >
+                        <FontText
+                            type="body"
+                            weight="medium"
+                            className={`text-xs ${
+                                isFailure ? 'text-feedback-error' : 'text-feedback-success-text'
+                            }`}
+                        >
+                            {isFailure ? t('FAILED') : t('SUCCESSFUL')}
+                        </FontText>
+                    </View>
+                )}
                 <FontText
                     type="body"
                     weight="regular"
