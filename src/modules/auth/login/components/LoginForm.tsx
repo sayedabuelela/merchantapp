@@ -1,19 +1,19 @@
-import { ROUTES } from '@/src/core/navigation/routes';
-import { LoginFormData } from "@/src/modules/auth/login/login.model";
-import { loginSchema } from '@/src/modules/auth/login/login.scheme';
-import { AlertIcon } from "@/src/shared/assets/svgs";
+import {ROUTES} from '@/src/core/navigation/routes';
+import {LoginFormData} from "@/src/modules/auth/login/login.model";
+import {loginSchema} from '@/src/modules/auth/login/login.scheme';
+import {AlertIcon} from "@/src/shared/assets/svgs";
 import AnimatedError from '@/src/shared/components/animated-messages/AnimatedError';
 import Button from "@/src/shared/components/Buttons/Button";
 import FontText from "@/src/shared/components/FontText";
 import Input from '@/src/shared/components/inputs/Input';
-import { COMMON_STYLES } from "@/src/shared/styles/main";
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from "expo-router";
-import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import {COMMON_STYLES} from "@/src/shared/styles/main";
+import {zodResolver} from '@hookform/resolvers/zod';
+import {Link} from "expo-router";
+import React, {useEffect, useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
+import {useTranslation} from 'react-i18next';
+import {View} from 'react-native';
+import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
 
 interface LoginFormProps {
     onSubmit: (data: LoginFormData) => void;
@@ -22,11 +22,11 @@ interface LoginFormProps {
 }
 
 
-export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
-    const { t } = useTranslation();
+export function LoginForm({onSubmit, loading, error}: LoginFormProps) {
+    const {t} = useTranslation();
     const [displayedError, setDisplayedError] = useState<string | undefined>(undefined);
 
-    const { control, handleSubmit, formState: { errors, isValid }, setFocus } = useForm<LoginFormData>({
+    const {control, handleSubmit, formState: {errors, isValid}, setFocus} = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
         // mode: 'onTouched',
         defaultValues: {
@@ -70,6 +70,8 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
             // password: 'P@ssw0rd1234',
             // email: 'aayman@kashier.io',
             // password: 'P@ssw0rd1234',
+            // email: 'michaelmorris186@yahoo.com',
+            // password: 'Michael@1993',
         },
     });
 
@@ -109,13 +111,13 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
         <View className="w-full mt-8">
 
             {displayedError && (
-                <AnimatedError errorMsg={t(displayedError)} />
+                <AnimatedError errorMsg={t(displayedError)}/>
             )}
 
             <Controller
                 control={control}
                 name="email"
-                render={({ field: { onChange, onBlur, value, ref } }) => (
+                render={({field: {onChange, onBlur, value, ref}}) => (
                     <Input
                         ref={ref}
                         value={value}
@@ -141,7 +143,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                     className="flex-row items-center mt-2"
                     entering={FadeIn}
                     exiting={FadeOut}>
-                    <AlertIcon />
+                    <AlertIcon/>
                     <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5 flex-1 flex-wrap self-start`}>
                         {t(errors?.email?.message || 'This field is required.')}
                     </FontText>
@@ -152,7 +154,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                 <Controller
                     control={control}
                     name="password"
-                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                    render={({field: {onChange, onBlur, value, ref}}) => (
                         <Input
                             ref={ref}
                             value={value}
@@ -175,7 +177,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
                         className="flex-row items-center mt-2"
                         entering={FadeIn}
                         exiting={FadeOut}>
-                        <AlertIcon />
+                        <AlertIcon/>
                         <FontText className={`${COMMON_STYLES.errorMsg} ml-2.5  flex-wrap self-start`}>
                             {t(errors?.password?.message || 'This field is required.')}
                         </FontText>

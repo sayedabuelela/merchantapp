@@ -1,11 +1,11 @@
-import { formatAMPM, formatRelativeDate } from '@/src/core/utils/dateUtils';
-import { currencyNumber } from '@/src/core/utils/number-fields';
+import {formatAMPM, formatRelativeDate} from '@/src/core/utils/dateUtils';
+import {currencyNumber} from '@/src/core/utils/number-fields';
 import FontText from '@/src/shared/components/FontText';
 import MainHeader from '@/src/shared/components/headers/MainHeader';
 import SimpleLoader from '@/src/shared/components/loaders/SimpleLoader';
-import { useLocalSearchParams } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import {useLocalSearchParams} from 'expo-router';
+import {useTranslation} from 'react-i18next';
+import {ScrollView} from 'react-native';
 import {
     ArrowsUpDownIcon,
     BanknotesIcon,
@@ -13,39 +13,34 @@ import {
     BuildingLibraryIcon,
     CalendarDaysIcon,
     CalendarIcon,
-    ChatBubbleBottomCenterIcon,
     CheckCircleIcon,
     CircleStackIcon,
     CubeTransparentIcon,
     CurrencyPoundIcon,
     FingerPrintIcon,
-    FlagIcon,
     HashtagIcon,
     IdentificationIcon,
     PaperClipIcon,
-    PowerIcon,
     RectangleGroupIcon,
     TagIcon,
     UserIcon
 } from 'react-native-heroicons/outline';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import DetailsSection from '../../../shared/components/details-screens/DetailsSection';
 import SectionItem from '../../../shared/components/details-screens/SectionItem';
 import SummaryItem from '../../payment-links/components/details-screen/SummaryItem';
-import StatusBox from '../../payment-links/components/StatusBox';
-import { PaymentStatus } from '../../payment-links/payment-links.model';
-import { useActivityDetails, useActivityPaymentDetails, useActivityTransferDetails } from '../viewmodels/useActivity';
-import { usePayoutBatches, useSettlementWindow } from '../viewmodels/useBatchRecords';
+import {useActivityDetails, useActivityPaymentDetails, useActivityTransferDetails} from '../viewmodels/useActivity';
+import {usePayoutBatches, useSettlementWindow} from '../viewmodels/useBatchRecords';
 import PaginatedTransactionList from '../components/batch-records/PaginatedTransactionList';
 import PaginatedBatchList from '../components/batch-records/PaginatedBatchList';
-import { PosPaymentBlackIcon } from '@/src/shared/assets/svgs';
+import {PosPaymentBlackIcon} from '@/src/shared/assets/svgs';
 
 const ActivityDetails = () => {
 
-    const { t } = useTranslation();
-    const { _id } = useLocalSearchParams<{ _id?: string }>();
+    const {t} = useTranslation();
+    const {_id} = useLocalSearchParams<{ _id?: string }>();
 
-    const { data: activity, isLoading: isLoadingActivity } = useActivityDetails(_id!);
+    const {data: activity, isLoading: isLoadingActivity} = useActivityDetails(_id!);
     const originReference = activity?.originReference ?? "";
     const origin = activity?.origin;
     const isTransfer = origin === "transfers";
@@ -54,26 +49,27 @@ const ActivityDetails = () => {
     const isSettlement = activity?.operation === "settlement";
     const metaData = activity?.metaData;
     const payoutInfo = activity?.payoutInfo;
-    const { data: transfer } = useActivityTransferDetails(originReference, { enabled: isTransfer });
-    const { data: payment } = useActivityPaymentDetails(originReference, { enabled: isPayment });
+    const {data: transfer} = useActivityTransferDetails(originReference, {enabled: isTransfer});
+    const {data: payment} = useActivityPaymentDetails(originReference, {enabled: isPayment});
     const {
         data: settlementBatchs,
         hasNextPage: hasMoreSettlements,
         isFetchingNextPage: isFetchingMoreSettlements,
         fetchNextPage: fetchMoreSettlements
-    } = useSettlementWindow({ originReference }, { enabled: !!(isSettlement && originReference) });
+    } = useSettlementWindow({originReference}, {enabled: !!(isSettlement && originReference)});
     const {
         data: payoutBatchs,
         hasNextPage: hasMorePayouts,
         isFetchingNextPage: isFetchingMorePayouts,
         fetchNextPage: fetchMorePayouts
-    } = usePayoutBatches(_id!, {}, { enabled: !!(isPayout) });
+    } = usePayoutBatches(_id!, {}, {enabled: !!(isPayout)});
     return (
         <SafeAreaView className="flex-1 bg-white">
-            {isLoadingActivity ? (<SimpleLoader />) :
+            {isLoadingActivity ? (<SimpleLoader/>) :
                 activity && (
                     <>
-                        <MainHeader title={t(`${activity.operation === 'topup' || activity.operation === 'deduct' ? "Adjustment" : activity.operation} details`)} />
+                        <MainHeader
+                            title={t(`${activity.operation === 'topup' || activity.operation === 'deduct' ? "Adjustment" : activity.operation} details`)}/>
                         <ScrollView
                             showsHorizontalScrollIndicator={false}
                             showsVerticalScrollIndicator={false}
@@ -83,18 +79,18 @@ const ActivityDetails = () => {
                         >
                             <DetailsSection
                                 className='mb-6'
-                                icon={<RectangleGroupIcon size={24} color="#556767" />}
+                                icon={<RectangleGroupIcon size={24} color="#556767"/>}
                                 title={t("Details")}
                             >
                                 <SectionItem
-                                    icon={<CurrencyPoundIcon size={24} color="#556767" />}
+                                    icon={<CurrencyPoundIcon size={24} color="#556767"/>}
                                     title={activity.accountName}
                                     value={activity.accountId}
                                     valueClassName="uppercase"
                                 />
 
                                 <SectionItem
-                                    icon={<ArrowsUpDownIcon size={24} color="#556767" />}
+                                    icon={<ArrowsUpDownIcon size={24} color="#556767"/>}
                                     title={t("Type")}
                                     value={activity.operation === 'topup' || activity.operation === 'deduct' ? t('Kashier Adjustments') : activity.operation}
                                     valueClassName="capitalize"
@@ -103,14 +99,14 @@ const ActivityDetails = () => {
                                 {metaData !== undefined && (
                                     <>
                                         <SectionItem
-                                            icon={<BanknotesIcon size={24} color="#556767" />}
+                                            icon={<BanknotesIcon size={24} color="#556767"/>}
                                             title={t("Method")}
                                             value={t(metaData?.method)}
                                             valueClassName="capitalize"
                                         />
 
                                         <SectionItem
-                                            icon={<PosPaymentBlackIcon />}
+                                            icon={<PosPaymentBlackIcon/>}
                                             title={t("Channel")}
                                             value={t(metaData?.channel)}
                                         />
@@ -118,20 +114,20 @@ const ActivityDetails = () => {
                                 )}
 
                                 <SectionItem
-                                    icon={<CheckCircleIcon size={24} color="#556767" />}
+                                    icon={<CheckCircleIcon size={24} color="#556767"/>}
                                     title={t("Reflected")}
                                     value={t(activity.isReflected ? "Yes" : "No")}
                                 />
 
                                 <SectionItem
-                                    icon={<PaperClipIcon size={24} color="#556767" />}
+                                    icon={<PaperClipIcon size={24} color="#556767"/>}
                                     title={t("External Ref")}
                                     value={activity.originReference}
                                     valueClassName="uppercase"
                                 />
 
                                 <SectionItem
-                                    icon={<CubeTransparentIcon size={24} color="#556767" />}
+                                    icon={<CubeTransparentIcon size={24} color="#556767"/>}
                                     title={t("Origin")}
                                     value={activity.origin === "operations team" ? t('Transfers') : activity.origin}
                                     valueClassName="capitalize"
@@ -155,14 +151,14 @@ const ActivityDetails = () => {
                                 )} */}
 
                                 <SectionItem
-                                    icon={<CalendarIcon size={24} color="#556767" />}
+                                    icon={<CalendarIcon size={24} color="#556767"/>}
                                     title={t(`${activity.operation === "payout" ? "Payout" : "Entry"} date`)}
                                     value={`${formatRelativeDate(activity.createdAt)}, ${formatAMPM(activity.createdAt)}`}
                                 />
 
                                 {activity.operation !== "payout" && (
                                     <SectionItem
-                                        icon={<CalendarDaysIcon size={24} color="#556767" />}
+                                        icon={<CalendarDaysIcon size={24} color="#556767"/>}
                                         title={t("Value date")}
                                         value={formatRelativeDate(activity.valueDate)}
                                     />
@@ -172,34 +168,34 @@ const ActivityDetails = () => {
                             {/* {transfer !== undefined && ( */}
                             <DetailsSection
                                 className='mb-6'
-                                icon={<IdentificationIcon size={24} color="#556767" />}
+                                icon={<IdentificationIcon size={24} color="#556767"/>}
                                 title={t("Recipient")}
                             >
                                 <SectionItem
-                                    icon={<HashtagIcon size={24} color="#556767" />}
+                                    icon={<HashtagIcon size={24} color="#556767"/>}
                                     title={t("Account ID")}
                                     value={activity.accountId}
                                 />
 
                                 <SectionItem
-                                    icon={<TagIcon size={24} color="#556767" />}
+                                    icon={<TagIcon size={24} color="#556767"/>}
                                     title={t("Account name")}
                                     value={activity.accountName}
                                 />
                                 {payoutInfo !== undefined && (
                                     <>
                                         <SectionItem
-                                            icon={<UserIcon size={24} color="#556767" />}
+                                            icon={<UserIcon size={24} color="#556767"/>}
                                             title={t("Recipient name")}
                                             value={payoutInfo.accountHolderName}
                                         />
                                         <SectionItem
-                                            icon={<FingerPrintIcon size={24} color="#556767" />}
+                                            icon={<FingerPrintIcon size={24} color="#556767"/>}
                                             title={t("Account number")}
                                             value={payoutInfo.accountNumber}
                                         />
                                         <SectionItem
-                                            icon={<BuildingLibraryIcon size={24} color="#556767" />}
+                                            icon={<BuildingLibraryIcon size={24} color="#556767"/>}
                                             title={t("Bank")}
                                             value={payoutInfo.method}
                                         />
@@ -210,11 +206,11 @@ const ActivityDetails = () => {
 
                             <DetailsSection
                                 className='gap-y-0 mb-6'
-                                icon={<BookmarkIcon size={24} color="#556767" />}
+                                icon={<BookmarkIcon size={24} color="#556767"/>}
                                 title={t("Summary")}
                             >
                                 <FontText type="body" weight="bold"
-                                    className="text-content-secondary self-start text-base mb-2 mt-4">
+                                          className="text-content-secondary self-start text-base mb-2 mt-4">
                                     {t("Activity")}
                                 </FontText>
                                 <SummaryItem
@@ -237,7 +233,7 @@ const ActivityDetails = () => {
                                     className='py-4 my-4 border-y border-tertiary'
                                 />
                                 <FontText type="body" weight="bold"
-                                    className="text-content-secondary self-start text-base mb-2">
+                                          className="text-content-secondary self-start text-base mb-2">
                                     {t("Balance info")}
                                 </FontText>
                                 <SummaryItem
@@ -263,7 +259,7 @@ const ActivityDetails = () => {
                             </DetailsSection> */}
                             {(settlementBatchs !== undefined && settlementBatchs.length > 0) && (
                                 <DetailsSection
-                                    icon={<CircleStackIcon size={24} color="#556767" />}
+                                    icon={<CircleStackIcon size={24} color="#556767"/>}
                                     title={t("Batch records")}
                                     className='mb-6 gap-y-0'
                                 >
@@ -277,7 +273,7 @@ const ActivityDetails = () => {
                             )}
                             {(payoutBatchs !== undefined && payoutBatchs.length > 0) && (
                                 <DetailsSection
-                                    icon={<CircleStackIcon size={24} color="#556767" />}
+                                    icon={<CircleStackIcon size={24} color="#556767"/>}
                                     title={t("Batch records")}
                                     className='mb-6 gap-y-0'
                                 >
