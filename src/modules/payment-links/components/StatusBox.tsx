@@ -16,6 +16,8 @@ const statusStyles: Record<string, { backgroundColor: string; color: string }> =
     EXPIRED: { backgroundColor: "rgba(255, 234, 232, 0.5)", color: '#A50017' },
     UNPAID: { backgroundColor: '#FFF7E8', color: '#B77801' },
     PENDING: { backgroundColor: '#FFF7E8', color: '#B77801' },
+    // instant-settlement request enum (Codex #2): warning tone, mirrors PENDING
+    PROCESSING: { backgroundColor: '#FFF7E8', color: '#B77801' },
     "PENDING_ACK": { backgroundColor: '#FFF7E8', color: '#B77801' },
     INITIATED: { backgroundColor: '#FFF7E8', color: '#956200' },
     "AWAITING_APPROVAL": { backgroundColor: '#FFF7E8', color: '#956200' },

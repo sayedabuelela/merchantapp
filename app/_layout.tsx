@@ -13,6 +13,7 @@ import * as Notifications from 'expo-notifications';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import 'react-native-reanimated';
 import { Toaster } from 'sonner-native';
@@ -107,6 +108,7 @@ function AppContent() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
       <NetworkProvider>
         <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
           <Stack.Protected guard={!hasSeenOnboarding && !isAuthenticated}>
@@ -129,6 +131,7 @@ function AppContent() {
         </Stack>
         <Toaster toastOptions={{ style: { elevation: 9999, zIndex: 9999 } }} />
       </NetworkProvider>
+      </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 }

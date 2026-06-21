@@ -38,7 +38,7 @@ const InstantSettlementHeader = ({
             searchValue={searchValue}
             showFilters={showFilters}
             backBtn={backBtn}
-            className='border-b border-stroke-main pb-4 mb-6'
+            className='border-b border-stroke-main pb-4'
         />
     )
 }

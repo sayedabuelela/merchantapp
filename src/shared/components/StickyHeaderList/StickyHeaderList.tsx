@@ -16,10 +16,16 @@ interface Props<T> {
     onRefresh?: () => void;
     onEndReachedThreshold?: number;
     ListFooterComponent?: React.ReactElement;
+    /**
+     * Optional key extractor for non-header rows. Defaults to `item._id` for
+     * backward compatibility. Pass this for models keyed on a different field
+     * (e.g. v3 presentation models that use `id`) to avoid undefined/duplicate keys.
+     */
+    keyExtractor?: (item: GroupedRow<T>) => string;
 }
 
 function StickyHeaderListComponent<T extends Record<string, any>>(
-    { listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, ListHeaderComponent, renderItem, refreshing, onRefresh, onEndReachedThreshold, ListFooterComponent }: Props<T>,
+    { listData, stickyHeaderIndices, fetchNextPage, hasNextPage, isFetchingNextPage, ListEmptyComponent, ListHeaderComponent, renderItem, refreshing, onRefresh, onEndReachedThreshold, ListFooterComponent, keyExtractor }: Props<T>,
     ref: React.Ref<FlashListRef<GroupedRow<T>>>
 ) {
     return (
@@ -31,7 +37,11 @@ function StickyHeaderListComponent<T extends Record<string, any>>(
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) =>
-                item?.type === "header" ? `header-${item.date}` : item?._id
+                item?.type === "header"
+                    ? `header-${item.date}`
+                    : keyExtractor
+                        ? keyExtractor(item)
+                        : item?._id
             }
             renderItem={renderItem}
             onEndReached={() => {

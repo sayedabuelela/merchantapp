@@ -63,7 +63,6 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
             onOpenActions(transaction);
         }
     };
-    console.log('transaction : ', transaction);
     return (
         <Link href={`/payments/transaction/${transactionId}`} asChild>
             <PressableScale onLongPress={handleLongPress}>

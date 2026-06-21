@@ -45,7 +45,6 @@ const ListHeader = ({
                     }: Props) => {
     const {t} = useTranslation();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    console.log('hasFilters : ', hasFilters);
     const {goBack} = useNavigation();
     return (
         <View className={cn("px-6", Platform.OS === 'android' ? 'pt-4' : 'pt-0', className)}>
