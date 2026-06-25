@@ -17,6 +17,10 @@ export const authenticate = async (api: AxiosInstance, credentials: LoginFormDat
     };
     const loginRequest: LoginRequest = {
         ...credentials,
+        // Normalize email to match backend storage: strip whitespace + lowercase.
+        // Fixes "invalid email or password" when autofill/paste adds spaces or caps
+        // (web normalizes; mobile previously sent raw).
+        email: credentials.email.trim().toLowerCase(),
     };
     if (fcmToken) {
         loginRequest.fcmData = fcmData;
