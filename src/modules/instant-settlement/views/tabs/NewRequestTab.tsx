@@ -1,4 +1,5 @@
 import { cn } from "@/src/core/utils/cn";
+import AnimatedInfoMsg from "@/src/shared/components/animated-messages/AnimatedInfoMsg";
 import { GroupedRow } from "@/src/core/utils/groupData";
 import AnimatedListItem from "@/src/shared/components/wrappers/animated-wrappers/AnimatedListItem";
 import StickyHeaderList from "@/src/shared/components/StickyHeaderList";
@@ -143,7 +144,7 @@ const NewRequestTab = ({ params, canEditBalance, enabled, onRequestSuccess }: Pr
             if (item.type === 'header') {
                 const isFirstHeader = index === 0;
                 return (
-                    <View className="flex-row items-center justify-between">
+                    <View className="flex-row items-center justify-between px-6">
                         <HeaderRow title={item.date} />
                         {isFirstHeader && (
                             <Pressable
@@ -172,19 +173,28 @@ const NewRequestTab = ({ params, canEditBalance, enabled, onRequestSuccess }: Pr
             const itemsBefore = listData.slice(0, index).filter((i) => i.type !== 'header').length;
             return (
                 <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
-                    <InstantSettlementCard
-                        transaction={item}
-                        isSelected={selected.has(item.id)}
-                        onToggleSelect={handleToggleSelect}
-                    />
+                    <View className="px-6">
+                        <InstantSettlementCard
+                            transaction={item}
+                            isSelected={selected.has(item.id)}
+                            onToggleSelect={handleToggleSelect}
+                        />
+                    </View>
                 </AnimatedListItem>
             );
         },
         [listData, selected, handleToggleSelect, handleSelectAll, isAllSelected, isFetchingAll, t],
     );
 
-    return (
-        <View className="flex-1">
+    const listHeader = (
+        <View>
+            <View className="px-6">
+                <AnimatedInfoMsg
+                    className="mt-1 mb-4"
+                    infoMsg={t('Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.')}
+                />
+            </View>
+
             <SettlementSummaryCard
                 totalAmount={summary?.totalAmount ?? 0}
                 ordersCount={summary?.count ?? 0}
@@ -215,34 +225,37 @@ const NewRequestTab = ({ params, canEditBalance, enabled, onRequestSuccess }: Pr
                     />
                 </View>
             </View>
+        </View>
+    );
 
-            {isLoading ? (
-                <View className={cn("flex-1 px-6")}>
-                    <PaymentLinkCardSkeleton />
-                </View>
-            ) : (
-                <View className={cn("flex-1 px-6")}>
-                    <StickyHeaderList
-                        ref={listRef}
-                        listData={listData}
-                        stickyHeaderIndices={stickyHeaderIndices}
-                        fetchNextPage={fetchNextPage}
-                        hasNextPage={hasNextPage}
-                        isFetchingNextPage={isFetchingNextPage}
-                        renderItem={renderItem}
-                        refreshing={isRefetching}
-                        onRefresh={refetch}
-                        keyExtractor={(item) => (item.type === 'header' ? `header-${item.date}` : item.id)}
-                        ListEmptyComponent={
-                            <EmptyDataList
-                                icon={<BanknotesIcon size={48} color="#919C9C" />}
-                                title={t('No transactions')}
-                                description={t('No settlement transactions found')}
-                            />
-                        }
-                    />
-                </View>
-            )}
+    return (
+        <View className="flex-1">
+            <StickyHeaderList
+                ref={listRef}
+                listData={listData}
+                stickyHeaderIndices={stickyHeaderIndices}
+                fetchNextPage={fetchNextPage}
+                hasNextPage={hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                renderItem={renderItem}
+                refreshing={isRefetching}
+                onRefresh={refetch}
+                keyExtractor={(item) => (item.type === 'header' ? `header-${item.date}` : item.id)}
+                ListHeaderComponent={listHeader}
+                ListEmptyComponent={
+                    isLoading ? (
+                        <View className={cn("px-6")}>
+                            <PaymentLinkCardSkeleton />
+                        </View>
+                    ) : (
+                        <EmptyDataList
+                            icon={<BanknotesIcon size={48} color="#919C9C" />}
+                            title={t('No transactions')}
+                            description={t('No settlement transactions found')}
+                        />
+                    )
+                }
+            />
 
             <ConfirmPayoutSheet
                 ref={confirmSheetRef}

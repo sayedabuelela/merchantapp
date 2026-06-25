@@ -13,18 +13,6 @@ interface FetchAllState {
     isFetchingAll: boolean;
     error: boolean;
 }
-
-/**
- * Fetches ALL eligible transaction pages for the "Select all eligible" action.
- *
- * Safeguards (§5):
- *  - snapshot params: caller passes the current params; a params change between
- *    calls produces a fresh closure, and stale in-flight results are discarded
- *    via the run-token guard.
- *  - abort on unmount (no setState after unmount).
- *  - max-page guard (stop + signal incomplete).
- *  - duplicate-call guard (ignore re-taps while running).
- */
 export const useFetchAllEligible = () => {
     const { api } = useApi();
     const [state, setState] = useState<FetchAllState>({ isFetchingAll: false, error: false });

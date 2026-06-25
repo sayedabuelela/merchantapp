@@ -71,7 +71,8 @@ export function LoginForm({onSubmit, loading, error}: LoginFormProps) {
             // email: 'aayman@kashier.io',
             // password: 'P@ssw0rd1234',
             // email: 'michaelmorris186@yahoo.com',
-            // password: 'Michael@1993',
+            // email: 'moshaaban@kashier.io',
+            // password: 'Maro$2888889',
         },
     });
 

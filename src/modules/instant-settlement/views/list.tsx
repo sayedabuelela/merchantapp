@@ -1,5 +1,3 @@
-import { isInstantSettlementUnavailable } from "@/src/core/utils/serviceAvailability";
-import AnimatedInfoMsg from "@/src/shared/components/animated-messages/AnimatedInfoMsg";
 import ListTabs, { Tab } from "@/src/shared/components/ListTabs/ListTabs";
 import { FadeInDownView } from "@/src/shared/components/wrappers/animated-wrappers";
 import { useCallback, useMemo, useState } from "react";
@@ -22,7 +20,6 @@ const InstantSettlementScreen = () => {
 
     const user = useAuthStore(selectUser);
     const { canEditBalance } = usePermissions(user?.actions!);
-    const isUnavailable = isInstantSettlementUnavailable();
 
     const tabs: Tab<TabValue>[] = useMemo(
         () => [
@@ -38,10 +35,6 @@ const InstantSettlementScreen = () => {
     const handleClearSearch = useCallback(() => setSearch(''), []);
     const handleSearchChange = useCallback((text: string) => setSearch(text), []);
     const handleRequestSuccess = useCallback(() => setTab('requests'), []);
-
-    const infoMsg = isUnavailable
-        ? t('Settlement services during the Eid holiday period suspended and will work normally after this period')
-        : t('Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.');
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -71,15 +64,11 @@ const InstantSettlementScreen = () => {
                 />
             </View>
 
-            <View className="px-6">
-                <AnimatedInfoMsg className="mt-1 mb-2" infoMsg={infoMsg} />
-            </View>
-
             {tab === 'new' ? (
                 <NewRequestTab
                     params={{ requestId }}
                     canEditBalance={canEditBalance}
-                    enabled={!isUnavailable}
+                    enabled={true}
                     onRequestSuccess={handleRequestSuccess}
                 />
             ) : (
