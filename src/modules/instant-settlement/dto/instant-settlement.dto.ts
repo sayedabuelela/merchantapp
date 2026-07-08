@@ -202,6 +202,8 @@ export interface RequestDetailsDTO extends RequestDTO {
     /** embedded Records list; null when unavailable */
     linkedBalanceRecords: LinkedBalanceRecordDTO[] | null;
     linkedBalanceRecordsUnavailable?: boolean;
+    /** top-level daily/per-request limits (same shape as the eligible response) */
+    limits?: LimitsDTO;
 }
 
 /**

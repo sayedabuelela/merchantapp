@@ -1,19 +1,19 @@
-import { Link } from "expo-router"
-import { Pressable, View } from "react-native"
+import {Link} from "expo-router"
+import {View} from "react-native"
 import FontText from "@/src/shared/components/FontText"
-import { currencyNumber } from "@/src/core/utils/number-fields"
-import { ArrowSmallDownIcon, ArrowSmallUpIcon, EnvelopeIcon, UserIcon } from "react-native-heroicons/outline"
-import { useTranslation } from "react-i18next"
-import { cn } from "@/src/core/utils/cn"
+import {currencyNumber} from "@/src/core/utils/number-fields"
+import {ArrowSmallDownIcon, ArrowSmallUpIcon, EnvelopeIcon, UserIcon} from "react-native-heroicons/outline"
+import {useTranslation} from "react-i18next"
+import {cn} from "@/src/core/utils/cn"
 import React from "react";
 import StatusBox from "@/src/modules/payment-links/components/StatusBox";
-import { Transaction } from "@/src/modules/payments/payments.model";
-import { PhoneIcon } from "react-native-heroicons/mini";
-import { formatAMPM } from "@/src/core/utils/dateUtils";
+import {Transaction} from "@/src/modules/payments/payments.model";
+import {PhoneIcon} from "react-native-heroicons/mini";
+import {formatAMPM} from "@/src/core/utils/dateUtils";
 import IconBox from "@/src/shared/components/wrappers/IconBox"
-import { PressableScale } from "pressto"
-import { objectHasKeys } from "@/src/core/utils/objects"
-import { getEffectiveTransactionStatus } from "../../utils/posStatus.utils"
+import {PressableScale} from "pressto"
+import {objectHasKeys} from "@/src/core/utils/objects"
+import {getEffectiveTransactionStatus} from "../../utils/posStatus.utils"
 
 // const IconBox = ({ children }: { children: React.ReactNode }) => {
 //     return (
@@ -28,8 +28,8 @@ interface TransactionCardProps {
     onOpenActions?: (transaction: Transaction) => void;
 }
 
-const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) => {
-    const { t } = useTranslation();
+const TransactionCard = ({transaction, onOpenActions}: TransactionCardProps) => {
+    const {t} = useTranslation();
     const {
         _id,
         status,
@@ -75,20 +75,20 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                                     : 'bg-[#FFEAED] border border-[#FEE4E7]'
                             )}>
                                 {(isPayment) ? (
-                                    <ArrowSmallDownIcon size={10} color={'#1A541D'} />
+                                    <ArrowSmallDownIcon size={10} color={'#1A541D'}/>
                                 ) : (
-                                    <ArrowSmallUpIcon size={10} color={'#A50017'} />
+                                    <ArrowSmallUpIcon size={10} color={'#A50017'}/>
                                 )}
                             </IconBox>
 
                             <FontText type="body" weight="regular"
-                                className="text-content-secondary text-xs capitalize">
+                                      className="text-content-secondary text-xs capitalize">
                                 {type || operation}
                             </FontText>
 
                         </View>
                         <FontText type="body" weight="bold"
-                            className={cn("text-content-primary text-sm")}>
+                                  className={cn("text-content-primary text-sm")}>
                             {currencyNumber(amount)} {t(currency)}
                         </FontText>
                     </View>
@@ -96,28 +96,30 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                     <View className="flex-row items-center justify-between">
                         {method && (
                             <FontText type="body" weight="regular"
-                                className="text-content-primary text-xs capitalize">
+                                      className="text-content-primary text-xs capitalize">
                                 {method} - {channel}
                             </FontText>
                         )}
-                        <StatusBox status={effectiveStatus} />
+                        <StatusBox status={effectiveStatus}/>
                     </View>
                     {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                     {t('To')} {'Account Name'}
                 </FontText> */}
-                    <FontText type="body" weight="regular" className="text-content-secondary text-xs mb-2 mt-1 self-start">
+                    <FontText type="body" weight="regular"
+                              className="text-content-secondary text-xs mb-2 mt-1 self-start">
                         {/* {type} .  */}
                         {formatAMPM(createdAt)}
                     </FontText>
                     <View className="flex-row items-center">
                         {transactionId && (
                             <FontText type="body" weight="regular"
-                                className="text-content-secondary text-[10px] uppercase mr-1 bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                                      className="text-content-secondary text-[10px] uppercase mr-1 bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
                                 {transactionId}
                             </FontText>
                         )}
                         {merchantOrderId && (
-                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                            <FontText type="body" weight="regular"
+                                      className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
                                 {merchantOrderId}
                             </FontText>
                         )}
@@ -127,16 +129,18 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                             <View className="flex-row items-center gap-x-4">
                                 {customer?.firstName && (
                                     <View className="flex-row items-center gap-x-1">
-                                        <UserIcon size={10} color="#556767" />
-                                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                                        <UserIcon size={10} color="#556767"/>
+                                        <FontText type="body" weight="regular"
+                                                  className="text-content-secondary text-[10px]">
                                             {`${customer?.firstName} ${customer?.lastName !== undefined ? customer?.lastName : ''}`}
                                         </FontText>
                                     </View>
                                 )}
                                 {customer?.mobilePhone && (
                                     <View className="flex-row items-center gap-x-1">
-                                        <PhoneIcon size={10} color="#556767" />
-                                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                                        <PhoneIcon size={10} color="#556767"/>
+                                        <FontText type="body" weight="regular"
+                                                  className="text-content-secondary text-[10px]">
                                             {customer?.mobilePhone}
                                         </FontText>
                                     </View>
@@ -144,8 +148,9 @@ const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) =
                             </View>
                             {customer?.email && (
                                 <View className="flex-row items-center gap-x-1">
-                                    <EnvelopeIcon size={10} color="#556767" />
-                                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                                    <EnvelopeIcon size={10} color="#556767"/>
+                                    <FontText type="body" weight="regular"
+                                              className="text-content-secondary text-[10px]">
                                         {customer?.email}
                                     </FontText>
                                 </View>

@@ -174,6 +174,7 @@ export const mapRequestDetails = (
         records: (dto.linkedBalanceRecords ?? []).map(mapRequestRecord),
         recordsUnavailable: !!dto.linkedBalanceRecordsUnavailable,
         statusHistory: mapRequestStatusHistory(dto.statusHistory),
+        limits: dto.limits ? mapLimits(dto.limits) : undefined,
     };
 };
 

@@ -1,21 +1,106 @@
-import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils";
-import StatusBox from "@/src/modules/payment-links/components/StatusBox";
 import EmptyDataList from "@/src/shared/components/empty-list/EmptyDataList";
-import FontText from "@/src/shared/components/FontText";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { ClockIcon } from "react-native-heroicons/outline";
-import type { RequestStatusHistoryEntry } from "../../../domain/instant-settlement.models";
+import type {
+    RequestStatus,
+    RequestStatusHistoryEntry,
+} from "../../../domain/instant-settlement.models";
+import StatusTimeline, { TimelineStep } from "../../components/StatusTimeline";
 
 interface Props {
+    status: RequestStatus;
     statusHistory: RequestStatusHistoryEntry[];
+    createdAt: string;
 }
 
-/** History tab — `statusHistory[]` timeline (HistoryCard visual pattern). */
-const HistoryTabView = ({ statusHistory }: Props) => {
+type TFn = (key: string) => string;
+
+/** First recorded timestamp for a given raw status (already upper-cased). */
+const atFor = (
+    history: RequestStatusHistoryEntry[],
+    status: string,
+): string | undefined => history.find((e) => e.status === status)?.at;
+
+/**
+ * Derive the fixed 3-step journey (Request submitted → Risk review → Funds
+ * transferred) from the current status + status-history timestamps.
+ */
+const buildTimelineSteps = (
+    rawStatus: RequestStatus,
+    history: RequestStatusHistoryEntry[],
+    createdAt: string,
+    t: TFn,
+): TimelineStep[] => {
+    const status = (rawStatus || '').toUpperCase();
+    const submittedAt = atFor(history, 'PENDING') ?? history[0]?.at ?? createdAt;
+    const processingAt = atFor(history, 'PROCESSING');
+    const transferredAt = atFor(history, 'TRANSFERRED');
+    const declinedAt = atFor(history, 'DECLINED');
+
+    // Step 1 — always done once the request exists.
+    const submitted: TimelineStep = {
+        title: t('Request submitted'),
+        description: t('Your instant settlement request was received.'),
+        at: submittedAt,
+        state: 'done',
+    };
+
+    // Step 2 — risk review (rejected branch on DECLINED).
+    let risk: TimelineStep;
+    if (status === 'DECLINED') {
+        risk = {
+            title: t('Request rejected'),
+            description: t('Risk review declined the request.'),
+            at: declinedAt,
+            state: 'error',
+        };
+    } else if (status === 'PENDING') {
+        risk = {
+            title: t('Risk review'),
+            description: t('Risk review is currently in progress.'),
+            state: 'current',
+        };
+    } else {
+        risk = {
+            title: t('Risk review'),
+            description: t('Automated risk evaluation.'),
+            at: processingAt ?? submittedAt,
+            state: 'done',
+        };
+    }
+
+    // Step 3 — funds transferred.
+    let funds: TimelineStep;
+    if (status === 'TRANSFERRED') {
+        funds = {
+            title: t('Funds transferred'),
+            description: t('Transfer to preassigned payout methods per account.'),
+            at: transferredAt,
+            state: 'done',
+        };
+    } else if (status === 'PROCESSING') {
+        funds = {
+            title: t('Funds transferred'),
+            description: t('Transfer is being processed.'),
+            state: 'current',
+        };
+    } else {
+        funds = {
+            title: t('Funds transferred'),
+            description: t('Transfer to your bank account.'),
+            state: 'pending',
+        };
+    }
+
+    return [submitted, risk, funds];
+};
+
+/** History tab — derived 3-step status timeline. */
+const HistoryTabView = ({ status, statusHistory, createdAt }: Props) => {
     const { t } = useTranslation();
 
-    if (statusHistory.length === 0) {
+    if (!status) {
         return (
             <View className="flex-1 px-6 mt-6">
                 <EmptyDataList
@@ -27,28 +112,15 @@ const HistoryTabView = ({ statusHistory }: Props) => {
         );
     }
 
+    const steps = buildTimelineSteps(status, statusHistory, createdAt, t);
+
     return (
         <ScrollView
             className="flex-1"
             contentContainerClassName="px-6 pt-6 pb-10"
             showsVerticalScrollIndicator={false}
         >
-            {statusHistory.map((entry, index) => (
-                <View
-                    key={`${entry.status}-${entry.at}-${index}`}
-                    className="flex-row items-start p-4 rounded border border-tertiary mb-2 gap-x-4"
-                >
-                    <View className="w-8 h-8 rounded-full items-center justify-center bg-[#F5F6F6]">
-                        <ClockIcon size={16} color="#556767" />
-                    </View>
-                    <View className="flex-1">
-                        <FontText type="body" weight="regular" className="text-sm text-content-secondary self-start mb-2">
-                            {formatRelativeDate(entry.at)}, {formatAMPM(entry.at)}
-                        </FontText>
-                        <StatusBox status={entry.status} />
-                    </View>
-                </View>
-            ))}
+            <StatusTimeline steps={steps} />
         </ScrollView>
     );
 };

@@ -1,11 +1,9 @@
 import { cn } from "@/src/core/utils/cn";
-import { formatRelativeDate } from "@/src/core/utils/dateUtils";
+import { formatAMPM } from "@/src/core/utils/dateUtils";
 import { currencyNumber } from "@/src/core/utils/number-fields";
 import FontText from "@/src/shared/components/FontText";
-import IconBox from "@/src/shared/components/wrappers/IconBox";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { ArrowSmallDownIcon, ArrowSmallUpIcon } from "react-native-heroicons/outline";
 import type { RequestRecord } from "../../domain/instant-settlement.models";
 
 interface Props {
@@ -20,26 +18,17 @@ const PayoutRecordRow = ({ record }: Props) => {
     const isIn = record.direction === 'in';
 
     return (
-        <View className="flex-row items-center justify-between py-3 border-b border-tertiary">
-            <View className="flex-row items-center gap-x-2 flex-1">
-                <IconBox className={cn(isIn ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
-                    {isIn ? (
-                        <ArrowSmallDownIcon size={10} color="#1A541D" />
-                    ) : (
-                        <ArrowSmallUpIcon size={10} color="#A50017" />
-                    )}
-                </IconBox>
-                <View className="flex-1">
-                    {/* accountId only — no friendly labels (SSOT §6) */}
-                    <FontText type="body" weight="regular" className="text-content-primary text-xs" numberOfLines={1}>
-                        {record.accountId || record.operation || t('Record')}
+        <View className="flex-row items-center justify-between border-[1.5px] rounded border-tertiary p-4 mb-2">
+            <View className="flex-1 pr-2">
+                {/* accountId only — no friendly labels (SSOT §6) */}
+                <FontText type="body" weight="regular" className="text-content-secondary text-[10px] mb-0.5" numberOfLines={1}>
+                    {record.accountId || record.operation || t('Record')}
+                </FontText>
+                {!!record.createdAt && (
+                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                        {formatAMPM(record.createdAt)}
                     </FontText>
-                    {!!record.valueDate && (
-                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                            {formatRelativeDate(record.valueDate)}
-                        </FontText>
-                    )}
-                </View>
+                )}
             </View>
             <FontText
                 type="body"

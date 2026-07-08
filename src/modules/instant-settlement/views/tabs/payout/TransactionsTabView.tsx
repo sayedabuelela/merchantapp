@@ -1,16 +1,19 @@
 import { useGroupedData } from "@/src/core/hooks/useGroupedData";
 import { formatAMPM } from "@/src/core/utils/dateUtils";
+import { cn } from "@/src/core/utils/cn";
 import { GroupedRow, groupByDate } from "@/src/core/utils/groupData";
 import { currencyNumber } from "@/src/core/utils/number-fields";
 import EmptyDataList from "@/src/shared/components/empty-list/EmptyDataList";
 import FontText from "@/src/shared/components/FontText";
+import IconBox from "@/src/shared/components/wrappers/IconBox";
+import StatusBox from "@/src/modules/payment-links/components/StatusBox";
 import StickyHeaderList from "@/src/shared/components/StickyHeaderList";
 import HeaderRow from "@/src/shared/components/StickyHeaderList/HeaderRow";
 import PaymentLinkCardSkeleton from "@/src/modules/payment-links/components/PaymentLinkCardSkeleton";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, View } from "react-native";
-import { BanknotesIcon } from "react-native-heroicons/outline";
+import { ArrowSmallDownIcon, ArrowSmallUpIcon, BanknotesIcon } from "react-native-heroicons/outline";
 import type { EligibleTransaction } from "../../../domain/instant-settlement.models";
 import { useInstantRequestTransactionsVM } from "../../../viewmodels/useInstantRequestTransactionsVM";
 
@@ -22,24 +25,46 @@ const CURRENCY = 'EGP';
 
 const TransactionRow = ({ tx }: { tx: EligibleTransaction }) => {
     const { t } = useTranslation();
+    const isPayment = tx.operation === 'pay' || tx.operation === 'PAYMENT';
+    const methodLine = [tx.method, tx.channel].filter(Boolean).join(' - ');
+
     return (
-        <View className="flex-row items-center justify-between border-[1.5px] rounded border-tertiary px-4 py-4 mb-2">
-            <View className="flex-1 pr-2">
-                <FontText type="body" weight="regular" className="text-content-primary text-xs capitalize mb-1">
-                    {tx.method}
-                </FontText>
-                {!!tx.accountId && (
-                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px]" numberOfLines={1}>
-                        {t('To')} {tx.accountId}
+        <View className="border-[1.5px] rounded border-tertiary p-4 mb-2">
+            <View className="flex-row items-center justify-between mb-2">
+                <View className="flex-row items-center gap-x-2">
+                    <IconBox className={cn(isPayment ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
+                        {isPayment ? (
+                            <ArrowSmallDownIcon size={10} color="#1A541D" />
+                        ) : (
+                            <ArrowSmallUpIcon size={10} color="#A50017" />
+                        )}
+                    </IconBox>
+                    <FontText type="body" weight="regular" className="text-content-secondary text-xs capitalize">
+                        {tx.operation || t('Payment')}
                     </FontText>
-                )}
-                <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                    {formatAMPM(tx.createdAt)}
+                </View>
+                <FontText type="body" weight="bold" className="text-[#1A541D] text-sm">
+                    +{currencyNumber(tx.amount)} {t(CURRENCY)}
                 </FontText>
             </View>
-            <FontText type="body" weight="bold" className="text-[#1A541D] text-sm">
-                +{currencyNumber(tx.amount)} {t(CURRENCY)}
+            <View className="flex-row items-center justify-between">
+                {!!methodLine && (
+                    <FontText type="body" weight="regular" className="text-content-primary text-xs capitalize">
+                        {methodLine}
+                    </FontText>
+                )}
+                {!!tx.status && <StatusBox status={tx.status} />}
+            </View>
+            <FontText type="body" weight="regular" className="text-content-secondary text-[10px] mt-1 self-start">
+                {formatAMPM(tx.createdAt)}
             </FontText>
+            {!!tx.orderId && (
+                <View className="flex-row items-center mt-2">
+                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px] uppercase bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                        {tx.orderId}
+                    </FontText>
+                </View>
+            )}
         </View>
     );
 };

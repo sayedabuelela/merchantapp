@@ -1,3 +1,4 @@
+import { cn } from "@/src/core/utils/cn";
 import { currencyNumber } from "@/src/core/utils/number-fields";
 import FontText from "@/src/shared/components/FontText";
 import { useTranslation } from "react-i18next";
@@ -6,12 +7,13 @@ import type { Limits } from "../../domain/instant-settlement.models";
 
 interface Props {
     limits?: Limits;
+    className?: string;
 }
 
 const CURRENCY = 'EGP';
 
 /** Daily-limit card — real `limits` from the eligible response (§12). */
-const DailyLimitCard = ({ limits }: Props) => {
+const DailyLimitCard = ({ limits, className }: Props) => {
     const { t } = useTranslation();
     if (!limits) return null;
 
@@ -20,7 +22,7 @@ const DailyLimitCard = ({ limits }: Props) => {
     const progress = dailyCap > 0 ? Math.min(Math.max(usedToday / dailyCap, 0), 1) : 0;
 
     return (
-        <View className="mx-6 mb-6 border rounded border-stroke-main bg-surface-secondary p-4">
+        <View className={cn("mx-6 mb-6 border rounded border-stroke-main bg-surface-secondary p-4", className)}>
             <View className="flex-row items-center justify-between mb-2">
                 <FontText type="body" weight="regular" className="text-xxs text-content-secondary uppercase">
                     {t('Daily limit')}

@@ -40,7 +40,7 @@ const PayoutDetailsScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <MainHeader title={t('Payout details')} className="mb-0" />
+            <MainHeader title={t('Instant settlement details')} className="mb-0" />
             {isError && !details ? (
                 <View className="flex-1 px-6 mt-6 items-center justify-center">
                     <EmptyDataList
@@ -79,7 +79,13 @@ const PayoutDetailsScreen = () => {
                                 recordsUnavailable={details.recordsUnavailable}
                             />
                         )}
-                        {tab === 'history' && <HistoryTabView statusHistory={details.statusHistory} />}
+                        {tab === 'history' && (
+                            <HistoryTabView
+                                status={details.status}
+                                statusHistory={details.statusHistory}
+                                createdAt={details.createdAt}
+                            />
+                        )}
                     </View>
                 </>
             )}

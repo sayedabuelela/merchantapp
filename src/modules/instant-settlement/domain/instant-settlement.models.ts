@@ -147,6 +147,8 @@ export interface InstantRequestDetails {
     recordsUnavailable: boolean;
     /** History tab — coalesced to [] when absent */
     statusHistory: RequestStatusHistoryEntry[];
+    /** daily/per-request limits — drives the Daily Limit card (absent → hidden) */
+    limits?: Limits;
 }
 
 /**
