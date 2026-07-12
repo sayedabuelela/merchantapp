@@ -24,10 +24,10 @@ const DailyLimitCard = ({ limits, className }: Props) => {
     return (
         <View className={cn("mx-6 mb-6 border rounded border-stroke-main bg-surface-secondary p-4", className)}>
             <View className="flex-row items-center justify-between mb-2">
-                <FontText type="body" weight="regular" className="text-xxs text-content-secondary uppercase">
+                <FontText type="body" weight="regular" className="text-sm text-content-secondary uppercase">
                     {t('Daily limit')}
                 </FontText>
-                <FontText type="body" weight="semi" className="text-sm text-content-primary">
+                <FontText type="head" weight="bold" className="text-xl text-content-primary">
                     {currencyNumber(dailyCap)} {t(CURRENCY)}
                 </FontText>
             </View>
@@ -37,7 +37,7 @@ const DailyLimitCard = ({ limits, className }: Props) => {
                     style={{ width: `${progress * 100}%` }}
                 />
             </View>
-            <FontText type="body" weight="regular" className="text-xxs text-content-secondary mt-2 self-end">
+            <FontText type="body" weight="regular" className="text-xs text-content-secondary mt-2 self-end">
                 {t('Used')} {currencyNumber(usedToday)} {t(CURRENCY)}
             </FontText>
         </View>

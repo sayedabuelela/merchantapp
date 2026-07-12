@@ -1,7 +1,7 @@
-import PayoutDetailsScreen from "@/src/modules/instant-settlement/views/payout-details";
+import RequestDetailsScreen from "@/src/modules/instant-settlement/views/request-details";
 
 const InstantSettlementRequestDetails = () => {
-    return <PayoutDetailsScreen />;
+    return <RequestDetailsScreen />;
 };
 
 export default InstantSettlementRequestDetails;

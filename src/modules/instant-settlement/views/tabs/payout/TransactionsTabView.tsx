@@ -10,6 +10,8 @@ import StatusBox from "@/src/modules/payment-links/components/StatusBox";
 import StickyHeaderList from "@/src/shared/components/StickyHeaderList";
 import HeaderRow from "@/src/shared/components/StickyHeaderList/HeaderRow";
 import PaymentLinkCardSkeleton from "@/src/modules/payment-links/components/PaymentLinkCardSkeleton";
+import { Link } from "expo-router";
+import { PressableScale } from "pressto";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, View } from "react-native";
@@ -23,49 +25,63 @@ interface Props {
 
 const CURRENCY = 'EGP';
 
+/** `pay` is the backend enum for an inbound payment — surface it as "Payment". */
+const isPaymentOperation = (operation: string) =>
+    ['pay', 'payment'].includes((operation || '').toLowerCase());
+
 const TransactionRow = ({ tx }: { tx: EligibleTransaction }) => {
     const { t } = useTranslation();
-    const isPayment = tx.operation === 'pay' || tx.operation === 'PAYMENT';
+    const isPayment = isPaymentOperation(tx.operation);
+    const operationLabel = isPayment ? t('Payment') : tx.operation;
     const methodLine = [tx.method, tx.channel].filter(Boolean).join(' - ');
 
     return (
-        <View className="border-[1.5px] rounded border-tertiary p-4 mb-2">
-            <View className="flex-row items-center justify-between mb-2">
-                <View className="flex-row items-center gap-x-2">
-                    <IconBox className={cn(isPayment ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
-                        {isPayment ? (
-                            <ArrowSmallDownIcon size={10} color="#1A541D" />
-                        ) : (
-                            <ArrowSmallUpIcon size={10} color="#A50017" />
+        <Link href={`/payments/transaction/${tx.id}`} asChild>
+            <PressableScale>
+                <View className="border-[1.5px] rounded border-tertiary p-4 mb-2">
+                    <View className="flex-row items-center justify-between mb-2">
+                        <View className="flex-row items-center gap-x-2">
+                            <IconBox className={cn(isPayment ? 'bg-[#D1FFD3] border border-[#AEFFB2]' : 'bg-[#FFEAED] border border-[#FEE4E7]')}>
+                                {isPayment ? (
+                                    <ArrowSmallDownIcon size={10} color="#1A541D" />
+                                ) : (
+                                    <ArrowSmallUpIcon size={10} color="#A50017" />
+                                )}
+                            </IconBox>
+                            <FontText type="body" weight="regular" className="text-content-secondary text-xs capitalize">
+                                {operationLabel || t('Payment')}
+                            </FontText>
+                        </View>
+                        <FontText type="body" weight="bold" className="text-[#4AAB4E] text-sm">
+                            +{currencyNumber(tx.amount)} {t(CURRENCY)}
+                        </FontText>
+                    </View>
+                    <View className="flex-row items-center justify-between">
+                        {!!methodLine && (
+                            <FontText type="body" weight="regular" className="text-content-primary text-xs capitalize">
+                                {methodLine}
+                            </FontText>
                         )}
-                    </IconBox>
-                    <FontText type="body" weight="regular" className="text-content-secondary text-xs capitalize">
-                        {tx.operation || t('Payment')}
+                        {!!tx.status && <StatusBox status={tx.status} />}
+                    </View>
+                    {!!tx.accountId && (
+                        <FontText type="body" weight="regular" className="text-content-primary text-xs mt-1 self-start">
+                            {tx.accountId}
+                        </FontText>
+                    )}
+                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px] mt-1 self-start">
+                        {formatAMPM(tx.createdAt)}
                     </FontText>
+                    {!!tx.orderId && (
+                        <View className="flex-row items-center mt-2">
+                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px] uppercase bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
+                                {tx.orderId}
+                            </FontText>
+                        </View>
+                    )}
                 </View>
-                <FontText type="body" weight="bold" className="text-[#1A541D] text-sm">
-                    +{currencyNumber(tx.amount)} {t(CURRENCY)}
-                </FontText>
-            </View>
-            <View className="flex-row items-center justify-between">
-                {!!methodLine && (
-                    <FontText type="body" weight="regular" className="text-content-primary text-xs capitalize">
-                        {methodLine}
-                    </FontText>
-                )}
-                {!!tx.status && <StatusBox status={tx.status} />}
-            </View>
-            <FontText type="body" weight="regular" className="text-content-secondary text-[10px] mt-1 self-start">
-                {formatAMPM(tx.createdAt)}
-            </FontText>
-            {!!tx.orderId && (
-                <View className="flex-row items-center mt-2">
-                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px] uppercase bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
-                        {tx.orderId}
-                    </FontText>
-                </View>
-            )}
-        </View>
+            </PressableScale>
+        </Link>
     );
 };
 

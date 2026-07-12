@@ -7,6 +7,7 @@ import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import type { InstantRequestSummary } from "../../domain/instant-settlement.models";
+import { toDisplayStatus } from "../../mappers/instant-settlement.status";
 import StatusBox from "@/src/modules/payment-links/components/StatusBox";
 
 interface Props {
@@ -33,7 +34,7 @@ const RequestCard = ({ request }: Props) => {
                             </FontText>
                         </View>
                         <View className="items-end gap-y-1">
-                            <StatusBox status={request.status} />
+                            <StatusBox status={toDisplayStatus(request.status)} />
                             <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                                 {formatAMPM(request.createdAt)}
                             </FontText>

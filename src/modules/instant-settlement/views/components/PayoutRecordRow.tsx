@@ -33,7 +33,7 @@ const PayoutRecordRow = ({ record }: Props) => {
             <FontText
                 type="body"
                 weight="bold"
-                className={cn('text-sm', isIn ? 'text-[#1A541D]' : 'text-[#A50017]')}
+                className={cn('text-sm', isIn ? 'text-[#4AAB4E]' : 'text-[#A50017]')}
             >
                 {isIn ? '+' : '-'}{currencyNumber(record.amount)} {t(CURRENCY)}
             </FontText>

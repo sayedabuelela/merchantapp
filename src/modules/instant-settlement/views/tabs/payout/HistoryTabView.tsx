@@ -6,6 +6,7 @@ import type {
     RequestStatus,
     RequestStatusHistoryEntry,
 } from "../../../domain/instant-settlement.models";
+import { isDeclinedStatus } from "../../../mappers/instant-settlement.status";
 import StatusTimeline, { TimelineStep } from "../../components/StatusTimeline";
 
 interface Props {
@@ -36,7 +37,7 @@ const buildTimelineSteps = (
     const submittedAt = atFor(history, 'PENDING') ?? history[0]?.at ?? createdAt;
     const processingAt = atFor(history, 'PROCESSING');
     const transferredAt = atFor(history, 'TRANSFERRED');
-    const declinedAt = atFor(history, 'DECLINED');
+    const declinedAt = history.find((e) => isDeclinedStatus(e.status))?.at;
 
     // Step 1 — always done once the request exists.
     const submitted: TimelineStep = {
@@ -46,9 +47,9 @@ const buildTimelineSteps = (
         state: 'done',
     };
 
-    // Step 2 — risk review (rejected branch on DECLINED).
+    // Step 2 — risk review (rejected branch on DECLINE/DECLINED).
     let risk: TimelineStep;
-    if (status === 'DECLINED') {
+    if (isDeclinedStatus(status)) {
         risk = {
             title: t('Request rejected'),
             description: t('Risk review declined the request.'),

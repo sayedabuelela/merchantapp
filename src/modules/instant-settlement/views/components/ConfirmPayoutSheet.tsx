@@ -1,5 +1,6 @@
 import Button from '@/src/shared/components/Buttons/Button';
 import { currencyNumber } from '@/src/core/utils/number-fields';
+import AnimatedInfoMsg from '@/src/shared/components/animated-messages/AnimatedInfoMsg';
 import FontText from '@/src/shared/components/FontText';
 import {
     BottomSheetModal,
@@ -27,9 +28,20 @@ interface Props {
 
 const CURRENCY = 'EGP';
 
+/**
+ * The inquiry response carries computed fee AMOUNTS only — no rates. The portal
+ * renders the rates from its fee config, which this path never fetches
+ * (`feeConfigSnapshot` only exists on the request-details response), so the
+ * displayed percentages are the standard config values.
+ */
+const INSTANT_FEE_RATE_PCT = 1;
+const VAT_RATE_PCT = 14;
+
 interface Row {
     label: string;
     value: number;
+    /** deducted from the settlement amount — rendered with a leading minus */
+    isDeduction?: boolean;
 }
 
 /**
@@ -66,14 +78,21 @@ const ConfirmPayoutSheet = forwardRef<ConfirmPayoutSheetRef, Props>(
 
         const rows: Row[] = useMemo(() => {
             if (!inquiry) return [];
-            const out: Row[] = [
-                { label: 'Settlement amount', value: inquiry.totalSettlementAmount },
-                { label: 'Instant sett. fees', value: inquiry.totalRateFees },
+            return [
+                { label: t('Gross settlement amount'), value: inquiry.totalSettlementAmount },
+                {
+                    label: `${t('Instant settlement fees')} (${INSTANT_FEE_RATE_PCT}%)`,
+                    value: inquiry.totalRateFees,
+                    isDeduction: true,
+                },
+                {
+                    label: `${t('VAT')} (${VAT_RATE_PCT}%)`,
+                    value: inquiry.vat,
+                    isDeduction: true,
+                },
+                { label: t('ACH Fee'), value: inquiry.flatFees, isDeduction: true },
             ];
-            if (inquiry.flatFees > 0) out.push({ label: 'Flat fees', value: inquiry.flatFees });
-            out.push({ label: 'VAT', value: inquiry.vat });
-            return out;
-        }, [inquiry]);
+        }, [inquiry, t]);
 
         return (
             <BottomSheetModal
@@ -84,30 +103,48 @@ const ConfirmPayoutSheet = forwardRef<ConfirmPayoutSheetRef, Props>(
                 backdropComponent={renderBackdrop}
             >
                 <BottomSheetView className="px-6 pt-2 pb-8">
-                    <FontText type="body" weight="regular" className="text-content-secondary text-sm mb-4">
-                        {t('Please confirm the details below')}
+                    <FontText type="body" weight="regular" className="text-content-secondary text-sm">
+                        {t('Please review the details below before requesting your instant settlement.')}
                     </FontText>
+
+                    <AnimatedInfoMsg
+                        infoMsg={
+                            <>
+                                {t('fee_notice_prefix')}
+                                <FontText weight="semi">
+                                    {t('fee_notice_rate', { rate: INSTANT_FEE_RATE_PCT })}
+                                </FontText>
+                                {t('fee_notice_middle')}
+                                <FontText weight="semi">
+                                    {t('fee_notice_vat', { vat: VAT_RATE_PCT })}
+                                </FontText>
+                                {t('fee_notice_suffix')}
+                            </>
+                        }
+                        className="mt-4 mb-4"
+                    />
 
                     <View className="border border-stroke-main rounded-lg p-4">
                         {rows.map((row) => (
                             <View key={row.label} className="flex-row items-center justify-between py-2">
                                 <FontText type="body" weight="regular" className="text-content-secondary text-sm">
-                                    {t(row.label)}
+                                    {row.label}
                                 </FontText>
                                 <FontText type="body" weight="semi" className="text-content-primary text-sm">
+                                    {row.isDeduction && row.value > 0 ? '- ' : ''}
                                     {currencyNumber(row.value)} {t(CURRENCY)}
                                 </FontText>
                             </View>
                         ))}
+                    </View>
 
-                        <View className="border-t border-stroke-main mt-2 pt-3 items-center">
-                            <FontText type="body" weight="regular" className="text-content-secondary text-xs uppercase mb-1">
-                                {t('Total payout amount')}
-                            </FontText>
-                            <FontText type="head" weight="bold" className="text-content-primary text-lg">
-                                {currencyNumber(inquiry?.netTransferAmount ?? 0)} {t(CURRENCY)}
-                            </FontText>
-                        </View>
+                    <View className="border border-stroke-main rounded-lg p-4 mt-4 items-center">
+                        <FontText type="body" weight="regular" className="text-content-secondary text-xs uppercase mb-1">
+                            {t('Net payout amount')}
+                        </FontText>
+                        <FontText type="head" weight="bold" className="text-content-primary text-lg">
+                            {currencyNumber(inquiry?.netTransferAmount ?? 0)} {t(CURRENCY)}
+                        </FontText>
                     </View>
 
                     <Button

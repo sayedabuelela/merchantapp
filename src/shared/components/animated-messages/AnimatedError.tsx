@@ -2,14 +2,17 @@ import { cn } from "@/src/core/utils/cn";
 import { AlertIconCircle } from "@/src/shared/assets/svgs";
 import FontText from "@/src/shared/components/FontText";
 import { AnimatePresence, MotiView } from "moti";
+import { View } from "react-native";
 import { COMMON_STYLES } from "../../styles/main";
 
 interface AnimatedErrorProps {
     errorMsg: string;
+    /** optional bold headline rendered above `errorMsg` */
+    title?: string;
     className?: string;
     withBackground?: boolean;
 }
-const AnimatedError = ({ errorMsg, className, withBackground = true }: AnimatedErrorProps) => {
+const AnimatedError = ({ errorMsg, title, className, withBackground = true }: AnimatedErrorProps) => {
     return (
         <AnimatePresence>
             {!!errorMsg && (
@@ -38,9 +41,16 @@ const AnimatedError = ({ errorMsg, className, withBackground = true }: AnimatedE
                     )}
                 >
                     <AlertIconCircle />
-                    <FontText className={`${COMMON_STYLES.errorMsg} ms-2 flex-shrink`}>
-                        {errorMsg}
-                    </FontText>
+                    <View className="ms-2 flex-shrink">
+                        {!!title && (
+                            <FontText weight="semi" className={`${COMMON_STYLES.errorMsg} mb-1`}>
+                                {title}
+                            </FontText>
+                        )}
+                        <FontText className={COMMON_STYLES.errorMsg}>
+                            {errorMsg}
+                        </FontText>
+                    </View>
                 </MotiView>
             )}
         </AnimatePresence>

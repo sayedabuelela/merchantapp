@@ -2,6 +2,7 @@ import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils";
 import { currencyNumber } from "@/src/core/utils/number-fields";
 import StatusBox from "@/src/modules/payment-links/components/StatusBox";
 import SummaryItem from "@/src/modules/payment-links/components/details-screen/SummaryItem";
+import AnimatedError from "@/src/shared/components/animated-messages/AnimatedError";
 import DetailsSection from "@/src/shared/components/details-screens/DetailsSection";
 import FontText from "@/src/shared/components/FontText";
 import SectionRowItem from "@/src/shared/components/details-screens/SectionRowItem";
@@ -9,6 +10,7 @@ import SectionItemWithCopy from "@/src/shared/components/details-screens/Section
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import type { InstantRequestDetails } from "../../../domain/instant-settlement.models";
+import { isDeclinedStatus, toDisplayStatus } from "../../../mappers/instant-settlement.status";
 import DailyLimitCard from "../../components/DailyLimitCard";
 
 interface Props {
@@ -26,19 +28,30 @@ const DetailsTabView = ({ details }: Props) => {
     // Total Deduction = transaction total + instant (rate) fee + ACH (flat) fee.
     const totalDeduction = details.totalAmount + details.totalRateFees + details.flatFees;
 
+    const isDeclined = isDeclinedStatus(details.status);
+
     return (
         <ScrollView
             className="flex-1"
             contentContainerClassName="px-6 pt-6 pb-10"
             showsVerticalScrollIndicator={false}
         >
-            {/* Header: total deduction + raw status badge */}
+            {/* Header: total deduction + status badge (DECLINE → REJECTED) */}
             <View className="flex-row items-center mb-6 gap-x-3">
                 <FontText type="head" weight="bold" className="text-content-primary text-2xl">
                     {money(totalDeduction)}
                 </FontText>
-                <StatusBox status={details.status} />
+                <StatusBox status={toDisplayStatus(details.status)} />
             </View>
+
+            {/* Rejection reason — declined requests only */}
+            {isDeclined && !!details.declineReason && (
+                <AnimatedError
+                    title={t('Request rejected!')}
+                    errorMsg={details.declineReason}
+                    className="mt-0 mb-6"
+                />
+            )}
 
             {/* Details card — plain label → value rows */}
             <DetailsSection className="mb-6" title={t('Details')}>
@@ -72,10 +85,9 @@ const DetailsTabView = ({ details }: Props) => {
                     <SectionRowItem title={t('Bank')} value={m.bankName} />
                     <SectionRowItem title={t('Account Holder')} value={m.accountHolderName} />
                     <SectionItemWithCopy
-                        title={t('Account Number')}
+                        inline
+                        title={t('Account Num.')}
                         value={m.accountNumber}
-                        valueClassName="text-sm"
-                        labelClassName="mb-0"
                     />
                 </DetailsSection>
             ))}

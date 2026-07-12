@@ -86,6 +86,8 @@ const CustomAmountSheet = forwardRef<CustomAmountSheetRef, Props>(
     ({ params, onConfirm, onClose }, ref) => {
         const { t } = useTranslation();
         const sheetRef = useRef<BottomSheetModal | null>(null);
+        /** true only for a dismiss triggered by Confirm — see `handleDismiss` */
+        const wasSubmittedRef = useRef(false);
         const [amountText, setAmountText] = useState('');
         const [selectedSide, setSelectedSide] = useState<SelectedSide | null>(null);
 
@@ -164,14 +166,30 @@ const CustomAmountSheet = forwardRef<CustomAmountSheetRef, Props>(
 
         const handleConfirm = useCallback(() => {
             if (!selectedGroup?.transactionIds.length) return;
+            wasSubmittedRef.current = true;
             onConfirm(selectedGroup.transactionIds);
             sheetRef.current?.dismiss();
         }, [selectedGroup, onConfirm]);
 
+        /**
+         * The sheet is hidden, not unmounted, so its state survives a dismiss.
+         * Clear it on close — the amount is only carried over when the user
+         * intentionally submitted it (Confirm), never when they backed out.
+         */
+        const handleDismiss = useCallback(() => {
+            if (!wasSubmittedRef.current) {
+                setAmountText('');
+                setSelectedSide(null);
+                resetSuggestions();
+            }
+            wasSubmittedRef.current = false;
+            onClose();
+        }, [resetSuggestions, onClose]);
+
         return (
             <BottomSheetModal
                 ref={sheetRef}
-                onDismiss={onClose}
+                onDismiss={handleDismiss}
                 enableDynamicSizing
                 enablePanDownToClose
                 keyboardBehavior="interactive"

@@ -11,16 +11,39 @@ interface Props {
     value?: string | React.ReactNode;
     valueClassName?: string;
     labelClassName?: string;
+    /** label and value on one row (matches SectionRowItem) instead of stacked */
+    inline?: boolean;
 }
 
-const SectionItemWithCopy = ({ icon, title, value, valueClassName, labelClassName }: Props) => {
-    if (!value) return null;
-    const { copy, isCopied } = useClipboard();
+const SectionItemWithCopy = ({ icon, title, value, valueClassName, labelClassName, inline }: Props) => {
+    const { copy } = useClipboard();
     const handleCopy = async () => {
         if (typeof value === 'string') {
             await copy(value)
         }
     }
+    if (!value) return null;
+
+    if (inline) {
+        return (
+            <View className='flex-row items-center justify-between'>
+                <FontText type="body" weight="regular" className={cn("text-content-secondary text-sm self-start", labelClassName)}>{title}</FontText>
+                <View className='flex-row items-center gap-x-2 flex-shrink ms-2'>
+                    <FontText
+                        type="body"
+                        weight="semi"
+                        className={cn("text-content-primary text-sm self-start flex-shrink", valueClassName)}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >{value}</FontText>
+                    <PressableScale onPress={handleCopy}>
+                        <DocumentDuplicateIcon size={18} color={'#001F5F'} />
+                    </PressableScale>
+                </View>
+            </View>
+        )
+    }
+
     return (
         <View className='flex-row items-start'>
             {icon && icon}

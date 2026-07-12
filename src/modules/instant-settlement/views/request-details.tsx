@@ -25,11 +25,22 @@ const TABS: Tab<PayoutTab>[] = [
 ];
 
 /**
- * Payout details — 4-tab screen (Details | Transactions | Accounts | History).
+ * `linkedBalanceRecords` is only written once the payout reaches the balance,
+ * so the Accounts tab is hidden for every other status (more may qualify later).
+ */
+const ACCOUNTS_TAB_STATUSES = ['PROCESSING', 'TRANSFERRED'];
+
+const tabsForStatus = (status: string): Tab<PayoutTab>[] =>
+    ACCOUNTS_TAB_STATUSES.includes((status || '').toUpperCase())
+        ? TABS
+        : TABS.filter((tab) => tab.value !== 'accounts');
+
+/**
+ * Instant request details — 4-tab screen (Details | Transactions | Accounts | History).
  * Two queries back the four tabs: the details query (Details + Accounts + History)
  * and a separate paginated transactions query (owned by TransactionsTabView).
  */
-const PayoutDetailsScreen = () => {
+const RequestDetailsScreen = () => {
     const { t } = useTranslation();
     const { id } = useLocalSearchParams<{ id?: string }>();
     const uuid = id ?? '';
@@ -65,7 +76,7 @@ const PayoutDetailsScreen = () => {
                         and creates a large gap. */}
                     <View>
                         <ListTabs<PayoutTab>
-                            tabs={TABS}
+                            tabs={tabsForStatus(details.status)}
                             value={tab}
                             onSelectType={setTab}
                         />
@@ -93,4 +104,4 @@ const PayoutDetailsScreen = () => {
     );
 };
 
-export default PayoutDetailsScreen;
+export default RequestDetailsScreen;
