@@ -25,8 +25,8 @@ const DetailsTabView = ({ details }: Props) => {
     const ratePct = details.feeSnapshot ? ` (${details.feeSnapshot.rate}%)` : '';
     const dateTime = (iso: string) => `${formatRelativeDate(iso)} – ${formatAMPM(iso)}`;
 
-    // Total Deduction = transaction total + instant (rate) fee + ACH (flat) fee.
-    const totalDeduction = details.totalAmount + details.totalRateFees + details.flatFees;
+    // Total Deduction = transaction total + instant (rate) fee + VAT + ACH (flat) fee.
+    const totalDeduction = details.totalAmount + details.totalRateFees + details.vat + details.flatFees;
 
     const isDeclined = isDeclinedStatus(details.status);
 
@@ -70,6 +70,7 @@ const DetailsTabView = ({ details }: Props) => {
             <DetailsSection className="gap-y-3 mb-6" title={t('Financial Summary')}>
                 <SummaryItem title={t('Transaction Total')} value={money(details.totalAmount)} />
                 <SummaryItem title={`${t('Instant Fee')}${ratePct}`} value={money(details.totalRateFees)} />
+                <SummaryItem title={t('VAT')} value={money(details.vat)} />
                 <SummaryItem title={t('ACH Fee')} value={money(details.flatFees)} />
                 <SummaryItem title={t('Total Deduction')} value={money(totalDeduction)} summaryLabel />
             </DetailsSection>

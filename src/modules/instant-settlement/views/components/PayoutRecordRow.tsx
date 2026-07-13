@@ -18,14 +18,16 @@ const PayoutRecordRow = ({ record }: Props) => {
     const isIn = record.direction === 'in';
 
     return (
-        <View className="flex-row items-center justify-between border-[1.5px] rounded border-tertiary p-4 mb-2">
+        <View className="flex-row items-start justify-between border-[1.5px] rounded border-tertiary p-4 mb-2">
             <View className="flex-1 pr-2">
-                {/* accountId only — no friendly labels (SSOT §6) */}
-                <FontText type="body" weight="regular" className="text-content-secondary text-[10px] mb-0.5" numberOfLines={1}>
+                <FontText type="body" weight="regular" className="text-light-gray text-xs mb-1" numberOfLines={1}>
                     {record.accountId || record.operation || t('Record')}
                 </FontText>
+                <FontText type="body" weight="regular" className="text-content-primary text-xs mb-1" numberOfLines={1}>
+                    {record.accountName}
+                </FontText>
                 {!!record.createdAt && (
-                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
+                    <FontText type="body" weight="regular" className="text-content-secondary text-xs">
                         {formatAMPM(record.createdAt)}
                     </FontText>
                 )}

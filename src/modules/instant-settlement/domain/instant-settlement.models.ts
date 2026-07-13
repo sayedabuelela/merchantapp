@@ -165,6 +165,7 @@ export interface RequestRecord {
     origin: string;
     valueDate: string;
     createdAt: string;
+    accountName: string;
     /** true once reflected on the balance */
     isReflected?: boolean;
     /** record type, e.g. INSTANT_SETTLEMENT_DEDUCTION */

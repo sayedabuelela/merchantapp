@@ -32,7 +32,7 @@ const AccountsTabView = ({ records, recordsUnavailable }: Props) => {
 
     if (recordsUnavailable) {
         return (
-            <View className="flex-1 px-6 mt-6">
+            <View className="flex-1 px-6 mt-4">
                 <EmptyDataList
                     icon={<BuildingLibraryIcon size={48} color="#919C9C" />}
                     title={t('Unavailable')}
@@ -43,7 +43,7 @@ const AccountsTabView = ({ records, recordsUnavailable }: Props) => {
     }
 
     return (
-        <View className="flex-1 px-6 mt-6">
+        <View className="flex-1 px-6 mt-2">
             <StickyHeaderList<RequestRecord>
                 listData={listData}
                 stickyHeaderIndices={stickyHeaderIndices}

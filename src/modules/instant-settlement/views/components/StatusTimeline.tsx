@@ -74,18 +74,12 @@ const StatusTimeline = ({steps}: { steps: TimelineStep[] }) => {
                                 className={cn("text-sm leading-5 mt-0.5", muted ? "text-[#C4CBCB]" : "text-content-secondary")}
                             >
                                 {step.description}
-                                <View className="h-1 "/>
-                                {!!step.at && (step.state === 'done' || step.state === 'error') && (
-                                    <FontText type="body" weight="regular" className="text-xs leading-4 text-[#919C9C]">
-                                        {formatRelativeDate(step.at)} {formatAMPM(step.at)}
-                                    </FontText>
-                                )}
                             </FontText>
-                            {/*{!!step.at && (step.state === 'done' || step.state === 'error') && (*/}
-                            {/*    <FontText type="body" weight="regular" className="text-xs leading-4 mt-1 text-[#919C9C]">*/}
-                            {/*        {formatRelativeDate(step.at)} {formatAMPM(step.at)}*/}
-                            {/*    </FontText>*/}
-                            {/*)}*/}
+                            {!!step.at && (step.state === 'done' || step.state === 'error') && (
+                                <FontText type="body" weight="regular" className="text-xs leading-4 mt-1 text-[#919C9C]">
+                                    {formatRelativeDate(step.at)} {formatAMPM(step.at)}
+                                </FontText>
+                            )}
                         </View>
                     </View>
                 );
