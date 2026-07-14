@@ -149,6 +149,8 @@ export interface InstantRequestDetails {
     statusHistory: RequestStatusHistoryEntry[];
     /** daily/per-request limits — drives the Daily Limit card (absent → hidden) */
     limits?: Limits;
+    /** Excluded tab — agent-unselected rows embedded in details (FIN-20275); [] when none */
+    unselectedTransactions: EligibleTransaction[];
 }
 
 /**

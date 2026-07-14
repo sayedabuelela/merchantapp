@@ -175,6 +175,7 @@ export const mapRequestDetails = (
         recordsUnavailable: !!dto.linkedBalanceRecordsUnavailable,
         statusHistory: mapRequestStatusHistory(dto.statusHistory),
         limits: dto.limits ? mapLimits(dto.limits) : undefined,
+        unselectedTransactions: (dto.unselectedTransactions ?? []).map(mapEligibleTransaction),
     };
 };
 
@@ -186,6 +187,7 @@ export const mapRequestRecord = (
     direction: num(dto.amount) < 0 ? 'out' : 'in',
     amount: Math.abs(num(dto.amount)),
     accountId: str(dto.accountId),
+    accountName: str(dto.accountName),
     operation: str(dto.operation),
     origin: str(dto.origin),
     valueDate: str(dto.valueDate),

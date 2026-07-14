@@ -30,11 +30,11 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
     const user = useAuthStore(selectUser);
     const mode = useEnvironmentStore(selectMode)
     const hasInstantSettlementFeature = useHasFeature("instant_settlement_request");
-    const { canEditBalance } = usePermissions(user?.actions!);
+    const { canViewInstantSettlement } = usePermissions(user?.actions!);
 
     const servicesList: ServiceItem[] = [
-        ...((hasInstantSettlementFeature && canEditBalance) ? [{
-        // ...((hasInstantSettlementFeature && canEditBalance && mode === Mode.LIVE) ? [{
+        ...((hasInstantSettlementFeature && canViewInstantSettlement) ? [{
+        // ...((hasInstantSettlementFeature && canViewInstantSettlement && mode === Mode.LIVE) ? [{
             title: t('Instant settlement'),
             description: t('Get your money now!'),
             // href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,

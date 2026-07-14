@@ -71,7 +71,7 @@ export const AmountDisplay = ({
             </View>
             {merchantOrderId && merchantOrderId !== "NA" && (
                 <View className="flex-row items-center gap-x-2">
-                    <FontText type="body" weight="regular" className="text-content-secondary text-sm self-start"
+                    <FontText type="body" weight="regular" className="text-content-secondary max-w-72 text-sm self-start"
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >

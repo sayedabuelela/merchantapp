@@ -27,7 +27,7 @@ export const useInstantRequestTransactionsVM = (uuid: string, enabled = true) =>
     >({
         queryKey: ['instant-request-transactions', uuid],
         queryFn: ({ pageParam = 1 }) =>
-            fetchInstantRequestTransactions(api, uuid, { page: pageParam, limit: 20 }),
+            fetchInstantRequestTransactions(api, uuid, { page: pageParam, limit: 20, selection: 'SELECTED' }),
         getNextPageParam: (lastPage) => {
             const { page, pages } = lastPage.pagination;
             return page < pages ? page + 1 : undefined;

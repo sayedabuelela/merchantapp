@@ -51,6 +51,10 @@ export interface EligibleTransactionDTO {
     status?: string;
     /** optional — render the customer row only when present */
     customer?: CustomerDTO;
+    /** FIN-20275 — false when an agent unselected the row; absent pre-release */
+    selected?: boolean;
+    /** FIN-20275 — ISO date when the row was unselected, else null */
+    unselectedAt?: string | null;
 }
 
 /** Whole-set totals (NOT the current selection). */
@@ -183,6 +187,8 @@ export interface PayoutMethodDTO {
 export interface LinkedBalanceRecordDTO {
     recordId: string;
     accountId: string;
+    /** FIN-20275 — snapshot at deduction time; key always present, null if absent */
+    accountName?: string | null;
     /** signed: positive = in, negative = out */
     amount: number;
     valueDate: string;
@@ -204,6 +210,10 @@ export interface RequestDetailsDTO extends RequestDTO {
     linkedBalanceRecordsUnavailable?: boolean;
     /** top-level daily/per-request limits (same shape as the eligible response) */
     limits?: LimitsDTO;
+    /** FIN-20275 — rows an agent removed from the request; [] when none */
+    unselectedTransactions?: EligibleTransactionDTO[];
+    unselectedCount?: number;
+    unselectedSettlementAmount?: number;
 }
 
 /**
@@ -328,4 +338,6 @@ export interface RequestsQueryParams {
 export interface MemberTransactionsQueryParams {
     page?: number;
     limit?: number;
+    /** FIN-20275 — server default ALL */
+    selection?: 'ALL' | 'SELECTED' | 'UNSELECTED';
 }

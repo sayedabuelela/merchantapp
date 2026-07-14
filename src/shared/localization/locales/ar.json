@@ -51,6 +51,8 @@
   "No records": "لا توجد سجلات",
   "No account records for this request": "لا توجد سجلات حسابات لهذا الطلب",
   "No transactions for this request": "لا توجد معاملات لهذا الطلب",
+  "Excluded": "مستبعدة",
+  "No excluded transactions for this request": "لا توجد معاملات مستبعدة لهذا الطلب",
   "Records are currently unavailable": "السجلات غير متاحة حاليًا",
   "No history": "لا يوجد سجل",
   "No status history for this request": "لا يوجد سجل حالات لهذا الطلب",

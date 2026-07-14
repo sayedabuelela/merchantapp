@@ -9,6 +9,7 @@ export enum EMainActions {
     TRANSFERS = 'transfer',
     PAYMENT_PAGES = 'payment_pages',
     BALANCE = 'balance',
+    INSTANT_SETTLEMENTS = 'instant_settlements',
     DASHBOARD = 'dashboard',
     PAYMENT_REQUESTS = 'payment_requests',
     PLANS = 'plans',
@@ -134,6 +135,10 @@ const usePermissions = (roles: IActions, merchantId = '', creatorId = '') => {
             canViewBalance: checkRules('', roles, EMainActions.BALANCE, ["", "view_balance"]),
             canCreateBalance: checkRules('', roles, EMainActions.BALANCE, ["", "create_balance"]),
             canEditBalance: checkRules('', roles, EMainActions.BALANCE, ["", "edit_balance"]),
+
+            // Instant Settlement Permissions
+            canViewInstantSettlement: checkRules('', roles, EMainActions.INSTANT_SETTLEMENTS, ["", "view_instant_settlement"]),
+            canCreateInstantSettlement: checkRules('', roles, EMainActions.INSTANT_SETTLEMENTS, ["", "create_instant_settlement"]),
 
             // Onboarding Permissions
 

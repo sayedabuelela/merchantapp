@@ -62,6 +62,8 @@
     "No account records for this request": "No account records for this request",
     "No transactions": "No transactions",
     "No transactions for this request": "No transactions for this request",
+    "Excluded": "Excluded",
+    "No excluded transactions for this request": "No excluded transactions for this request",
     "Records are currently unavailable": "Records are currently unavailable",
     "Unavailable": "Unavailable",
     "No history": "No history",

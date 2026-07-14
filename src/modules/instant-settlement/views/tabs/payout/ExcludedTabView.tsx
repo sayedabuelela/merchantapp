@@ -3,32 +3,24 @@ import { GroupedRow, groupByDate } from "@/src/core/utils/groupData";
 import EmptyDataList from "@/src/shared/components/empty-list/EmptyDataList";
 import StickyHeaderList from "@/src/shared/components/StickyHeaderList";
 import HeaderRow from "@/src/shared/components/StickyHeaderList/HeaderRow";
-import PaymentLinkCardSkeleton from "@/src/modules/payment-links/components/PaymentLinkCardSkeleton";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 import { BanknotesIcon } from "react-native-heroicons/outline";
 import type { EligibleTransaction } from "../../../domain/instant-settlement.models";
-import { useInstantRequestTransactionsVM } from "../../../viewmodels/useInstantRequestTransactionsVM";
 import TransactionRow from "../../components/TransactionRow";
 
 interface Props {
-    uuid: string;
+    transactions: EligibleTransaction[];
 }
 
-/** Transactions tab — member txns (`/{uuid}/transactions`, paginated). */
-const TransactionsTabView = ({ uuid }: Props) => {
+/**
+ * Excluded tab — transactions an agent removed from the request (FIN-20275).
+ * Data is embedded in the details response (`unselectedTransactions`), so
+ * there is no fetching or pagination here.
+ */
+const ExcludedTabView = ({ transactions }: Props) => {
     const { t } = useTranslation();
-
-    const {
-        transactions,
-        isLoading,
-        hasNextPage,
-        isFetchingNextPage,
-        fetchNextPage,
-        isRefetching,
-        refetch,
-    } = useInstantRequestTransactionsVM(uuid);
 
     const grouped = useMemo(() => groupByDate(transactions, 'createdAt'), [transactions]);
     const { listData, stickyHeaderIndices } = useGroupedData(transactions.length ? grouped : []);
@@ -41,38 +33,21 @@ const TransactionsTabView = ({ uuid }: Props) => {
         [],
     );
 
-    if (isLoading) {
-        return (
-            <View className="flex-1 px-6 mt-6">
-                <PaymentLinkCardSkeleton />
-            </View>
-        );
-    }
-
     return (
         <View className="flex-1 px-6 mt-2">
             <StickyHeaderList<EligibleTransaction>
                 listData={listData}
                 stickyHeaderIndices={stickyHeaderIndices}
-                fetchNextPage={fetchNextPage}
-                hasNextPage={hasNextPage}
-                isFetchingNextPage={isFetchingNextPage}
+                fetchNextPage={() => {}}
+                hasNextPage={false}
+                isFetchingNextPage={false}
                 renderItem={renderItem}
-                refreshing={isRefetching}
-                onRefresh={refetch}
                 keyExtractor={(item) => (item.type === 'header' ? `header-${item.date}` : item.id)}
-                ListFooterComponent={
-                    isFetchingNextPage ? (
-                        <View className="py-4">
-                            <ActivityIndicator color="#001F5F" />
-                        </View>
-                    ) : undefined
-                }
                 ListEmptyComponent={
                     <EmptyDataList
                         icon={<BanknotesIcon size={48} color="#919C9C" />}
                         title={t('No transactions')}
-                        description={t('No transactions for this request')}
+                        description={t('No excluded transactions for this request')}
                     />
                 }
             />
@@ -80,4 +55,4 @@ const TransactionsTabView = ({ uuid }: Props) => {
     );
 };
 
-export default TransactionsTabView;
+export default ExcludedTabView;

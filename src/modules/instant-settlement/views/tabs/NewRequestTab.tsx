@@ -33,12 +33,12 @@ import CustomAmountSheet, { CustomAmountSheetRef } from "../components/CustomAmo
 
 interface Props {
     params: EligibleQueryParams;
-    canEditBalance: boolean;
+    canCreateInstantSettlement: boolean;
     enabled: boolean;
     onRequestSuccess: () => void;
 }
 
-const NewRequestTab = ({ params, canEditBalance, enabled, onRequestSuccess }: Props) => {
+const NewRequestTab = ({ params, canCreateInstantSettlement, enabled, onRequestSuccess }: Props) => {
     const { t } = useTranslation();
     const listRef = useRef<React.ComponentRef<typeof FlashList<GroupedRow<EligibleTransaction>>>>(null);
     const confirmSheetRef = useRef<ConfirmPayoutSheetRef>(null);
@@ -207,7 +207,7 @@ const NewRequestTab = ({ params, canEditBalance, enabled, onRequestSuccess }: Pr
                     <Button
                         title={t('Payout now')}
                         onPress={handlePayoutNow}
-                        disabled={selected.size === 0 || isInquiring || !canEditBalance}
+                        disabled={selected.size === 0 || isInquiring || !canCreateInstantSettlement}
                         isLoading={isInquiring}
                         icon={<ArrowSmallUpIcon size={18} color={'#919C9C'} />}
                         className="flex-row gap-x-1 w-full"
@@ -219,6 +219,7 @@ const NewRequestTab = ({ params, canEditBalance, enabled, onRequestSuccess }: Pr
                         variant="outline"
                         title={t('Custom amount')}
                         onPress={() => customAmountSheetRef.current?.expand()}
+                        disabled={!canCreateInstantSettlement}
                         icon={<PencilSquareIcon size={18} color="#001F5F" />}
                         className="flex-row gap-x-1 border-0 w-full bg-white"
                         titleClasses="text-sm"

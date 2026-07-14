@@ -12,14 +12,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useInstantRequestDetailsVM } from "../viewmodels/useInstantRequestDetailsVM";
 import AccountsTabView from "./tabs/payout/AccountsTabView";
 import DetailsTabView from "./tabs/payout/DetailsTabView";
+import ExcludedTabView from "./tabs/payout/ExcludedTabView";
 import HistoryTabView from "./tabs/payout/HistoryTabView";
 import TransactionsTabView from "./tabs/payout/TransactionsTabView";
 
-type PayoutTab = 'details' | 'transactions' | 'accounts' | 'history';
+type PayoutTab = 'details' | 'transactions' | 'excluded' | 'accounts' | 'history';
 
 const TABS: Tab<PayoutTab>[] = [
     { label: 'Details', value: 'details' },
     { label: 'Transactions', value: 'transactions' },
+    { label: 'Excluded', value: 'excluded' },
     { label: 'Accounts', value: 'accounts' },
     { label: 'History', value: 'history' },
 ];
@@ -30,10 +32,16 @@ const TABS: Tab<PayoutTab>[] = [
  */
 const ACCOUNTS_TAB_STATUSES = ['PROCESSING', 'TRANSFERRED'];
 
-const tabsForStatus = (status: string): Tab<PayoutTab>[] =>
-    ACCOUNTS_TAB_STATUSES.includes((status || '').toUpperCase())
-        ? TABS
-        : TABS.filter((tab) => tab.value !== 'accounts');
+/**
+ * Accounts is status-gated; Excluded only shows when an agent actually
+ * unselected transactions (FIN-20275 — most requests have none).
+ */
+const visibleTabs = (status: string, hasExcluded: boolean): Tab<PayoutTab>[] =>
+    TABS.filter((tab) => {
+        if (tab.value === 'accounts') return ACCOUNTS_TAB_STATUSES.includes((status || '').toUpperCase());
+        if (tab.value === 'excluded') return hasExcluded;
+        return true;
+    });
 
 /**
  * Instant request details — 4-tab screen (Details | Transactions | Accounts | History).
@@ -76,7 +84,7 @@ const RequestDetailsScreen = () => {
                         and creates a large gap. */}
                     <View>
                         <ListTabs<PayoutTab>
-                            tabs={tabsForStatus(details.status)}
+                            tabs={visibleTabs(details.status, details.unselectedTransactions.length > 0)}
                             value={tab}
                             onSelectType={setTab}
                         />
@@ -84,6 +92,9 @@ const RequestDetailsScreen = () => {
                     <View className="flex-1">
                         {tab === 'details' && <DetailsTabView details={details} />}
                         {tab === 'transactions' && <TransactionsTabView uuid={uuid} />}
+                        {tab === 'excluded' && (
+                            <ExcludedTabView transactions={details.unselectedTransactions} />
+                        )}
                         {tab === 'accounts' && (
                             <AccountsTabView
                                 records={details.records}

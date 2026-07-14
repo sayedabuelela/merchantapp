@@ -19,7 +19,7 @@ const InstantSettlementScreen = () => {
     const [search, setSearch] = useState('');
 
     const user = useAuthStore(selectUser);
-    const { canEditBalance } = usePermissions(user?.actions!);
+    const { canCreateInstantSettlement } = usePermissions(user?.actions!);
 
     const tabs: Tab<TabValue>[] = useMemo(
         () => [
@@ -67,7 +67,7 @@ const InstantSettlementScreen = () => {
             {tab === 'new' ? (
                 <NewRequestTab
                     params={{ requestId }}
-                    canEditBalance={canEditBalance}
+                    canCreateInstantSettlement={canCreateInstantSettlement}
                     enabled={true}
                     onRequestSuccess={handleRequestSuccess}
                 />
