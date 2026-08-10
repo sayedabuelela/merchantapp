@@ -37,8 +37,8 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
         // ...((hasInstantSettlementFeature && canViewInstantSettlement && mode === Mode.LIVE) ? [{
             title: t('Instant settlement'),
             description: t('Get your money now!'),
-            // href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
-            href: ROUTES.INSTANT_SETTLEMENT.ROOT as Route,
+            href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
+            // href: ROUTES.INSTANT_SETTLEMENT.ROOT as Route,
             icon: <BoltIcon size={20} color="#001F5F" />,
         }] : []),
         {

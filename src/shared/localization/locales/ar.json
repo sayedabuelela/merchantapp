@@ -633,6 +633,8 @@
   "Successful Upload": "تم الرفع بنجاح",
   "Successful payment": "عملية دفع ناجحة",
   "Successful payment with {{paymentMethod}}": "عملية دفع ناجحة عبر {{paymentMethod}}",
+  "Payment initiated with {{paymentMethod}}": "تم بدء عملية الدفع عبر {{paymentMethod}}",
+  "Payment initiated": "تم بدء عملية الدفع",
   "Successful purchase with {{paymentMethod}}": "عملية شراء ناجحة عبر {{paymentMethod}}",
   "Successful {{operation}}": "{{operation}} ناجحة",
   "Successfully refunded": "تم الاسترداد بنجاح",

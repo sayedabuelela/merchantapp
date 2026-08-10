@@ -115,6 +115,8 @@
     "payment": "payment",
     "refund": "refund",
     "Successful payment with {{paymentMethod}}": "Successful payment with {{paymentMethod}}",
+    "Payment initiated with {{paymentMethod}}": "Payment initiated with {{paymentMethod}}",
+    "Payment initiated": "Payment initiated",
     "Successful purchase with {{paymentMethod}}": "Successful purchase with {{paymentMethod}}",
     "Successful {{operation}}": "Successful {{operation}}",
     "Successfully refunded {{amount}} due to customer request. It may take a few days for the money to reach the customer": "Successfully refunded {{amount}} due to customer request. It may take a few days for the money to reach the customer",

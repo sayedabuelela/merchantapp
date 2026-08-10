@@ -93,6 +93,11 @@ const getTransactionDescription = (
         return failureMessages[item.operation || ''] || t(`Transaction failed: ${errorMsg}`);
     }
 
+    // Handle INITIATED transactions before the success lookup
+    if (status === 'INITIATED') {
+        return t('Payment initiated with {{paymentMethod}}', { paymentMethod });
+    }
+
     // Handle SUCCESS operations
     const operationDescriptions: Record<string, string> = {
         pay: t('Successful payment with {{paymentMethod}}', { paymentMethod }),
@@ -150,6 +155,7 @@ const getStatusDescription = (
         FAILED: t('Payment failed'),
         EXPIRED: t('Session expired'),
         REFUNDED: t('Payment refunded'),
+        INITIATED: t('Payment initiated'),
         ABANDONED: t('This transaction was abandoned because the payment incomplete'),
     };
 

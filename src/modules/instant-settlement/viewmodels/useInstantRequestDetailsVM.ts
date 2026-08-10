@@ -18,7 +18,8 @@ export const useInstantRequestDetailsVM = (uuid: string, enabled = true) => {
         queryKey: ['instant-request-details', uuid],
         queryFn: () => fetchInstantRequestDetails(api, uuid),
         enabled: enabled && !!uuid,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 0,
+        refetchOnMount: 'always',
     });
 
     const details: InstantRequestDetails | undefined = useMemo(

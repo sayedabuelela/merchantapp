@@ -39,7 +39,7 @@ const DetailsTabView = ({ details }: Props) => {
             {/* Header: total deduction + status badge (DECLINE → REJECTED) */}
             <View className="flex-row items-center mb-6 gap-x-3">
                 <FontText type="head" weight="bold" className="text-content-primary text-2xl">
-                    {money(totalDeduction)}
+                    {money(details.totalAmount)}
                 </FontText>
                 <StatusBox status={toDisplayStatus(details.status)} />
             </View>
@@ -68,11 +68,11 @@ const DetailsTabView = ({ details }: Props) => {
 
             {/* Financial Summary */}
             <DetailsSection className="gap-y-3 mb-6" title={t('Financial Summary')}>
-                <SummaryItem title={t('Transaction Total')} value={money(details.totalAmount)} />
+                <SummaryItem title={t('Transaction Total')} value={money(details.totalSettlementAmount)} />
                 <SummaryItem title={`${t('Instant Fee')}${ratePct}`} value={money(details.totalRateFees)} />
                 <SummaryItem title={t('VAT')} value={money(details.vat)} />
                 <SummaryItem title={t('ACH Fee')} value={money(details.flatFees)} />
-                <SummaryItem title={t('Total Deduction')} value={money(totalDeduction)} summaryLabel />
+                <SummaryItem title={t('Total Deduction')} value={money(details.netTransferAmount)} summaryLabel />
             </DetailsSection>
 
             {/* Payout method — hidden when payoutMethodsByAccount absent */}

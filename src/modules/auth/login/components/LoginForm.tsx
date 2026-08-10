@@ -30,6 +30,8 @@ export function LoginForm({onSubmit, loading, error}: LoginFormProps) {
         resolver: zodResolver(loginSchema),
         // mode: 'onTouched',
         defaultValues: {
+            email: '',
+            password: '',
             // email: 'pisej21977@hazhab.com',
             // email: 'logare2532@frisbook.com',
             // email: 'saboelela@kashier.io',
@@ -51,7 +53,7 @@ export function LoginForm({onSubmit, loading, error}: LoginFormProps) {
             // password: 'SaraTest@010',
             // email: 'aayman@kashier.io',
             // password: 'T9@kL7!qZ#vR2p',
-            // staging
+            // stagingr
             // email: 'duaa.bst@gmail.com',
             // password: 'AsmaaTest110@',
             // email: 'jglgm9d29g@jkotypc.com',
