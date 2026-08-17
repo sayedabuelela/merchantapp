@@ -24,6 +24,8 @@ import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/Fad
 import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store';
 import usePermissions from '@/src/modules/auth/hooks/usePermissions';
 import { ROUTES } from '@/src/core/navigation/routes';
+import { toDisplayCode } from '@/src/core/constants/currencies';
+import useCurrencyConversionEnabled from '@/src/shared/hooks/useCurrencyConversionEnabled';
 
 export default function PaymentLinkDetailsScreen() {
     const { paymentLinkId } = useLocalSearchParams<{ paymentLinkId?: string }>();
@@ -31,6 +33,12 @@ export default function PaymentLinkDetailsScreen() {
     const [actionsVisible, setActionsVisible] = useState(false);
     const { countries } = useCountries();
     const { paymentLink, isLoadingPaymentLink } = usePaymentLinkVM(paymentLinkId);
+    const isCurrencyConversionEnabled = useCurrencyConversionEnabled();
+    // Virtual-origin link: original amount in virtualCurrency, EGP equivalent in totalAmount
+    const isVirtualLink = isCurrencyConversionEnabled
+        && !!paymentLink?.virtualCurrency
+        && paymentLink?.virtualAmount != null;
+    const virtualDisplayCode = isVirtualLink ? toDisplayCode(paymentLink?.virtualCurrency) : '';
 
     // Permission checks
     const user = useAuthStore(selectUser);
@@ -172,10 +180,25 @@ export default function PaymentLinkDetailsScreen() {
                                     icon={<TagIcon size={24} color="#556767" />}
                                     title={t("Summary")}
                                 >
+                                    {isVirtualLink && paymentLink?.paymentStatus === 'paid' && paymentLink?.virtualExchangeRate != null && (
+                                        <View className='bg-[#F5F8FF] rounded p-3 mb-2 gap-y-1'>
+                                            <SummaryItem
+                                                title={t("Locked rate")}
+                                                value={`1 ${t(virtualDisplayCode)} = ${currencyNumber(paymentLink.virtualExchangeRate)} ${t('EGP')}`}
+                                            />
+                                            {paymentLink?.virtualRateRecordedAt && (
+                                                <FontText type="body" weight="regular" className="text-content-secondary text-xs">
+                                                    {`${t("Rate locked at")} ${formatRelativeDate(paymentLink.virtualRateRecordedAt)} ${formatTime(paymentLink.virtualRateRecordedAt)}`}
+                                                </FontText>
+                                            )}
+                                        </View>
+                                    )}
                                     {paymentLink?.paymentType === 'simple' && paymentLink?.totalAmountWithoutFees && (
                                         <SummaryItem
                                             title={t("Amount")}
-                                            value={`${currencyNumber(paymentLink?.totalAmountWithoutFees)} ${paymentLink?.currency}`}
+                                            value={isVirtualLink
+                                                ? `${currencyNumber(paymentLink?.virtualAmount ?? 0)} ${t(virtualDisplayCode)}`
+                                                : `${currencyNumber(paymentLink?.totalAmountWithoutFees)} ${paymentLink?.currency}`}
                                         />
                                     )}
 
@@ -205,7 +228,12 @@ export default function PaymentLinkDetailsScreen() {
                                         <SummaryItem
                                             summaryLabel
                                             title={t("Total")}
-                                            value={`${currencyNumber(paymentLink?.totalAmount)} ${paymentLink?.currency}`}
+                                            value={isVirtualLink
+                                                ? `${currencyNumber(paymentLink?.virtualAmount ?? 0)} ${t(virtualDisplayCode)}`
+                                                : `${currencyNumber(paymentLink?.totalAmount)} ${paymentLink?.currency}`}
+                                            secondaryValue={isVirtualLink
+                                                ? `≈ ${currencyNumber(paymentLink?.totalAmount ?? 0)} ${t('EGP')}`
+                                                : undefined}
                                         />
                                     </View>
                                 </DetailsSection>

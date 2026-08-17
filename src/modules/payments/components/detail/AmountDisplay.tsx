@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 import FontText from '@/src/shared/components/FontText';
-import { currencyNumber } from '@/src/core/utils/number-fields';
 import { cn } from '@/src/core/utils/cn';
 import { useTranslation } from 'react-i18next';
 import StatusBox from '@/src/modules/payment-links/components/StatusBox';
+import DualAmount from '@/src/shared/components/currency/DualAmount';
 import { SessionStatus } from '../../payments.model';
 import IconBox from '@/src/shared/components/wrappers/IconBox';
 import { ArrowSmallDownIcon, ArrowSmallUpIcon } from 'react-native-heroicons/outline';
@@ -18,6 +18,10 @@ interface AmountDisplayProps {
     merchantOrderId: string;
     status: SessionStatus | string;
     className?: string;
+    // Currency conversion (virtual currencies) — dual display when present
+    virtualAmount?: number | null;
+    virtualCurrency?: string | null;
+    amountPrimary?: 'egp' | 'virtual';
 }
 
 /**
@@ -29,9 +33,11 @@ export const AmountDisplay = ({
     status,
     merchantOrderId,
     className,
+    virtualAmount,
+    virtualCurrency,
+    amountPrimary = 'egp',
 }: AmountDisplayProps) => {
 
-    const formattedAmount = currencyNumber(amount);
     const { t } = useTranslation();
     // Handle both order statuses (PAID) and transaction statuses (SUCCESS, APPROVED)
     // Also handle effective POS statuses (PENDING_ACK, REVERSED)
@@ -48,10 +54,14 @@ export const AmountDisplay = ({
     return (
         <View className={cn('gap-y-0.5 mb-4 mt-6', className)}>
             <View className="flex-row items-center gap-x-2">
-                <FontText type="head" weight="bold"
-                    className={cn("text-content-primary text-xl")}>
-                    {formattedAmount} {t(currency)}
-                </FontText>
+                <DualAmount
+                    amount={amount}
+                    currency={currency}
+                    virtualAmount={virtualAmount}
+                    virtualCurrency={virtualCurrency}
+                    primary={amountPrimary}
+                    size="lg"
+                />
                 <View className="flex-row items-center gap-x-1">
                     <IconBox className={cn(
                         isPaid ? 'bg-[#D1FFD3] border border-[#AEFFB2]' :

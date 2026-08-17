@@ -5,6 +5,7 @@ import { objectHasKeys } from "@/src/core/utils/objects"
 import StatusBox from "@/src/modules/payment-links/components/StatusBox"
 import { PaymentSession } from "@/src/modules/payments/payments.model"
 import FontText from "@/src/shared/components/FontText"
+import DualAmount from "@/src/shared/components/currency/DualAmount"
 import { getEffectiveOrderStatus } from "../../utils/posStatus.utils"
 import { Link } from "expo-router"
 import { PressableScale } from "pressto"
@@ -17,9 +18,11 @@ import { EnvelopeIcon, PhoneIcon, UserIcon } from "react-native-heroicons/outlin
 interface OrderCardProps {
     payment: PaymentSession;
     onOpenActions?: (payment: PaymentSession) => void;
+    // Which amount leads for virtual-origin sessions: 'virtual' in a virtual-currency view, 'egp' in the EGP view
+    amountPrimary?: 'egp' | 'virtual';
 }
 
-const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
+const OrderCard = ({ payment, onOpenActions, amountPrimary = 'egp' }: OrderCardProps) => {
     const { t } = useTranslation();
     const { paymentParams, status, capturedAmount, targetTransactionId, lastTransactionId, _id, createdAt,updatedAt, method } = payment;
     const effectiveStatus = getEffectiveOrderStatus(payment);
@@ -55,10 +58,15 @@ const OrderCard = ({ payment, onOpenActions }: OrderCardProps) => {
                                 {' - '}{(paymentParams.interactionSource === 'ECOMMERCE' || paymentParams.interactionSource === undefined) ? 'Online' : paymentParams.interactionSource}
                             </FontText>
                         )}
-                        <FontText type="body" weight="bold"
-                            className={cn("text-content-primary text-sm", !method && 'ml-auto')}>
-                            {currencyNumber(paymentParams.amount)} {t(paymentParams.currency)}
-                        </FontText>
+                        <DualAmount
+                            amount={paymentParams.amount}
+                            currency={paymentParams.currency}
+                            virtualAmount={paymentParams.virtualAmount}
+                            virtualCurrency={paymentParams.virtualCurrency}
+                            primary={amountPrimary}
+                            size="sm"
+                            className={cn("items-end", !method && 'ml-auto')}
+                        />
                     </View>
                     <View className="flex-row items-center justify-between">
                         <FontText type="body" weight="regular" className="text-content-secondary text-xs">

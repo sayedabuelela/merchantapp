@@ -6,6 +6,7 @@ import SectionItem from '@/src/shared/components/details-screens/SectionItem';
 import {PaymentMethodDetails} from "@/src/modules/payments/components/order-detail/PaymentMethodDetails";
 import SectionItemWithCopy from '@/src/shared/components/details-screens/SectionItemWithCopy';
 import {getEffectiveOrderDetailStatus} from '../../utils/posStatus.utils';
+import useSelectedCurrency from '@/src/shared/hooks/useSelectedCurrency';
 
 interface OrderSummaryCardProps {
     order: OrderDetailPayment;
@@ -14,6 +15,7 @@ interface OrderSummaryCardProps {
 export const OrderSummaryCard = ({order}: OrderSummaryCardProps) => {
     const {t} = useTranslation();
     const effectiveStatus = getEffectiveOrderDetailStatus(order);
+    const {isVirtual: isVirtualView} = useSelectedCurrency();
     console.log('OrderSummaryCard order.method : ',order.method);
 
     return (
@@ -23,6 +25,9 @@ export const OrderSummaryCard = ({order}: OrderSummaryCardProps) => {
                 currency={order.currency}
                 status={effectiveStatus}
                 merchantOrderId={order.merchantOrderId}
+                virtualAmount={order.virtualAmount}
+                virtualCurrency={order.virtualCurrency}
+                amountPrimary={isVirtualView ? 'virtual' : 'egp'}
             />
             <PaymentMethodDetails sourceOfFunds={order.sourceOfFunds} method={order.method} paymentChannel={order.paymentChannel} />
             <DetailsSection className="mt-4">

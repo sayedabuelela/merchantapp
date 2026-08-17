@@ -1,9 +1,8 @@
 import {Link} from "expo-router"
 import {View} from "react-native"
 import FontText from "@/src/shared/components/FontText"
-import {currencyNumber} from "@/src/core/utils/number-fields"
+import DualAmount from "@/src/shared/components/currency/DualAmount"
 import {ArrowSmallDownIcon, ArrowSmallUpIcon, EnvelopeIcon, UserIcon} from "react-native-heroicons/outline"
-import {useTranslation} from "react-i18next"
 import {cn} from "@/src/core/utils/cn"
 import React from "react";
 import StatusBox from "@/src/modules/payment-links/components/StatusBox";
@@ -26,10 +25,11 @@ import {getEffectiveTransactionStatus} from "../../utils/posStatus.utils"
 interface TransactionCardProps {
     transaction: Transaction;
     onOpenActions?: (transaction: Transaction) => void;
+    // Which amount leads for virtual-origin transactions: 'virtual' in a virtual-currency view, 'egp' in the EGP view
+    amountPrimary?: 'egp' | 'virtual';
 }
 
-const TransactionCard = ({transaction, onOpenActions}: TransactionCardProps) => {
-    const {t} = useTranslation();
+const TransactionCard = ({transaction, onOpenActions, amountPrimary = 'egp'}: TransactionCardProps) => {
     const {
         _id,
         status,
@@ -87,10 +87,15 @@ const TransactionCard = ({transaction, onOpenActions}: TransactionCardProps) => 
                             </FontText>
 
                         </View>
-                        <FontText type="body" weight="bold"
-                                  className={cn("text-content-primary text-sm")}>
-                            {currencyNumber(amount)} {t(currency)}
-                        </FontText>
+                        <DualAmount
+                            amount={amount}
+                            currency={currency}
+                            virtualAmount={transaction.virtualAmount}
+                            virtualCurrency={transaction.virtualCurrency}
+                            primary={amountPrimary}
+                            size="sm"
+                            className="items-end"
+                        />
                     </View>
                     {/* method and channel */}
                     <View className="flex-row items-center justify-between">

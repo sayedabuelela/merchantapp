@@ -24,6 +24,10 @@ import CreatePaymentModal from "../payment-links/components/modals/CreatePayment
 import OrderCard from "../payments/components/orders-list/OrderCard"
 import { PaymentSession } from "../payments/payments.model"
 import { useOrdersVM } from "../payments/viewmodels/useOrdersVM"
+import CurrencyBtn from "@/src/shared/components/currency/CurrencyBtn"
+import CurrencyModal from "@/src/shared/components/currency/CurrencyModal"
+import useCurrencyConversionEnabled from "@/src/shared/hooks/useCurrencyConversionEnabled"
+import useSelectedCurrency from "@/src/shared/hooks/useSelectedCurrency"
 import GreetingUser from "./components/GreetingUser"
 import HomeDateFilterModal from "./components/HomeDateFilterModal"
 import HomeListEmpty from "./components/HomeListEmpty"
@@ -42,6 +46,9 @@ const HomeScreen = () => {
     const notificationsCount = unSeenCount;
     const userName = user?.userName || user?.fullName;
     const [showAccountsModal, setShowAccountsModal] = useState(false);
+    const [showCurrencyModal, setShowCurrencyModal] = useState(false);
+    const isCurrencyConversionEnabled = useCurrencyConversionEnabled();
+    const { currencyParam } = useSelectedCurrency();
     const [isCreatePLModalVisible, setCreatePLModalVisible] = useState(false);
     const [isDateFilterVisible, setIsDateFilterVisible] = useState(false);
     const [activeTab, setActiveTab] = useState<HomeTabType>('all');
@@ -100,7 +107,8 @@ const HomeScreen = () => {
     const ordersQuery = useOrdersVM({
         limit: 5,
         dateFrom: dateFilters.dateFrom,
-        dateTo: dateFilters.dateTo
+        dateTo: dateFilters.dateTo,
+        ...(currencyParam && { currency: currencyParam })
     });
 
     const paymentsStats = ordersQuery.stats?.paidOrders;
@@ -237,12 +245,18 @@ const HomeScreen = () => {
                                 </Pressable>
                             </View>
                         </FadeInUpView>
-                        {(accounts !== undefined && accounts?.length > 1) && (
-                            <AccountsBtn
-                                onPress={() => setShowAccountsModal(true)}
-                                className="self-start"
-                            />
-                        )}
+                        <View className="flex-row items-center gap-x-2 self-start">
+                            {(accounts !== undefined && accounts?.length > 1) && (
+                                <AccountsBtn
+                                    onPress={() => setShowAccountsModal(true)}
+                                />
+                            )}
+                            {isCurrencyConversionEnabled && (
+                                <CurrencyBtn
+                                    onPress={() => setShowCurrencyModal(true)}
+                                />
+                            )}
+                        </View>
                     </FadeInDownView>
                     <ScaleFadeIn delay={200} duration={600}>
                         <View className="mb-2">
@@ -306,6 +320,12 @@ const HomeScreen = () => {
                     isVisible={showAccountsModal}
                     onClose={() => setShowAccountsModal(false)}
                     accounts={accounts}
+                />
+            )}
+            {isCurrencyConversionEnabled && (
+                <CurrencyModal
+                    isVisible={showCurrencyModal}
+                    onClose={() => setShowCurrencyModal(false)}
                 />
             )}
             <CreatePaymentModal

@@ -26,6 +26,7 @@ import PaymentLinkCardSkeleton from "../../payment-links/components/PaymentLinkC
 import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView";
 import AnimatedListItem from "@/src/shared/components/wrappers/animated-wrappers/AnimatedListItem";
 import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/ScaleView";
+import useSelectedCurrency from "@/src/shared/hooks/useSelectedCurrency";
 
 const INITIAL_ORDERS_FILTERS: FetchSessionsParams = {
     dateFrom: undefined,
@@ -60,6 +61,7 @@ const PaymentsScreen = () => {
     const [ordersFilters, setOrdersFilters] = useState<FetchSessionsParams>(INITIAL_ORDERS_FILTERS);
     const [transactionsFilters, setTransactionsFilters] = useState<FetchTransactionsParams>(INITIAL_TRANSACTIONS_FILTERS);
     const [selectedPayment, setSelectedPayment] = useState<PaymentSession | Transaction | null>(null);
+    const { currencyParam, isVirtual } = useSelectedCurrency();
 
     const isOrdersTab = status === "sessions";
     const activeFilters = isOrdersTab ? ordersFilters : transactionsFilters;
@@ -82,12 +84,15 @@ const PaymentsScreen = () => {
     const ordersQuery = useOrdersVM({
         ...ordersFilters,
         q: search,
+        // Virtual currency view filter (currency conversion feature); undefined = EGP view, request unchanged
+        ...(currencyParam && { currency: currencyParam }),
     });
 
     // Fetch Transactions
     const transactionsQuery = useTransactionsVM({
         ...transactionsFilters,
         search,
+        ...(currencyParam && { currency: currencyParam }),
     });
     // Use the appropriate query based on active tab
     const activeQuery = isOrdersTab ? ordersQuery : transactionsQuery;
@@ -128,17 +133,17 @@ const PaymentsScreen = () => {
         if (isOrdersTab) {
             return (
                 <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
-                    <OrderCard payment={item as PaymentSession} onOpenActions={handleOpenActions}/>
+                    <OrderCard payment={item as PaymentSession} onOpenActions={handleOpenActions} amountPrimary={isVirtual ? 'virtual' : 'egp'}/>
                 </AnimatedListItem>
             );
         } else {
             return (
                 <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
-                    <TransactionCard transaction={item as Transaction} onOpenActions={handleOpenActions}/>
+                    <TransactionCard transaction={item as Transaction} onOpenActions={handleOpenActions} amountPrimary={isVirtual ? 'virtual' : 'egp'}/>
                 </AnimatedListItem>
             );
         }
-    }, [handleOpenActions, isOrdersTab, listData]);
+    }, [handleOpenActions, isOrdersTab, listData, isVirtual]);
 
     const handleClearSearch = useCallback(() => {
         setSearchValue('');

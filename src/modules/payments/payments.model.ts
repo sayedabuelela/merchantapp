@@ -20,6 +20,9 @@ export type TransactionDetailsTabType = 'details' | 'settlement' | 'history';
 export interface PaymentParams {
     amount: number;
     currency: string;
+    // Currency conversion (virtual currencies) — present only for virtual-origin sessions
+    virtualAmount?: number | null;
+    virtualCurrency?: string | null;
     order: string;
     storeName: string;
     interactionSource?: string;
@@ -111,6 +114,8 @@ export interface FetchSessionsParams {
     method?: string;
     origin?: string;
     branchName?: string;
+    // Virtual currency filter, e.g. "USD_VIRTUAL" — omitted for the EGP view
+    currency?: string;
 }
 
 // Installment Interfaces
@@ -388,6 +393,11 @@ export interface Transaction {
     currency: string;
     lastStatus: TransactionLastStatus;
     amount: number;
+    // Currency conversion (virtual currencies) — rate captured at payment time, never recalculated
+    virtualAmount?: number;
+    virtualCurrency?: string;
+    virtualExchangeRate?: number;
+    virtualRateRecordedAt?: string;
     isVoided: boolean;
     isCancelled: boolean;
     dateToFilter: string;
@@ -515,6 +525,11 @@ export interface OrderDetailPayment {
     merchantOrderId: string;
     amount: number;
     currency: string;
+    // Currency conversion (virtual currencies) — optional; endpoint support unverified, UI degrades gracefully
+    virtualAmount?: number;
+    virtualCurrency?: string;
+    virtualExchangeRate?: number;
+    virtualRateRecordedAt?: string;
     method: string;
     pcc: OrderDetailPCC;
     provider?: string;
@@ -624,6 +639,11 @@ export interface TransactionDetail {
     pcc: TransactionDetailPCC;
     amount: number;
     currency: string;
+    // Currency conversion (virtual currencies) — rate captured at payment time, never recalculated
+    virtualAmount?: number;
+    virtualCurrency?: string;
+    virtualExchangeRate?: number;
+    virtualRateRecordedAt?: string;
     paymentChannel: string;
     status: string;
     paymentStatus: string;
@@ -874,3 +894,15 @@ export interface ContactRefundWithOtpRequest {
  * Reuses RefundOrderResponse structure as the response format is the same
  */
 export type ContactRefundWithOtpResponse = RefundOrderResponse;
+
+/**
+ * Response structure for the exchange rate endpoint
+ * Endpoint: GET /v3/payment/exchange-rate?from=USD&to=EGP
+ */
+export interface ExchangeRateResponse {
+    success: boolean;
+    timestamp: number;
+    base: string;
+    date: string;
+    rates: Record<string, number>;
+}

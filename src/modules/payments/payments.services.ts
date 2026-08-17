@@ -18,6 +18,7 @@ import {
     ContactOtpRefundResponse,
     ContactRefundWithOtpRequest,
     ContactRefundWithOtpResponse,
+    ExchangeRateResponse,
 } from './payments.model';
 
 /**
@@ -44,6 +45,7 @@ export const fetchPaymentSessions = async (
         method,
         origin,
         branchName,
+        currency,
     } = params;
 
     const queryParams: Record<string, any> = {
@@ -61,9 +63,29 @@ export const fetchPaymentSessions = async (
     if (method) queryParams.method = method;
     if (origin) queryParams.origin = origin;
     if (branchName) queryParams.branchName = branchName;
+    if (currency) queryParams.currency = currency;
 
     const response = await api.get<FetchSessionsResponse>('/v3/payment/sessions', {
         params: queryParams,
+    });
+
+    return response.data;
+};
+
+/**
+ * Fetch the current exchange rate between two currencies (display codes, e.g. USD -> EGP)
+ * Endpoint: GET /v3/payment/exchange-rate
+ * @param api - Axios instance from useApi hook
+ * @param from - Source currency display code (e.g. "USD")
+ * @param to - Target currency display code (default "EGP")
+ */
+export const fetchExchangeRate = async (
+    api: AxiosInstance,
+    from: string,
+    to: string = 'EGP'
+): Promise<ExchangeRateResponse> => {
+    const response = await api.get<ExchangeRateResponse>('/v3/payment/exchange-rate', {
+        params: { from, to },
     });
 
     return response.data;

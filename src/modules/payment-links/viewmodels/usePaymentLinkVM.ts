@@ -103,6 +103,8 @@ const usePaymentLinkVM = (paymentLinkId?: string) => {
     // Unified submit handler
     const submitPaymentLink = async (data: CreatePaymentLinkTypes) => {
         if (isEditMode) {
+            // Currency is not part of the PUT contract — a currency change made in the edit UI
+            // is not persisted; the link keeps its creation currency (incl. virtual currencies).
             delete data.currency;
             return editPaymentLink(data);
         }

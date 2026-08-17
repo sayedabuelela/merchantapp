@@ -19,8 +19,10 @@ import { mapApiToFormValues } from "../../paymentLink.utils";
 import AddFeeModal from "../modals/AddFeeModal";
 import AddItemModal from "../modals/AddItemModal";
 import CreateOptionBox from "./CreateOptionBox";
+import EgpEquivalent from "./EgpEquivalent";
 import FeesList from "./fees/FeesList";
 import ItemsList from "./items/ItemsList";
+import useSelectedCurrency from "@/src/shared/hooks/useSelectedCurrency";
 
 interface PaymentLinkFormProps {
     onSubmit: (data: CreatePaymentLinkTypes) => void;
@@ -40,13 +42,16 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
     const [editingFeeIndex, setEditingFeeIndex] = useState<number | undefined>();
     const [hasExtraFees, setHasExtraFees] = useState(false);
     const { formData, setFormData } = usePaymentLinkStore();
+    // Inherit the dashboard-selected currency (currency conversion feature).
+    // Read once at mount via defaultValues; flag off / EGP selected => "EGP" (today's behavior).
+    const { apiId: selectedVirtualApiId } = useSelectedCurrency();
 
     const methods = useForm<CreatePaymentLinkTypes>({
         resolver: zodResolver(createPaymentLinkSchema),
         defaultValues: {
             paymentType,
             customer: { name: "" },
-            currency: "EGP",
+            currency: selectedVirtualApiId ?? "EGP",
             ...(paymentType === "simple" ? { totalAmount: "" } : { items: [] }),
         },
         mode: "onChange",
@@ -186,6 +191,7 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                             )}
                         />
                         <AnimatedErrorMsg errorMsg={t(errors.totalAmount?.message || '')} />
+                        <EgpEquivalent />
 
                         <Pressable
                             className="flex-row items-center border-t border-tertiary pt-6 mt-6"

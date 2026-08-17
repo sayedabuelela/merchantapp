@@ -6,6 +6,11 @@ import SectionItem from '@/src/shared/components/details-screens/SectionItem';
 import { PaymentMethodDetails } from '../order-detail/PaymentMethodDetails';
 import SectionItemWithCopy from '@/src/shared/components/details-screens/SectionItemWithCopy';
 import { getEffectiveTransactionDetailStatus } from '../../utils/posStatus.utils';
+import useSelectedCurrency from '@/src/shared/hooks/useSelectedCurrency';
+import useCurrencyConversionEnabled from '@/src/shared/hooks/useCurrencyConversionEnabled';
+import { toDisplayCode } from '@/src/core/constants/currencies';
+import { currencyNumber } from '@/src/core/utils/number-fields';
+import { formatRelativeDate, formatTime } from '@/src/core/utils/dateUtils';
 
 interface TransactionSummaryCardProps {
     transaction: TransactionDetail;
@@ -18,6 +23,12 @@ interface TransactionSummaryCardProps {
 export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardProps) => {
     const { t } = useTranslation();
     const effectiveStatus = getEffectiveTransactionDetailStatus(transaction);
+    const { isVirtual: isVirtualView } = useSelectedCurrency();
+    const isCurrencyConversionEnabled = useCurrencyConversionEnabled();
+    // Rate captured at payment time (backend-provided) — never recalculated client-side
+    const showCapturedRate = isCurrencyConversionEnabled
+        && transaction.virtualCurrency != null
+        && transaction.virtualExchangeRate != null;
     return (
         <>
             <AmountDisplay
@@ -25,6 +36,9 @@ export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardPr
                 currency={transaction.currency}
                 status={effectiveStatus}
                 merchantOrderId={transaction.merchantOrderId}
+                virtualAmount={transaction.virtualAmount}
+                virtualCurrency={transaction.virtualCurrency}
+                amountPrimary={isVirtualView ? 'virtual' : 'egp'}
             />
             <PaymentMethodDetails
                 method={transaction.method}
@@ -41,6 +55,18 @@ export const TransactionSummaryCard = ({ transaction }: TransactionSummaryCardPr
                     title={t('Origin')}
                     value={transaction.metaData?.kashierOriginDetails?.id}
                 />
+                {showCapturedRate && (
+                    <SectionItem
+                        title={t('Locked rate')}
+                        value={`1 ${t(toDisplayCode(transaction.virtualCurrency))} = ${currencyNumber(transaction.virtualExchangeRate!)} ${t('EGP')}`}
+                    />
+                )}
+                {showCapturedRate && transaction.virtualRateRecordedAt && (
+                    <SectionItem
+                        title={t('Rate locked at')}
+                        value={`${formatRelativeDate(transaction.virtualRateRecordedAt)} ${formatTime(transaction.virtualRateRecordedAt)}`}
+                    />
+                )}
             </DetailsSection>
         </>
     );

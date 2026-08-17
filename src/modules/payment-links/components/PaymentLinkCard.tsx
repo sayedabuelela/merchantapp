@@ -1,5 +1,4 @@
 import { formatRelativeDate } from '@/src/core/utils/dateUtils'
-import { currencyNumber } from '@/src/core/utils/number-fields'
 import FontText from '@/src/shared/components/FontText'
 import { Link } from 'expo-router'
 import { memo, useCallback } from 'react'
@@ -9,22 +8,25 @@ import { EllipsisVerticalIcon, QrCodeIcon, ShoppingBagIcon, UserIcon } from 'rea
 import { PaymentLink } from '../payment-links.model'
 import StatusBox from './StatusBox'
 import DeliveryStatusBox from './DeliveryStatusBox'
-import { cn } from '@/src/core/utils/cn'
 import { PressableScale } from 'pressto'
 import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store'
 import usePermissions from '@/src/modules/auth/hooks/usePermissions'
+import DualAmount from '@/src/shared/components/currency/DualAmount'
 
 interface Props {
     paymentLink: PaymentLink;
     onOpenActions: (paymentLink: PaymentLink) => void;
+    // Which amount leads for virtual-origin links: 'virtual' in a virtual-currency view, 'egp' in the EGP view
+    amountPrimary?: 'egp' | 'virtual';
 }
 
 const PaymentLinkCard = ({
     paymentLink,
-    onOpenActions
+    onOpenActions,
+    amountPrimary = 'egp'
 }: Props) => {
     const { t } = useTranslation();
-    const { customerName, paymentLinkId, dueDate, paymentType, state, paymentStatus, needApproval, isChecker, createdByUserId, totalAmount, currency, invoiceReferenceId, invoiceItems, lastShareStatus } = paymentLink;
+    const { customerName, paymentLinkId, dueDate, paymentType, state, paymentStatus, needApproval, isChecker, createdByUserId, totalAmount, currency, virtualAmount, virtualCurrency, invoiceReferenceId, invoiceItems, lastShareStatus } = paymentLink;
 
     // Permission checks
     const user = useAuthStore(selectUser);
@@ -68,10 +70,15 @@ const PaymentLinkCard = ({
                                 className="text-content-secondary text-[10px] uppercase ml-2">
                                 {paymentLinkId}</FontText>
                         </View>
-                        <FontText type="body" weight="bold"
-                            className={cn("text-content-primary text-sm")}>
-                            {currencyNumber(totalAmount)} {currency}
-                        </FontText>
+                        <DualAmount
+                            amount={totalAmount}
+                            currency={currency}
+                            virtualAmount={virtualAmount}
+                            virtualCurrency={virtualCurrency}
+                            primary={amountPrimary}
+                            size="sm"
+                            className="items-end"
+                        />
                         {/* <View className='flex-row items-center'> */}
                         {/* <Pressable onPress={onOpen}>
                             <EllipsisVerticalIcon size={19} color="#001F5F" />

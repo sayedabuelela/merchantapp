@@ -59,6 +59,8 @@ export interface InvoiceItem {
 export interface PaymentLinkResponse {
     message: string;
     data: PaymentLink;
+    // False when the backend exchange-rate service is down (currency conversion feature)
+    exchangeRateServiceAvailable?: boolean;
 }
 
 export interface PaymentLink {
@@ -89,6 +91,14 @@ export interface PaymentLink {
     referenceId?: string;
     isChecker?: boolean;
     lastShareStatus: LastShareStatus;
+    // Currency conversion (virtual currencies).
+    // For virtual-origin links: currency/totalAmount are the EGP side (backend recomputes
+    // unpaid totals as rates move); virtualAmount/virtualCurrency are the original units.
+    // virtualExchangeRate/virtualRateRecordedAt are locked at payment time (details endpoint).
+    virtualAmount?: number | null;
+    virtualCurrency?: string | null;
+    virtualExchangeRate?: number | null;
+    virtualRateRecordedAt?: string | null;
 }
 
 export interface PaymentLinksPagination {
@@ -102,6 +112,8 @@ export interface PaymentLinksResponse {
     message: string;
     data: PaymentLink[];
     pagination: PaymentLinksPagination;
+    // False when the backend exchange-rate service is down (currency conversion feature)
+    exchangeRateServiceAvailable?: boolean;
 }
 
 // {"pageParams": [1], "pages": [{"data": [Array], "message": "Payment links retrieved successfully", "pagination": [Object]}]}
