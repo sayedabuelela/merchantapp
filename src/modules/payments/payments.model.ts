@@ -16,6 +16,18 @@ export type OrderDetailsTabType = 'details' | 'settlement' | 'history';
 // Transaction Details Tab Type
 export type TransactionDetailsTabType = 'details' | 'settlement' | 'history';
 
+/**
+ * Currency conversion payload. The backend nests these together rather than
+ * flattening them onto the record: sessions carry it at the root of `data`,
+ * transactions carry it under `order`. Rate fields are absent until capture.
+ */
+export interface VirtualTransaction {
+    virtualAmount?: number | null;
+    virtualCurrency?: string | null;
+    virtualExchangeRate?: number | null;
+    virtualRateRecordedAt?: string | null;
+}
+
 // Payment Session Interfaces
 export interface PaymentParams {
     amount: number;
@@ -523,13 +535,10 @@ export interface OrderDetailPayment {
     updatedAt: string;
     merchantId: string;
     merchantOrderId: string;
-    amount: number;
+    amount: number | null;
     currency: string;
-    // Currency conversion (virtual currencies) — optional; endpoint support unverified, UI degrades gracefully
-    virtualAmount?: number;
-    virtualCurrency?: string;
-    virtualExchangeRate?: number;
-    virtualRateRecordedAt?: string;
+    // Currency conversion — nested by the backend, present only for virtual-origin sessions
+    virtualTransaction?: VirtualTransaction;
     method: string;
     pcc: OrderDetailPCC;
     provider?: string;
@@ -582,6 +591,8 @@ export interface TransactionDetailOrder {
     accountType?: string;
     orderId?: string;
     earlySettlementFees?: number;
+    // Currency conversion — transactions nest it one level deeper than sessions do
+    virtualTransaction?: VirtualTransaction;
 }
 
 export interface TransactionDetailPCC {
@@ -639,11 +650,6 @@ export interface TransactionDetail {
     pcc: TransactionDetailPCC;
     amount: number;
     currency: string;
-    // Currency conversion (virtual currencies) — rate captured at payment time, never recalculated
-    virtualAmount?: number;
-    virtualCurrency?: string;
-    virtualExchangeRate?: number;
-    virtualRateRecordedAt?: string;
     paymentChannel: string;
     status: string;
     paymentStatus: string;

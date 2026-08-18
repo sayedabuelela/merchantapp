@@ -27,8 +27,10 @@ export default function DetailsTabs<T extends string>({ value, onSelectType, cla
             tabs={TABS}
             value={value}
             onSelectType={onSelectType}
-            className={cn("my-4", className)}
-            contentContainerClassName={contentContainerClassName}
+            // Prototype tab row: 24px above, flush below (the panel supplies its own
+            // top padding), 32px between labels
+            className={cn("mt-6 mb-0", className)}
+            contentContainerClassName={cn("gap-8", contentContainerClassName)}
         />
     );
 }

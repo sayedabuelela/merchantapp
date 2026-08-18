@@ -894,5 +894,13 @@
   "Fetching rate…": "جاري جلب سعر الصرف…",
   "Exchange rate unavailable — amount will be created in EGP": "سعر الصرف غير متاح — سيتم إنشاء المبلغ بالجنيه المصري",
   "Locked rate": "سعر الصرف المثبّت",
-  "Rate locked at": "تم تثبيت السعر في"
+  "Rate locked at": "تم تثبيت السعر في",
+  "This link has not been paid yet. The EGP equivalent is indicative — the final rate is set when the customer pays.": "لم يتم دفع هذا الرابط بعد. المبلغ المعادل بالجنيه المصري تقديري — يتم تحديد السعر النهائي عند دفع العميل.",
+  "Currency conversion": "تحويل العملة",
+  "Virtual currency": "العملة الافتراضية",
+  "Amount charged": "المبلغ المحصل",
+  "Exchange rate": "سعر الصرف",
+  "Rate captured": "تم تسجيل السعر",
+  "Equivalent": "المعادل",
+  "This order has not settled yet. The EGP amount is indicative — the final rate is set at settlement, so it may change.": "لم تتم تسوية هذا الطلب بعد. المبلغ بالجنيه المصري تقديري — يتم تحديد السعر النهائي عند التسوية، وقد يتغير."
 }

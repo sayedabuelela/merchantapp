@@ -114,7 +114,7 @@ export const BnPlPaymentDetails = ({method, sourceOfFunds, paymentChannel}: BnPl
         }
     }
     return (
-        <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded">
+        <View className="bg-surface-accent p-4 mt-4 rounded-lg">
             {/* Row 1: Type (method - channel) + Icon */}
             <View className="flex-row items-center justify-between">
                 <View className="gap-y-1">

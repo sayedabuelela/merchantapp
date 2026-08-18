@@ -16,7 +16,7 @@ export const OrderSummaryCard = ({order}: OrderSummaryCardProps) => {
     const {t} = useTranslation();
     const effectiveStatus = getEffectiveOrderDetailStatus(order);
     const {isVirtual: isVirtualView} = useSelectedCurrency();
-    console.log('OrderSummaryCard order.method : ',order.method);
+    const virtual = order.virtualTransaction;
 
     return (
         <>
@@ -25,12 +25,12 @@ export const OrderSummaryCard = ({order}: OrderSummaryCardProps) => {
                 currency={order.currency}
                 status={effectiveStatus}
                 merchantOrderId={order.merchantOrderId}
-                virtualAmount={order.virtualAmount}
-                virtualCurrency={order.virtualCurrency}
+                virtualAmount={virtual?.virtualAmount}
+                virtualCurrency={virtual?.virtualCurrency}
                 amountPrimary={isVirtualView ? 'virtual' : 'egp'}
             />
             <PaymentMethodDetails sourceOfFunds={order.sourceOfFunds} method={order.method} paymentChannel={order.paymentChannel} />
-            <DetailsSection className="mt-4">
+            <DetailsSection className="mt-4 gap-y-4">
                 <SectionItemWithCopy title={t("Merchant order ID")} value={order.merchantOrderId}/>
                 <SectionItemWithCopy title={t("Kashier order ID")} value={order.orderId}/>
                 <SectionItem title={t("Origin")} value={order.metaData?.kashierOriginDetails?.id}/>

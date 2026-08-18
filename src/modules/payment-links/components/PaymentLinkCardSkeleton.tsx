@@ -1,104 +1,44 @@
 import SkeletonLoader, { Spacer } from "@/src/shared/components/loaders/SkeletonLoader";
 import { View } from "react-native";
 
+/** Mirrors RecordCard: identity on the left, money and state on the right. */
+const CardBlock = () => (
+    <View className="w-full border border-tertiary rounded mb-2 p-4">
+        <View className="flex-row items-start gap-x-2">
+            <View className="flex-1">
+                <SkeletonLoader width={'70%'} height={14} radius={4} />
+                <Spacer height={4} />
+                <SkeletonLoader width={80} height={12} radius={4} />
+                <Spacer height={8} />
+                <View className="flex-row gap-x-1">
+                    <SkeletonLoader width={90} height={14} radius={2} />
+                    <SkeletonLoader width={70} height={14} radius={2} />
+                </View>
+            </View>
+            <View className="items-end">
+                <SkeletonLoader width={90} height={14} radius={4} />
+                <Spacer height={4} />
+                <SkeletonLoader width={70} height={12} radius={4} />
+                <Spacer height={4} />
+                <SkeletonLoader width={50} height={12} radius={2} />
+            </View>
+        </View>
+    </View>
+);
+
 const PaymentLinkCardSkeleton: React.FC = () => {
     return (
         <View>
             <SkeletonLoader width={120} height={22} radius={4} />
             <Spacer height={8} />
-            <View className="w-full border-[1.5px] rounded border-tertiary mb-2 mt-2 p-4">
-                <View className="flex-row  gap-x-2 mt-2">
-                    <SkeletonLoader width={24} height={24} radius={4} />
-                    <View className="">
-                        <SkeletonLoader width={'85%'} height={14} radius={4} />
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                        </View>
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={120} height={14} radius={4} />
-                            <SkeletonLoader width={50} height={14} radius={4} />
-                        </View>
-                    </View>
-                </View>
-            </View>
-            <View className="w-full border-[1.5px] rounded border-tertiary mb-2 mt-2 p-4">
-                <View className="flex-row  gap-x-2 mt-2">
-                    <SkeletonLoader width={24} height={24} radius={4} />
-                    <View className="">
-                        <SkeletonLoader width={'85%'} height={14} radius={4} />
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                        </View>
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={120} height={14} radius={4} />
-                            <SkeletonLoader width={50} height={14} radius={4} />
-                        </View>
-                    </View>
-                </View>
-            </View>
-            <View className="w-full border-[1.5px] rounded border-tertiary mb-2 mt-2 p-4">
-                <View className="flex-row  gap-x-2 mt-2">
-                    <SkeletonLoader width={24} height={24} radius={4} />
-                    <View className="">
-                        <SkeletonLoader width={'85%'} height={14} radius={4} />
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                        </View>
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={120} height={14} radius={4} />
-                            <SkeletonLoader width={50} height={14} radius={4} />
-                        </View>
-                    </View>
-                </View>
-            </View>
+            <CardBlock />
+            <CardBlock />
+            <CardBlock />
             <Spacer height={12} />
             <SkeletonLoader width={120} height={22} radius={4} />
             <Spacer height={8} />
-            <View className="w-full border-[1.5px] rounded border-tertiary mb-2 mt-2 p-4">
-                <View className="flex-row  gap-x-2 mt-2">
-                    <SkeletonLoader width={24} height={24} radius={4} />
-                    <View className="">
-                        <SkeletonLoader width={'85%'} height={14} radius={4} />
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                        </View>
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={120} height={14} radius={4} />
-                            <SkeletonLoader width={50} height={14} radius={4} />
-                        </View>
-                    </View>
-                </View>
-            </View>
-            <View className="w-full border-[1.5px] rounded border-tertiary mb-2 mt-2 p-4">
-                <View className="flex-row  gap-x-2 mt-2">
-                    <SkeletonLoader width={24} height={24} radius={4} />
-                    <View className="">
-                        <SkeletonLoader width={'85%'} height={14} radius={4} />
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                            <SkeletonLoader width={80} height={11} radius={4} />
-                        </View>
-                        <Spacer height={8} />
-                        <View className="flex-row gap-x-2">
-                            <SkeletonLoader width={120} height={14} radius={4} />
-                            <SkeletonLoader width={50} height={14} radius={4} />
-                        </View>
-                    </View>
-                </View>
-            </View>
+            <CardBlock />
+            <CardBlock />
         </View>
     );
 };

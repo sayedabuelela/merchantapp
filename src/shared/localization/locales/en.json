@@ -155,5 +155,13 @@
     "Fetching rate…": "Fetching rate…",
     "Exchange rate unavailable — amount will be created in EGP": "Exchange rate unavailable — amount will be created in EGP",
     "Locked rate": "Locked rate",
-    "Rate locked at": "Rate locked at"
+    "Rate locked at": "Rate locked at",
+    "This link has not been paid yet. The EGP equivalent is indicative — the final rate is set when the customer pays.": "This link has not been paid yet. The EGP equivalent is indicative — the final rate is set when the customer pays.",
+    "Currency conversion": "Currency conversion",
+    "Virtual currency": "Virtual currency",
+    "Amount charged": "Amount charged",
+    "Exchange rate": "Exchange rate",
+    "Rate captured": "Rate captured",
+    "Equivalent": "Equivalent",
+    "This order has not settled yet. The EGP amount is indicative — the final rate is set at settlement, so it may change.": "This order has not settled yet. The EGP amount is indicative — the final rate is set at settlement, so it may change."
 }

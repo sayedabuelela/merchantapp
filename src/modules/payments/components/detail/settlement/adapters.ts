@@ -41,8 +41,8 @@ export interface SettlementData {
  * Adapts OrderDetailPayment to normalized SettlementData
  */
 export const adaptOrderData = (order: OrderDetailPayment): SettlementData => ({
-    // Financial fields
-    amount: order.amount,
+    // Financial fields — amount is null on records that never captured
+    amount: order.amount ?? 0,
     capturedAmount: order.capturedAmount,
     refundedAmount: order.refundedAmount,
     fees: order.fees,

@@ -46,7 +46,6 @@ const OrderDetailsScreen = () => {
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
     const [showCaptureModal, setShowCaptureModal] = useState(false);
-    console.log('order : ', order);
     // Actions viewmodel
     const {
         voidOrder,
@@ -235,7 +234,7 @@ const OrderDetailsScreen = () => {
                             // elevation: 3
                         }}
                     >
-                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} className='mb-0' contentContainerClassName={cn(isTabsSticky ? 'px-6' : 'px-0')} />
+                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} className='mt-0 mb-0' contentContainerClassName={cn(isTabsSticky ? 'px-6' : 'px-0')} />
                     </View>
                 )}
 

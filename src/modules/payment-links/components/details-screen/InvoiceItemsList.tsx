@@ -5,7 +5,6 @@ import { InvoiceItem } from "../../payment-links.model"
 import SummaryItem from "./SummaryItem"
 
 const InvoiceItemsList = ({ items, currency }: { items: InvoiceItem[], currency: string }) => {
-    console.log('items', items)
     return (
         <View >
             {items.map((item, index) => (

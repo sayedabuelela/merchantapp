@@ -16,7 +16,7 @@ const SectionItem = ({ icon, title, value, valueClassName, labelClassName }: Pro
         <View className='flex-1 flex-row items-start'>
             {icon && icon}
             <View className={cn(icon ? 'ml-2' : '')}>
-                <FontText type="body" weight="regular" className={cn("text-content-secondary text-sm mb-1 self-start", labelClassName)}>{title}</FontText>
+                <FontText type="body" weight="regular" className={cn("text-light-gray text-xs mb-1 self-start", labelClassName)}>{title}</FontText>
                 <FontText type="body" weight="semi" className={cn("text-content-primary text-sm self-start w-full", valueClassName)}>{value}</FontText>
             </View>
         </View>

@@ -15,7 +15,7 @@ export const CashPaymentDetails = ({ sourceOfFunds, paymentChannel }: CashPaymen
     const { t } = useTranslation();
 
     return (
-        <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded gap-y-5">
+        <View className="bg-surface-accent p-4 mt-4 rounded-lg gap-y-5">
             {/* Header with Cash branding */}
             <View className="flex-row items-center justify-between">
                 <FontText type="body" weight="bold" className="text-content-primary text-lg">

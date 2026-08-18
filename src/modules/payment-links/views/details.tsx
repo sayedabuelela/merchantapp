@@ -15,6 +15,8 @@ import DetailsSection from '../../../shared/components/details-screens/DetailsSe
 import ExtraFeesList from '../components/details-screen/ExtraFeesList';
 import InvoiceItemsList from '../components/details-screen/InvoiceItemsList';
 import SectionItem from '../../../shared/components/details-screens/SectionItem';
+import NoteBox from '@/src/shared/components/details-screens/NoteBox';
+import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import SummaryItem from '../components/details-screen/SummaryItem';
 import ActionsModal from '../components/modals/ActionsModal';
 import StatusBox from '../components/StatusBox';
@@ -47,7 +49,6 @@ export default function PaymentLinkDetailsScreen() {
         user?.merchantId,
         paymentLink?.createdByUserId
     );
-    console.log('permissions : ', permissions);
     // Redirect if user doesn't have permission to view details
     // if (paymentLink && !permissions.canViewPaymentLinkDetails) {
     //     return <Redirect href={ROUTES.TABS.PAYMENT_LINKS} />;
@@ -176,23 +177,10 @@ export default function PaymentLinkDetailsScreen() {
                             )}
                             <FadeInUpView delay={400} duration={600}>
                                 <DetailsSection
-                                    className='gap-y-2 mb-6'
+                                    className='mb-6'
                                     icon={<TagIcon size={24} color="#556767" />}
                                     title={t("Summary")}
                                 >
-                                    {isVirtualLink && paymentLink?.paymentStatus === 'paid' && paymentLink?.virtualExchangeRate != null && (
-                                        <View className='bg-[#F5F8FF] rounded p-3 mb-2 gap-y-1'>
-                                            <SummaryItem
-                                                title={t("Locked rate")}
-                                                value={`1 ${t(virtualDisplayCode)} = ${currencyNumber(paymentLink.virtualExchangeRate)} ${t('EGP')}`}
-                                            />
-                                            {paymentLink?.virtualRateRecordedAt && (
-                                                <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                                                    {`${t("Rate locked at")} ${formatRelativeDate(paymentLink.virtualRateRecordedAt)} ${formatTime(paymentLink.virtualRateRecordedAt)}`}
-                                                </FontText>
-                                            )}
-                                        </View>
-                                    )}
                                     {paymentLink?.paymentType === 'simple' && paymentLink?.totalAmountWithoutFees && (
                                         <SummaryItem
                                             title={t("Amount")}
@@ -206,36 +194,53 @@ export default function PaymentLinkDetailsScreen() {
                                         <InvoiceItemsList items={paymentLink?.invoiceItems} currency={paymentLink?.currency} />
                                     )}
 
-                                    {(paymentLink?.totalAmountWithoutFees || (paymentLink?.extraFees && paymentLink?.extraFees.length > 0)) && (
-                                        <View className={'border-t border-tertiary pt-2'}>
-                                            {paymentLink?.totalAmountWithoutFees && (
-                                                <SummaryItem
-                                                    summaryLabel
-                                                    title={t("Sub-total")}
-                                                    value={`${currencyNumber(paymentLink?.totalAmountWithoutFees)} ${paymentLink?.currency}`}
+                                    {paymentLink?.totalAmountWithoutFees && (
+                                        <SummaryItem
+                                            total
+                                            summaryLabel
+                                            title={t("Sub-total")}
+                                            value={`${currencyNumber(paymentLink?.totalAmountWithoutFees)} ${paymentLink?.currency}`}
+                                        />
+                                    )}
+                                    <ExtraFeesList
+                                        extraFees={paymentLink?.extraFees}
+                                        currency={paymentLink?.currency}
+                                        totalAmountWithoutFees={paymentLink?.totalAmountWithoutFees}
+                                    />
+
+                                    <SummaryItem
+                                        total
+                                        summaryLabel
+                                        title={t("Total")}
+                                        value={isVirtualLink
+                                            ? `${currencyNumber(paymentLink?.virtualAmount ?? 0)} ${t(virtualDisplayCode)}`
+                                            : `${currencyNumber(paymentLink?.totalAmount)} ${paymentLink?.currency}`}
+                                        secondaryValue={isVirtualLink
+                                            ? `≈ ${currencyNumber(paymentLink?.totalAmount ?? 0)} ${t('EGP')}`
+                                            : undefined}
+                                    />
+
+                                    {/* The captured rate is a settled fact, so it reads as plain rows
+                                        rather than a tinted box competing with the payment card. */}
+                                    {isVirtualLink && paymentLink?.paymentStatus === 'paid' && paymentLink?.virtualExchangeRate != null && (
+                                        <>
+                                            <SectionRowItem
+                                                title={t("Locked rate")}
+                                                value={`1 ${t(virtualDisplayCode)} = ${currencyNumber(paymentLink.virtualExchangeRate)} ${t('EGP')}`}
+                                            />
+                                            {paymentLink?.virtualRateRecordedAt && (
+                                                <SectionRowItem
+                                                    title={t("Rate locked at")}
+                                                    value={`${formatRelativeDate(paymentLink.virtualRateRecordedAt)} ${formatTime(paymentLink.virtualRateRecordedAt)}`}
                                                 />
                                             )}
-                                            {/* {paymentLink?.extraFees && paymentLink?.extraFees.length > 0 && ( */}
-                                            <ExtraFeesList
-                                                extraFees={paymentLink?.extraFees}
-                                                currency={paymentLink?.currency}
-                                                totalAmountWithoutFees={paymentLink?.totalAmountWithoutFees}
-                                            />
-                                            {/* )} */}
-                                        </View>
+                                        </>
                                     )}
-                                    <View className='border-t border-tertiary pt-2'>
-                                        <SummaryItem
-                                            summaryLabel
-                                            title={t("Total")}
-                                            value={isVirtualLink
-                                                ? `${currencyNumber(paymentLink?.virtualAmount ?? 0)} ${t(virtualDisplayCode)}`
-                                                : `${currencyNumber(paymentLink?.totalAmount)} ${paymentLink?.currency}`}
-                                            secondaryValue={isVirtualLink
-                                                ? `≈ ${currencyNumber(paymentLink?.totalAmount ?? 0)} ${t('EGP')}`
-                                                : undefined}
-                                        />
-                                    </View>
+                                    {isVirtualLink && paymentLink?.paymentStatus !== 'paid' && (
+                                        <NoteBox className='mt-0.5'>
+                                            {t("This link has not been paid yet. The EGP equivalent is indicative — the final rate is set when the customer pays.")}
+                                        </NoteBox>
+                                    )}
                                 </DetailsSection>
                             </FadeInUpView>
                             {(paymentLink?.lastShareStatus?.email?.status || paymentLink?.lastShareStatus?.sms?.status) && (

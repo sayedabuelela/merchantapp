@@ -6,14 +6,13 @@ import StatusBox from '@/src/modules/payment-links/components/StatusBox';
 import DualAmount from '@/src/shared/components/currency/DualAmount';
 import { SessionStatus } from '../../payments.model';
 import IconBox from '@/src/shared/components/wrappers/IconBox';
-import { ArrowSmallDownIcon, ArrowSmallUpIcon } from 'react-native-heroicons/outline';
-import { Pressable } from 'react-native';
-import { DocumentDuplicateIcon } from 'react-native-heroicons/outline';
+import { ArrowSmallDownIcon, ArrowSmallUpIcon, DocumentDuplicateIcon } from 'react-native-heroicons/outline';
 import { PressableScale } from 'pressto';
 import { useClipboard } from '@/src/shared/hooks/useClipboard';
 
 interface AmountDisplayProps {
-    amount: number;
+    // Null on records that never captured, e.g. an expired session
+    amount: number | null;
     currency: string;
     merchantOrderId: string;
     status: SessionStatus | string;
@@ -52,43 +51,46 @@ export const AmountDisplay = ({
         }
     }
     return (
-        <View className={cn('gap-y-0.5 mb-4 mt-6', className)}>
-            <View className="flex-row items-center gap-x-2">
-                <DualAmount
-                    amount={amount}
-                    currency={currency}
-                    virtualAmount={virtualAmount}
-                    virtualCurrency={virtualCurrency}
-                    primary={amountPrimary}
-                    size="lg"
-                />
-                <View className="flex-row items-center gap-x-1">
-                    <IconBox className={cn(
-                        isPaid ? 'bg-[#D1FFD3] border border-[#AEFFB2]' :
-                        isPending ? 'bg-[#FFF7E8] border border-[#F5D99A]' :
-                        'bg-[#FFEAED] border border-[#FEE4E7]'
-                    )}>
-                        {isPaid ? (
-                            <ArrowSmallDownIcon size={10} color={'#1A541D'} />
-                        ) : isPending ? (
-                            <ArrowSmallDownIcon size={10} color={'#B77801'} />
-                        ) : (
-                            <ArrowSmallUpIcon size={10} color={'#A50017'} />
-                        )}
-                    </IconBox>
-                    <StatusBox status={status} />
-                </View>
-            </View>
+        <View className={cn('gap-y-1 mt-6', className)}>
+            <DualAmount
+                amount={amount}
+                currency={currency}
+                virtualAmount={virtualAmount}
+                virtualCurrency={virtualCurrency}
+                primary={amountPrimary}
+                size="lg"
+                // Badge + status ride the amount line itself, so a virtual record's
+                // equivalent line drops below them instead of centring them against it
+                trailing={
+                    <>
+                        <IconBox className={cn(
+                            'w-4 h-4',
+                            isPaid ? 'bg-[#D1FFD3]' :
+                            isPending ? 'bg-feedback-warning-bg' :
+                            'bg-feedback-error-bg'
+                        )}>
+                            {isPaid ? (
+                                <ArrowSmallDownIcon size={10} color={'#1A541D'} />
+                            ) : isPending ? (
+                                <ArrowSmallDownIcon size={10} color={'#956200'} />
+                            ) : (
+                                <ArrowSmallUpIcon size={10} color={'#A50017'} />
+                            )}
+                        </IconBox>
+                        <StatusBox status={status} />
+                    </>
+                }
+            />
             {merchantOrderId && merchantOrderId !== "NA" && (
-                <View className="flex-row items-center gap-x-2">
-                    <FontText type="body" weight="regular" className="text-content-secondary max-w-72 text-sm self-start"
+                <View className="flex-row items-center gap-x-1.5">
+                    <FontText type="body" weight="regular" className="text-light-gray max-w-72 text-sm self-start"
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >
                         {merchantOrderId}
                     </FontText>
-                    <PressableScale onPress={handleCopy}>
-                        <DocumentDuplicateIcon size={20} color={'#001F5F'} />
+                    <PressableScale onPress={handleCopy} hitSlop={8}>
+                        <DocumentDuplicateIcon size={16} color={'#556767'} />
                     </PressableScale>
                 </View>
             )}

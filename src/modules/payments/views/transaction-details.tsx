@@ -41,7 +41,6 @@ const TransactionDetailsScreen = () => {
     const [activeTab, setActiveTab] = useState<TransactionDetailsTabType>('details');
     const [isTabsSticky, setIsTabsSticky] = useState(false);
     const [summaryHeight, setSummaryHeight] = useState(0);
-    console.log('transaction : ', transaction);
     // Action modals state
     const [showVoidModal, setShowVoidModal] = useState(false);
     const [showRefundModal, setShowRefundModal] = useState(false);
@@ -265,7 +264,7 @@ const TransactionDetailsScreen = () => {
                             // elevation: 3,
                         }}
                     >
-                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} className='mb-0' contentContainerClassName={cn(isTabsSticky ? 'px-6' : 'px-0')} />
+                        <DetailsTabs value={activeTab} onSelectType={setActiveTab} className='mt-0 mb-0' contentContainerClassName={cn(isTabsSticky ? 'px-6' : 'px-0')} />
                     </View>
                 )}
 

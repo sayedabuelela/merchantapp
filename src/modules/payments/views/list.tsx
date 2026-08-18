@@ -123,7 +123,6 @@ const PaymentsScreen = () => {
         item: GroupedRow<PaymentSession | Transaction>;
         index: number
     }) => {
-        console.log('PaymentsScreen item', item);
 
         if (item.type === 'header') return <HeaderRow title={item.date}/>;
 

@@ -11,3 +11,4 @@ export { default as SouhoolaPaymentSection } from './SouhoolaPaymentSection';
 export { default as AmanPaymentSection } from './AmanPaymentSection';
 export { default as TruPaymentSection } from './TruPaymentSection';
 export { default as ForsaPaymentSection } from './ForsaPaymentSection';
+export { default as CurrencyConversionSection } from './CurrencyConversionSection';
