@@ -126,10 +126,13 @@ const NewRequestTab = ({ params, canCreateInstantSettlement, enabled, onRequestS
         [runInquiry, transactionIds],
     );
 
-    const handleConfirmRequest = useCallback(async () => {
+    const handleConfirmRequest = useCallback(async (declineTransactionOnPartialFailure: boolean) => {
         if (isRequesting) return; // dup-submit guard
         try {
-            await createRequestAsync({ transactionIds: pendingTxIds });
+            await createRequestAsync({
+                transactionIds: pendingTxIds,
+                declineTransactionOnPartialFailure,
+            });
             confirmSheetRef.current?.close();
             setSelected(new Map());
             onRequestSuccess();

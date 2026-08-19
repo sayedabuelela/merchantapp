@@ -77,6 +77,8 @@ export function LoginForm({onSubmit, loading, error}: LoginFormProps) {
             // password: 'Maro$2888889',
             // email: 'Mrashad@kashier.io',
             // password: 'YoYo2722*',
+            // email: 'moshaaban@elements-ft.com',
+            // password: 'Maro@Hegazy$25559',
         },
     });
 

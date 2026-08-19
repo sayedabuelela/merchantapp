@@ -8,10 +8,11 @@ import {
     BottomSheetBackdropProps,
     BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
+import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { CheckIcon } from 'react-native-heroicons/outline';
+import { CheckBoxSquareEmptyIcon, CheckBoxSquareFilledIcon } from '@/src/shared/assets/svgs';
 import type { InquiryBreakdown } from '../../domain/instant-settlement.models';
 
 export interface ConfirmPayoutSheetRef {
@@ -22,9 +23,12 @@ export interface ConfirmPayoutSheetRef {
 interface Props {
     inquiry: InquiryBreakdown | null;
     isRequesting: boolean;
-    onConfirm: () => void;
+    onConfirm: (declineTransactionOnPartialFailure: boolean) => void;
     onClose: () => void;
 }
+
+/** Portal default — the request is rejected rather than partially excluded. */
+const DECLINE_ON_PARTIAL_FAILURE_DEFAULT = true;
 
 const CURRENCY = 'EGP';
 
@@ -53,11 +57,19 @@ const ConfirmPayoutSheet = forwardRef<ConfirmPayoutSheetRef, Props>(
     ({ inquiry, isRequesting, onConfirm, onClose }, ref) => {
         const { t } = useTranslation();
         const sheetRef = useRef<BottomSheetModal | null>(null);
+        const [declineOnPartialFailure, setDeclineOnPartialFailure] = useState(
+            DECLINE_ON_PARTIAL_FAILURE_DEFAULT,
+        );
 
         useImperativeHandle(
             ref,
             () => ({
-                expand: () => sheetRef.current?.present(),
+                expand: () => {
+                    // each payout starts from the default — the flag must not
+                    // leak from a previous (possibly abandoned) confirmation.
+                    setDeclineOnPartialFailure(DECLINE_ON_PARTIAL_FAILURE_DEFAULT);
+                    sheetRef.current?.present();
+                },
                 close: () => sheetRef.current?.dismiss(),
             }),
             [],
@@ -147,9 +159,29 @@ const ConfirmPayoutSheet = forwardRef<ConfirmPayoutSheetRef, Props>(
                         </FontText>
                     </View>
 
+                    <Pressable
+                        onPress={() => setDeclineOnPartialFailure((prev) => !prev)}
+                        disabled={isRequesting}
+                        className="border border-stroke-main rounded-lg p-4 mt-4 flex-row items-start gap-x-3"
+                    >
+                        {declineOnPartialFailure ? (
+                            <CheckBoxSquareFilledIcon />
+                        ) : (
+                            <CheckBoxSquareEmptyIcon />
+                        )}
+                        <View className="flex-1">
+                            <FontText type="body" weight="semi" className="text-content-primary text-sm">
+                                {t('Reject Request if Any Transaction Is Excluded')}
+                            </FontText>
+                            <FontText type="body" weight="regular" className="text-content-secondary text-xs mt-1">
+                                {t('decline_on_partial_failure_hint')}
+                            </FontText>
+                        </View>
+                    </Pressable>
+
                     <Button
                         title={t('Request payout')}
-                        onPress={onConfirm}
+                        onPress={() => onConfirm(declineOnPartialFailure)}
                         isLoading={isRequesting}
                         disabled={isRequesting || !inquiry}
                         icon={<CheckIcon size={18} color="#FFFFFF" />}
