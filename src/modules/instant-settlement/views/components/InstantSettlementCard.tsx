@@ -20,6 +20,14 @@ interface InstantSettlementCardProps {
 
 const CURRENCY = 'EGP';
 
+/**
+ * The API sends the method lowercase ("card", "wallet") while the locale files
+ * key it capitalised. Title-case first so `t()` resolves; an unmapped method
+ * falls back to its own capitalised label (what the `capitalize` class did).
+ */
+const methodKey = (method: string) =>
+    method ? method.charAt(0).toUpperCase() + method.slice(1).toLowerCase() : '';
+
 const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect }: InstantSettlementCardProps) => {
     const { t } = useTranslation();
     const router = useRouter();
@@ -35,8 +43,8 @@ const InstantSettlementCard = ({ transaction, isSelected = false, onToggleSelect
                 <Pressable className="flex-1" onPress={() => router.push(`/payments/transaction/${transaction.id}`)}>
                     {/* method + gross (bold) */}
                     <View className="flex-row items-center justify-between mb-1">
-                        <FontText type="body" weight="regular" className="text-content-primary text-xs capitalize">
-                            {transaction.method}
+                        <FontText type="body" weight="regular" className="text-content-primary text-xs">
+                            {t(methodKey(transaction.method))}
                         </FontText>
                         <FontText type="body" weight="bold" className={cn("text-content-primary text-sm", 'ml-auto')}>
                             {currencyNumber(transaction.amount)} {t(CURRENCY)}

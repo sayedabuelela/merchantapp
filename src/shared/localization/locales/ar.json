@@ -23,6 +23,8 @@
   "Gross settlement amount": "إجمالي مبلغ التسوية",
   "Instant settlement fees": "رسوم التسوية الفورية",
   "Net payout amount": "صافي مبلغ التحويل",
+  "Reject Request if Any Transaction Is Excluded": "رفض الطلب في حال استبعاد أي معاملة",
+  "decline_on_partial_failure_hint": "في حال تحديد هذا الخيار، لن يتمكن الموظف من استبعاد معاملات محددة من هذا الطلب — وسيتم رفض الطلب بالكامل بدلاً من استبعاد معاملات معينة منه.",
   "Funds transferred": "تم تحويل الأموال",
   "Your instant settlement request was received.": "تم استلام طلب التسوية الفورية الخاص بك.",
   "Automated risk evaluation.": "تقييم آلي للمخاطر.",
@@ -874,5 +876,17 @@
   "Could not load suggestions": "تعذّر تحميل الاقتراحات",
   "No suggestions found": "لا توجد اقتراحات",
   "Lower": "أقل",
-  "Closest higher": "الأقرب الأعلى"
+  "Closest higher": "الأقرب الأعلى",
+  "Requests": "الطلبات",
+  "New Request": "طلب جديد",
+  "Daily limit": "الحد اليومي",
+  "Used": "المستخدم",
+  "Select all": "تحديد الكل",
+  "Selecting…": "جارٍ التحديد…",
+  "Custom amount": "مبلغ مخصص",
+  "Amount to settle": "المبلغ المراد تسويته",
+  "Suggested transactions around your amount (oldest first):": "معاملات مقترحة قريبة من مبلغك (الأقدم أولاً):",
+  "transactions": "معاملة",
+  "Record": "سجل",
+  "Account Num.": "رقم الحساب"
 }

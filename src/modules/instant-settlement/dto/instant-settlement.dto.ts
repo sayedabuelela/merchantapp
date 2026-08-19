@@ -108,6 +108,12 @@ export interface InquiryResponseDTO {
 
 export interface CreateRequestDTO {
     transactionIds: string[];
+    /**
+     * When true the whole request is rejected instead of the agent excluding
+     * individual transactions from it (portal: "Reject Request if Any
+     * Transaction Is Excluded").
+     */
+    declineTransactionOnPartialFailure: boolean;
 }
 
 export interface StatusHistoryEntryDTO {
