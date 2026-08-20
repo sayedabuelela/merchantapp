@@ -10,24 +10,34 @@ import {
     selectSetSelectedCurrency,
     useCurrencyStore,
 } from '@/src/core/stores/currency.store';
-import { SelectableCurrency } from '@/src/core/constants/currencies';
+import { BASE_CURRENCY, SelectedCurrencyId } from '@/src/core/constants/currencies';
 import CurrencyList from './CurrencyList';
 
 interface Props {
     isVisible: boolean;
     onClose: () => void;
+    /** Controlled mode: the currency to seed the draft with. Omit to follow the
+     *  global switcher (dashboard). */
+    value?: SelectedCurrencyId;
+    /** Controlled mode: called with the confirmed selection instead of writing
+     *  to the global store — lets a form field own the choice. */
+    onSelect?: (currency: SelectedCurrencyId) => void;
 }
 
 /**
  * Bottom-sheet-style currency switcher (structural clone of AccountsModal):
- * draft selection + confirm button writing to the global currency store.
+ * draft selection + confirm button. Writes to the global currency store unless
+ * the caller supplies `value`/`onSelect`.
  */
-const CurrencyModal = ({ isVisible, onClose }: Props) => {
+const CurrencyModal = ({ isVisible, onClose, value, onSelect }: Props) => {
     const [showModal, setShowModal] = useState(isVisible);
     const [isAnimating, setIsAnimating] = useState(false);
-    const selectedCurrency = useCurrencyStore(selectSelectedCurrency);
-    const setSelectedCurrency = useCurrencyStore(selectSetSelectedCurrency);
-    const [draftCurrency, setDraftCurrency] = useState<SelectableCurrency>(selectedCurrency);
+    const storeCurrency = useCurrencyStore(selectSelectedCurrency);
+    const setStoreCurrency = useCurrencyStore(selectSetSelectedCurrency);
+    const isControlled = onSelect !== undefined;
+    const selectedCurrency = isControlled ? value ?? BASE_CURRENCY : storeCurrency;
+    const setSelectedCurrency = isControlled ? onSelect : setStoreCurrency;
+    const [draftCurrency, setDraftCurrency] = useState<SelectedCurrencyId>(selectedCurrency);
 
     useEffect(() => {
         if (isVisible) {

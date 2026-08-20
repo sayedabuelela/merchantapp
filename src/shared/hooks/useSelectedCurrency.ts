@@ -1,8 +1,8 @@
 import {
     BASE_CURRENCY,
-    DISPLAY_TO_VIRTUAL,
-    isVirtualDisplayCode,
-    VirtualCurrencyId,
+    isVirtualCurrency,
+    SelectedCurrencyId,
+    toDisplayCode,
 } from '@/src/core/constants/currencies';
 import {
     selectSelectedCurrency,
@@ -23,11 +23,11 @@ const useSelectedCurrency = () => {
     const setSelectedCurrency = useCurrencyStore(selectSetSelectedCurrency);
     const resetSelectedCurrency = useCurrencyStore(selectResetSelectedCurrency);
 
-    const displayCode = isEnabled ? storedCurrency : BASE_CURRENCY;
-    const isVirtual = isEnabled && isVirtualDisplayCode(displayCode);
-    const apiId: VirtualCurrencyId | undefined = isVirtual
-        ? DISPLAY_TO_VIRTUAL[displayCode]
-        : undefined;
+    // The store holds the API id, so virtualness is read off it rather than
+    // guessed from a 3-letter code ('USD' alone cannot tell main from virtual).
+    const apiId: SelectedCurrencyId = isEnabled ? storedCurrency : BASE_CURRENCY;
+    const isVirtual = isVirtualCurrency(apiId);
+    const displayCode = toDisplayCode(apiId);
 
     return {
         isEnabled,
@@ -35,7 +35,9 @@ const useSelectedCurrency = () => {
         isVirtual,
         apiId,
         // Spread into list params: ...(currencyParam && { currency: currencyParam })
-        currencyParam: apiId,
+        // Sent for every selection including EGP, matching web. Flag off = omitted,
+        // so pre-feature requests stay byte-identical.
+        currencyParam: isEnabled ? apiId : undefined,
         setSelectedCurrency,
         resetSelectedCurrency,
     };

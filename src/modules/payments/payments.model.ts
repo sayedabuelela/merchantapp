@@ -30,7 +30,7 @@ export interface VirtualTransaction {
 
 // Payment Session Interfaces
 export interface PaymentParams {
-    amount: number;
+    amount: number | null;
     currency: string;
     // Currency conversion (virtual currencies) — present only for virtual-origin sessions
     virtualAmount?: number | null;

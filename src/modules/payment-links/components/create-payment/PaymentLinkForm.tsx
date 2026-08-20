@@ -43,15 +43,18 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
     const [hasExtraFees, setHasExtraFees] = useState(false);
     const { formData, setFormData } = usePaymentLinkStore();
     // Inherit the dashboard-selected currency (currency conversion feature).
-    // Read once at mount via defaultValues; flag off / EGP selected => "EGP" (today's behavior).
-    const { apiId: selectedVirtualApiId } = useSelectedCurrency();
+    // Read once at mount via defaultValues. `apiId` is the wire value already —
+    // "EGP", a main code like "USD", or "USD_VIRTUAL" — and is EGP when the flag
+    // is off, so no fallback is needed. A main non-EGP selection used to collapse
+    // to EGP here, making such a link impossible to create.
+    const { apiId: selectedCurrencyApiId } = useSelectedCurrency();
 
     const methods = useForm<CreatePaymentLinkTypes>({
         resolver: zodResolver(createPaymentLinkSchema),
         defaultValues: {
             paymentType,
             customer: { name: "" },
-            currency: selectedVirtualApiId ?? "EGP",
+            currency: selectedCurrencyApiId,
             ...(paymentType === "simple" ? { totalAmount: "" } : { items: [] }),
         },
         mode: "onChange",
@@ -149,7 +152,6 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
             });
         }
     }, [trigger, setFormData, getValues, isEditMode, paymentLink?.paymentLinkId, paymentType, router]);
-    console.log("isLoading :", isLoading);
     return (
         <FormProvider {...methods}>
             <KeyboardAwareScrollView className="flex-1" showsVerticalScrollIndicator={false}>

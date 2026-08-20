@@ -25,7 +25,18 @@ export type VirtualCurrencyId = (typeof VIRTUAL_CURRENCIES)[number];
 
 export type VirtualDisplayCode = 'USD' | 'EUR' | 'GBP' | 'SAR' | 'AED';
 
-export type SelectableCurrency = typeof BASE_CURRENCY | VirtualDisplayCode | string;
+/**
+ * What the global switcher stores and what goes on the wire: an API id, not a
+ * display code. Either the base currency, a merchant's real currency code
+ * ('USD'), or a virtual id ('USD_VIRTUAL') — so main USD and virtual USD stay
+ * distinct instead of collapsing onto the same 3-letter code.
+ * The `string & {}` arm keeps literal autocomplete while admitting any
+ * merchant currency from `user.currencies`.
+ */
+export type SelectedCurrencyId =
+    | typeof BASE_CURRENCY
+    | VirtualCurrencyId
+    | (string & {});
 
 export const VIRTUAL_TO_DISPLAY: Record<VirtualCurrencyId, VirtualDisplayCode> = {
     USD_VIRTUAL: 'USD',
@@ -46,8 +57,29 @@ export const DISPLAY_TO_VIRTUAL: Record<VirtualDisplayCode, VirtualCurrencyId> =
 export const isVirtualCurrency = (currency?: string | null): currency is VirtualCurrencyId =>
     !!currency && (VIRTUAL_CURRENCIES as readonly string[]).includes(currency);
 
+/**
+ * Display-layer only: true for a bare 3-letter code that HAS a virtual variant.
+ * Never use this to decide whether a selection is virtual — 'USD' is a valid
+ * main currency too. Use `isVirtualCurrency` on the API id instead.
+ */
 export const isVirtualDisplayCode = (currency?: string | null): currency is VirtualDisplayCode =>
     !!currency && currency in DISPLAY_TO_VIRTUAL;
+
+/** The virtual-currency fields every record type carries, however it nests them. */
+export interface VirtualFields {
+    /** String is admitted because amount props flow through display components unparsed. */
+    virtualAmount?: number | string | null;
+    virtualCurrency?: string | null;
+}
+
+/**
+ * Single answer to "was this record created in a virtual currency?".
+ * Shape check only — callers add the feature-flag guard.
+ */
+export const isVirtualRecord = (record?: VirtualFields | null): boolean =>
+    record?.virtualCurrency != null &&
+    record?.virtualAmount != null &&
+    record.virtualAmount !== '';
 
 /** USD_VIRTUAL -> USD; anything else passes through (EGP -> EGP) */
 export const toDisplayCode = (currency?: string | null): string => {

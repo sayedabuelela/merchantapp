@@ -3,7 +3,7 @@ import { I18nManager, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import FontText from '@/src/shared/components/FontText';
 import { currencyNumber } from '@/src/core/utils/number-fields';
-import { BASE_CURRENCY, isVirtualCurrency, toDisplayCode } from '@/src/core/constants/currencies';
+import { BASE_CURRENCY, isVirtualCurrency, isVirtualRecord, toDisplayCode } from '@/src/core/constants/currencies';
 import { cn } from '@/src/core/utils/cn';
 import useCurrencyConversionEnabled from '@/src/shared/hooks/useCurrencyConversionEnabled';
 import CurrencyToken from './CurrencyToken';
@@ -132,8 +132,7 @@ export default function DualAmount({
     const secondaryTextClasses = 'text-light-gray text-xs';
     const primaryLH = isLg ? LH.amountLg : LH.amountSm;
 
-    const isDual =
-        isEnabled && virtualCurrency != null && virtualAmount != null && virtualAmount !== '';
+    const isDual = isEnabled && isVirtualRecord({ virtualAmount, virtualCurrency });
 
     if (!isDual) {
         return (
@@ -154,13 +153,14 @@ export default function DualAmount({
 
     const egp = { value: amount, currency: currency ?? BASE_CURRENCY };
     const virtual = { value: virtualAmount, currency: virtualCurrency };
-    // An uncaptured record has no settled figure, so there is no equivalent to show —
-    // lead with the charged amount rather than printing a hollow "0.00 EGP".
+    // An uncaptured record (abandoned/expired) has no settled figure, so it leads with
+    // the charged amount rather than a hollow bold "0.00 EGP". The equivalent line is
+    // still rendered underneath — reading "0.00 EGP" there — so every row in the list
+    // carries the same two-line shape whatever its status.
     const hasBase = amount !== null && amount !== undefined && amount !== '';
     const primaryIsVirtual = primary !== 'egp' || !hasBase;
     const first = primaryIsVirtual ? virtual : egp;
     const second = primaryIsVirtual ? egp : virtual;
-    const showSecond = primaryIsVirtual ? hasBase : true;
 
     return (
         <View className={cn(isLg ? 'gap-y-1' : 'gap-y-0.5', className)}>
@@ -173,15 +173,13 @@ export default function DualAmount({
                 type={isLg ? 'head' : 'body'}
                 trailing={trailing}
             />
-            {showSecond && (
-                <AmountLine
-                    {...second}
-                    prefix="≈ "
-                    textClassName={secondaryTextClasses}
-                    lineHeight={LH.subLine}
-                    tokenSize="sm"
-                />
-            )}
+            <AmountLine
+                {...second}
+                prefix="≈ "
+                textClassName={secondaryTextClasses}
+                lineHeight={LH.subLine}
+                tokenSize="sm"
+            />
         </View>
     );
 }

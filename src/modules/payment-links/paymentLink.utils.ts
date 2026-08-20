@@ -1,4 +1,5 @@
 // paymentLink.mappers.ts
+import { isVirtualRecord } from '@/src/core/constants/currencies';
 import { PaymentLink } from './payment-links.model'; // adjust import path
 import { CreatePaymentLinkTypes } from './payment-links.scheme';
 
@@ -34,8 +35,10 @@ export function mapApiToFormValues(api: PaymentLink): CreatePaymentLinkTypes {
     };
 
     if (api.paymentType === 'simple') {
-        // Virtual-origin links: amount is edited in the original virtual units
-        const amountValue = api.virtualCurrency != null && api.virtualAmount != null
+        // Virtual-origin links: amount is edited in the original virtual units.
+        // No feature-flag guard here because this is a pure function — it is
+        // inert with the flag off, since the backend omits the virtual fields.
+        const amountValue = isVirtualRecord(api)
             ? api.virtualAmount
             : api.totalAmountWithoutFees;
         return {

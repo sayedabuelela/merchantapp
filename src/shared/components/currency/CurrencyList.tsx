@@ -8,21 +8,26 @@ import { useEnvironment } from '@/src/core/environment/useEnvironment.hook';
 import {
     BASE_CURRENCY,
     CURRENCY_NAMES,
-    SelectableCurrency,
+    SelectedCurrencyId,
     VIRTUAL_CURRENCIES,
     VIRTUAL_TO_DISPLAY,
 } from '@/src/core/constants/currencies';
+import useCurrencyConversionEnabled from '@/src/shared/hooks/useCurrencyConversionEnabled';
 import CurrencyFlag from './CurrencyFlag';
 import VirtualBadge from './VirtualBadge';
 
 interface CurrencyItemProps {
+    /** Display code shown to the merchant, e.g. 'USD'. */
     code: string;
+    /** API id emitted on select, e.g. 'USD' (main) or 'USD_VIRTUAL' (virtual).
+     *  Kept separate from `code` so the two USD rows are distinguishable. */
+    value: SelectedCurrencyId;
     isVirtual?: boolean;
     isActive?: boolean;
-    onSelect: (code: string) => void;
+    onSelect: (currency: SelectedCurrencyId) => void;
 }
 
-const CurrencyItem = ({ code, isVirtual, isActive, onSelect }: CurrencyItemProps) => {
+const CurrencyItem = ({ code, value, isVirtual, isActive, onSelect }: CurrencyItemProps) => {
     const { t } = useTranslation();
     return (
         <Pressable
@@ -30,7 +35,7 @@ const CurrencyItem = ({ code, isVirtual, isActive, onSelect }: CurrencyItemProps
                 'border border-stroke-main rounded p-2 flex-row items-center mb-2',
                 isActive && 'border-primary'
             )}
-            onPress={() => onSelect(code)}
+            onPress={() => onSelect(value)}
         >
             {isActive ? <CheckBoxFilledIcon /> : <CheckBoxEmptyIcon />}
             <View className="ml-2 flex-1 flex-row items-center justify-between">
@@ -65,8 +70,8 @@ const GroupLabel = ({ label }: { label: string }) => (
 );
 
 interface Props {
-    selectedCurrency: SelectableCurrency | null;
-    onSelectCurrency: (currency: SelectableCurrency) => void;
+    selectedCurrency: SelectedCurrencyId | null;
+    onSelectCurrency: (currency: SelectedCurrencyId) => void;
 }
 
 /**
@@ -77,6 +82,9 @@ const CurrencyList = ({ selectedCurrency, onSelectCurrency }: Props) => {
     const { t } = useTranslation();
     const user = useAuthStore(selectUser);
     const { isLiveMode } = useEnvironment();
+    // The form dropdown renders this list whether or not the merchant has the
+    // feature, so the virtual group is gated here rather than at every caller.
+    const isCurrencyConversionEnabled = useCurrencyConversionEnabled();
 
     const merchantCurrencies = isLiveMode ? user?.currencies ?? [] : user?.currenciesTest ?? [];
     // Always offer EGP even if the merchant currency list is empty
@@ -89,24 +97,26 @@ const CurrencyList = ({ selectedCurrency, onSelectCurrency }: Props) => {
                 <CurrencyItem
                     key={code}
                     code={code}
+                    value={code}
                     isActive={selectedCurrency === code}
                     onSelect={onSelectCurrency}
                 />
             ))}
 
-            <GroupLabel label={t('Virtual currencies')} />
-            {VIRTUAL_CURRENCIES.map((id) => {
-                const code = VIRTUAL_TO_DISPLAY[id];
-                return (
-                    <CurrencyItem
-                        key={id}
-                        code={code}
-                        isVirtual
-                        isActive={selectedCurrency === code}
-                        onSelect={onSelectCurrency}
-                    />
-                );
-            })}
+            {isCurrencyConversionEnabled && <GroupLabel label={t('Virtual currencies')} />}
+            {isCurrencyConversionEnabled && VIRTUAL_CURRENCIES.map((id) => (
+                // Selects the virtual id, not the display code — a merchant with
+                // USD in user.currencies would otherwise be unable to tell the
+                // two USD rows apart, and both would render checked.
+                <CurrencyItem
+                    key={id}
+                    code={VIRTUAL_TO_DISPLAY[id]}
+                    value={id}
+                    isVirtual
+                    isActive={selectedCurrency === id}
+                    onSelect={onSelectCurrency}
+                />
+            ))}
         </ScrollView>
     );
 };

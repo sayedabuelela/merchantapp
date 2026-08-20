@@ -53,7 +53,7 @@ export function LoginForm({onSubmit, loading, error}: LoginFormProps) {
             // password: 'SaraTest@010',
             // email: 'aayman@kashier.io',
             // password: 'T9@kL7!qZ#vR2p',
-            // stagingr
+            // staging
             // email: 'duaa.bst@gmail.com',
             // password: 'AsmaaTest110@',
             // email: 'jglgm9d29g@jkotypc.com',
@@ -79,6 +79,8 @@ export function LoginForm({onSubmit, loading, error}: LoginFormProps) {
             // password: 'YoYo2722*',
             // email: 'moshaaban@elements-ft.com',
             // password: 'Maro@Hegazy$25559',
+            // email: 'aayman@elements-ft.com',
+            // password: 'P@ssw0rd12345',
         },
     });
 

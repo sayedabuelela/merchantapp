@@ -15,7 +15,6 @@ import DetailsSection from '../../../shared/components/details-screens/DetailsSe
 import ExtraFeesList from '../components/details-screen/ExtraFeesList';
 import InvoiceItemsList from '../components/details-screen/InvoiceItemsList';
 import SectionItem from '../../../shared/components/details-screens/SectionItem';
-import NoteBox from '@/src/shared/components/details-screens/NoteBox';
 import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import SummaryItem from '../components/details-screen/SummaryItem';
 import ActionsModal from '../components/modals/ActionsModal';
@@ -26,7 +25,7 @@ import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/Fad
 import { selectUser, useAuthStore } from '@/src/modules/auth/auth.store';
 import usePermissions from '@/src/modules/auth/hooks/usePermissions';
 import { ROUTES } from '@/src/core/navigation/routes';
-import { toDisplayCode } from '@/src/core/constants/currencies';
+import { BASE_CURRENCY, isVirtualRecord, toDisplayCode } from '@/src/core/constants/currencies';
 import useCurrencyConversionEnabled from '@/src/shared/hooks/useCurrencyConversionEnabled';
 
 export default function PaymentLinkDetailsScreen() {
@@ -37,10 +36,18 @@ export default function PaymentLinkDetailsScreen() {
     const { paymentLink, isLoadingPaymentLink } = usePaymentLinkVM(paymentLinkId);
     const isCurrencyConversionEnabled = useCurrencyConversionEnabled();
     // Virtual-origin link: original amount in virtualCurrency, EGP equivalent in totalAmount
-    const isVirtualLink = isCurrencyConversionEnabled
-        && !!paymentLink?.virtualCurrency
-        && paymentLink?.virtualAmount != null;
+    const isVirtualLink = isCurrencyConversionEnabled && isVirtualRecord(paymentLink);
     const virtualDisplayCode = isVirtualLink ? toDisplayCode(paymentLink?.virtualCurrency) : '';
+    // The settled side of the link. Read from the record rather than assumed to be
+    // EGP — for a virtual-origin link the backend already reports currency:"EGP".
+    // Translated like every other code in the card, so Arabic doesn't mix a raw
+    // "EGP" with a translated currency name in the same column.
+    const settledCurrency = t(toDisplayCode(paymentLink?.currency) || BASE_CURRENCY);
+    // The breakdown (items, sub-total, fees) is denominated in whatever the
+    // merchant priced in. For a virtual link the backend still reports
+    // `currency: "EGP"` while those figures are in virtual units, so labelling
+    // them with `paymentLink.currency` prints USD numbers as EGP.
+    const breakdownCurrency = isVirtualLink ? t(virtualDisplayCode) : settledCurrency;
 
     // Permission checks
     const user = useAuthStore(selectUser);
@@ -181,65 +188,61 @@ export default function PaymentLinkDetailsScreen() {
                                     icon={<TagIcon size={24} color="#556767" />}
                                     title={t("Summary")}
                                 >
-                                    {paymentLink?.paymentType === 'simple' && paymentLink?.totalAmountWithoutFees && (
+                                    {isVirtualLink && paymentLink?.virtualExchangeRate != null && (
+                                        <SummaryItem
+                                            highlighted
+                                            title={t("Exchange rate")}
+                                            value={`1 ${t(virtualDisplayCode)} ⇄ ${currencyNumber(paymentLink.virtualExchangeRate)} ${settledCurrency}`}
+                                        />
+                                    )}
+
+                                    {paymentLink?.paymentType === 'simple' && paymentLink?.totalAmountWithoutFees != null && (
                                         <SummaryItem
                                             title={t("Amount")}
-                                            value={isVirtualLink
-                                                ? `${currencyNumber(paymentLink?.virtualAmount ?? 0)} ${t(virtualDisplayCode)}`
-                                                : `${currencyNumber(paymentLink?.totalAmountWithoutFees)} ${paymentLink?.currency}`}
+                                            value={`${currencyNumber(paymentLink.totalAmountWithoutFees)} ${breakdownCurrency}`}
                                         />
                                     )}
 
                                     {paymentLink?.paymentType === 'professional' && paymentLink?.invoiceItems.length > 0 && (
-                                        <InvoiceItemsList items={paymentLink?.invoiceItems} currency={paymentLink?.currency} />
+                                        <InvoiceItemsList items={paymentLink?.invoiceItems} currency={breakdownCurrency} />
                                     )}
 
-                                    {paymentLink?.totalAmountWithoutFees && (
+                                    {paymentLink?.totalAmountWithoutFees != null && (
                                         <SummaryItem
                                             total
                                             summaryLabel
                                             title={t("Sub-total")}
-                                            value={`${currencyNumber(paymentLink?.totalAmountWithoutFees)} ${paymentLink?.currency}`}
+                                            value={`${currencyNumber(paymentLink.totalAmountWithoutFees)} ${breakdownCurrency}`}
                                         />
                                     )}
                                     <ExtraFeesList
                                         extraFees={paymentLink?.extraFees}
-                                        currency={paymentLink?.currency}
+                                        currency={breakdownCurrency}
                                         totalAmountWithoutFees={paymentLink?.totalAmountWithoutFees}
                                     />
 
+                                    {/* The Total is denominated like the rows it sums — a property
+                                        of the link, not of the Home switcher — so the column always
+                                        adds up. The settled side follows underneath. */}
                                     <SummaryItem
                                         total
                                         summaryLabel
                                         title={t("Total")}
                                         value={isVirtualLink
-                                            ? `${currencyNumber(paymentLink?.virtualAmount ?? 0)} ${t(virtualDisplayCode)}`
-                                            : `${currencyNumber(paymentLink?.totalAmount)} ${paymentLink?.currency}`}
+                                            ? `${currencyNumber(paymentLink?.virtualAmount ?? 0)} ${breakdownCurrency}`
+                                            : `${currencyNumber(paymentLink?.totalAmount)} ${settledCurrency}`}
                                         secondaryValue={isVirtualLink
-                                            ? `≈ ${currencyNumber(paymentLink?.totalAmount ?? 0)} ${t('EGP')}`
+                                            ? `⇄ ${currencyNumber(paymentLink?.totalAmount ?? 0)} ${settledCurrency}`
                                             : undefined}
                                     />
 
-                                    {/* The captured rate is a settled fact, so it reads as plain rows
+                                    {/* The captured rate is a settled fact, so it reads as a plain row
                                         rather than a tinted box competing with the payment card. */}
-                                    {isVirtualLink && paymentLink?.paymentStatus === 'paid' && paymentLink?.virtualExchangeRate != null && (
-                                        <>
-                                            <SectionRowItem
-                                                title={t("Locked rate")}
-                                                value={`1 ${t(virtualDisplayCode)} = ${currencyNumber(paymentLink.virtualExchangeRate)} ${t('EGP')}`}
-                                            />
-                                            {paymentLink?.virtualRateRecordedAt && (
-                                                <SectionRowItem
-                                                    title={t("Rate locked at")}
-                                                    value={`${formatRelativeDate(paymentLink.virtualRateRecordedAt)} ${formatTime(paymentLink.virtualRateRecordedAt)}`}
-                                                />
-                                            )}
-                                        </>
-                                    )}
-                                    {isVirtualLink && paymentLink?.paymentStatus !== 'paid' && (
-                                        <NoteBox className='mt-0.5'>
-                                            {t("This link has not been paid yet. The EGP equivalent is indicative — the final rate is set when the customer pays.")}
-                                        </NoteBox>
+                                    {isVirtualLink && paymentLink?.paymentStatus === 'paid' && paymentLink?.virtualRateRecordedAt && (
+                                        <SectionRowItem
+                                            title={t("Rate locked at")}
+                                            value={`${formatRelativeDate(paymentLink.virtualRateRecordedAt)} ${formatTime(paymentLink.virtualRateRecordedAt)}`}
+                                        />
                                     )}
                                 </DetailsSection>
                             </FadeInUpView>

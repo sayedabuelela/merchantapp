@@ -3,7 +3,7 @@ import DetailsSection from '@/src/shared/components/details-screens/DetailsSecti
 import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import NoteBox from '@/src/shared/components/details-screens/NoteBox';
 import useCurrencyConversionEnabled from '@/src/shared/hooks/useCurrencyConversionEnabled';
-import { BASE_CURRENCY, toDisplayCode } from '@/src/core/constants/currencies';
+import { BASE_CURRENCY, isVirtualRecord, toDisplayCode } from '@/src/core/constants/currencies';
 import { currencyNumber } from '@/src/core/utils/number-fields';
 import { formatRelativeDate, formatTime } from '@/src/core/utils/dateUtils';
 import { VirtualTransaction } from '../../../../payments.model';
@@ -24,7 +24,8 @@ const CurrencyConversionSection = ({ amount, virtual }: Props) => {
     const { t } = useTranslation();
     const isEnabled = useCurrencyConversionEnabled();
 
-    if (!isEnabled || virtual?.virtualCurrency == null || virtual?.virtualAmount == null) return null;
+    // `!virtual` is what narrows the type below; isVirtualRecord carries the rule.
+    if (!isEnabled || !virtual || !isVirtualRecord(virtual)) return null;
 
     const code = toDisplayCode(virtual.virtualCurrency);
     // Rate fields only land once the payment is captured; their absence means unsettled

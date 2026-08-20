@@ -1,10 +1,12 @@
 import { create } from 'zustand';
-import { BASE_CURRENCY, SelectableCurrency } from '@/src/core/constants/currencies';
+import { BASE_CURRENCY, SelectedCurrencyId } from '@/src/core/constants/currencies';
 
 interface CurrencyState {
-    // Display code: 'EGP', a real merchant currency, or a virtual display code (USD/EUR/GBP/SAR/AED)
-    selectedCurrency: SelectableCurrency;
-    setSelectedCurrency: (currency: SelectableCurrency) => void;
+    // API id, NOT a display code: 'EGP', a real merchant currency ('USD'), or a
+    // virtual id ('USD_VIRTUAL'). Storing the id is what keeps main USD and
+    // virtual USD distinct; render it through `toDisplayCode()`.
+    selectedCurrency: SelectedCurrencyId;
+    setSelectedCurrency: (currency: SelectedCurrencyId) => void;
     resetSelectedCurrency: () => void;
 }
 

@@ -908,5 +908,6 @@
   "Suggested transactions around your amount (oldest first):": "معاملات مقترحة قريبة من مبلغك (الأقدم أولاً):",
   "transactions": "معاملة",
   "Record": "سجل",
-  "Account Num.": "رقم الحساب"
+  "Account Num.": "رقم الحساب",
+  "PROCESSED": "تمت المعالجة"
 }

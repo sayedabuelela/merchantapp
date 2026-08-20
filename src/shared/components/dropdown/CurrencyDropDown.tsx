@@ -1,43 +1,26 @@
 import { useEnvironment } from "@/src/core/environment/useEnvironment.hook";
 import { selectUser, useAuthStore } from "@/src/modules/auth/auth.store";
-import { useMemo } from "react";
+import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import DropDownUI from "./DropDownUI";
-import useCurrencyConversionEnabled from "@/src/shared/hooks/useCurrencyConversionEnabled";
-import { toDisplayCode, VIRTUAL_CURRENCIES } from "@/src/core/constants/currencies";
+import CurrencyModal from "@/src/shared/components/currency/CurrencyModal";
+import CurrencyTrigger from "@/src/shared/components/currency/CurrencyTrigger";
 
 interface Props {
     name: string; // react-hook-form field name
 }
 
+/**
+ * Currency picker for form inputs. Same trigger and same grouped sheet as the
+ * dashboard switcher — flags, full names and a Virtual marker — so the merchant
+ * can see what they picked instead of reading "USD (Virtual)" as plain text.
+ */
 export default function CurrencyDropDown({ name }: Props) {
     const { control } = useFormContext();
-    const { t } = useTranslation();
     const user = useAuthStore(selectUser);
     const { isLiveMode } = useEnvironment();
-    const isCurrencyConversionEnabled = useCurrencyConversionEnabled();
+    const [isPickerVisible, setIsPickerVisible] = useState(false);
 
     const defaultCurrency = user?.settings?.defaultCurrency?.[isLiveMode ? 'live' : 'test'];
-    // console.log("defaultCurrency", defaultCurrency);
-
-    const currencyOptions = useMemo(
-        () => {
-            const currencyList = isLiveMode
-                ? user?.currencies ?? []
-                : user?.currenciesTest ?? [];
-            const realOptions = currencyList.map((c) => ({ label: c, value: c }));
-            if (!isCurrencyConversionEnabled) return realOptions;
-            // Virtual currencies (currency conversion feature): value is the API id (USD_VIRTUAL),
-            // label carries the "(Virtual)" marker as text — zeego menu items are string-only
-            const virtualOptions = VIRTUAL_CURRENCIES.map((id) => ({
-                label: `${toDisplayCode(id)} (${t('Virtual')})`,
-                value: id as string,
-            }));
-            return [...realOptions, ...virtualOptions];
-        },
-        [isLiveMode, user?.currencies, user?.currenciesTest, isCurrencyConversionEnabled, t]
-    );
 
     return (
         <Controller
@@ -45,14 +28,18 @@ export default function CurrencyDropDown({ name }: Props) {
             name={name}
             defaultValue={defaultCurrency}
             render={({ field: { value, onChange } }) => (
-                <DropDownUI
-                    options={currencyOptions}
-                    selected={value}
-                    onChange={onChange}
-                    dropdownKey="currency"
-                    // Trigger stays compact: "USD", not "USD (Virtual)"
-                    triggerLabel={value ? toDisplayCode(value) : undefined}
-                />
+                <>
+                    <CurrencyTrigger
+                        currency={value}
+                        onPress={() => setIsPickerVisible(true)}
+                    />
+                    <CurrencyModal
+                        isVisible={isPickerVisible}
+                        onClose={() => setIsPickerVisible(false)}
+                        value={value}
+                        onSelect={onChange}
+                    />
+                </>
             )}
         />
     );

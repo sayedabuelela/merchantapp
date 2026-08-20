@@ -16,6 +16,8 @@ interface Props {
     secondaryValue?: string;
     /** Summing row: hairline rule above it */
     total?: boolean;
+    /** Tinted callout row, e.g. the exchange rate above a currency-converted summary */
+    highlighted?: boolean;
     labelWeight?: 'regular' | 'semi' | 'bold';
     labelClassName?: string;
     valueClassName?: string;
@@ -29,6 +31,7 @@ const SectionRowItem = ({
     valueSuffix,
     secondaryValue,
     total,
+    highlighted,
     labelWeight = 'regular',
     labelClassName,
     valueClassName,
@@ -39,6 +42,7 @@ const SectionRowItem = ({
         <View className={cn(
             'flex-row items-start justify-between gap-x-4',
             total && 'mt-1 pt-3 border-t border-tertiary',
+            highlighted && 'rounded bg-surface-accent px-3 py-2.5',
             className,
         )}>
             <FontText type="body" weight={labelWeight}
