@@ -213,8 +213,10 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                     {/* Price + Quantity */}
                                     <View>
                                         <View className="flex-row items-start justify-between">
-                                            {/* Price */}
-                                            <View className="w-[47%]">
+                                            {/* Price — wider than Quantity so the currency trigger
+                                                (flag + code + Virtual badge + chevron) can sit inside
+                                                the box without squeezing the amount out */}
+                                            <View className="w-[64%]">
                                                 <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label, 'mb-2')}>
                                                     {t('Price')}
                                                 </FontText>
@@ -266,6 +268,9 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                                             }}
                                                             keyboardType="decimal-pad"
                                                             isHasCurrency
+                                                            // Hard floor so the digits survive even when
+                                                            // the trigger carries the Virtual badge
+                                                            inputClassName="min-w-[64px]"
                                                             error={!!errors.unitPrice}
                                                         />
                                                     )}
@@ -278,7 +283,7 @@ const AddItemModal = ({ isVisible, onClose, onAddItem, editingItem }: Props) => 
                                             </View>
 
                                             {/* Quantity */}
-                                            <View className="w-[47%]">
+                                            <View className="w-[33%]">
                                                 <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label, 'mb-2')}>
                                                     {t('Quantity')}
                                                 </FontText>

@@ -9,12 +9,13 @@ import { cn } from '@/src/core/utils/cn';
 export default function VirtualBadge({ className }: { className?: string }) {
     const { t } = useTranslation();
     return (
-        <View className={cn('px-1 py-0.5 rounded-sm bg-[#F5F6F6] border border-[#E8EAEA] self-center', className)}>
+        <View className={cn('px-0.5 py-0.5 rounded-sm bg-[#F5F6F6] border border-[#E8EAEA] self-center', className)}>
             <FontText
                 type="body"
                 weight="regular"
                 className="text-[9px] text-center uppercase"
-                style={{ color: '#556767', letterSpacing: 0.5 }}
+                style={{ color: '#556767', letterSpacing: 0.2 }}
+                numberOfLines={1}
             >
                 {t('Virtual')}
             </FontText>

@@ -1,4 +1,4 @@
-import { Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { ChevronDownIcon } from 'react-native-heroicons/outline';
 import FontText from '@/src/shared/components/FontText';
 import { cn } from '@/src/core/utils/cn';
@@ -28,19 +28,32 @@ const CurrencyTrigger = ({ currency, onPress, bordered = false, className }: Pro
     return (
         <Pressable
             onPress={onPress}
+            // shrink + min-w-0: inside an input the trigger shares a row with the
+            // amount field, and RN defaults flexShrink to 0. Without this the
+            // trigger stays rigid and squeezes the amount out of the box.
             className={cn(
-                'flex-row items-center',
-                bordered ? 'rounded-full border border-[#F5F6F6] p-1 px-2' : 'ps-2',
+                'flex-row items-center shrink min-w-0',
+                bordered ? 'rounded-full border border-[#F5F6F6] p-1 px-2' : 'ps-1',
                 className
             )}
         >
-            <CurrencyFlag currency={displayCode} size={16} />
+            <View className="shrink-0">
+                <CurrencyFlag currency={displayCode} size={16} />
+            </View>
             {/* Raw display code (not t()) — trigger stays compact in both languages */}
-            <FontText type="body" weight="regular" className="text-primary ml-1 mr-1 text-xs">
+            <FontText
+                type="body"
+                weight="regular"
+                className="text-primary ml-1 mr-0.5 text-xs shrink-0"
+                numberOfLines={1}
+            >
                 {displayCode}
             </FontText>
-            {isVirtualCurrency(currency) && <VirtualBadge className="mr-1" />}
-            <ChevronDownIcon size={14} color="#001F5F" />
+            {/* The badge is the one piece allowed to give way when space runs out */}
+            {isVirtualCurrency(currency) && <VirtualBadge className="mr-0.5 shrink min-w-0" />}
+            <View className="shrink-0">
+                <ChevronDownIcon size={14} color="#001F5F" />
+            </View>
         </Pressable>
     );
 };
