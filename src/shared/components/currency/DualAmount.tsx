@@ -3,8 +3,9 @@ import { I18nManager, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import FontText from '@/src/shared/components/FontText';
 import { currencyNumber } from '@/src/core/utils/number-fields';
-import { BASE_CURRENCY, currencyLabel, isVirtualRecord } from '@/src/core/constants/currencies';
+import { BASE_CURRENCY, currencyLabel, isVirtualRecord, toDisplayCode } from '@/src/core/constants/currencies';
 import { cn } from '@/src/core/utils/cn';
+import CurrencyToken from '@/src/shared/components/currency/CurrencyToken';
 import useCurrencyConversionEnabled from '@/src/shared/hooks/useCurrencyConversionEnabled';
 
 const isRTL = I18nManager.isRTL;
@@ -48,15 +49,23 @@ interface AmountLineProps {
     prefix?: string;
     textClassName: string;
     lineHeight: number;
+    /**
+     * Whether this line carries the virtual currency, decided by the caller rather
+     * than sniffed off the code: the `_VIRTUAL` suffix is a picker-side id and the
+     * backend is not guaranteed to echo it back on a record.
+     */
+    isVirtual?: boolean;
+    tokenSize?: 'sm' | 'lg';
     bold?: boolean;
     type?: 'body' | 'head';
     trailing?: ReactNode;
 }
 
 /**
- * One money line: "299.99 الدولار الأمريكي" — the currency always spelled out
- * through `currencyLabel`, virtual or not. Nothing is abbreviated to a symbol
- * here: a bare "$" reads as an icon rather than as a label.
+ * One money line: "299.99 الدولار الأمريكي" — the currency spelled out through
+ * `currencyLabel`, with the label promoted to a tinted tag when, and only when,
+ * this is the virtual line. Nothing is abbreviated to a symbol here: a bare "$"
+ * reads as an icon rather than as a label.
  */
 const AmountLine = ({
     value,
@@ -64,6 +73,8 @@ const AmountLine = ({
     prefix = '',
     textClassName,
     lineHeight,
+    isVirtual,
+    tokenSize = 'sm',
     bold,
     type = 'body',
     trailing,
@@ -79,25 +90,28 @@ const AmountLine = ({
             style={{ lineHeight }}
             numberOfLines={1}
         >
-            {`${prefix}${number} ${currencyLabel(t, currency)}`}
+            {`${prefix}${number}${isVirtual ? '' : ` ${currencyLabel(t, currency)}`}`}
         </FontText>
     );
 
-    if (!trailing) return text;
+    if (!isVirtual && !trailing) return text;
 
     return (
         <View className="flex-row items-center gap-x-1">
             {text}
-            {/* ms-1 tops the row's 4px gap up to the 8px the header badge wants */}
-            <View className="flex-row items-center gap-x-2 ms-1">{trailing}</View>
+            {isVirtual && <CurrencyToken code={toDisplayCode(currency)} size={tokenSize} />}
+            {/* ms-1 tops the row's 4px gap up to the 8px the header badge wants,
+                while the token stays tight against the number it labels */}
+            {trailing && <View className="flex-row items-center gap-x-2 ms-1">{trailing}</View>}
         </View>
     );
 };
 
 /**
  * Renders an amount with its currency. For virtual-origin records (feature flag on),
- * renders a primary + secondary "≈ equivalent" pair — that second line, not a tag on
- * the number, is what marks a record as virtual in a list.
+ * renders a primary + secondary "≈ equivalent" pair, with the virtual currency shown
+ * as a tinted tag on whichever line carries it. `primary` decides the lead outright:
+ * the currency the merchant selected is the one that leads.
  * Falls back to exactly the legacy single line otherwise — the flag guard for all
  * amount displays lives here.
  * Values are always backend-provided; no client-side conversion happens here.
@@ -140,14 +154,13 @@ export default function DualAmount({
         );
     }
 
-    const egp = { value: amount, currency: currency ?? BASE_CURRENCY };
-    const virtual = { value: virtualAmount, currency: virtualCurrency };
-    // An uncaptured record (abandoned/expired) has no settled figure, so it leads with
-    // the charged amount rather than a hollow bold "0.00 EGP". The equivalent line is
-    // still rendered underneath — reading "0.00 EGP" there — so every row in the list
-    // carries the same two-line shape whatever its status.
-    const hasBase = amount !== null && amount !== undefined && amount !== '';
-    const primaryIsVirtual = primary !== 'egp' || !hasBase;
+    const egp = { value: amount, currency: currency ?? BASE_CURRENCY, isVirtual: false };
+    const virtual = { value: virtualAmount, currency: virtualCurrency, isVirtual: true };
+    // The selected currency always leads and its counterpart always sits underneath —
+    // including on an uncaptured record (abandoned/expired), which has no settled figure
+    // and so reads a bold "0.00 EGP" in the EGP view. Every row in the list carries the
+    // same two-line shape whatever its status, and the lead never flips under the reader.
+    const primaryIsVirtual = primary !== 'egp';
     const first = primaryIsVirtual ? virtual : egp;
     const second = primaryIsVirtual ? egp : virtual;
 
@@ -158,6 +171,7 @@ export default function DualAmount({
                 bold
                 textClassName={primaryTextClasses}
                 lineHeight={primaryLH}
+                tokenSize={isLg ? 'lg' : 'sm'}
                 type={isLg ? 'head' : 'body'}
                 trailing={trailing}
             />
@@ -166,6 +180,7 @@ export default function DualAmount({
                 prefix="≈ "
                 textClassName={secondaryTextClasses}
                 lineHeight={LH.subLine}
+                tokenSize="sm"
             />
         </View>
     );

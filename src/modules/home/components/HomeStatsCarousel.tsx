@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { HomeTabType } from '../home.model'
 import { Mode } from '@/src/core/environment/environments'
 import { useEnvironmentStore, selectMode } from '@/src/core/environment/environments.store'
+import useSelectedCurrency from '@/src/shared/hooks/useSelectedCurrency'
 const { width } = Dimensions.get('window')
 const CARD_PADDING = 24
 const CARD_WIDTH = width - (CARD_PADDING * 2)
@@ -24,7 +25,7 @@ interface HomeStatsCarouselProps {
 type CardItem = {
     id: 'balance-card' | 'payments-card' | 'payouts-card' | 'transfers-card'
     tab: HomeTabType
-    mainBalance: { title: string; value: number; currency: string }
+    mainBalance: { title: string; value: number; currency: string; isVirtual?: boolean }
     leftDetail: { title: string; value: number | string; currency: string }
     rightDetail: { title: string; value: number | string; currency: string }
 }
@@ -33,6 +34,9 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
     const router = useRouter()
     const [currentIndex, setCurrentIndex] = useState(0)
     const mode = useEnvironmentStore(selectMode)
+    // Only the payments card is filtered by the currency picker; balance, payouts and
+    // transfers are settlement figures and stay in EGP.
+    const { apiId: paymentsCurrency, isVirtual: isPaymentsVirtual } = useSelectedCurrency()
     const flatListRef = useRef<FlatList<CardItem>>(null)
     const isProgrammaticScroll = useRef(false)
 
@@ -74,7 +78,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
         {
             id: 'payments-card',
             tab: 'orders',
-            mainBalance: { title: t('total payments'), value: paymentsStats?.amount || 0, currency: 'EGP' },
+            mainBalance: { title: t('total payments'), value: paymentsStats?.amount || 0, currency: paymentsCurrency, isVirtual: isPaymentsVirtual },
             leftDetail: { title: t('Payments No'), value: paymentsStats?.count || 0, currency: '' },
             rightDetail: { title: t('Top Method'), value: t(paymentsStats?.topMethod || '--'), currency: '' },
         },
@@ -92,7 +96,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
             leftDetail: { title: t('transfers no'), value: transfersStats?.totalTransfersCount || 0, currency: '' },
             rightDetail: { title: t('Transfers Vol'), value: transfersStats?.totalTransfersAmount || 0, currency: 'EGP' },
         },
-    ]), [t, accountStats, paymentsStats, payoutStats, transfersStats, mode])
+    ]), [t, accountStats, paymentsStats, payoutStats, transfersStats, mode, paymentsCurrency, isPaymentsVirtual])
 
     const tabToIndex = useMemo(() => {
         return cardsData.reduce<Record<HomeTabType, number>>((acc, card, idx) => {
@@ -149,6 +153,7 @@ const HomeStatsCarousel = ({ accountStats, transfersStats, paymentsStats, payout
                                 mainBalance={item.mainBalance}
                                 leftDetail={item.leftDetail}
                                 rightDetail={item.rightDetail}
+                                shortCurrency
                                 onPress={() => handleCardPress(item.id)}
                             />
                         </View>

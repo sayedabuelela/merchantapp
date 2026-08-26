@@ -94,17 +94,40 @@ type TranslateFn = (key: string) => string;
  * API id or display code -> the currency label, everywhere it is shown. Strips
  * _VIRTUAL, then translates.
  *
- * The locale files key currency codes to the Arabic name ('USD' ->
- * "الدولار الأمريكي"; 'EGP' -> "ج.م", the one currency whose abbreviation is
- * what merchants read it as). A bare symbol reads as an icon rather than a
- * label, so nothing renders "$". Empty input falls back to the base currency.
+ * The locale files key currency codes to the full name ('USD' -> "دولار أمريكي",
+ * 'EGP' -> "جنيه مصري"). A bare symbol reads as an icon rather than a label, so
+ * nothing renders "$". Empty input falls back to the base currency.
  *
  * `formatAmount` has no access to `t`, which is why its callers wrap by hand and
  * a few forgot. Route through here instead of calling `t(code)` inline — an
  * inline `t` skips the _VIRTUAL strip and echoes "USD_VIRTUAL" back.
+ *
+ * Where a full name will not fit, use `currencyShortLabel`.
  */
 export const currencyLabel = (t: TranslateFn, currency?: string | null): string =>
     t(toDisplayCode(currency) || BASE_CURRENCY);
+
+/**
+ * Abbreviations, keyed by display code; values are i18n keys.
+ *
+ * EGP alone qualifies: "ج.م" is what merchants actually read it as. The other
+ * currencies have no abbreviation an Arabic reader would recognise, so they are
+ * deliberately absent and fall through to the full name.
+ */
+const CURRENCY_SHORT_NAMES: Record<string, string> = {
+    EGP: 'EGP short',
+};
+
+/**
+ * Like `currencyLabel`, but yields the abbreviation where one exists — for the
+ * home stats carousel, where "0.00 جنيه مصري" wraps the headline figure onto two
+ * lines. Anything without an abbreviation returns the full name unchanged, so a
+ * virtual-currency card still reads "دولار أمريكي".
+ */
+export const currencyShortLabel = (t: TranslateFn, currency?: string | null): string => {
+    const code = toDisplayCode(currency) || BASE_CURRENCY;
+    return t(CURRENCY_SHORT_NAMES[code] ?? code);
+};
 
 export const CURRENCY_FLAGS: Record<string, FC<SvgProps>> = {
     EGP: EgIcon,

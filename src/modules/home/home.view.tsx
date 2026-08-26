@@ -48,7 +48,7 @@ const HomeScreen = () => {
     const [showAccountsModal, setShowAccountsModal] = useState(false);
     const [showCurrencyModal, setShowCurrencyModal] = useState(false);
     const isCurrencyConversionEnabled = useCurrencyConversionEnabled();
-    const { currencyParam } = useSelectedCurrency();
+    const { currencyParam, isVirtual } = useSelectedCurrency();
     const [isCreatePLModalVisible, setCreatePLModalVisible] = useState(false);
     const [isDateFilterVisible, setIsDateFilterVisible] = useState(false);
     const [activeTab, setActiveTab] = useState<HomeTabType>('all');
@@ -290,7 +290,7 @@ const HomeScreen = () => {
                                 {activeTab === 'orders' ? (
                                     listData.map((item) => {
                                         const payment = item as PaymentSession;
-                                        return <OrderCard key={payment._id} payment={payment} />;
+                                        return <OrderCard key={payment._id} payment={payment} amountPrimary={isVirtual ? 'virtual' : 'egp'} />;
                                     })
                                 ) : (
                                     listData.map((item) => {

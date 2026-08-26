@@ -1,7 +1,8 @@
 // components/items/ItemCard.tsx
-import { currencyLabel } from '@/src/core/constants/currencies';
+import { currencyLabel, isVirtualCurrency, toDisplayCode } from '@/src/core/constants/currencies';
 import { currencyNumber } from '@/src/core/utils/number-fields';
 import FontText from '@/src/shared/components/FontText';
+import CurrencyToken from '@/src/shared/components/currency/CurrencyToken';
 import React, { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
@@ -21,6 +22,7 @@ interface ItemCardProps {
 
 const ItemCard = memo(({ item, currency, index, onEdit, onDelete, onQuantityChange }: ItemCardProps) => {
     const { t } = useTranslation();
+    const isVirtual = isVirtualCurrency(currency);
 
     const handleIncrement = useCallback(() => {
         onQuantityChange(index, item.quantity + 1);
@@ -48,9 +50,20 @@ const ItemCard = memo(({ item, currency, index, onEdit, onDelete, onQuantityChan
                             <FontText type="body" weight="semi" className="text-content-secondary text-sm">
                                 {t('Price')}
                             </FontText>
-                            <FontText type="body" weight="bold" className="text-black text-base">
-                                {`${currencyNumber(item.unitPrice)} ${currencyLabel(t, currency)}`}
-                            </FontText>
+                            {/* The currency here comes straight from the picker, so the
+                                `_VIRTUAL` id is intact and can be trusted as the guard. */}
+                            {isVirtual ? (
+                                <View className="flex-row items-center gap-x-1">
+                                    <FontText type="body" weight="bold" className="text-black text-base">
+                                        {currencyNumber(item.unitPrice)}
+                                    </FontText>
+                                    <CurrencyToken code={toDisplayCode(currency)} size="lg" />
+                                </View>
+                            ) : (
+                                <FontText type="body" weight="bold" className="text-black text-base">
+                                    {`${currencyNumber(item.unitPrice)} ${currencyLabel(t, currency)}`}
+                                </FontText>
+                            )}
                         </View>
                     )}
                 </View>

@@ -9,6 +9,8 @@ interface BalanceStatsCardProps {
         title: string
         value: number | string
         currency: string
+        /** Only the payments card follows the currency picker, so only it can be virtual. */
+        isVirtual?: boolean
     }
     leftDetail: {
         title: string
@@ -20,10 +22,17 @@ interface BalanceStatsCardProps {
         value: number | string
         currency: string
     }
+    /**
+     * Abbreviate the currency on all three figures ("ج.م" rather than "جنيه مصري").
+     * On by default nowhere: only the home carousel opts in, where the card is narrow
+     * enough that the full Arabic name wraps the headline figure onto two lines. The
+     * balance screen has the room and keeps the full name.
+     */
+    shortCurrency?: boolean
     onPress?: () => void
 }
 
-const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail, onPress }: BalanceStatsCardProps) => {
+const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail, shortCurrency = false, onPress }: BalanceStatsCardProps) => {
     const mode = useEnvironmentStore(selectMode);
     const router = useRouter();
     const segments = useSegments();
@@ -46,6 +55,8 @@ const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail, onPress }: Bal
                 title={mainBalance.title}
                 value={mainBalance.value}
                 currency={mainBalance.currency}
+                isVirtual={mainBalance.isVirtual}
+                shortCurrency={shortCurrency}
                 mainBalance
             />
 
@@ -59,6 +70,7 @@ const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail, onPress }: Bal
                     title={leftDetail.title}
                     value={leftDetail.value}
                     currency={leftDetail.currency}
+                    shortCurrency={shortCurrency}
                 />
 
                 {/* Right Detail */}
@@ -66,6 +78,7 @@ const BalanceStatsCard = ({ mainBalance, leftDetail, rightDetail, onPress }: Bal
                     title={rightDetail.title}
                     value={rightDetail.value}
                     currency={rightDetail.currency}
+                    shortCurrency={shortCurrency}
                 />
             </View>
         </Pressable>
