@@ -19,6 +19,14 @@ const LH = {
     meta: isRTL ? 16 : 13,
 };
 
+/**
+ * RN auto-flips flexDirection and alignItems under forceRTL but never textAlign,
+ * so start-alignment has to be resolved by hand — otherwise a title stretched by
+ * `flex-1` paints at the column's left edge and drifts away from the card edge.
+ * Mirror of END_ALIGN in shared/components/details-screens/SectionRowItem.tsx.
+ */
+const START_ALIGN = { textAlign: isRTL ? 'right' : 'left' } as const;
+
 /** A machine reference: transaction id, order number, item count. */
 export const RecordChip = ({
     children,
@@ -41,7 +49,7 @@ export const RecordChip = ({
                 type="body"
                 weight="regular"
                 className={cn('text-content-secondary text-xxs', uppercase && 'uppercase')}
-                style={{ lineHeight: LH.chip }}
+                style={{ lineHeight: LH.chip, ...START_ALIGN }}
                 numberOfLines={1}
                 ellipsizeMode="tail"
             >
@@ -67,7 +75,7 @@ export const RecordMetaItem = ({
                 type="body"
                 weight="regular"
                 className="text-content-secondary text-xxs"
-                style={{ lineHeight: LH.meta }}
+                style={{ lineHeight: LH.meta, ...START_ALIGN }}
                 numberOfLines={1}
                 ellipsizeMode="tail"
             >
@@ -106,7 +114,7 @@ const asText = (value: ReactNode, className: string, lineHeight: number) => {
             type="body"
             weight="regular"
             className={className}
-            style={{ lineHeight }}
+            style={{ lineHeight, ...START_ALIGN }}
             numberOfLines={1}
             ellipsizeMode="tail"
         >
@@ -145,10 +153,10 @@ export default function RecordCard({
                     {(leading || titleNode) && (
                         <View className="flex-row items-center gap-x-2">
                             {leading}
-                            {titleNode && <View className="flex-1 min-w-0">{titleNode}</View>}
+                            {titleNode && <View className=" min-w-0 ">{titleNode}</View>}
                         </View>
                     )}
-                    {subtitleNode && <View className="mt-1">{subtitleNode}</View>}
+                    {subtitleNode && <View className="mt-1 self-start">{subtitleNode}</View>}
                     {chips && (
                         <View className="flex-row items-center gap-x-1 mt-2 min-w-0">{chips}</View>
                     )}

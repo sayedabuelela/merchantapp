@@ -1,4 +1,4 @@
-import { currencyShortLabel } from '@/src/core/constants/currencies';
+import { currencyLabel } from '@/src/core/constants/currencies';
 import Button from '@/src/shared/components/Buttons/Button';
 import { currencyNumber } from '@/src/core/utils/number-fields';
 import FontText from '@/src/shared/components/FontText';
@@ -216,7 +216,7 @@ const CustomAmountSheet = forwardRef<CustomAmountSheetRef, Props>(
                         />
                         {/* Suffix inside the input box — short label, not the full name */}
                         <FontText type="body" weight="regular" className="text-content-secondary text-sm">
-                            {currencyShortLabel(t, CURRENCY)}
+                            {currencyLabel(t, CURRENCY)}
                         </FontText>
                     </View>
 

@@ -3,10 +3,9 @@ import { I18nManager, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import FontText from '@/src/shared/components/FontText';
 import { currencyNumber } from '@/src/core/utils/number-fields';
-import { BASE_CURRENCY, isVirtualCurrency, isVirtualRecord, toDisplayCode } from '@/src/core/constants/currencies';
+import { BASE_CURRENCY, currencyLabel, isVirtualRecord } from '@/src/core/constants/currencies';
 import { cn } from '@/src/core/utils/cn';
 import useCurrencyConversionEnabled from '@/src/shared/hooks/useCurrencyConversionEnabled';
-import CurrencyToken from './CurrencyToken';
 
 const isRTL = I18nManager.isRTL;
 
@@ -49,17 +48,15 @@ interface AmountLineProps {
     prefix?: string;
     textClassName: string;
     lineHeight: number;
-    tokenSize?: 'sm' | 'lg';
     bold?: boolean;
     type?: 'body' | 'head';
     trailing?: ReactNode;
 }
 
 /**
- * One money line: "299.99 USD" — with the code promoted to a tinted tag when,
- * and only when, it is a virtual currency. A real foreign-currency record keeps
- * the code as plain trailing text, which is the whole point: the marker calls
- * out *virtual*, not merely "not EGP".
+ * One money line: "299.99 الدولار الأمريكي" — the currency always spelled out
+ * through `currencyLabel`, virtual or not. Nothing is abbreviated to a symbol
+ * here: a bare "$" reads as an icon rather than as a label.
  */
 const AmountLine = ({
     value,
@@ -67,14 +64,11 @@ const AmountLine = ({
     prefix = '',
     textClassName,
     lineHeight,
-    tokenSize = 'sm',
     bold,
     type = 'body',
     trailing,
 }: AmountLineProps) => {
     const { t } = useTranslation();
-    const display = toDisplayCode(currency) || BASE_CURRENCY;
-    const tokenised = isVirtualCurrency(currency);
     const number = currencyNumber(Number(value ?? 0));
 
     const text = (
@@ -85,29 +79,25 @@ const AmountLine = ({
             style={{ lineHeight }}
             numberOfLines={1}
         >
-            {`${prefix}${number}${tokenised ? '' : ` ${t(display)}`}`}
+            {`${prefix}${number} ${currencyLabel(t, currency)}`}
         </FontText>
     );
 
-    if (!tokenised && !trailing) return text;
+    if (!trailing) return text;
 
     return (
         <View className="flex-row items-center gap-x-1">
             {text}
-            {tokenised && <CurrencyToken code={display} size={tokenSize} />}
-            {/* ms-1 tops the row's 4px gap up to the 8px the header badge wants,
-                while the token stays tight against the number it labels */}
-            {trailing && (
-                <View className="flex-row items-center gap-x-2 ms-1">{trailing}</View>
-            )}
+            {/* ms-1 tops the row's 4px gap up to the 8px the header badge wants */}
+            <View className="flex-row items-center gap-x-2 ms-1">{trailing}</View>
         </View>
     );
 };
 
 /**
  * Renders an amount with its currency. For virtual-origin records (feature flag on),
- * renders a primary + secondary "≈ equivalent" pair, with the virtual code shown as
- * a tinted tag on whichever line carries it.
+ * renders a primary + secondary "≈ equivalent" pair — that second line, not a tag on
+ * the number, is what marks a record as virtual in a list.
  * Falls back to exactly the legacy single line otherwise — the flag guard for all
  * amount displays lives here.
  * Values are always backend-provided; no client-side conversion happens here.
@@ -143,7 +133,6 @@ export default function DualAmount({
                     bold
                     textClassName={primaryTextClasses}
                     lineHeight={primaryLH}
-                    tokenSize={isLg ? 'lg' : 'sm'}
                     type={isLg ? 'head' : 'body'}
                     trailing={trailing}
                 />
@@ -169,7 +158,6 @@ export default function DualAmount({
                 bold
                 textClassName={primaryTextClasses}
                 lineHeight={primaryLH}
-                tokenSize={isLg ? 'lg' : 'sm'}
                 type={isLg ? 'head' : 'body'}
                 trailing={trailing}
             />
@@ -178,7 +166,6 @@ export default function DualAmount({
                 prefix="≈ "
                 textClassName={secondaryTextClasses}
                 lineHeight={LH.subLine}
-                tokenSize="sm"
             />
         </View>
     );

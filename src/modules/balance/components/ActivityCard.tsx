@@ -2,6 +2,7 @@ import { Link } from "expo-router"
 import { Pressable, View } from "react-native"
 import { Activity } from "../balance.model"
 import FontText from "@/src/shared/components/FontText"
+import { currencyLabel } from "@/src/core/constants/currencies"
 import { currencyNumber } from "@/src/core/utils/number-fields"
 import { ArrowSmallDownIcon, ArrowSmallUpIcon } from "react-native-heroicons/outline"
 import { useTranslation } from "react-i18next"
@@ -106,7 +107,7 @@ const ActivityCard = ({
                             )}>
 
                             {/* {isInOperation && "+"} */}
-                            {currencyNumber(amount)} {t(currency || 'EGP')}
+                            {currencyNumber(amount)} {currencyLabel(t, currency)}
                         </FontText>
                     </View>
                     <FontText type="body" weight="regular" className="text-content-primary text-xs self-start">

@@ -6,6 +6,7 @@ import { cn } from "@/src/core/utils/cn"
 import { router } from "expo-router"
 import { formatRelativeDate, formatTime } from "@/src/core/utils/dateUtils"
 import { ROUTES } from "@/src/core/navigation/routes"
+import { currencyLabel } from '@/src/core/constants/currencies';
 
 interface NotificationProps extends NotificationData {
     onPress: () => void;
@@ -103,7 +104,7 @@ const Notification = ({ _id,
                     weight="bold"
                     className="text-content-primary mx-0.5 text-sm"
                 >
-                    {data?.amount} {data?.currency ? t(data.currency) : ''}{" "}
+                    {data?.amount} {data?.currency ? currencyLabel(t, data.currency) : ''}{" "}
                 </FontText>
 
                 <FontText

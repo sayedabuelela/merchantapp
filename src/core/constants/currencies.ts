@@ -91,18 +91,17 @@ export const toDisplayCode = (currency?: string | null): string => {
 type TranslateFn = (key: string) => string;
 
 /**
- * API id or display code -> the label that trails an amount. Strips _VIRTUAL,
- * then translates.
+ * API id or display code -> the currency label, everywhere it is shown. Strips
+ * _VIRTUAL, then translates.
  *
- * The locale files key currency codes to the full name ('EGP' -> "الجنيه المصري",
- * 'USD' -> "الدولار الأمريكي"). A bare symbol reads as an icon rather than a label,
- * so amounts spell the currency out. Empty input falls back to the base currency.
+ * The locale files key currency codes to the Arabic name ('USD' ->
+ * "الدولار الأمريكي"; 'EGP' -> "ج.م", the one currency whose abbreviation is
+ * what merchants read it as). A bare symbol reads as an icon rather than a
+ * label, so nothing renders "$". Empty input falls back to the base currency.
  *
  * `formatAmount` has no access to `t`, which is why its callers wrap by hand and
- * a few forgot. Route through here instead of calling `t(code)` inline.
- *
- * For a chip, tag, or input suffix use `currencyShortLabel` — a full name will
- * not fit there.
+ * a few forgot. Route through here instead of calling `t(code)` inline — an
+ * inline `t` skips the _VIRTUAL strip and echoes "USD_VIRTUAL" back.
  */
 export const currencyLabel = (t: TranslateFn, currency?: string | null): string =>
     t(toDisplayCode(currency) || BASE_CURRENCY);
@@ -124,28 +123,4 @@ export const CURRENCY_NAMES: Record<string, string> = {
     GBP: 'British Pound',
     SAR: 'Saudi Riyal',
     AED: 'UAE Dirham',
-};
-
-/** Short forms keyed by display code; values are i18n keys */
-export const CURRENCY_SHORT_NAMES: Record<string, string> = {
-    EGP: 'EGP short',
-    USD: 'USD short',
-    EUR: 'EUR short',
-    GBP: 'GBP short',
-    SAR: 'SAR short',
-    AED: 'AED short',
-};
-
-/**
- * Chip-sized label — Arabic abbreviation or currency symbol ("ج.م", "$"), the
- * bare code in English. Only for compact chrome: the in-input trigger, the
- * virtual-currency tag, the picker's code column, an input suffix. Amounts use
- * `currencyLabel`, which spells the currency out.
- *
- * A merchant currency with no short form falls back to its code rather than
- * leaking the raw i18n key.
- */
-export const currencyShortLabel = (t: TranslateFn, currency?: string | null): string => {
-    const code = toDisplayCode(currency) || BASE_CURRENCY;
-    return CURRENCY_SHORT_NAMES[code] ? t(CURRENCY_SHORT_NAMES[code]) : code;
 };

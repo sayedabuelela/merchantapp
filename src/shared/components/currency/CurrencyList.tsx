@@ -8,7 +8,7 @@ import { useEnvironment } from '@/src/core/environment/useEnvironment.hook';
 import {
     BASE_CURRENCY,
     CURRENCY_NAMES,
-    currencyShortLabel,
+    currencyLabel,
     SelectedCurrencyId,
     VIRTUAL_CURRENCIES,
     VIRTUAL_TO_DISPLAY,
@@ -30,6 +30,10 @@ interface CurrencyItemProps {
 
 const CurrencyItem = ({ code, value, isVirtual, isActive, onSelect }: CurrencyItemProps) => {
     const { t } = useTranslation();
+    const label = currencyLabel(t, code);
+    // In English the heading is the code and the sub-line the name ("USD" / "US Dollar").
+    // In Arabic both resolve to the same phrase, so the sub-line would only repeat it.
+    const fullName = CURRENCY_NAMES[code] ? t(CURRENCY_NAMES[code]) : '';
     return (
         <Pressable
             className={cn(
@@ -42,15 +46,14 @@ const CurrencyItem = ({ code, value, isVirtual, isActive, onSelect }: CurrencyIt
             <View className="ml-2 flex-1 flex-row items-center justify-between">
                 <View className="flex-1">
                     <View className="flex-row items-center gap-x-1.5">
-                        {/* Short label — the full name is the sub-line below */}
                         <FontText type="body" weight="semi" className="text-content-primary text-sm">
-                            {currencyShortLabel(t, code)}
+                            {label}
                         </FontText>
                         {isVirtual && <VirtualBadge />}
                     </View>
-                    {CURRENCY_NAMES[code] && (
+                    {fullName !== '' && fullName !== label && (
                         <FontText type="body" weight="regular" className="text-light-gray text-xs">
-                            {t(CURRENCY_NAMES[code])}
+                            {fullName}
                         </FontText>
                     )}
                 </View>
