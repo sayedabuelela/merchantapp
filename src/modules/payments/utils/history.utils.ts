@@ -1,3 +1,4 @@
+import { currencyLabel } from "@/src/core/constants/currencies";
 import { OrderDetailHistoryItem } from "@/src/modules/payments/payments.model";
 import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils";
 import { formatAmount } from "@/src/modules/payments/utils/formatters";
@@ -54,7 +55,7 @@ export const getPaymentMethodName = (item: OrderDetailHistoryItem, t: (key: stri
         const maskedCard = item.sourceOfFunds?.maskedCard || '';
         return t('using {{cardBrand}} {{maskedCard}}', { cardBrand, maskedCard });
     }
-    if (item.method === 'cash') return t(`using ${item.sourceOfFunds?.type || 'Cash'}`);
+    if (item.method === 'cash') return t('using {{method}}', { method: item.sourceOfFunds?.type || 'Cash' });
 
     return item.method || 'Payment';
 };
@@ -68,7 +69,7 @@ const getTransactionDescription = (
 ): string => {
     const phone = getPhoneNumber(item);
     const paymentMethod = getPaymentMethodName(item, t);
-    const amount = formatAmount(item.amount, item.currency || 'EGP');
+    const amount = formatAmount(item.amount, currencyLabel(t, item.currency));
     const status = item.status.toUpperCase();
 
     // Get error message from response (always use English for consistency)
@@ -77,20 +78,20 @@ const getTransactionDescription = (
     // Handle FAILURE status for all operations
     if (status === 'FAILURE' && errorMsg) {
         const failureMessages: Record<string, string> = {
-            merchant_login: t(`Failed to initiate ${paymentMethod} service ${errorMsg}`),
-            order_register: t(`Failed to register order ${errorMsg}`),
-            payment_key_request: t(`Failed to verify order keys ${errorMsg}`),
+            merchant_login: t('Failed to initiate {{paymentMethod}} service {{errorMsg}}', { paymentMethod, errorMsg }),
+            order_register: t('Failed to register order {{errorMsg}}', { errorMsg }),
+            payment_key_request: t('Failed to verify order keys {{errorMsg}}', { errorMsg }),
             initiate_r2p: phone
-                ? t(`Failed to send R2P to wallet ${phone} ${errorMsg}`)
-                : t(`Failed to send R2P: ${errorMsg}`),
+                ? t('Failed to send R2P to wallet {{phone}} {{errorMsg}}', { phone, errorMsg })
+                : t('Failed to send R2P: {{errorMsg}}', { errorMsg }),
             verify_customer: phone
-                ? t(`Failed to verify ${paymentMethod} customer using ${phone} ${errorMsg}`)
-                : t(`Failed to verify customer ${errorMsg}`),
-            inquiry: t(`Failed to get installment plan ${errorMsg}`),
-            initiate_valu: t(`Failed to get Valu customer information ${errorMsg}`),
+                ? t('Failed to verify {{paymentMethod}} customer using {{phone}} {{errorMsg}}', { paymentMethod, phone, errorMsg })
+                : t('Failed to verify customer {{errorMsg}}', { errorMsg }),
+            inquiry: t('Failed to get installment plan {{errorMsg}}', { errorMsg }),
+            initiate_valu: t('Failed to get Valu customer information {{errorMsg}}', { errorMsg }),
         };
 
-        return failureMessages[item.operation || ''] || t(`Transaction failed: ${errorMsg}`);
+        return failureMessages[item.operation || ''] || t('Transaction failed: {{errorMsg}}', { errorMsg });
     }
 
     // Handle INITIATED transactions before the success lookup

@@ -8,6 +8,7 @@ import { useEnvironment } from '@/src/core/environment/useEnvironment.hook';
 import {
     BASE_CURRENCY,
     CURRENCY_NAMES,
+    currencyShortLabel,
     SelectedCurrencyId,
     VIRTUAL_CURRENCIES,
     VIRTUAL_TO_DISPLAY,
@@ -41,8 +42,9 @@ const CurrencyItem = ({ code, value, isVirtual, isActive, onSelect }: CurrencyIt
             <View className="ml-2 flex-1 flex-row items-center justify-between">
                 <View className="flex-1">
                     <View className="flex-row items-center gap-x-1.5">
+                        {/* Short label — the full name is the sub-line below */}
                         <FontText type="body" weight="semi" className="text-content-primary text-sm">
-                            {code}
+                            {currencyShortLabel(t, code)}
                         </FontText>
                         {isVirtual && <VirtualBadge />}
                     </View>

@@ -1,3 +1,4 @@
+import { currencyLabel } from '@/src/core/constants/currencies';
 import React, { FC, useState, useEffect } from 'react';
 import { View, TextInput } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -135,7 +136,7 @@ const RefundConfirmation: FC<RefundConfirmationProps> = ({
                 {/* Amount and Status */}
                 <View className="flex-row items-center gap-x-2 mb-2">
                     <FontText type="head" weight="bold" className="text-content-primary text-xl">
-                        {order.amount} {order.currency}
+                        {order.amount} {currencyLabel(t, order.currency)}
                     </FontText>
                     <StatusBox status={order.status} />
                 </View>
@@ -192,7 +193,7 @@ const RefundConfirmation: FC<RefundConfirmationProps> = ({
                             {t('Refund Amount')}
                         </FontText>
                         <FontText type="body" weight="regular" className="text-content-tertiary text-xs">
-                            {t('Max')}: {maxRefundableAmount} {order.currency}
+                            {t('Max')}: {maxRefundableAmount} {currencyLabel(t, order.currency)}
                         </FontText>
                     </View>
                     <Input

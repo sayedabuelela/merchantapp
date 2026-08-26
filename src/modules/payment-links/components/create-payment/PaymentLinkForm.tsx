@@ -8,7 +8,7 @@ import { router } from "expo-router";
 import { t } from "i18next";
 import { AnimatePresence, MotiView } from "moti";
 import { useCallback, useEffect, useState } from "react";
-import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { Controller, FormProvider, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { BanknotesIcon, ShoppingBagIcon, TicketIcon, UserIcon } from "react-native-heroicons/outline";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -70,6 +70,11 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
         control,
         name: "extraFees",
     });
+
+    // Items and fees carry no currency of their own — the link has exactly one,
+    // and every in-row currency trigger (amount, item price, fee amount) edits it.
+    // Watch it so the cards restate the same currency the merchant picked.
+    const currency = useWatch({ control, name: "currency" });
 
     useEffect(() => {
         if (isEditMode && paymentLink) {
@@ -189,6 +194,9 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                                     keyboardType="decimal-pad"
                                     error={!!errors.totalAmount}
                                     isHasCurrency
+                                    // Hard floor so the digits survive even when
+                                    // the trigger carries the Virtual badge
+                                    inputClassName="min-w-[64px]"
                                 />
                             )}
                         />
@@ -220,6 +228,7 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                     >
                         <ItemsList
                             items={items}
+                            currency={currency}
                             onEdit={handleEditItem}
                             onDelete={removeItem}
                             onQuantityChange={handleQuantityChange}
@@ -257,6 +266,7 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                             >
                                 <FeesList
                                     fees={fees}
+                                    currency={currency}
                                     onEdit={handleEditFee}
                                     onDelete={removeFee}
                                 />

@@ -1,3 +1,4 @@
+import { currencyLabel } from "@/src/core/constants/currencies";
 import { formatAMPM, formatRelativeDate } from "@/src/core/utils/dateUtils";
 import { currencyNumber } from "@/src/core/utils/number-fields";
 import StatusBox from "@/src/modules/payment-links/components/StatusBox";
@@ -18,10 +19,12 @@ interface Props {
 }
 
 const CURRENCY = 'EGP';
-const money = (v: number) => `${currencyNumber(v)} ${CURRENCY}`;
 
 const DetailsTabView = ({ details }: Props) => {
     const { t } = useTranslation();
+    // Inside the component so the currency label goes through `t`, the way every
+    // other instant-settlement view does it.
+    const money = (v: number) => `${currencyNumber(v)} ${currencyLabel(t, CURRENCY)}`;
     const ratePct = details.feeSnapshot ? ` (${details.feeSnapshot.rate}%)` : '';
     const dateTime = (iso: string) => `${formatRelativeDate(iso)} – ${formatAMPM(iso)}`;
 

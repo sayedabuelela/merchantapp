@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { InteractionManager, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, {
     Extrapolate,
@@ -142,6 +143,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
     digitSize = DIGIT_BOX_SIZE,
     digitMargin = DIGIT_BOX_MARGIN,
 }) => {
+    const { t } = useTranslation();
     const hiddenInputRef = useRef<TextInput>(null);
     const [isFocused, setIsFocused] = useState(false);
     const [localError, setLocalError] = useState(false);
@@ -387,7 +389,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
 
             {localError && (
                 <Text style={styles.errorText} testID={`${testID}-error-text`}>
-                    Please enter only numbers.
+                    {t('Please enter only numbers.')}
                 </Text>
             )}
         </View>

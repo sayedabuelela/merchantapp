@@ -1,20 +1,25 @@
 // components/items/ItemCard.tsx
+import { currencyLabel } from '@/src/core/constants/currencies';
+import { currencyNumber } from '@/src/core/utils/number-fields';
 import FontText from '@/src/shared/components/FontText';
 import React, { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { EllipsisVerticalIcon, MinusIcon, PlusIcon } from 'react-native-heroicons/outline';
 import * as DropdownMenu from 'zeego/dropdown-menu';
+import { ItemType } from '../../../payment-links.scheme';
 
 interface ItemCardProps {
-    item: any;
+    item: ItemType;
+    /** The link's currency — items carry none of their own. API id or display code. */
+    currency?: string | null;
     index: number;
     onEdit: (index: number) => void;
     onDelete: (index: number) => void;
     onQuantityChange: (index: number, quantity: number) => void;
 }
 
-const ItemCard = memo(({ item, index, onEdit, onDelete, onQuantityChange }: ItemCardProps) => {
+const ItemCard = memo(({ item, currency, index, onEdit, onDelete, onQuantityChange }: ItemCardProps) => {
     const { t } = useTranslation();
 
     const handleIncrement = useCallback(() => {
@@ -44,7 +49,7 @@ const ItemCard = memo(({ item, index, onEdit, onDelete, onQuantityChange }: Item
                                 {t('Price')}
                             </FontText>
                             <FontText type="body" weight="bold" className="text-black text-base">
-                                {item.unitPrice} EGP
+                                {`${currencyNumber(item.unitPrice)} ${currencyLabel(t, currency)}`}
                             </FontText>
                         </View>
                     )}

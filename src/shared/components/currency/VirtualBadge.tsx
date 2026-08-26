@@ -13,8 +13,12 @@ export default function VirtualBadge({ className }: { className?: string }) {
             <FontText
                 type="body"
                 weight="regular"
-                className="text-[9px] text-center uppercase"
-                style={{ color: '#556767', letterSpacing: 0.2 }}
+                className="text-xxs text-center"
+                // Explicit lineHeight is load-bearing: FontText applies a 1.8x multiplier
+                // in RTL to any mapped size class, which would make the pill taller than
+                // the code it sits beside. An inline style wins over that multiplier.
+                // No uppercase/letterSpacing — Latin settings that do nothing for "افتراضي".
+                style={{ color: '#556767', lineHeight: 13 }}
                 numberOfLines={1}
             >
                 {t('Virtual')}

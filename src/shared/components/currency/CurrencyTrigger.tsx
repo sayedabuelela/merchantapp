@@ -1,8 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { ChevronDownIcon } from 'react-native-heroicons/outline';
 import FontText from '@/src/shared/components/FontText';
 import { cn } from '@/src/core/utils/cn';
-import { isVirtualCurrency, SelectedCurrencyId, toDisplayCode } from '@/src/core/constants/currencies';
+import { currencyShortLabel, isVirtualCurrency, SelectedCurrencyId, toDisplayCode } from '@/src/core/constants/currencies';
 import CurrencyFlag from './CurrencyFlag';
 import VirtualBadge from './VirtualBadge';
 
@@ -22,6 +23,7 @@ interface Props {
  * dropdown so a merchant reads the same thing in both places.
  */
 const CurrencyTrigger = ({ currency, onPress, bordered = false, className }: Props) => {
+    const { t } = useTranslation();
     // Callers hold the API id ('USD_VIRTUAL'); the trigger shows the display code.
     const displayCode = toDisplayCode(currency);
 
@@ -40,17 +42,19 @@ const CurrencyTrigger = ({ currency, onPress, bordered = false, className }: Pro
             <View className="shrink-0">
                 <CurrencyFlag currency={displayCode} size={16} />
             </View>
-            {/* Raw display code (not t()) — trigger stays compact in both languages */}
+            {/* Short label, never the full name: the chip shares a row with the
+                amount field, and "الدولار الأمريكي" would squeeze it out. */}
             <FontText
                 type="body"
                 weight="regular"
-                className="text-primary ml-1 mr-0.5 text-xs shrink-0"
+                className="text-primary ms-1 me-0.5 text-xs shrink-0"
                 numberOfLines={1}
             >
-                {displayCode}
+                {currencyShortLabel(t, currency)}
             </FontText>
-            {/* The badge is the one piece allowed to give way when space runs out */}
-            {isVirtualCurrency(currency) && <VirtualBadge className="mr-0.5 shrink min-w-0" />}
+            {/* shrink-0: with a short label there is room for the whole badge, so
+                nothing in the trigger truncates. */}
+            {isVirtualCurrency(currency) && <VirtualBadge className="me-0.5 shrink-0" />}
             <View className="shrink-0">
                 <ChevronDownIcon size={14} color="#001F5F" />
             </View>

@@ -7,11 +7,13 @@ import FeeItem from './FeeItem';
 
 interface FeesListProps {
     fees: FeeType[];
+    /** The link's currency — fees carry none of their own. API id or display code. */
+    currency?: string | null;
     onEdit: (index: number) => void;
     onDelete: (index: number) => void;
 }
 
-const FeesList = memo(({ fees, onEdit, onDelete }: FeesListProps) => {
+const FeesList = memo(({ fees, currency, onEdit, onDelete }: FeesListProps) => {
     if (fees.length === 0) {
         return <ListEmpty type="fees" />;
     }
@@ -22,6 +24,7 @@ const FeesList = memo(({ fees, onEdit, onDelete }: FeesListProps) => {
                 <FeeItem
                     key={`${fee.name}-${index}`}
                     fee={fee}
+                    currency={currency}
                     onEdit={() => onEdit(index)}
                     onDelete={() => onDelete(index)}
                 />

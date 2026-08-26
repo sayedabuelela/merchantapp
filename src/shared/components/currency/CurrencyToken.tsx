@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import FontText from '@/src/shared/components/FontText';
 import { cn } from '@/src/core/utils/cn';
+import { currencyShortLabel } from '@/src/core/constants/currencies';
 
 interface CurrencyTokenProps {
     /** Display code, e.g. "USD". Already run through toDisplayCode by the caller. */
@@ -21,11 +23,12 @@ interface CurrencyTokenProps {
  * padding and borderRadius on nested Text nodes, so the tag shape is
  * unreachable inline. Every other chip in this app is a standalone element too.
  *
- * The code is always raw, never t(). The locale files map codes to full names
- * (t('USD') is "دولار أمريكي"), which would blow a 10px tag into a phrase —
- * same reasoning, and the same choice, as CurrencyBtn.
+ * Rendered through `currencyShortLabel`, never `currencyLabel`: the amount keys
+ * translate to the full name ("الدولار الأمريكي"), which would blow a 10px tag
+ * into a phrase. Full names belong to the picker and to amounts, not here.
  */
 export default function CurrencyToken({ code, size = 'sm', className }: CurrencyTokenProps) {
+    const { t } = useTranslation();
     if (!code) return null;
     return (
         <View className={cn('bg-surface-accent rounded-[2px] px-[3px] shrink-0', className)}>
@@ -39,7 +42,7 @@ export default function CurrencyToken({ code, size = 'sm', className }: Currency
                 style={{ lineHeight: size === 'lg' ? 15 : 13, letterSpacing: 0.4 }}
                 numberOfLines={1}
             >
-                {code}
+                {currencyShortLabel(t, code)}
             </FontText>
         </View>
     );

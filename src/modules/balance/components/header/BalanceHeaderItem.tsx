@@ -1,4 +1,6 @@
+import { currencyLabel } from "@/src/core/constants/currencies";
 import FontText from "@/src/shared/components/FontText";
+import { useTranslation } from "react-i18next";
 import { Platform, View } from "react-native";
 import { cn } from "@/src/core/utils/cn";
 import { currencyNumber } from "@/src/core/utils/number-fields";
@@ -16,15 +18,13 @@ const BalanceHeaderItem = ({
     currency,
     mainBalance = false,
 }: Props) => {
-    // const displayValue = typeof value === 'number' && currency
-    //     ? currencyNumber(value) + ' ' + currency
-    //     : value;
-    const displayValue = (value !== '--' && typeof value === 'number')
-        ? currency ? currencyNumber(Number(value)) + ' ' + currency : Number(value)
-        : value;
-    console.log('value : ', currency);
+    const { t } = useTranslation();
 
-    // const displayValue =  currencyNumber(value) + ' ' + currency
+    // Callers pass the raw code ('EGP'); translate here so every header reads
+    // the same label as the rest of the app.
+    const displayValue = (value !== '--' && typeof value === 'number')
+        ? currency ? currencyNumber(Number(value)) + ' ' + currencyLabel(t, currency) : Number(value)
+        : value;
 
     return (
         <View className="items-center justify-center">

@@ -53,7 +53,7 @@ const EgpEquivalent = () => {
             </FontText>
             {!isLoading && rate != null && (
                 <FontText type="body" weight="regular" className="text-light-gray text-[10px]">
-                    {`1 ${displayCode} = ${currencyNumber(rate)} ${t('EGP')}`}
+                    {`1 ${t(displayCode)} = ${currencyNumber(rate)} ${t('EGP')}`}
                 </FontText>
             )}
         </View>

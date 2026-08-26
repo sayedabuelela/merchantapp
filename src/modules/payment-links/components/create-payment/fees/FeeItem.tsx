@@ -1,4 +1,6 @@
 // FeeItem.tsx
+import { currencyLabel } from '@/src/core/constants/currencies';
+import { currencyNumber } from '@/src/core/utils/number-fields';
 import FontText from '@/src/shared/components/FontText';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,11 +10,13 @@ import * as DropdownMenu from 'zeego/dropdown-menu';
 import { FeeType } from '../../../payment-links.scheme';
 interface FeeItemProps {
     fee: FeeType;
+    /** The link's currency — fees carry none of their own. API id or display code. */
+    currency?: string | null;
     onEdit: () => void;
     onDelete: () => void;
 }
 
-const FeeItem = ({ fee, onEdit, onDelete }: FeeItemProps) => {
+const FeeItem = ({ fee, currency, onEdit, onDelete }: FeeItemProps) => {
     const { t } = useTranslation();
 
     return (
@@ -57,7 +61,7 @@ const FeeItem = ({ fee, onEdit, onDelete }: FeeItemProps) => {
                             {t('Flat fee')}
                         </FontText>
                         <FontText type="body" weight="bold" className="text-black text-base">
-                            {fee.flatFee}
+                            {`${currencyNumber(fee.flatFee)} ${currencyLabel(t, currency)}`}
                         </FontText>
                     </View>
                 )}

@@ -1,3 +1,4 @@
+import { currencyLabel } from '@/src/core/constants/currencies';
 import { formatAMPM, formatRelativeDate } from '@/src/core/utils/dateUtils';
 import StatusBox from '@/src/modules/payment-links/components/StatusBox';
 import Button from '@/src/shared/components/Buttons/Button';
@@ -29,7 +30,7 @@ const CaptureConfirmation: FC<CaptureConfirmationProps> = ({
                 {/* Amount and Status */}
                 <View className="flex-row items-center gap-x-2 mb-2">
                     <FontText type="head" weight="bold" className="text-content-primary text-xl">
-                        {order.amount} {order.currency}
+                        {order.amount} {currencyLabel(t, order.currency)}
                     </FontText>
                     <StatusBox status={order.status} />
                 </View>

@@ -7,12 +7,14 @@ import ItemCard from './ItemCard';
 
 interface ItemsListProps {
     items: ItemType[];
+    /** The link's currency — items carry none of their own. API id or display code. */
+    currency?: string | null;
     onEdit: (index: number) => void;
     onDelete: (index: number) => void;
     onQuantityChange: (index: number, quantity: number) => void;
 }
 
-const ItemsList = memo(({ items, onEdit, onDelete, onQuantityChange }: ItemsListProps) => {
+const ItemsList = memo(({ items, currency, onEdit, onDelete, onQuantityChange }: ItemsListProps) => {
     if (items.length === 0) {
         return <ListEmpty type="items" />;
     }
@@ -24,6 +26,7 @@ const ItemsList = memo(({ items, onEdit, onDelete, onQuantityChange }: ItemsList
                     key={`${item.description}-${index}`}
                     index={index}
                     item={item}
+                    currency={currency}
                     onEdit={onEdit}
                     onDelete={onDelete}
                     onQuantityChange={onQuantityChange}

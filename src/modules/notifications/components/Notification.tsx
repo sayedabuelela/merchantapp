@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, I18nManager } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 import FontText from "@/src/shared/components/FontText"
 import { useTranslation } from "react-i18next"
 import { NotificationData } from "../notification.model"
@@ -6,7 +6,6 @@ import { cn } from "@/src/core/utils/cn"
 import { router } from "expo-router"
 import { formatRelativeDate, formatTime } from "@/src/core/utils/dateUtils"
 import { ROUTES } from "@/src/core/navigation/routes"
-const isRTL = I18nManager.isRTL;
 
 interface NotificationProps extends NotificationData {
     onPress: () => void;
@@ -112,8 +111,7 @@ const Notification = ({ _id,
                     weight="regular"
                     className="text-content-primary capitalize text-sm"
                 >
-                    {/* {t("for")}  */}
-                    {t(`${isRTL ? "for" : "for "}${data?.paymentType}`)}
+                    {`${t('for')} ${t(data?.paymentType ?? '')}`}
                     {/* {data?.paymentType !== "paymentRequest"
                         ? t(`${data?.paymentType}`)
                         : t(`${data?.paymentType}.notification`)} */}
