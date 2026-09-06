@@ -5,6 +5,7 @@ import { NotificationData } from "../notification.model"
 import { cn } from "@/src/core/utils/cn"
 import { router } from "expo-router"
 import { formatRelativeDate, formatTime } from "@/src/core/utils/dateUtils"
+import { ROUTES } from "@/src/core/navigation/routes"
 const isRTL = I18nManager.isRTL;
 
 interface NotificationProps extends NotificationData {
@@ -15,12 +16,22 @@ const Notification = ({ _id,
     createdAt,
     seen,
     data,
+    message,
     onPress }: NotificationProps) => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
+
+    const isInstantSettlement = data?.type === 'instantSettlement'
 
     const handlePress = () => {
         // Call the onPress callback to mark as seen
         onPress()
+
+        // Instant settlement requests open their details screen. The endpoint
+        // takes the UUID — `requestId` is the human ISR-… code and would 404.
+        if (isInstantSettlement && data.instantSettlementRequestId) {
+            router.push(ROUTES.INSTANT_SETTLEMENT.REQUEST_DETAILS(data.instantSettlementRequestId))
+            return
+        }
 
         // Navigate to the transaction screen
         if (data.transactionId) {
@@ -30,7 +41,39 @@ const Notification = ({ _id,
             router.push(`/payments/order/${data.orderId}` as any)
         }
     }
-    console.log("data?.paymentType : ", data);
+
+    // Instant settlement notifications carry no customer/amount/originId, so the
+    // composed payment sentence below renders as "Your customer paid For
+    // Undefined". The API already ships a localized title/body for them.
+    if (isInstantSettlement) {
+        const lang = i18n.language?.startsWith('ar') ? 'ar' : 'en'
+        const localized = message?.[lang] ?? message?.en
+
+        return (
+            <TouchableOpacity
+                onPress={handlePress}
+                className={cn(
+                    "border-[1.5px] rounded border-tertiary py-4 px-6 mb-2 gap-y-1 ",
+                    !seen && "bg-[#F1F6FF]",
+                )}>
+                {!!localized?.title && (
+                    <FontText type="body" weight="bold" className="text-content-primary text-sm">
+                        {localized.title}
+                    </FontText>
+                )}
+                {!!localized?.body && (
+                    <FontText type="body" weight="regular" className="text-content-primary text-sm">
+                        {localized.body}
+                    </FontText>
+                )}
+
+                <FontText type="body" weight="semi" className="text-[#999999] text-xs">
+                    {formatRelativeDate(createdAt, false, true)} {t('at')} {formatTime(createdAt)}
+                </FontText>
+            </TouchableOpacity>
+        )
+    }
+
     return (
         <TouchableOpacity
             onPress={handlePress}
@@ -61,7 +104,7 @@ const Notification = ({ _id,
                     weight="bold"
                     className="text-content-primary mx-0.5 text-sm"
                 >
-                    {data?.amount} {t(data?.currency)}{" "}
+                    {data?.amount} {data?.currency ? t(data.currency) : ''}{" "}
                 </FontText>
 
                 <FontText
