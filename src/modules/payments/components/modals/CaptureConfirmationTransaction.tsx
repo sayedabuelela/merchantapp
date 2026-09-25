@@ -1,3 +1,4 @@
+import { currencyLabel } from '@/src/core/constants/currencies';
 import React, { FC } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +31,7 @@ const CaptureConfirmationTransaction: FC<CaptureConfirmationTransactionProps> = 
                 {/* Amount and Status */}
                 <View className="flex-row items-center gap-x-2 mb-2">
                     <FontText type="head" weight="bold" className="text-content-primary text-xl">
-                        {transaction.amount} {transaction.currency}
+                        {transaction.amount} {currencyLabel(t, transaction.currency)}
                     </FontText>
                     <StatusBox status={transaction.status} />
                 </View>

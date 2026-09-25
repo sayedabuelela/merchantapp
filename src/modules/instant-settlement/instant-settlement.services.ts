@@ -1,76 +1,116 @@
 import { AxiosInstance } from 'axios';
 import {
-    FetchSettlementTransactionsParams,
-    FetchSettlementTransactionsResponse,
-    InstantSettlementInquiryApiResponse,
-    InstantSettlementInquiryRequest,
-    InstantSettlementInquiryResponse,
-    InstantSettlementRequestPayload,
-    InstantSettlementRequestResponse,
-} from './instant-settlement.model';
+    EligibleListResponseDTO,
+    EligibleQueryParams,
+    InquiryRequestDTO,
+    InquiryResponseDTO,
+    SuggestionsRequestDTO,
+    SuggestionsDTO,
+    CreateRequestDTO,
+    CreateRequestResponseDTO,
+    RequestsListResponseDTO,
+    RequestsQueryParams,
+    RequestDetailsDTO,
+    RequestDetailsResponseDTO,
+    MemberTransactionsResponseDTO,
+    MemberTransactionsQueryParams,
+} from './dto/instant-settlement.dto';
 
-/**
- * Fetch settleable transactions
- * Endpoint: GET /v2/aggregator/settlement-transactions
- */
-export const fetchSettlementTransactions = async (
+// ---------------------------------------------------------------------------
+// instant-settlements v3 endpoints (confirmed contract — FIN-20275 v3).
+// Mounted at /v3/payment/instant-settlements (api-gateway transparent proxy).
+// All return raw DTOs; the VM/mapper layer turns them into presentation models.
+// ---------------------------------------------------------------------------
+
+const BASE = '/v3/payment/instant-settlements';
+
+/** GET {BASE}/instant/eligible-transactions — list + summary + limits */
+export const fetchEligibleTransactions = async (
     api: AxiosInstance,
-    params: FetchSettlementTransactionsParams = {}
-): Promise<FetchSettlementTransactionsResponse> => {
-    const {
-        sortBy = '',
-        sortType = -1,
-        limit = 20,
-        page = 1,
-        search = '',
-        branchIds = '',
-    } = params;
-
-    const queryParams: Record<string, any> = {
-        sortBy,
-        sortType,
-        limit,
-        page,
-        search,
-        branchIds,
-    };
-
-    const response = await api.get<FetchSettlementTransactionsResponse>(
-        '/v2/aggregator/settlement-transactions',
-        { params: queryParams }
+    params: EligibleQueryParams = {},
+): Promise<EligibleListResponseDTO> => {
+    const response = await api.get<EligibleListResponseDTO>(
+        `${BASE}/instant/eligible-transactions`,
+        { params },
     );
+    return response.data;
+};
 
+/** POST {BASE}/instant/inquiry — fee breakdown (bare object, no envelope) */
+export const inquireInstant = async (
+    api: AxiosInstance,
+    body: InquiryRequestDTO,
+): Promise<InquiryResponseDTO> => {
+    const response = await api.post<InquiryResponseDTO>(
+        `${BASE}/instant/inquiry`,
+        body,
+    );
     return response.data;
 };
 
 /**
- * Inquire instant settlement fees for selected transactions
- * Endpoint: POST /v3/payment/instant-settlement/inquiry
+ * POST {BASE}/instant/suggestions — custom-amount helper (FIN-20780).
+ * Returns the combinations nearest BELOW and ABOVE the target (bare object).
  */
-export const inquireInstantSettlement = async (
+export const fetchSuggestions = async (
     api: AxiosInstance,
-    request: InstantSettlementInquiryRequest
-): Promise<InstantSettlementInquiryResponse> => {
-    const response = await api.post<InstantSettlementInquiryApiResponse>(
-        '/v3/payment/instant-settlement/inquiry',
-        request
+    body: SuggestionsRequestDTO,
+): Promise<SuggestionsDTO> => {
+    const response = await api.post<SuggestionsDTO>(
+        `${BASE}/instant/suggestions`,
+        body,
     );
+    return response.data;
+};
 
-    return response.data.response;
+/** POST {BASE}/instant-requests — create request (201) */
+export const createInstantRequest = async (
+    api: AxiosInstance,
+    body: CreateRequestDTO,
+): Promise<CreateRequestResponseDTO> => {
+    const response = await api.post<CreateRequestResponseDTO>(
+        `${BASE}/instant-requests`,
+        body,
+    );
+    return response.data;
+};
+
+/** GET {BASE}/instant-requests — requests history (paginated) */
+export const fetchInstantRequests = async (
+    api: AxiosInstance,
+    params: RequestsQueryParams = {},
+): Promise<RequestsListResponseDTO> => {
+    const response = await api.get<RequestsListResponseDTO>(
+        `${BASE}/instant-requests`,
+        { params },
+    );
+    return response.data;
 };
 
 /**
- * Submit instant settlement request
- * Endpoint: POST /v3/payment/instant-settlement/request
+ * GET {BASE}/instant-requests/{uuid} — details + embedded records.
+ * Envelope-wrapped (Codex #1): unwrap `response.data.data` so the mapper
+ * receives a plain `RequestDetailsDTO` (matches the other service fns).
  */
-export const requestInstantSettlement = async (
+export const fetchInstantRequestDetails = async (
     api: AxiosInstance,
-    request: InstantSettlementRequestPayload
-): Promise<InstantSettlementRequestResponse> => {
-    const response = await api.post<InstantSettlementRequestResponse>(
-        '/v3/payment/instant-settlement/request',
-        request
+    uuid: string,
+): Promise<RequestDetailsDTO> => {
+    const response = await api.get<RequestDetailsResponseDTO>(
+        `${BASE}/instant-requests/${uuid}`,
     );
+    return response.data.data;
+};
 
+/** GET {BASE}/instant-requests/{uuid}/transactions — member txns (paginated) */
+export const fetchInstantRequestTransactions = async (
+    api: AxiosInstance,
+    uuid: string,
+    params: MemberTransactionsQueryParams = {},
+): Promise<MemberTransactionsResponseDTO> => {
+    const response = await api.get<MemberTransactionsResponseDTO>(
+        `${BASE}/instant-requests/${uuid}/transactions`,
+        { params },
+    );
     return response.data;
 };

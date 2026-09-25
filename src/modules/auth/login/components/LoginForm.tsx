@@ -30,6 +30,8 @@ export function LoginForm({onSubmit, loading, error}: LoginFormProps) {
         resolver: zodResolver(loginSchema),
         // mode: 'onTouched',
         defaultValues: {
+            email: '',
+            password: '',
             // email: 'pisej21977@hazhab.com',
             // email: 'logare2532@frisbook.com',
             // email: 'saboelela@kashier.io',
@@ -71,7 +73,16 @@ export function LoginForm({onSubmit, loading, error}: LoginFormProps) {
             // email: 'aayman@kashier.io',
             // password: 'P@ssw0rd1234',
             // email: 'michaelmorris186@yahoo.com',
-            // password: 'Michael@1993',
+            // email: 'moshaaban@kashier.io',
+            // password: 'Maro$2888889',
+            // email: 'Mrashad@kashier.io',
+            // password: 'YoYo2722*',
+            // email: 'moshaaban@elements-ft.com',
+            // password: 'Maro@Hegazy$25559',
+            // email: 'aayman@elements-ft.com',
+            // password: 'P@ssw0rd12345',
+            // email: 'skhaled@kashier.io',
+            // password: 'Kashier$1122',
         },
     });
 

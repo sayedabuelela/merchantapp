@@ -120,7 +120,7 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                     // backgroundColor: '#F3FFF4',
                     borderWidth: 0
                 },
-                description: t(`Upload failed: ${error.message}`),
+                description: t('Upload failed: {{message}}', { message: error.message }),
             });
             setUploadProgress({
                 loaded: 0,
@@ -165,7 +165,7 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                     // backgroundColor: '#F3FFF4',
                     borderWidth: 0
                 },
-                description: t(`Upload failed: ${error.message}`),
+                description: t('Upload failed: {{message}}', { message: error.message }),
             });
         },
     });
@@ -181,7 +181,7 @@ const useDocumentViewModel = ({ documentType }: DocumentViewModelProps) => {
                         style: {
                             borderWidth: 0
                         },
-                        description: t(`File size (${fileSizeInMB}MB) exceeds the maximum limit of 5MB`),
+                        description: t('File size ({{size}}MB) exceeds the maximum limit of 5MB', { size: fileSizeInMB }),
                     });
                     setUploadProgress({
                         loaded: 0,

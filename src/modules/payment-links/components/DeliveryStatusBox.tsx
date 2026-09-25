@@ -48,7 +48,9 @@ const getIcon = (type: DeliveryType, color: string) => {
 };
 
 const DeliveryStatusBox: React.FC<DeliveryStatusBoxProps> = ({ delivery_status, type }) => {
-    const { textColor, bgColor, borderColor } = STATUS_STYLES[delivery_status as DeliveryStatus];
+    // Fall back rather than crash: the API can send a status outside this map
+    const { textColor, bgColor, borderColor } =
+        STATUS_STYLES[delivery_status as DeliveryStatus] ?? STATUS_STYLES.pending;
     const icon = getIcon(type, textColor);
 
     return (

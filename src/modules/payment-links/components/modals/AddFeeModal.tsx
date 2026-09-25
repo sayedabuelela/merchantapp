@@ -147,8 +147,10 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                     {/* Flat Fee + Rate */}
                                     <View>
                                         <View className="flex-row items-center justify-between">
-                                            {/* Flat Fee */}
-                                            <View className="w-[47%]">
+                                            {/* Flat Fee — wider than Rate so the currency trigger
+                                                (flag + code + Virtual badge + chevron) can sit inside
+                                                the box without squeezing the amount out */}
+                                            <View className="w-[64%]">
                                                 <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label, 'mb-2')}>
                                                     {t('Fee Amount')}
                                                 </FontText>
@@ -168,6 +170,9 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                                             }}
                                                             keyboardType="decimal-pad"
                                                             isHasCurrency
+                                                            // Hard floor so the digits survive even when
+                                                            // the trigger carries the Virtual badge
+                                                            inputClassName="min-w-[64px]"
                                                             error={!!errors.flatFee}
                                                         />
                                                     )}
@@ -175,7 +180,7 @@ const AddFeeModal = ({ isVisible, onClose, onAddFee, editingFee }: Props) => {
                                             </View>
 
                                             {/* Rate */}
-                                            <View className="w-[47%]">
+                                            <View className="w-[33%]">
                                                 <FontText type="body" weight="semi" className={cn(COMMON_STYLES.label, 'mb-2')}>
                                                     {t('Rate')}
                                                 </FontText>

@@ -37,7 +37,7 @@ const getIssuerIcon = (issuer: string) => {
 export const CardPaymentDetails = ({ sourceOfFunds, paymentChannel }: CardPaymentDetailsProps) => {
     const { t } = useTranslation();
     return (
-        <View className="bg-[#F1F6FF] border border-[#D9E5FF] p-6 mt-4 rounded gap-y-5">
+        <View className="bg-surface-accent p-4 mt-4 rounded-lg gap-y-5">
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-1">
                     {sourceOfFunds?.issuer && (
@@ -50,14 +50,15 @@ export const CardPaymentDetails = ({ sourceOfFunds, paymentChannel }: CardPaymen
                 </View>
                 <MasterCardIcon />
             </View>
-            <View className='gap-y-2'>
+            <View>
                 <FontText type="body" weight="bold"
-                    className="text-content-primary text-base">{sourceOfFunds.maskedCard}</FontText>
-                <View className="flex-row items-center justify-between">
+                    className="text-content-primary text-base"
+                    style={{ letterSpacing: 0.64 }}>{sourceOfFunds.maskedCard}</FontText>
+                <View className="flex-row items-center justify-between gap-x-3 mt-1.5">
                     <FontText type="body" weight="bold"
-                        className="text-content-primary text-[10px] uppercase">{sourceOfFunds.cardHolderName}</FontText>
+                        className="text-content-secondary text-xxs uppercase">{sourceOfFunds.cardHolderName}</FontText>
                     <FontText type="body" weight="bold"
-                        className="text-content-primary text-[10px] uppercase">{`${sourceOfFunds.expiryMonth}/${sourceOfFunds.expiryYear}`}</FontText>
+                        className="text-content-secondary text-xxs uppercase">{`${sourceOfFunds.expiryMonth}/${sourceOfFunds.expiryYear}`}</FontText>
                 </View>
             </View>
         </View>

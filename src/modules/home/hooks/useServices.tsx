@@ -15,7 +15,6 @@ import {
 import useHasFeature from '../../auth/hooks/useHasFeature';
 import usePermissions from '../../auth/hooks/usePermissions';
 import { selectUser, useAuthStore } from '../../auth/auth.store';
-import { isInstantSettlementUnavailable } from '@/src/core/utils/serviceAvailability';
 export interface ServiceItem {
     title: string;
     description: string;
@@ -31,20 +30,16 @@ export const useServices = (qrCodeActionPress?: () => void): ServiceItem[] => {
     const user = useAuthStore(selectUser);
     const mode = useEnvironmentStore(selectMode)
     const hasInstantSettlementFeature = useHasFeature("instant_settlement_request");
-    const { canEditBalance } = usePermissions(user?.actions!);
-    console.log('useServices canEditBalance', canEditBalance);
-    console.log('hasInstantSettlementFeature', user);
-    // console.log('hasInstantSettlementFeature user.merchantId',user?.merchantId);
-    // console.log('user?.actions',user?.belongsToMerchants['MID-957-917']);
+    const { canViewInstantSettlement } = usePermissions(user?.actions!);
 
     const servicesList: ServiceItem[] = [
-        ...((hasInstantSettlementFeature && canEditBalance && mode === Mode.LIVE) ? [{
+        ...((hasInstantSettlementFeature && canViewInstantSettlement) ? [{
+        // ...((hasInstantSettlementFeature && canViewInstantSettlement && mode === Mode.LIVE) ? [{
             title: t('Instant settlement'),
             description: t('Get your money now!'),
             href: mode === Mode.LIVE ? ROUTES.INSTANT_SETTLEMENT.ROOT as Route : '' as Route,
             // href: ROUTES.INSTANT_SETTLEMENT.ROOT as Route,
             icon: <BoltIcon size={20} color="#001F5F" />,
-            unavailable: isInstantSettlementUnavailable(),
         }] : []),
         {
             title: t('QR code payments'),

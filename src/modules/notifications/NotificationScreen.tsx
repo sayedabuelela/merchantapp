@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { FlatList, ActivityIndicator, RefreshControl } from 'react-native'
+import React, { useCallback, useEffect } from 'react'
+import { FlatList, ActivityIndicator, RefreshControl, View } from 'react-native'
 import Notification from './components/Notification'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import FontText from '@/src/shared/components/FontText'
@@ -14,43 +14,44 @@ const NotificationScreen = () => {
     const { t } = useTranslation()
     const { notifications, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching } = useNotificationsVM()
     const { updateNotification: markAsSeen } = useUpdateNotificationVM()
-    console.log('notifications',notifications);
-    
+
     // Reset badge count when screen opens
     useEffect(() => {
         resetBadgeCount()
     }, [])
 
-    const handleNotificationPress = (notification: NotificationData) => {
+    const handleNotificationPress = useCallback((notification: NotificationData) => {
         // Mark notification as seen
         markAsSeen({ notificationId: notification._id })
-    }
+    }, [markAsSeen])
 
-    const handleLoadMore = () => {
+    const handleLoadMore = useCallback(() => {
         if (hasNextPage && !isFetchingNextPage) {
             fetchNextPage()
         }
-    }
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
-    const renderItem = ({ item }: { item: NotificationData }) => (
+    const renderItem = useCallback(({ item }: { item: NotificationData }) => (
         <Notification
             {...item}
             onPress={() => handleNotificationPress(item)}
         />
-    )
+    ), [handleNotificationPress])
 
-    const renderEmpty = () => (
+    const renderEmpty = useCallback(() => (
         <FontText type="body" weight="regular" className="text-content-secondary text-center mt-10">
             {t('No notifications')}
         </FontText>
-    )
+    ), [t])
 
-    const renderFooter = () => {
-        if (!isFetchingNextPage) return null
-        return (
-            <ActivityIndicator size="small" className="py-4" />
-        )
-    }
+    // Fixed height on purpose: a footer that mounts/unmounts changes the list's
+    // content length, which re-arms VirtualizedList's onEndReached and makes it
+    // fire again on every fetch.
+    const renderFooter = useCallback(() => (
+        <View className="h-10 justify-center">
+            {isFetchingNextPage && <ActivityIndicator size="small" />}
+        </View>
+    ), [isFetchingNextPage])
 
     if (isLoading) {
         return (

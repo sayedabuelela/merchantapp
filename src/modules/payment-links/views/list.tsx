@@ -24,6 +24,7 @@ import { FlashList } from '@shopify/flash-list';
 import FadeInDownView from '@/src/shared/components/wrappers/animated-wrappers/FadeInDownView';
 import FadeInUpView from '@/src/shared/components/wrappers/animated-wrappers/FadeInUpView';
 import AnimatedListItem from '@/src/shared/components/wrappers/animated-wrappers/AnimatedListItem';
+import useSelectedCurrency from '@/src/shared/hooks/useSelectedCurrency';
 
 // Constants
 const INITIAL_FILTERS: FetchPaymentLinksParams = {
@@ -47,6 +48,7 @@ const PaymentLinksScreen = () => {
     const [filters, setFilters] = useState<FetchPaymentLinksParams>(INITIAL_FILTERS);
     const [selectedPaymentLink, setSelectedPaymentLink] = useState<PaymentLink | null>(null);
     const { countries } = useCountries();
+    const { currencyParam, isVirtual } = useSelectedCurrency();
     // Function to handle opening the modal
     const handleOpenActions = useCallback((paymentLink: PaymentLink) => {
         setSelectedPaymentLink(paymentLink);
@@ -86,7 +88,9 @@ const PaymentLinksScreen = () => {
     } = usePaymentLinksVM({
         search,
         paymentStatus,
-        ...filters
+        ...filters,
+        // Virtual currency view filter (currency conversion feature); undefined = EGP view, request unchanged
+        ...(currencyParam && { currency: currencyParam })
     });
 
     // Refetch data when screen comes into focus
@@ -130,10 +134,10 @@ const PaymentLinksScreen = () => {
 
         return (
             <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
-                <PaymentLinkCard paymentLink={item} onOpenActions={handleOpenActions} />
+                <PaymentLinkCard paymentLink={item} onOpenActions={handleOpenActions} amountPrimary={isVirtual ? 'virtual' : 'egp'} />
             </AnimatedListItem>
         );
-    }, [handleOpenActions, listData]);
+    }, [handleOpenActions, listData, isVirtual]);
 
     return (
         <SafeAreaView className="flex-1 bg-white">

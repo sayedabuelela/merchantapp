@@ -18,7 +18,6 @@ const OrderInfoSection = ({ data }: Props) => {
     // Only render if we have at least one value to show
     const hasData = data.fees || data.vat || data.authorizationId ||
         data.merchantType || data.merchantReference || data.earlySettlementFees;
-    console.log('earlySettlementFees : ', data.earlySettlementFees);
 
     if (!hasData) {
         return null;

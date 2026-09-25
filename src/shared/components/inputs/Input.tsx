@@ -36,12 +36,18 @@ const Input = forwardRef<TextInput, InputProps>(
                     {label}
                 </FontText>}
                 <View
-                    className={cn(`px-4 h-11 bg-white border rounded ${borderColorClass} ${className || ''} ${isPassword || isHasCurrency ? 'items-center flex-row ' : 'pr-4'}`)}
+                    // Lighter trailing padding when a currency trigger sits in the row:
+                    // the trigger brings its own inline-start padding, so a full 16px
+                    // at the end is dead space the amount field could have used.
+                    className={cn(`h-11 bg-white border rounded ${isHasCurrency ? 'ps-4 pe-2' : 'px-4'} ${borderColorClass} ${className || ''} ${isPassword || isHasCurrency ? 'items-center flex-row ' : 'pr-4'}`)}
                 >
                     <TextInput
                         ref={ref}
                         value={value}
-                        className={cn('flex-1 w-full h-full text-base text-content-primary', `text-${isRTL ? 'right' : 'left'}`, getFontClass('body', 'regular'), isRTL ? 'leading-[1.8] ' : 'leading-[1.35]', inputClassName || '')}
+                        // flex-1 + min-w-0, never w-full: a 100% basis makes the field
+                        // claim the whole row, leaving the currency trigger as the only
+                        // thing that can give way — which is what squeezed it to nothing.
+                        className={cn('flex-1 min-w-0 h-full text-base text-content-primary', `text-${isRTL ? 'right' : 'left'}`, getFontClass('body', 'regular'), isRTL ? 'leading-[1.8] ' : 'leading-[1.35]', inputClassName || '')}
                         onChangeText={onChangeText}
                         placeholderTextColor="#B3BBBB"
                         autoCapitalize="none"

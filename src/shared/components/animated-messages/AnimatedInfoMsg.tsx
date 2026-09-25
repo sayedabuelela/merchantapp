@@ -1,11 +1,13 @@
 import { cn } from "@/src/core/utils/cn";
 import FontText from "@/src/shared/components/FontText";
 import { AnimatePresence, MotiView } from "moti";
+import { ReactNode } from "react";
 import { COMMON_STYLES } from "../../styles/main";
 import { InformationCircleIcon } from "react-native-heroicons/outline";
 
 interface AnimatedInfoMsgProps {
-    infoMsg: string;
+    /** plain text, or composed nodes when parts of the line need emphasis */
+    infoMsg: string | ReactNode;
     className?: string;
     withBackground?: boolean;
 }

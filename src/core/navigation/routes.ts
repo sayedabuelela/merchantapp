@@ -97,5 +97,7 @@ export const ROUTES = {
     // Instant settlement
     INSTANT_SETTLEMENT: {
         ROOT: "/instant-settlement" as Route,
+        REQUEST_DETAILS: (id: string) =>
+            `/instant-settlement/requests/${id}` as Route,
     },
 };

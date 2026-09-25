@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 import { NotificationPermissionStatus, NotificationData, PushNotificationData, NotificationsAPIResponse, NotificationsResponse } from './notification.model';
 import { router } from "expo-router";
 import { getOrCreateDeviceId } from "@/src/core/utils/deviceId";
+import { ROUTES } from "@/src/core/navigation/routes";
 import { AxiosInstance } from "axios";
 
 // const getProjectId = (): string => {
@@ -21,7 +22,11 @@ export const getNotificationsList = async (
     try {
         const response = await api.get<NotificationsAPIResponse>(
             `notifications/${addedById}`,
-            { params: { pageSize, pageParam } }
+            // `page` is what every other paginated endpoint in the app sends;
+            // `pageParam` is kept so the cursor advances whichever name this
+            // endpoint reads. Sending only `pageParam` made the server replay
+            // page 1 forever, which fed an infinite fetch loop on the list.
+            { params: { pageSize, page: pageParam, pageParam } }
         );
 
         // Extract from deeply nested structure
@@ -182,6 +187,15 @@ export const handleNotificationResponse = (response: Notifications.NotificationR
         const originId = data.originId as string | undefined;
 
         console.log('Notification data:', { paymentType, transactionId, orderId, originId });
+
+        // Handle instant settlement notifications. The details endpoint takes
+        // the UUID — `requestId` is the human ISR-… code and would 404.
+        const instantSettlementRequestId = data.instantSettlementRequestId as string | undefined;
+        if (data.type === 'instantSettlement' && instantSettlementRequestId) {
+            console.log('Navigating to instant settlement request:', instantSettlementRequestId);
+            router.push(ROUTES.INSTANT_SETTLEMENT.REQUEST_DETAILS(instantSettlementRequestId));
+            return;
+        }
 
         // Handle payment link notifications
         if (paymentType === 'paymentLink' && originId) {

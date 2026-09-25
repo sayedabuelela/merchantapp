@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { currencyLabel } from '@/src/core/constants/currencies';
 import { RelatedTransaction } from '@/src/modules/payments/payments.model';
 import { useTranslation } from 'react-i18next';
 import FontText from '@/src/shared/components/FontText';
@@ -35,7 +36,7 @@ const TransactionHistoryCard = ({ historyItem, errorMsg }: TransactionHistoryCar
         }
 
         const opLabel = t(OPERATION_LABELS[operation] || operation);
-        const amount = formatAmount(historyItem.amount, historyItem.currency);
+        const amount = formatAmount(historyItem.amount, currencyLabel(t, historyItem.currency));
         const fullName = historyItem.performedBy?.fullName;
         const byClause = fullName ? ` ${t('by')} ${fullName}` : '';
         return `${opLabel} ${amount}${byClause}`;

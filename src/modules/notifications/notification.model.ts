@@ -13,13 +13,23 @@ export interface NotificationData {
     createdAt: string,
     seen: boolean,
     data: {
-        customerName: string,
-        originId: string,
-        paymentType: string,
-        orderId: string,
-        transactionId: string,
-        amount: string,
-        currency: string,
+        // Payment notifications
+        customerName?: string,
+        originId?: string,
+        paymentType?: string,
+        orderId?: string,
+        transactionId?: string,
+        amount?: string,
+        currency?: string,
+        // Instant settlement notifications
+        type?: 'instantSettlement' | string,
+        action?: 'declined' | 'transferred' | string,
+        /** UUID — this is what the request details endpoint takes */
+        instantSettlementRequestId?: string,
+        /** Human ISR-… code, display/search only */
+        requestId?: string,
+        status?: string,
+        declineReason?: string,
     },
     message: {
         ar: { title: string, body: string },

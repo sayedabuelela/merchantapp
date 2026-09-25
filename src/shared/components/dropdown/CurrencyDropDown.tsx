@@ -1,29 +1,26 @@
 import { useEnvironment } from "@/src/core/environment/useEnvironment.hook";
 import { selectUser, useAuthStore } from "@/src/modules/auth/auth.store";
-import { useMemo } from "react";
+import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import DropDownUI from "./DropDownUI";
+import CurrencyModal from "@/src/shared/components/currency/CurrencyModal";
+import CurrencyTrigger from "@/src/shared/components/currency/CurrencyTrigger";
 
 interface Props {
     name: string; // react-hook-form field name
 }
 
+/**
+ * Currency picker for form inputs. Same trigger and same grouped sheet as the
+ * dashboard switcher — flags, full names and a Virtual marker — so the merchant
+ * can see what they picked instead of reading "USD (Virtual)" as plain text.
+ */
 export default function CurrencyDropDown({ name }: Props) {
     const { control } = useFormContext();
     const user = useAuthStore(selectUser);
     const { isLiveMode } = useEnvironment();
-
-    const currencyList = isLiveMode
-        ? user?.currencies ?? []
-        : user?.currenciesTest ?? [];
+    const [isPickerVisible, setIsPickerVisible] = useState(false);
 
     const defaultCurrency = user?.settings?.defaultCurrency?.[isLiveMode ? 'live' : 'test'];
-    // console.log("defaultCurrency", defaultCurrency);
-
-    const currencyOptions = useMemo(
-        () => currencyList.map((c) => ({ label: c, value: c })),
-        [currencyList]
-    );
 
     return (
         <Controller
@@ -31,12 +28,18 @@ export default function CurrencyDropDown({ name }: Props) {
             name={name}
             defaultValue={defaultCurrency}
             render={({ field: { value, onChange } }) => (
-                <DropDownUI
-                    options={currencyOptions}
-                    selected={value}
-                    onChange={onChange}
-                    dropdownKey="currency"
-                />
+                <>
+                    <CurrencyTrigger
+                        currency={value}
+                        onPress={() => setIsPickerVisible(true)}
+                    />
+                    <CurrencyModal
+                        isVisible={isPickerVisible}
+                        onClose={() => setIsPickerVisible(false)}
+                        value={value}
+                        onSelect={onChange}
+                    />
+                </>
             )}
         />
     );

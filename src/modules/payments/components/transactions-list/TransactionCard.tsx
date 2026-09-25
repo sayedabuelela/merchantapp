@@ -1,9 +1,7 @@
 import { Link } from "expo-router"
-import { Pressable, View } from "react-native"
-import FontText from "@/src/shared/components/FontText"
-import { currencyNumber } from "@/src/core/utils/number-fields"
+import RecordCard, { RecordChip, RecordMetaItem } from "@/src/shared/components/cards/RecordCard"
+import DualAmount from "@/src/shared/components/currency/DualAmount"
 import { ArrowSmallDownIcon, ArrowSmallUpIcon, EnvelopeIcon, UserIcon } from "react-native-heroicons/outline"
-import { useTranslation } from "react-i18next"
 import { cn } from "@/src/core/utils/cn"
 import React from "react";
 import StatusBox from "@/src/modules/payment-links/components/StatusBox";
@@ -15,145 +13,101 @@ import { PressableScale } from "pressto"
 import { objectHasKeys } from "@/src/core/utils/objects"
 import { getEffectiveTransactionStatus } from "../../utils/posStatus.utils"
 
-// const IconBox = ({ children }: { children: React.ReactNode }) => {
-//     return (
-//         <View className="w-4 h-4 p-0.5 rounded-full bg-tertiary items-center justify-center">
-//             {children}
-//         </View>
-//     )
-// }
-
 interface TransactionCardProps {
     transaction: Transaction;
     onOpenActions?: (transaction: Transaction) => void;
+    // Which amount leads for virtual-origin transactions: 'virtual' in a virtual-currency view, 'egp' in the EGP view
+    amountPrimary?: 'egp' | 'virtual';
 }
 
-const TransactionCard = ({ transaction, onOpenActions }: TransactionCardProps) => {
-    const { t } = useTranslation();
+const TransactionCard = ({ transaction, onOpenActions, amountPrimary = 'egp' }: TransactionCardProps) => {
     const {
-        _id,
-        status,
         amount,
         currency,
-        totalCapturedAmount,
         transactionId,
-        orderReference,
         merchantOrderId,
-        storeName,
-        dateTime,
         method,
         channel,
         createdAt,
-        provider,
         type,
-        transactionResponseMessage,
         customer,
         operation
     } = transaction;
 
     const effectiveStatus = getEffectiveTransactionStatus(transaction);
-    const isApproved = status === 'Approved';
     const isPayment = (type === 'PAYMENT' || operation === 'pay');
-    const isRefund = type === 'REFUND';
-    const is3DSecureVerify = type === '3DSECURE_VERIFY';
+    const hasCustomer = customer !== undefined && objectHasKeys(customer);
 
+    // Built up front so an all-empty row never reserves space
+    const chips = [
+        { value: transactionId, uppercase: true },
+        { value: merchantOrderId, uppercase: false },
+    ].filter((c) => !!c.value);
 
     const handleLongPress = () => {
         if (onOpenActions) {
             onOpenActions(transaction);
         }
     };
-    console.log('transaction : ', transaction);
+
     return (
         <Link href={`/payments/transaction/${transactionId}`} asChild>
             <PressableScale onLongPress={handleLongPress}>
-                <View className="border-[1.5px] rounded border-tertiary p-4 mb-2 ">
-                    <View className="flex-row items-center justify-between mb-2">
-                        <View className="flex-row items-center gap-x-2">
-                            <IconBox className={cn(
-                                (isPayment)
-                                    ? 'bg-[#D1FFD3] border border-[#AEFFB2]'
-                                    : 'bg-[#FFEAED] border border-[#FEE4E7]'
-                            )}>
-                                {(isPayment) ? (
-                                    <ArrowSmallDownIcon size={10} color={'#1A541D'} />
-                                ) : (
-                                    <ArrowSmallUpIcon size={10} color={'#A50017'} />
-                                )}
-                            </IconBox>
-
-                            <FontText type="body" weight="regular"
-                                className="text-content-secondary text-xs capitalize">
-                                {type || operation}
-                            </FontText>
-
-                        </View>
-                        <FontText type="body" weight="bold"
-                            className={cn("text-content-primary text-sm")}>
-                            {currencyNumber(amount)} {t(currency)}
-                        </FontText>
-                    </View>
-                    {/* method and channel */}
-                    <View className="flex-row items-center justify-between">
-                        {method && (
-                            <FontText type="body" weight="regular"
-                                className="text-content-primary text-xs capitalize">
-                                {method} - {channel}
-                            </FontText>
-                        )}
-                        <StatusBox status={effectiveStatus} />
-                    </View>
-                    {/* <FontText type="body" weight="regular" className="text-content-secondary text-xs">
-                    {t('To')} {'Account Name'}
-                </FontText> */}
-                    <FontText type="body" weight="regular" className="text-content-secondary text-xs mb-2 mt-1 self-start">
-                        {/* {type} .  */}
-                        {formatAMPM(createdAt)}
-                    </FontText>
-                    <View className="flex-row items-center">
-                        {transactionId && (
-                            <FontText type="body" weight="regular"
-                                className="text-content-secondary text-[10px] uppercase mr-1 bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
-                                {transactionId}
-                            </FontText>
-                        )}
-                        {merchantOrderId && (
-                            <FontText type="body" weight="regular" className="text-content-secondary text-[10px] bg-[#F8F9F9] py-0.5 px-1 rounded-[2px] border border-tertiary">
-                                {merchantOrderId}
-                            </FontText>
-                        )}
-                    </View>
-                    {(customer !== undefined && objectHasKeys(customer)) && (
-                        <View className="gap-y-2 border-t border-tertiary pt-2 mt-2">
-                            <View className="flex-row items-center gap-x-4">
-                                {customer?.firstName && (
-                                    <View className="flex-row items-center gap-x-1">
-                                        <UserIcon size={10} color="#556767" />
-                                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                            {`${customer?.firstName} ${customer?.lastName !== undefined ? customer?.lastName : ''}`}
-                                        </FontText>
-                                    </View>
-                                )}
-                                {customer?.mobilePhone && (
-                                    <View className="flex-row items-center gap-x-1">
-                                        <PhoneIcon size={10} color="#556767" />
-                                        <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                            {customer?.mobilePhone}
-                                        </FontText>
-                                    </View>
-                                )}
-                            </View>
-                            {customer?.email && (
-                                <View className="flex-row items-center gap-x-1">
-                                    <EnvelopeIcon size={10} color="#556767" />
-                                    <FontText type="body" weight="regular" className="text-content-secondary text-[10px]">
-                                        {customer?.email}
-                                    </FontText>
-                                </View>
+                <RecordCard
+                    leading={
+                        <IconBox className={cn(
+                            isPayment
+                                ? 'bg-[#D1FFD3] border border-[#AEFFB2]'
+                                : 'bg-[#FFEAED] border border-[#FEE4E7]'
+                        )}>
+                            {isPayment ? (
+                                <ArrowSmallDownIcon size={10} color={'#1A541D'} />
+                            ) : (
+                                <ArrowSmallUpIcon size={10} color={'#A50017'} />
                             )}
-                        </View>
-                    )}
-                </View>
+                        </IconBox>
+                    }
+                    // The direction arrow already encodes payment vs refund, so the
+                    // method/channel pair leads here, matching the order card.
+                    title={method ? `${method} - ${channel}` : (type || operation)}
+                    subtitle={formatAMPM(createdAt)}
+                    chips={chips.length ? (
+                        <>
+                            {chips.map((chip) => (
+                                <RecordChip key={chip.value} uppercase={chip.uppercase}>
+                                    {chip.value}
+                                </RecordChip>
+                            ))}
+                        </>
+                    ) : undefined}
+                    amount={
+                        <DualAmount
+                            amount={amount}
+                            currency={currency}
+                            virtualAmount={transaction.virtualAmount}
+                            virtualCurrency={transaction.virtualCurrency}
+                            primary={amountPrimary}
+                            size="sm"
+                            className="items-end"
+                        />
+                    }
+                    status={<StatusBox status={effectiveStatus} />}
+                    meta={hasCustomer ? (
+                        <>
+                            <RecordMetaItem icon={<UserIcon size={12} color="#556767" />}>
+                                {customer?.firstName
+                                    ? `${customer.firstName} ${customer.lastName ?? ''}`.trim()
+                                    : ''}
+                            </RecordMetaItem>
+                            <RecordMetaItem icon={<PhoneIcon size={12} color="#556767" />}>
+                                {customer?.mobilePhone}
+                            </RecordMetaItem>
+                            <RecordMetaItem icon={<EnvelopeIcon size={12} color="#556767" />}>
+                                {customer?.email}
+                            </RecordMetaItem>
+                        </>
+                    ) : null}
+                />
             </PressableScale>
         </Link>
     )

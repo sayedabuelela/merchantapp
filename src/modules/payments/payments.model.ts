@@ -16,10 +16,25 @@ export type OrderDetailsTabType = 'details' | 'settlement' | 'history';
 // Transaction Details Tab Type
 export type TransactionDetailsTabType = 'details' | 'settlement' | 'history';
 
+/**
+ * Currency conversion payload. The backend nests these together rather than
+ * flattening them onto the record: sessions carry it at the root of `data`,
+ * transactions carry it under `order`. Rate fields are absent until capture.
+ */
+export interface VirtualTransaction {
+    virtualAmount?: number | null;
+    virtualCurrency?: string | null;
+    virtualExchangeRate?: number | null;
+    virtualRateRecordedAt?: string | null;
+}
+
 // Payment Session Interfaces
 export interface PaymentParams {
-    amount: number;
+    amount: number | null;
     currency: string;
+    // Currency conversion (virtual currencies) — present only for virtual-origin sessions
+    virtualAmount?: number | null;
+    virtualCurrency?: string | null;
     order: string;
     storeName: string;
     interactionSource?: string;
@@ -111,6 +126,8 @@ export interface FetchSessionsParams {
     method?: string;
     origin?: string;
     branchName?: string;
+    // Virtual currency filter, e.g. "USD_VIRTUAL" — omitted for the EGP view
+    currency?: string;
 }
 
 // Installment Interfaces
@@ -388,6 +405,11 @@ export interface Transaction {
     currency: string;
     lastStatus: TransactionLastStatus;
     amount: number;
+    // Currency conversion (virtual currencies) — rate captured at payment time, never recalculated
+    virtualAmount?: number;
+    virtualCurrency?: string;
+    virtualExchangeRate?: number;
+    virtualRateRecordedAt?: string;
     isVoided: boolean;
     isCancelled: boolean;
     dateToFilter: string;
@@ -513,8 +535,10 @@ export interface OrderDetailPayment {
     updatedAt: string;
     merchantId: string;
     merchantOrderId: string;
-    amount: number;
+    amount: number | null;
     currency: string;
+    // Currency conversion — nested by the backend, present only for virtual-origin sessions
+    virtualTransaction?: VirtualTransaction;
     method: string;
     pcc: OrderDetailPCC;
     provider?: string;
@@ -567,6 +591,8 @@ export interface TransactionDetailOrder {
     accountType?: string;
     orderId?: string;
     earlySettlementFees?: number;
+    // Currency conversion — transactions nest it one level deeper than sessions do
+    virtualTransaction?: VirtualTransaction;
 }
 
 export interface TransactionDetailPCC {
@@ -874,3 +900,15 @@ export interface ContactRefundWithOtpRequest {
  * Reuses RefundOrderResponse structure as the response format is the same
  */
 export type ContactRefundWithOtpResponse = RefundOrderResponse;
+
+/**
+ * Response structure for the exchange rate endpoint
+ * Endpoint: GET /v3/payment/exchange-rate?from=USD&to=EGP
+ */
+export interface ExchangeRateResponse {
+    success: boolean;
+    timestamp: number;
+    base: string;
+    date: string;
+    rates: Record<string, number>;
+}

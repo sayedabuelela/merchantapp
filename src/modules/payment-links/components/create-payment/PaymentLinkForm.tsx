@@ -8,7 +8,7 @@ import { router } from "expo-router";
 import { t } from "i18next";
 import { AnimatePresence, MotiView } from "moti";
 import { useCallback, useEffect, useState } from "react";
-import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { Controller, FormProvider, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { BanknotesIcon, ShoppingBagIcon, TicketIcon, UserIcon } from "react-native-heroicons/outline";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -19,8 +19,10 @@ import { mapApiToFormValues } from "../../paymentLink.utils";
 import AddFeeModal from "../modals/AddFeeModal";
 import AddItemModal from "../modals/AddItemModal";
 import CreateOptionBox from "./CreateOptionBox";
+import EgpEquivalent from "./EgpEquivalent";
 import FeesList from "./fees/FeesList";
 import ItemsList from "./items/ItemsList";
+import useSelectedCurrency from "@/src/shared/hooks/useSelectedCurrency";
 
 interface PaymentLinkFormProps {
     onSubmit: (data: CreatePaymentLinkTypes) => void;
@@ -40,13 +42,19 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
     const [editingFeeIndex, setEditingFeeIndex] = useState<number | undefined>();
     const [hasExtraFees, setHasExtraFees] = useState(false);
     const { formData, setFormData } = usePaymentLinkStore();
+    // Inherit the dashboard-selected currency (currency conversion feature).
+    // Read once at mount via defaultValues. `apiId` is the wire value already —
+    // "EGP", a main code like "USD", or "USD_VIRTUAL" — and is EGP when the flag
+    // is off, so no fallback is needed. A main non-EGP selection used to collapse
+    // to EGP here, making such a link impossible to create.
+    const { apiId: selectedCurrencyApiId } = useSelectedCurrency();
 
     const methods = useForm<CreatePaymentLinkTypes>({
         resolver: zodResolver(createPaymentLinkSchema),
         defaultValues: {
             paymentType,
             customer: { name: "" },
-            currency: "EGP",
+            currency: selectedCurrencyApiId,
             ...(paymentType === "simple" ? { totalAmount: "" } : { items: [] }),
         },
         mode: "onChange",
@@ -62,6 +70,11 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
         control,
         name: "extraFees",
     });
+
+    // Items and fees carry no currency of their own — the link has exactly one,
+    // and every in-row currency trigger (amount, item price, fee amount) edits it.
+    // Watch it so the cards restate the same currency the merchant picked.
+    const currency = useWatch({ control, name: "currency" });
 
     useEffect(() => {
         if (isEditMode && paymentLink) {
@@ -144,7 +157,6 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
             });
         }
     }, [trigger, setFormData, getValues, isEditMode, paymentLink?.paymentLinkId, paymentType, router]);
-    console.log("isLoading :", isLoading);
     return (
         <FormProvider {...methods}>
             <KeyboardAwareScrollView className="flex-1" showsVerticalScrollIndicator={false}>
@@ -182,10 +194,14 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                                     keyboardType="decimal-pad"
                                     error={!!errors.totalAmount}
                                     isHasCurrency
+                                    // Hard floor so the digits survive even when
+                                    // the trigger carries the Virtual badge
+                                    inputClassName="min-w-[64px]"
                                 />
                             )}
                         />
                         <AnimatedErrorMsg errorMsg={t(errors.totalAmount?.message || '')} />
+                        <EgpEquivalent />
 
                         <Pressable
                             className="flex-row items-center border-t border-tertiary pt-6 mt-6"
@@ -212,6 +228,7 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                     >
                         <ItemsList
                             items={items}
+                            currency={currency}
                             onEdit={handleEditItem}
                             onDelete={removeItem}
                             onQuantityChange={handleQuantityChange}
@@ -249,6 +266,7 @@ const PaymentLinkForm = ({ paymentType, onSubmit, isLoading, isEditMode, payment
                             >
                                 <FeesList
                                     fees={fees}
+                                    currency={currency}
                                     onEdit={handleEditFee}
                                     onDelete={removeFee}
                                 />

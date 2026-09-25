@@ -84,7 +84,7 @@ const OnboardingDataScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white px-6">
-            <Header title={t(`${accountType} ${accountType === 'individual' ? 'Seller' : 'Business'}`)} />
+            <Header title={t(accountType === 'individual' ? 'individual Seller' : 'registered Business')} />
 
             <ScrollView
                 className="flex-1"

@@ -11,31 +11,54 @@ interface Props {
     value?: string | React.ReactNode;
     valueClassName?: string;
     labelClassName?: string;
+    /** label and value on one row (matches SectionRowItem) instead of stacked */
+    inline?: boolean;
 }
 
-const SectionItemWithCopy = ({ icon, title, value, valueClassName, labelClassName }: Props) => {
-    if (!value) return null;
-    const { copy, isCopied } = useClipboard();
+const SectionItemWithCopy = ({ icon, title, value, valueClassName, labelClassName, inline }: Props) => {
+    const { copy } = useClipboard();
     const handleCopy = async () => {
         if (typeof value === 'string') {
             await copy(value)
         }
     }
+    if (!value) return null;
+
+    if (inline) {
+        return (
+            <View className='flex-row items-center justify-between'>
+                <FontText type="body" weight="regular" className={cn("text-content-secondary text-sm self-start", labelClassName)}>{title}</FontText>
+                <View className='flex-row items-center gap-x-2 flex-shrink ms-2'>
+                    <FontText
+                        type="body"
+                        weight="semi"
+                        className={cn("text-content-primary text-sm self-start flex-shrink", valueClassName)}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >{value}</FontText>
+                    <PressableScale onPress={handleCopy} hitSlop={8}>
+                        <DocumentDuplicateIcon size={16} color={'#556767'} />
+                    </PressableScale>
+                </View>
+            </View>
+        )
+    }
+
     return (
         <View className='flex-row items-start'>
             {icon && icon}
             <View className={cn(icon ? 'ml-2' : '')}>
-                <FontText type="body" weight="regular" className={cn("text-content-secondary text-sm mb-1 self-start", labelClassName)}>{title}</FontText>
-                <View className='flex-row items-center gap-x-2'>
+                <FontText type="body" weight="regular" className={cn("text-light-gray text-xs mb-1 self-start", labelClassName)}>{title}</FontText>
+                <View className='flex-row items-center gap-x-1.5'>
                     <FontText
                         type="body"
                         weight="semi"
-                        className={cn("text-content-primary text-xs self-start max-w-[94%]", valueClassName)}
+                        className={cn("text-content-primary text-sm self-start max-w-[94%]", valueClassName)}
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >{value}</FontText>
-                    <PressableScale onPress={handleCopy}>
-                        <DocumentDuplicateIcon size={20} color={'#001F5F'} />
+                    <PressableScale onPress={handleCopy} hitSlop={8}>
+                        <DocumentDuplicateIcon size={16} color={'#556767'} />
                     </PressableScale>
                 </View>
             </View>

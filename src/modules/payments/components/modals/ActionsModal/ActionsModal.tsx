@@ -8,6 +8,7 @@ import FontText from '@/src/shared/components/FontText';
 import ActionItem from './ActionItem';
 import { PaymentSession, Transaction } from '../../../payments.model';
 import StatusBox from '@/src/modules/payment-links/components/StatusBox';
+import { currencyLabel } from '@/src/core/constants/currencies';
 import { currencyNumber } from '@/src/core/utils/number-fields';
 import { formatAMPM, formatRelativeDate } from '@/src/core/utils/dateUtils';
 import { useTranslation } from 'react-i18next';
@@ -192,8 +193,8 @@ const PaymentActionsModal = ({ isVisible, onClose, payment, type }: Props) => {
 
     // Build display data with safety checks
     const amount = isTransaction(payment)
-        ? `${currencyNumber(payment?.amount ?? 0)} ${t(payment?.currency || 'EGP')}`
-        : `${currencyNumber(payment?.paymentParams?.amount ?? 0)} ${t(payment?.paymentParams?.currency || 'EGP')}`;
+        ? `${currencyNumber(payment?.amount ?? 0)} ${currencyLabel(t, payment?.currency)}`
+        : `${currencyNumber(payment?.paymentParams?.amount ?? 0)} ${currencyLabel(t, payment?.paymentParams?.currency)}`;
 
     const status = payment?.status || '';
 

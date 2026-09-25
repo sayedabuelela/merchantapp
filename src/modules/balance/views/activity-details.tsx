@@ -69,7 +69,11 @@ const ActivityDetails = () => {
                 activity && (
                     <>
                         <MainHeader
-                            title={t(`${activity.operation === 'topup' || activity.operation === 'deduct' ? "Adjustment" : activity.operation} details`)}/>
+                            title={t('{{operation}} details', {
+                                operation: activity.operation === 'topup' || activity.operation === 'deduct'
+                                    ? t('Adjustment')
+                                    : t(activity.operation ?? ''),
+                            })}/>
                         <ScrollView
                             showsHorizontalScrollIndicator={false}
                             showsVerticalScrollIndicator={false}
@@ -152,7 +156,7 @@ const ActivityDetails = () => {
 
                                 <SectionItem
                                     icon={<CalendarIcon size={24} color="#556767"/>}
-                                    title={t(`${activity.operation === "payout" ? "Payout" : "Entry"} date`)}
+                                    title={t(activity.operation === "payout" ? "Payout date" : "Entry date")}
                                     value={`${formatRelativeDate(activity.createdAt)}, ${formatAMPM(activity.createdAt)}`}
                                 />
 
@@ -214,7 +218,7 @@ const ActivityDetails = () => {
                                     {t("Activity")}
                                 </FontText>
                                 <SummaryItem
-                                    title={t(`${activity.operation === 'topup' || activity.operation === 'topup (+ve)' ? "Adjusted" : "Gross"} amount`)}
+                                    title={t(activity.operation === 'topup' || activity.operation === 'topup (+ve)' ? "Adjusted amount" : "Gross amount")}
                                     value={activity.originalAmount === undefined ? '--' : currencyNumber(activity.originalAmount) + ' ' + t('EGP')}
                                     className='mb-4'
                                 />

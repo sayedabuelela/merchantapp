@@ -1,29 +1,32 @@
-import { SafeAreaView } from "react-native-safe-area-context";
+import {SafeAreaView} from "react-native-safe-area-context";
 import PaymentsHeader from "../components/header/PaymentsHeader";
 import PaymentsTabs from "../components/PaymentsTabs";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import OrderCard from "@/src/modules/payments/components/orders-list/OrderCard";
 import TransactionCard from "@/src/modules/payments/components/transactions-list/TransactionCard";
-import { cn } from "@/src/core/utils/cn";
-import { View } from "react-native";
-import { useOrdersVM, useTransactionsVM } from "@/src/modules/payments/viewmodels";
+import {cn} from "@/src/core/utils/cn";
+import {View} from "react-native";
+import {useOrdersVM, useTransactionsVM} from "@/src/modules/payments/viewmodels";
 import StickyHeaderList from "@/src/shared/components/StickyHeaderList";
-import { GroupedRow } from "@/src/core/utils/groupData";
+import {GroupedRow} from "@/src/core/utils/groupData";
 import HeaderRow from "@/src/shared/components/StickyHeaderList/HeaderRow";
-import { PaymentSession, Transaction, FetchSessionsParams, FetchTransactionsParams } from "@/src/modules/payments/payments.model";
+import {
+    FetchSessionsParams,
+    FetchTransactionsParams,
+    PaymentSession,
+    Transaction
+} from "@/src/modules/payments/payments.model";
 import PaymentFilterModal from "../components/PaymentFilterModal";
 import ActionsModal from "../components/modals/ActionsModal";
-import { AnimatePresence } from 'moti';
-import { FlashList } from "@shopify/flash-list";
+import {AnimatePresence} from 'moti';
+import {FlashList} from "@shopify/flash-list";
 import PaymentsListEmpty from "../components/PaymentsListEmpty";
 import CreatePaymentModal from "@/src/modules/payment-links/components/modals/CreatePaymentModal";
-import SimpleLoader from "@/src/shared/components/loaders/SimpleLoader";
-import SkeletonLoader from "@/src/shared/components/loaders/SkeletonLoader";
 import PaymentLinkCardSkeleton from "../../payment-links/components/PaymentLinkCardSkeleton";
 import FadeInDownView from "@/src/shared/components/wrappers/animated-wrappers/FadeInDownView";
-import FadeInUpView from "@/src/shared/components/wrappers/animated-wrappers/FadeInUpView";
 import AnimatedListItem from "@/src/shared/components/wrappers/animated-wrappers/AnimatedListItem";
 import ScaleFadeIn from "@/src/shared/components/wrappers/animated-wrappers/ScaleView";
+import useSelectedCurrency from "@/src/shared/hooks/useSelectedCurrency";
 
 const INITIAL_ORDERS_FILTERS: FetchSessionsParams = {
     dateFrom: undefined,
@@ -58,6 +61,7 @@ const PaymentsScreen = () => {
     const [ordersFilters, setOrdersFilters] = useState<FetchSessionsParams>(INITIAL_ORDERS_FILTERS);
     const [transactionsFilters, setTransactionsFilters] = useState<FetchTransactionsParams>(INITIAL_TRANSACTIONS_FILTERS);
     const [selectedPayment, setSelectedPayment] = useState<PaymentSession | Transaction | null>(null);
+    const { currencyParam, isVirtual } = useSelectedCurrency();
 
     const isOrdersTab = status === "sessions";
     const activeFilters = isOrdersTab ? ordersFilters : transactionsFilters;
@@ -65,7 +69,7 @@ const PaymentsScreen = () => {
 
     // Scroll to top when tab changes
     useEffect(() => {
-        listRef.current?.scrollToOffset({ offset: 0, animated: true });
+        listRef.current?.scrollToOffset({offset: 0, animated: true});
     }, [status]);
 
     const hasActiveFilters = useMemo(() => {
@@ -80,12 +84,15 @@ const PaymentsScreen = () => {
     const ordersQuery = useOrdersVM({
         ...ordersFilters,
         q: search,
+        // Virtual currency view filter (currency conversion feature); undefined = EGP view, request unchanged
+        ...(currencyParam && { currency: currencyParam }),
     });
 
     // Fetch Transactions
     const transactionsQuery = useTransactionsVM({
         ...transactionsFilters,
         search,
+        ...(currencyParam && { currency: currencyParam }),
     });
     // Use the appropriate query based on active tab
     const activeQuery = isOrdersTab ? ordersQuery : transactionsQuery;
@@ -100,7 +107,7 @@ const PaymentsScreen = () => {
     } = activeQuery;
 
     const isListEmpty = useMemo(() =>
-        listData.length === 0 && !isLoading && !search && !hasActiveFilters,
+            listData.length === 0 && !isLoading && !search && !hasActiveFilters,
         [listData.length, isLoading, search, hasActiveFilters]
     );
 
@@ -112,10 +119,12 @@ const PaymentsScreen = () => {
         setSelectedPayment(null);
     }, []);
 
-    const renderItem = useCallback(({ item, index }: { item: GroupedRow<PaymentSession | Transaction>; index: number }) => {
-        console.log('PaymentsScreen item', item);
+    const renderItem = useCallback(({item, index}: {
+        item: GroupedRow<PaymentSession | Transaction>;
+        index: number
+    }) => {
 
-        if (item.type === 'header') return <HeaderRow title={item.date} />;
+        if (item.type === 'header') return <HeaderRow title={item.date}/>;
 
         // Calculate the actual item index (excluding headers)
         const itemsBefore = listData.slice(0, index).filter(i => i.type !== 'header').length;
@@ -123,17 +132,17 @@ const PaymentsScreen = () => {
         if (isOrdersTab) {
             return (
                 <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
-                    <OrderCard payment={item as PaymentSession} onOpenActions={handleOpenActions} />
+                    <OrderCard payment={item as PaymentSession} onOpenActions={handleOpenActions} amountPrimary={isVirtual ? 'virtual' : 'egp'}/>
                 </AnimatedListItem>
             );
         } else {
             return (
                 <AnimatedListItem index={itemsBefore} delay={250} staggerDelay={40} duration={400}>
-                    <TransactionCard transaction={item as Transaction} onOpenActions={handleOpenActions} />
+                    <TransactionCard transaction={item as Transaction} onOpenActions={handleOpenActions} amountPrimary={isVirtual ? 'virtual' : 'egp'}/>
                 </AnimatedListItem>
             );
         }
-    }, [handleOpenActions, isOrdersTab, listData]);
+    }, [handleOpenActions, isOrdersTab, listData, isVirtual]);
 
     const handleClearSearch = useCallback(() => {
         setSearchValue('');
@@ -169,7 +178,7 @@ const PaymentsScreen = () => {
             </FadeInDownView>
             {isLoading ? (
                 <View className={cn("flex-1 px-6 mt-6")}>
-                    <PaymentLinkCardSkeleton />
+                    <PaymentLinkCardSkeleton/>
                 </View>
             ) : (
                 <>

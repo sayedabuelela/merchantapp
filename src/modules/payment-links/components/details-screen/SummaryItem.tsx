@@ -1,29 +1,32 @@
-import { View } from "react-native";
-import FontText from "@/src/shared/components/FontText";
-import { cn } from "@/src/core/utils/cn";
+import SectionRowItem from "@/src/shared/components/details-screens/SectionRowItem";
 
 interface Props {
     title: string;
     value: string;
+    // Muted second line under the value (e.g. "≈ 248.99 EGP" for virtual-currency links)
+    secondaryValue?: string;
     summaryLabel?: boolean;
+    /** Summing row: hairline rule above it */
+    total?: boolean;
+    /** Tinted callout row, e.g. the exchange rate */
+    highlighted?: boolean;
     className?: string;
 }
 
-const SummaryItem = ({ title, value, className, summaryLabel = false }: Props) => {
-    return (
-        <View
-            className={cn("flex-row items-center justify-between", className)}
-        >
-            <FontText type="body" weight={summaryLabel ? "semi" : "regular"}
-                className="text-content-secondary self-start text-sm">
-                {title}
-            </FontText>
-            <FontText type="body" weight="semi"
-                className="text-content-primary self-start text-base">
-                {value}
-            </FontText>
-        </View>
-    )
-}
+/**
+ * A payment-links Summary row. The data shape is payment-links-specific; the
+ * visual shell is the shared details row, so both modules stay in step.
+ */
+const SummaryItem = ({ title, value, secondaryValue, total, highlighted, className, summaryLabel = false }: Props) => (
+    <SectionRowItem
+        title={title}
+        value={value}
+        secondaryValue={secondaryValue}
+        total={total}
+        highlighted={highlighted}
+        labelWeight={summaryLabel ? "semi" : "regular"}
+        className={className}
+    />
+)
 
 export default SummaryItem;

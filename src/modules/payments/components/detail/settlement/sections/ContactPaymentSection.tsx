@@ -1,3 +1,4 @@
+import { currencyLabel } from '@/src/core/constants/currencies';
 import DetailsSection from '@/src/shared/components/details-screens/DetailsSection';
 import SectionRowItem from '@/src/shared/components/details-screens/SectionRowItem';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +25,7 @@ const ContactPaymentSection = ({ data }: Props) => {
     // Format monthly amount with currency
     const formatMonthlyAmount = (value: number | undefined): string => {
         if (value === undefined || value === null) return '--';
-        return `${value} ${data.currency || t('EGP')}`;
+        return `${value} ${currencyLabel(t, data.currency)}`;
     };
 
     return (
@@ -35,7 +36,7 @@ const ContactPaymentSection = ({ data }: Props) => {
             />
             <SectionRowItem
                 title={t('Monthly Amount')}
-                value={formatAmount(payerInfo.installmentValue, data.currency || t('EGP'))}
+                value={formatAmount(payerInfo.installmentValue, currencyLabel(t, data.currency))}
             />
             <SectionRowItem
                 title={t('Client Phone Number')}

@@ -52,6 +52,13 @@ module.exports = {
                 "feedback-warning-text": "#513500",
                 "feedback-error-bg": "#FFEAED",
                 "feedback-error": "#A50017",
+
+                // Currency / FX accents. The ocean family is reserved for currency so an
+                // FX marker can never be misread as a status (status owns green/amber/red).
+                "surface-accent": "#F1F6FF",
+                "stroke-accent": "#D9E5FF",
+                // Prototype warning-03; distinct from feedback-warning-text (#513500)
+                "feedback-warning-strong": "#956200",
             },
             fontFamily: {
                 // Head Fonts - RTL

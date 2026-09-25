@@ -20,6 +20,8 @@ interface DropDownUIProps<T> {
     variant?: 'default' | 'filter';
     label?: string;
     icon?: React.ReactNode;
+    // Overrides the trigger text (menu items keep option labels) — e.g. show "USD" while the menu says "USD (Virtual)"
+    triggerLabel?: string;
 }
 
 const DropDownUI = <T extends string | number | boolean | null | undefined>({
@@ -30,12 +32,13 @@ const DropDownUI = <T extends string | number | boolean | null | undefined>({
     dropdownKey = 'dropdown',
     variant = 'default',
     icon,
-    label
+    label,
+    triggerLabel
 }: DropDownUIProps<T>) => {
     const { t } = useTranslation();
     const defaultPlaceholder = placeholder ?? t('Select option');
     const selectedOption = options.find((opt) => opt.value === selected);
-    const selectedLabel = selectedOption?.label ?? defaultPlaceholder;
+    const selectedLabel = triggerLabel ?? selectedOption?.label ?? defaultPlaceholder;
     const isSelected = selectedOption !== undefined;
 
     if (variant === 'filter') {

@@ -1,5 +1,8 @@
 // FeeItem.tsx
+import { currencyLabel, isVirtualCurrency, toDisplayCode } from '@/src/core/constants/currencies';
+import { currencyNumber } from '@/src/core/utils/number-fields';
 import FontText from '@/src/shared/components/FontText';
+import CurrencyToken from '@/src/shared/components/currency/CurrencyToken';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
@@ -8,12 +11,15 @@ import * as DropdownMenu from 'zeego/dropdown-menu';
 import { FeeType } from '../../../payment-links.scheme';
 interface FeeItemProps {
     fee: FeeType;
+    /** The link's currency — fees carry none of their own. API id or display code. */
+    currency?: string | null;
     onEdit: () => void;
     onDelete: () => void;
 }
 
-const FeeItem = ({ fee, onEdit, onDelete }: FeeItemProps) => {
+const FeeItem = ({ fee, currency, onEdit, onDelete }: FeeItemProps) => {
     const { t } = useTranslation();
+    const isVirtual = isVirtualCurrency(currency);
 
     return (
         <View className="border border-tertiary p-4 rounded mb-2">
@@ -56,9 +62,20 @@ const FeeItem = ({ fee, onEdit, onDelete }: FeeItemProps) => {
                         <FontText type="body" weight="semi" className="text-content-secondary text-sm">
                             {t('Flat fee')}
                         </FontText>
-                        <FontText type="body" weight="bold" className="text-black text-base">
-                            {fee.flatFee}
-                        </FontText>
+                        {/* The currency here comes straight from the picker, so the
+                            `_VIRTUAL` id is intact and can be trusted as the guard. */}
+                        {isVirtual ? (
+                            <View className="flex-row items-center gap-x-1">
+                                <FontText type="body" weight="bold" className="text-black text-base">
+                                    {currencyNumber(fee.flatFee)}
+                                </FontText>
+                                <CurrencyToken code={toDisplayCode(currency)} size="lg" />
+                            </View>
+                        ) : (
+                            <FontText type="body" weight="bold" className="text-black text-base">
+                                {`${currencyNumber(fee.flatFee)} ${currencyLabel(t, currency)}`}
+                            </FontText>
+                        )}
                     </View>
                 )}
                 {fee.rate > 0 && (

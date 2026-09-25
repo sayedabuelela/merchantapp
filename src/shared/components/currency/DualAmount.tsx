@@ -1,0 +1,187 @@
+import { ReactNode } from 'react';
+import { I18nManager, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import FontText from '@/src/shared/components/FontText';
+import { currencyNumber } from '@/src/core/utils/number-fields';
+import { BASE_CURRENCY, currencyLabel, isVirtualRecord, toDisplayCode } from '@/src/core/constants/currencies';
+import { cn } from '@/src/core/utils/cn';
+import CurrencyToken from '@/src/shared/components/currency/CurrencyToken';
+import useCurrencyConversionEnabled from '@/src/shared/hooks/useCurrencyConversionEnabled';
+
+const isRTL = I18nManager.isRTL;
+
+/**
+ * Explicit line heights, with headroom: FontText scales a mapped size class by
+ * 1.0-1.125 on device width, so text-sm is already 15px on the 390px phone the
+ * design models. The RTL values clear NotoNaskhArabic's taller metrics without
+ * FontText's blanket 1.8x multiplier.
+ */
+const LH = {
+    amountSm: isRTL ? 22 : 18,
+    amountLg: isRTL ? 32 : 26,
+    subLine: isRTL ? 20 : 16,
+};
+
+interface DualAmountProps {
+    /** Settled/base amount (EGP side) */
+    amount: number | string | null | undefined;
+    /** Settled/base currency code (usually "EGP") */
+    currency?: string | null;
+    /** Original virtual amount, when the record is virtual-origin */
+    virtualAmount?: number | string | null;
+    /** Virtual currency id or code (e.g. "USD_VIRTUAL") */
+    virtualCurrency?: string | null;
+    /** Which amount is the primary line. 'virtual' for virtual-currency views, 'egp' for the EGP view */
+    primary?: 'egp' | 'virtual';
+    size?: 'sm' | 'lg';
+    /**
+     * Rendered at the end of the primary amount line, inside the same row.
+     * Detail headers pass their status badge + chip here so those sit on the
+     * amount line rather than vertically centring against the whole block.
+     */
+    trailing?: ReactNode;
+    className?: string;
+}
+
+interface AmountLineProps {
+    value: number | string | null | undefined;
+    currency?: string | null;
+    prefix?: string;
+    textClassName: string;
+    lineHeight: number;
+    /**
+     * Whether this line carries the virtual currency, decided by the caller rather
+     * than sniffed off the code: the `_VIRTUAL` suffix is a picker-side id and the
+     * backend is not guaranteed to echo it back on a record.
+     */
+    isVirtual?: boolean;
+    tokenSize?: 'sm' | 'lg';
+    bold?: boolean;
+    type?: 'body' | 'head';
+    trailing?: ReactNode;
+}
+
+/**
+ * One money line: "299.99 الدولار الأمريكي" — the currency spelled out through
+ * `currencyLabel`, with the label promoted to a tinted tag when, and only when,
+ * this is the virtual line. Nothing is abbreviated to a symbol here: a bare "$"
+ * reads as an icon rather than as a label.
+ */
+const AmountLine = ({
+    value,
+    currency,
+    prefix = '',
+    textClassName,
+    lineHeight,
+    isVirtual,
+    tokenSize = 'sm',
+    bold,
+    type = 'body',
+    trailing,
+}: AmountLineProps) => {
+    const { t } = useTranslation();
+    const number = currencyNumber(Number(value ?? 0));
+
+    const text = (
+        <FontText
+            type={type}
+            weight={bold ? 'bold' : 'regular'}
+            className={textClassName}
+            style={{ lineHeight }}
+            numberOfLines={1}
+        >
+            {`${prefix}${number}${isVirtual ? '' : ` ${currencyLabel(t, currency)}`}`}
+        </FontText>
+    );
+
+    if (!isVirtual && !trailing) return text;
+
+    return (
+        <View className="flex-row items-center gap-x-1">
+            {text}
+            {isVirtual && <CurrencyToken code={toDisplayCode(currency)} size={tokenSize} />}
+            {/* ms-1 tops the row's 4px gap up to the 8px the header badge wants,
+                while the token stays tight against the number it labels */}
+            {trailing && <View className="flex-row items-center gap-x-2 ms-1">{trailing}</View>}
+        </View>
+    );
+};
+
+/**
+ * Renders an amount with its currency. For virtual-origin records (feature flag on),
+ * renders a primary + secondary "≈ equivalent" pair, with the virtual currency shown
+ * as a tinted tag on whichever line carries it. `primary` decides the lead outright:
+ * the currency the merchant selected is the one that leads.
+ * Falls back to exactly the legacy single line otherwise — the flag guard for all
+ * amount displays lives here.
+ * Values are always backend-provided; no client-side conversion happens here.
+ */
+export default function DualAmount({
+    amount,
+    currency,
+    virtualAmount,
+    virtualCurrency,
+    primary = 'virtual',
+    size = 'sm',
+    trailing,
+    className,
+}: DualAmountProps) {
+    const isEnabled = useCurrencyConversionEnabled();
+    const isLg = size === 'lg';
+
+    const primaryTextClasses = isLg
+        ? 'text-content-primary text-xl'
+        : 'text-content-primary text-sm';
+    // Both the card's settles line and the detail header's are 12px / light-gray
+    const secondaryTextClasses = 'text-light-gray text-xs';
+    const primaryLH = isLg ? LH.amountLg : LH.amountSm;
+
+    const isDual = isEnabled && isVirtualRecord({ virtualAmount, virtualCurrency });
+
+    if (!isDual) {
+        return (
+            <View className={className}>
+                <AmountLine
+                    value={amount}
+                    currency={currency}
+                    bold
+                    textClassName={primaryTextClasses}
+                    lineHeight={primaryLH}
+                    type={isLg ? 'head' : 'body'}
+                    trailing={trailing}
+                />
+            </View>
+        );
+    }
+
+    const egp = { value: amount, currency: currency ?? BASE_CURRENCY, isVirtual: false };
+    const virtual = { value: virtualAmount, currency: virtualCurrency, isVirtual: true };
+    // The selected currency always leads and its counterpart always sits underneath —
+    // including on an uncaptured record (abandoned/expired), which has no settled figure
+    // and so reads a bold "0.00 EGP" in the EGP view. Every row in the list carries the
+    // same two-line shape whatever its status, and the lead never flips under the reader.
+    const primaryIsVirtual = primary !== 'egp';
+    const first = primaryIsVirtual ? virtual : egp;
+    const second = primaryIsVirtual ? egp : virtual;
+
+    return (
+        <View className={cn(isLg ? 'gap-y-1' : 'gap-y-0.5', className)}>
+            <AmountLine
+                {...first}
+                bold
+                textClassName={primaryTextClasses}
+                lineHeight={primaryLH}
+                tokenSize={isLg ? 'lg' : 'sm'}
+                type={isLg ? 'head' : 'body'}
+                trailing={trailing}
+            />
+            <AmountLine
+                {...second}
+                prefix="≈ "
+                textClassName={secondaryTextClasses}
+                lineHeight={LH.subLine}
+                tokenSize="sm"
+            />
+        </View>
+    );
+}
