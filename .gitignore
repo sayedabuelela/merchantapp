@@ -204,3 +204,6 @@ packages/helloworld/vendor/
 app-example
 
 payformance-bbecc-firebase-adminsdk-697ap-b2ca0ad0ed.json
+
+# CodeGraph local index
+.codegraph/
