@@ -1,5 +1,6 @@
-import OtpInput from '@/src/modules/auth/components/OtpInput';
+import OtpInput, { OTP_LENGTH } from '@/src/modules/auth/components/OtpInput';
 import ResendTimer from '@/src/modules/auth/components/ResendTimer';
+import { isOtpLockoutError, useOtpLockout } from '@/src/modules/auth/hooks/useOtpLockout';
 import { OtpIcon } from '@/src/shared/assets/svgs';
 import Button from '@/src/shared/components/Buttons/Button';
 import AnimatedError from '@/src/shared/components/animated-messages/AnimatedError';
@@ -18,6 +19,7 @@ const ResetPasswordOTPScreen = () => {
     const { verifyResetOtp, generateResetOtp, isGenerating, isVerifying, verifyError, verifyReset } = useResetPasswordOtp();
     const router = useRouter();
     const { email } = useLocalSearchParams<{ email: string }>();
+    const { isLocked, handleOtpError, lockoutMessage } = useOtpLockout();
 
     const [otpValue, setOtpValue] = useState('');
     const [isComplete, setIsComplete] = useState(false);
@@ -28,11 +30,16 @@ const ResetPasswordOTPScreen = () => {
     };
 
     const onSubmit = async () => {
-        console.log('OTP Submitted:', otpValue);
-        await verifyResetOtp({ key: email, code: otpValue });
+        try {
+            await verifyResetOtp({ key: email, code: otpValue });
+        } catch (error) {
+            // The code is cancelled on lockout, so the typed one is useless
+            if (handleOtpError(error)) setOtpValue('');
+            return;
+        }
         router.replace({
             pathname: `/(auth)/(reset-password)/create-password`,
-            params: { code: otpValue },
+            params: { code: otpValue, email },
         })
     };
 
@@ -41,11 +48,18 @@ const ResetPasswordOTPScreen = () => {
     }, []);
 
     const onResendOtp = async () => {
-        console.log('Resend OTP');
         setOtpValue('');
         verifyReset();
-        await generateResetOtp(email);
+        try {
+            await generateResetOtp(email);
+        } catch (error) {
+            handleOtpError(error);
+        }
     };
+
+    const verifyErrorMsg = verifyError && !isOtpLockoutError(verifyError)
+        ? t(verifyError.message || verifyError.error || "Something went wrong")
+        : '';
 
     return (
         <SafeAreaView className="flex-1 bg-white ">
@@ -85,9 +99,7 @@ const ResetPasswordOTPScreen = () => {
 
                 </View>
 
-                {verifyError && (
-                    <AnimatedError errorMsg={t(verifyError.message || verifyError.error || "Something went wrong")} />
-                )}
+                <AnimatedError errorMsg={lockoutMessage || verifyErrorMsg} />
 
                 <View className="flex-1 justify-between">
 
@@ -97,14 +109,15 @@ const ResetPasswordOTPScreen = () => {
                                 value={otpValue}
                                 onChange={handleOtpChange}
                                 onComplete={handleOtpComplete}
-                                length={4}
+                                length={OTP_LENGTH}
                                 autoFocus={true}
-                                disabled={isVerifying}
+                                disabled={isVerifying || isLocked}
                             />
 
                             <ResendTimer
                                 initialSeconds={30}
                                 onResend={onResendOtp}
+                                locked={isLocked}
                             />
                         </View>
                     </FadeInUpView>
@@ -113,7 +126,7 @@ const ResetPasswordOTPScreen = () => {
                         <Button
                             className='mt-6 '
                             title={t('Continue')}
-                            disabled={otpValue.length < 4}
+                            disabled={otpValue.length < OTP_LENGTH || isLocked}
                             isLoading={isVerifying || isGenerating}
                             fullWidth
                             onPress={onSubmit}

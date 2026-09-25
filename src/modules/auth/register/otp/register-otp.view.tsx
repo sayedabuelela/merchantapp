@@ -7,8 +7,9 @@ import React, {useCallback, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {I18nManager, Pressable, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import OtpInput from '../../components/OtpInput';
+import OtpInput, {OTP_LENGTH} from '../../components/OtpInput';
 import ResendTimer from '../../components/ResendTimer';
+import {isOtpLockoutError, useOtpLockout} from '../../hooks/useOtpLockout';
 import useOtp from './otp.viewmodel';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import {FadeInDownView, FadeInUpView} from '@/src/shared/components/wrappers/animated-wrappers';
@@ -20,6 +21,7 @@ export default function VerifyOTPScreen() {
     const {verifyOtp, generateOtp, isGenerating, isVerifying, verifyError, verifyReset} = useOtp();
     const router = useRouter();
     const {email} = useLocalSearchParams<{ email: string }>();
+    const {isLocked, handleOtpError, lockoutMessage} = useOtpLockout();
 
     const [otpValue, setOtpValue] = useState('');
     const [isComplete, setIsComplete] = useState(false);
@@ -30,8 +32,13 @@ export default function VerifyOTPScreen() {
     };
 
     const onSubmit = async () => {
-        console.log('OTP Submitted:', otpValue);
-        await verifyOtp({key: email, code: otpValue});
+        try {
+            await verifyOtp({key: email, code: otpValue});
+        } catch (error) {
+            // The code is cancelled on lockout, so the typed one is useless
+            if (handleOtpError(error)) setOtpValue('');
+            return;
+        }
         router.replace({
             pathname: `/(auth)/(register)/register-password`,
             params: {email, code: otpValue},
@@ -43,11 +50,18 @@ export default function VerifyOTPScreen() {
     }, []);
 
     const onResendOtp = async () => {
-        console.log('Resend OTP');
         setOtpValue('');
         verifyReset();
-        await generateOtp(email);
+        try {
+            await generateOtp(email);
+        } catch (error) {
+            handleOtpError(error);
+        }
     };
+
+    const verifyErrorMsg = verifyError && !isOtpLockoutError(verifyError)
+        ? t(verifyError.message || verifyError.error || "Something went wrong")
+        : '';
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -92,9 +106,7 @@ export default function VerifyOTPScreen() {
 
                 </View>
 
-                {verifyError && (
-                    <AnimatedError errorMsg={t(verifyError.message || verifyError.error || "Something went wrong")}/>
-                )}
+                <AnimatedError errorMsg={lockoutMessage || verifyErrorMsg}/>
 
                 <View className="flex-1 justify-between">
 
@@ -104,14 +116,15 @@ export default function VerifyOTPScreen() {
                                 value={otpValue}
                                 onChange={handleOtpChange}
                                 onComplete={handleOtpComplete}
-                                length={4}
+                                length={OTP_LENGTH}
                                 autoFocus={true}
-                                disabled={isVerifying}
+                                disabled={isVerifying || isLocked}
                             />
 
                             <ResendTimer
                                 initialSeconds={30}
                                 onResend={onResendOtp}
+                                locked={isLocked}
                             />
                         </View>
                     </FadeInUpView>
@@ -120,7 +133,7 @@ export default function VerifyOTPScreen() {
                         <Button
                             className='mt-6 '
                             title={t('Continue')}
-                            disabled={otpValue.length < 4}
+                            disabled={otpValue.length < OTP_LENGTH || isLocked}
                             isLoading={isVerifying || isGenerating}
                             fullWidth
                             onPress={onSubmit}

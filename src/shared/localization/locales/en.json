@@ -191,5 +191,6 @@
     "Payout now": "Payout now",
     "No settlement transactions found": "No settlement transactions found",
     "Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.": "Now you could instantly settle Card and Wallet transactions, Select transaction and click Payout.",
-    "PROCESSED": "Processed"
+    "PROCESSED": "Processed",
+    "Too many wrong codes. Please try again in {{time}}.": "Too many wrong codes. Please try again in {{time}}."
 }

@@ -1012,5 +1012,6 @@
   "transactions": "معاملة",
   "Record": "سجل",
   "Account Num.": "رقم الحساب",
-  "PROCESSED": "تمت المعالجة"
+  "PROCESSED": "تمت المعالجة",
+  "Too many wrong codes. Please try again in {{time}}.": "محاولات خاطئة كثيرة. يرجى المحاولة مرة أخرى بعد {{time}}."
 }

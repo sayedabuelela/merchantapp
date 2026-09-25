@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InteractionManager, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { InteractionManager, Platform, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import Animated, {
     Extrapolate,
     interpolate,
@@ -13,9 +13,12 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-const DEFAULT_LENGTH = 4;
+export const OTP_LENGTH = 6;
 const DIGIT_BOX_SIZE = 60;
 const DIGIT_BOX_MARGIN = 16;
+const COMPACT_DIGIT_BOX_MARGIN = 10;
+// Horizontal padding of the OTP screens (px-6 on both sides)
+const SCREEN_HORIZONTAL_PADDING = 48;
 const INDICATOR_HEIGHT = 2;
 const SHAKE_OFFSET = 5;
 
@@ -130,7 +133,7 @@ interface OtpInputProps {
 }
 
 export const OtpInput: React.FC<OtpInputProps> = ({
-    length = DEFAULT_LENGTH,
+    length = OTP_LENGTH,
     value,
     onChange,
     onComplete,
@@ -140,10 +143,19 @@ export const OtpInput: React.FC<OtpInputProps> = ({
     separatorCharacter = '-',
     separatorIndices = [Math.floor(length / 2) - 1],
     testID = 'otp-input',
-    digitSize = DIGIT_BOX_SIZE,
-    digitMargin = DIGIT_BOX_MARGIN,
+    digitSize: digitSizeProp,
+    digitMargin = length > 4 ? COMPACT_DIGIT_BOX_MARGIN : DIGIT_BOX_MARGIN,
 }) => {
     const { t } = useTranslation();
+    const { width: windowWidth } = useWindowDimensions();
+
+    // Shrink the boxes so all digits fit on narrow screens, never larger than the default size
+    const totalSeparators = showSeparator ? separatorIndices.length : 0;
+    const separatorWidth = 20;
+    const fittingDigitSize = Math.floor(
+        (windowWidth - SCREEN_HORIZONTAL_PADDING - (length - 1) * digitMargin - totalSeparators * separatorWidth) / length
+    );
+    const digitSize = digitSizeProp ?? Math.min(DIGIT_BOX_SIZE, fittingDigitSize);
     const hiddenInputRef = useRef<TextInput>(null);
     const [isFocused, setIsFocused] = useState(false);
     const [localError, setLocalError] = useState(false);
@@ -182,8 +194,6 @@ export const OtpInput: React.FC<OtpInputProps> = ({
         [length]
     );
 
-    const totalSeparators = showSeparator ? separatorIndices.length : 0;
-    const separatorWidth = 20;
     const containerWidth =
         length * digitSize +
         (length - 1) * digitMargin +

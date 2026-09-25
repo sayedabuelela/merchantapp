@@ -16,11 +16,11 @@ const isRTL = I18nManager.isRTL;
 const ResetCreatePasswordScreen = () => {
     const {t} = useTranslation();
     const router = useRouter();
-    const {code} = useLocalSearchParams<{ code: string }>();
+    const {code, email} = useLocalSearchParams<{ code: string; email: string }>();
     const {resetPassword, isResetting, resetError} = useResetPassword();
 
     const onSubmit = async ({password}: PasswordFormData) => {
-        await resetPassword({code, password});
+        await resetPassword({code, email, password});
         router.replace(ROUTES.AUTH.LOGIN);
     };
 

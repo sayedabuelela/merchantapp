@@ -6,8 +6,8 @@ import { resetService } from "./reset.service";
 export const useResetPassword = () => {
     const { api } = useApi();
 
-    const { mutateAsync: resetPassword, isPending: isResetting, error: resetError } = useMutation<ResetPasswordResponse, ResetPasswordError, { code: string; password: string }>({
-        mutationFn: ({ code, password }: { code: string; password: string }) => resetService(api, { code, password }),
+    const { mutateAsync: resetPassword, isPending: isResetting, error: resetError } = useMutation<ResetPasswordResponse, ResetPasswordError, ResetPasswordRequest>({
+        mutationFn: (request) => resetService(api, request),
     });
 
     return {
